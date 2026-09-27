@@ -5,6 +5,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'scripts\workbench-process.ps1')
 $model = 'http://127.0.0.1:8087'
 $app = 'http://127.0.0.1:8088'
 
@@ -56,30 +57,28 @@ function Test-OwnedModelListener {
 }
 
 function Test-OwnedWorkbenchListener {
-    $pidFile = Join-Path $PSScriptRoot 'benchmarks\workbench.pid'
-    if (!(Test-Path -LiteralPath $pidFile)) { return $false }
-    $savedId = [int](Get-Content -LiteralPath $pidFile)
-    $listener = Get-NetTCPConnection -LocalPort 8088 -State Listen -ErrorAction SilentlyContinue | Select-Object -First 1
-    if (!$listener) { return $false }
-    $owner = Get-CimInstance Win32_Process -Filter "ProcessId=$($listener.OwningProcess)" -ErrorAction SilentlyContinue
-    $parent = if ($owner) { Get-CimInstance Win32_Process -Filter "ProcessId=$($owner.ParentProcessId)" -ErrorAction SilentlyContinue } else { $null }
-    $expectedExe = Join-Path $PSScriptRoot '.app-venv\Scripts\python.exe'
-    return ($parent -and $parent.ProcessId -eq $savedId -and $parent.ExecutablePath -eq $expectedExe -and
-            $parent.CommandLine.Contains('backend.app:create_app'))
+    return [bool](Get-SovereignWorkbenchProcess -ProjectRoot $PSScriptRoot)
+}
+
+$existingWorkbench = Get-SovereignWorkbenchProcess -ProjectRoot $PSScriptRoot
+if ($existingWorkbench -and $existingWorkbench.Legacy) {
+    # A previous checkout environment can survive cleanup and serve stale code.
+    Stop-SovereignWorkbenchProcess -Workbench $existingWorkbench
+    Remove-Item -LiteralPath (Join-Path $PSScriptRoot 'benchmarks\workbench.pid') -ErrorAction SilentlyContinue
+    $existingWorkbench = $null
+}
+if (-not (Get-NetTCPConnection -LocalPort 8088 -State Listen -ErrorAction SilentlyContinue)) {
+    & (Join-Path $PSScriptRoot 'start-workbench.ps1')
+} elseif (!$existingWorkbench) {
+    throw 'Port 8088 is served by a workbench that this launcher does not own. Stop it in the application that started it before launching SovereignAI.'
+} elseif (-not (Test-LocalHealth $app)) {
+    throw 'Port 8088 is occupied, but the workbench is not healthy. Check the process before restarting it.'
 }
 
 if (-not (Get-NetTCPConnection -LocalPort 8087 -State Listen -ErrorAction SilentlyContinue)) {
     & (Join-Path $PSScriptRoot 'start-local-model.ps1') -IdleSeconds $IdleSeconds
 } elseif (!(Test-OwnedModelListener)) {
     throw 'Port 8087 is serving a model that this SovereignAI launcher does not own. Stop it in the application that started it before launching SovereignAI.'
-}
-
-if (-not (Get-NetTCPConnection -LocalPort 8088 -State Listen -ErrorAction SilentlyContinue)) {
-    & (Join-Path $PSScriptRoot 'start-workbench.ps1')
-} elseif (!(Test-OwnedWorkbenchListener)) {
-    throw 'Port 8088 is served by a workbench that this launcher does not own. Stop it in the application that started it before launching SovereignAI.'
-} elseif (-not (Test-LocalHealth $app)) {
-    throw 'Port 8088 is occupied, but the workbench is not healthy. Check the process before restarting it.'
 }
 
 for ($attempt = 0; $attempt -lt 60; $attempt++) {

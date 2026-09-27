@@ -65,7 +65,7 @@ For the runtime, download the [b11132 Windows CUDA 12.4 archive](https://github.
 | `docs/` | Essential Windows shortcuts and model/runtime notices |
 | `_review_for_deletion/` | Isolated optional local copies and caches; see its inventory before removing |
 
-Only the two root `.bat` files are intended as user launchers. Supporting `.ps1` scripts are implementation files. `start-sovereign.ps1 -NoBrowser` and `stop-sovereign.ps1` are available to automation. The launchers manage only their own listeners on ports 8087 and 8088 and reject unrelated services on those ports.
+Only the two root `.bat` files are intended as user launchers. Supporting `.ps1` scripts are implementation files. `start-sovereign.ps1 -NoBrowser` and `stop-sovereign.ps1` are available to automation. The launchers manage only their own listeners on ports 8087 and 8088 and reject unrelated services on those ports. Stop also recognizes this project's workbench when its PID file is missing, including an older `.venv` instance. Start replaces such an older instance with the current `.app-venv` workbench.
 
 ## Verification and troubleshooting
 
@@ -77,5 +77,7 @@ npm run build
 ```
 
 If startup fails, read `benchmarks/server.stderr.log` and `benchmarks/workbench.stderr.log`. Verify asset checksums and the Python/Node commands above. The model and Docker are intentionally not launched by `pytest`, `npm run check`, or `npm run build`. The first launch can take time to install dependencies; later launches reuse `.app-venv` and the built UI. Port and model status are visible in Control Center.
+
+If port 8088 is occupied, run `Stop SovereignAI.bat` and try again. The launcher will leave an unrelated process on that port untouched; close that application separately if the warning persists. After replacing an older workbench, refresh the browser tab to discard its stale API errors.
 
 See [Windows shortcuts](docs/WINDOWS_SHORTCUTS.md), [runtime and model notices](docs/model-and-runtime-notices.md), and [cleanup inventory](CLEANUP_REVIEW.md) for more detail.

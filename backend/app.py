@@ -15,6 +15,7 @@ from backend.service import Workbench
 from rag.ingest import SUPPORTED, extract
 from rag.retrieve import retrieve
 from rag.context import relevant_passages, chat_evidence
+from rag.pdf_visuals import enrich_pdf_chunks
 
 
 class AskRequest(BaseModel):
@@ -195,7 +196,7 @@ def create_app(service=None):
     def document_content(document_id:str):
         current=service.store.current(document_id)
         if current is None: raise WorkbenchError('unknown_document','Document not found')
-        chunks=sorted((chunk for chunk,_ in service.store.active_chunks([document_id])), key=lambda chunk:(chunk.page or 0,chunk.line_start or 0,chunk.chunk_id))
+        chunks=sorted(enrich_pdf_chunks([chunk for chunk,_ in service.store.active_chunks([document_id])],service.settings.data_dir/'sources'), key=lambda chunk:(chunk.page or 0,chunk.line_start or 0,chunk.chunk_id))
         return {**current,'pages':sorted({chunk.page for chunk in chunks if chunk.page is not None}),
                 'methods':sorted({chunk.extraction_method for chunk in chunks}),
                 'text':'\n\n'.join(chunk.text for chunk in chunks)[:100000],

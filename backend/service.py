@@ -16,6 +16,7 @@ from rag.store import Store
 from rag.retrieve import retrieve, document_scope_for_question
 from rag.context import relevant_passages, chat_evidence
 from rag.answer import answer
+from rag.pdf_visuals import enrich_pdf_chunks
 from rag.vision import ask_vision
 from router.model_registry import ModelRegistry
 from router.router import CapabilityRouter
@@ -128,6 +129,7 @@ class Workbench:
             active=self.store.active_chunks(document_ids)
             retrieval_query=' '.join([*history[-2:],question])[:4000]
             passages=retrieve(self.store,self.embedder,retrieval_query,document_ids) if active else []
+            passages=enrich_pdf_chunks(passages,self.settings.data_dir/'sources')
             retrieval_seconds=time.perf_counter()-started
             
             # Switch to text model if needed

@@ -6,6 +6,7 @@ from zipfile import ZipFile, BadZipFile
 from lxml import etree
 from pypdf import PdfReader
 from backend.contracts import WorkbenchError, Page, Chunk, Extraction
+from rag.pdf_visuals import overall_star_rating
 
 SUPPORTED = {'.pdf', '.txt', '.md', '.docx', '.csv', '.json', '.log', '.xlsx', '.pptx'}
 
@@ -66,6 +67,10 @@ def extract(path: Path, max_bytes=20*1024*1024, max_pages=200) -> Extraction:
             total = 0
             for number, page in enumerate(reader.pages, 1):
                 text = (page.extract_text() or '').replace('\r\n', '\n').replace('\r', '\n')
+                if 'Overall Rating' in text:
+                    rating = overall_star_rating(data, number)
+                    if rating:
+                        text += f'\n[Visual PDF evidence: {rating}]'
                 total += len(text)
                 if total > 2_000_000:
                     raise WorkbenchError('file_too_large', 'Extracted text exceeds two million characters')

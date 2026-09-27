@@ -127,8 +127,9 @@ class Workbench:
             started=time.perf_counter()
             if job and job.cancel.is_set():
                 raise WorkbenchError('cancelled', 'Task stopped')
-            if self.router.is_greeting(question):
-                return {'status':'greeting','answer':'Hi! Ask me about your selected files, or add a file and ask me to compare it with the others.',
+            instant=self.router.instant_reply(question)
+            if instant:
+                return {'status':'greeting','answer':'Hi! Ask me about your selected files, or add a file and ask me to compare it with the others.' if self.router.is_greeting(question) else instant,
                         'sources':[],'task_id':uuid4().hex,'timings':{'total_seconds':time.perf_counter()-started},'model':None}
             # Validate filters even for an empty collection, without loading embeddings.
             active=self.store.active_chunks(document_ids)

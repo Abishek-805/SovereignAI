@@ -154,11 +154,11 @@ def test_ask_and_upload(service,tmp_path):
 def test_document_greeting_does_not_search_unrelated_files(service, monkeypatch):
     monkeypatch.setattr(service.embedder, 'encode', lambda *_: (_ for _ in ()).throw(AssertionError('greeting searched documents')))
     with client_for(service) as client:
-        for greeting in ('hi', 'hay', 'yoy'):
+        for greeting in ('hi', 'hay', 'yoy', 'whats your name?', 'who are you?'):
             result=client.post('/ask',json={'question':greeting}).json()
             assert result['status']=='greeting'
             assert result['sources']==[]
-            assert 'Ask me about your selected files' in result['answer']
+            assert ("I'm SovereignAI" if 'name' in greeting or 'who' in greeting else 'Ask me about your selected files') in result['answer']
 
 
 def test_document_manager_rename_and_remove(service):

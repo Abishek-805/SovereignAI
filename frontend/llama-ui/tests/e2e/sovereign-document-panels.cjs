@@ -1,0 +1,51 @@
+const { chromium } = require('playwright');
+const path = require('node:path');
+
+(async () => {
+ const browser = await chromium.launch({ headless: true, executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe' });
+ const page = await browser.newPage({ viewport: { width: 1600, height: 900 }, colorScheme: 'dark' });
+ page.setDefaultTimeout(20000);
+ const errors = [];
+ page.on('pageerror', error => errors.push(String(error)));
+ try {
+  await page.goto('http://127.0.0.1:8088/#/');
+  const nav = page.getByRole('navigation', { name: 'Primary workbench navigation' });
+  await nav.getByRole('button', { name: 'Control Center' }).click();
+  await page.getByRole('navigation', { name: 'Control Center sections' }).getByRole('button', { name: 'Knowledge' }).click();
+  await page.getByRole('button', { name: 'Open document library' }).click();
+  const library = page.getByRole('region', { name: 'Document library' });
+  await library.waitFor();
+  const back = page.getByRole('button', { name: 'Go back' });
+  const left = library.getByRole('button', { name: 'Toggle library' });
+  const right = library.getByRole('button', { name: 'Toggle document assistant' });
+  const reader = library.locator('.document-reader');
+  const initial = await reader.boundingBox();
+  await library.getByRole('textbox', { name: 'Document question' }).fill('Keep this question while changing layout');
+  await left.click();
+  if (await library.locator('.library-list').count() || await left.getAttribute('aria-pressed') !== 'false') throw Error('Library did not hide');
+  const expanded = await reader.boundingBox();
+  if (!initial || !expanded || expanded.width <= initial.width) throw Error('Reader did not expand when library hid');
+  await right.click();
+  if (await library.locator('.ask-pane').count() || await right.getAttribute('aria-pressed') !== 'false') throw Error('Assistant did not hide');
+  await page.screenshot({ path: path.resolve('../..', 'benchmarks/document-reader-expanded.png') });
+  await right.click();
+  await left.click();
+  if (await library.getByRole('textbox', { name: 'Document question' }).inputValue() !== 'Keep this question while changing layout') throw Error('Document draft was lost');
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.screenshot({ path: path.resolve('../..', 'benchmarks/document-panels-mobile.png') });
+  if (await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1)) throw Error('Document toggles caused mobile horizontal overflow');
+  await page.setViewportSize({ width: 1600, height: 900 });
+  await back.click();
+  await page.getByRole('navigation', { name: 'Control Center sections' }).waitFor();
+  await back.click();
+  await page.getByRole('heading', { name: 'What are we working on?' }).waitFor();
+  await nav.getByRole('button', { name: 'Code' }).click();
+  await nav.getByRole('button', { name: 'Agent' }).click();
+  await back.click();
+  await page.getByRole('region', { name: 'Coding workspace' }).waitFor();
+  await back.click();
+  await page.getByRole('heading', { name: 'What are we working on?' }).waitFor();
+  if (errors.length) throw Error(errors.join('\n'));
+  console.log('Document panel toggles, draft preservation, and section back stack passed');
+ } finally { await browser.close(); }
+})().catch(error => { console.error(error); process.exitCode = 1; });

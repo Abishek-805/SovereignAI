@@ -1,0 +1,4 @@
+Synthetic inspection log, 2026-09-18. This document is fictional and for evaluation only.
+Pump A-17: vibration was 9.4 mm/s at 10:30. Bearing temperature was 72 C. Flow was 115 L/min. The operator observed a small seal leak. No shutdown was performed during this inspection.
+Compressor B-04: discharge pressure was 8.6 bar at 11:15. Oil temperature was 68 C. The operator noted intermittent rattling. No vibration measurement for B-04 was recorded.
+Fan F-09: motor current was 12.8 A at 12:05. Inlet temperature was 31 C. The fan guard was intact. Airflow was not measured.

@@ -1,0 +1,4 @@
+Synthetic maintenance history. This document is fictional and for evaluation only.
+Pump A-17 seal was replaced on 2026-09-02 under work order WO-771. The work order says the replacement passed a leak check. It does not contain a post-repair vibration reading.
+Compressor B-04 air filter was replaced on 2026-08-25 under work order WO-804. The work order does not mention oil temperature.
+Fan F-09 belt was tensioned on 2026-09-05 under work order WO-833. The technician reported no damage to the fan guard at that visit. The work order does not state an airflow measurement.

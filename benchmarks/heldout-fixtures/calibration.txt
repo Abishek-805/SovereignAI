@@ -1,0 +1,4 @@
+Synthetic instrument calibration record. This document is fictional and for evaluation only.
+Sensor VM-17 measures Pump A-17 vibration. It was last calibrated on 2026-04-15 and its next calibration is due on 2026-10-15. The recorded calibration tolerance is plus or minus 0.2 mm/s. This record does not certify the pump as safe to run.
+Gauge PG-04 measures Compressor B-04 discharge pressure. It was last calibrated on 2026-06-10 and its next calibration is due on 2026-12-10. Its recorded tolerance is plus or minus 0.1 bar.
+Meter CM-09 measures Fan F-09 motor current. Its next calibration is due on 2026-11-20. This record contains no previous calibration date for CM-09.

@@ -1,0 +1,4 @@
+SYNTHETIC DEMO DATA — not an operational instruction.
+SOP-A: Pump vibration investigation
+Investigate Pump P-101 vibration above 7.1 mm/s.
+This excerpt does not authorize shutdown.

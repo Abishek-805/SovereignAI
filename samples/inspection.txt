@@ -1,0 +1,5 @@
+SYNTHETIC DEMO DATA — not an actual industrial report.
+Inspection Report, 2026-09-23
+Pump P-101 vibration measured 8.2 mm/s.
+Motor M-2 temperature measured 78 degrees Celsius. No permitted motor temperature limit is supplied.
+Pump P-104 pressure measured 6.2 bar. No permitted pressure limit is supplied.

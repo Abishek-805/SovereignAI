@@ -1,0 +1,4 @@
+Synthetic maintenance SOP revision 3, 2026-08-01. This document is fictional and for evaluation only.
+Pump A-17: investigate vibration above 7.0 mm/s. Investigate bearing temperature above 80 C. A reading above an investigation threshold calls for inspection and supervisor review; this SOP does not authorize an automatic shutdown.
+Compressor B-04: investigate discharge pressure above 9.0 bar. Investigate oil temperature above 75 C. Isolation requires supervisor approval. This SOP does not state a vibration limit for B-04.
+Fan F-09: investigate motor current above 14.0 A. The SOP does not provide an airflow threshold. A damaged guard requires reporting to a supervisor before further operation.

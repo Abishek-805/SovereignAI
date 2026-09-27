@@ -1,0 +1,46 @@
+const { chromium } = require('playwright');
+const fs = require('node:fs');
+const path = require('node:path');
+(async()=>{
+ const root=path.resolve('../..');
+ const fixture=path.join(process.env.TEMP,'sovereign-ui-import-'+Date.now());
+ fs.mkdirSync(path.join(fixture,'src'),{recursive:true});
+ fs.writeFileSync(path.join(fixture,'src','main.js'),'console.log("UI_SANDBOX_OK");\n');
+ fs.writeFileSync(path.join(fixture,'README.md'),'Browser import acceptance fixture.');
+ const browser=await chromium.launch({headless:true,executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe'});
+ const page=await browser.newPage({viewport:{width:1600,height:1000},colorScheme:'dark'});
+ const errors=[];page.on('pageerror',e=>errors.push(String(e)));
+ try{
+  await page.goto('http://127.0.0.1:8088/#/',{waitUntil:'domcontentloaded'});
+  const nav=page.getByRole('navigation',{name:'Primary workbench navigation'});
+  await nav.getByRole('button',{name:'Code workspace',exact:true}).click();
+  await page.locator('input[webkitdirectory]').setInputFiles(fixture);
+  await page.getByText('Imported 2 files. 0 skipped.',{exact:true}).waitFor();
+  await page.getByRole('button',{name:'main.js',exact:true}).first().click();
+  await page.locator('.monaco-editor').waitFor({timeout:60000});
+  await page.locator('.monaco-editor textarea').focus();
+  await page.keyboard.press('Control+a');
+  await page.keyboard.insertText('console.log("UI_SANDBOX_OK"); // edited in Monaco');
+  await Promise.all([page.waitForResponse(r=>r.request().method()==='PUT'&&r.url().includes('/files/')),page.keyboard.press('Control+s')]);
+  await page.getByRole('button',{name:'Run',exact:true}).click();
+  await page.getByLabel('Code output').getByText(/UI_SANDBOX_OK/).waitFor({timeout:60000});
+  await page.screenshot({path:path.join(root,'benchmarks','workbench-ide-desktop.png')});
+  await nav.getByRole('button',{name:'Documents',exact:true}).click();
+  await page.getByRole('button',{name:/24ALR001_ABISHEK M.pdf/}).click();
+  await page.locator('.reader pre').waitFor();
+  if((await page.locator('.reader pre').textContent()).length<3000)throw Error('PDF text not visible');
+  await page.screenshot({path:path.join(root,'benchmarks','workbench-documents-desktop.png')});
+  await nav.getByRole('button',{name:'New task',exact:true}).click();
+  await page.getByLabel('Task request').fill('Calculate 18.5 times 24');
+  await page.getByRole('button',{name:'Send task',exact:true}).click();
+  await page.locator('.assistant-message').getByText(/444/).waitFor({timeout:180000});
+  await page.screenshot({path:path.join(root,'benchmarks','workbench-agent-desktop.png')});
+  await page.setViewportSize({width:390,height:844});
+  await page.mouse.click(375,500);
+  await page.screenshot({path:path.join(root,'benchmarks','workbench-agent-mobile.png')});
+  if(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+1))throw Error('Mobile overflow');
+  if(errors.length)throw Error(errors.join('\n'));
+  fs.writeFileSync(path.join(root,'benchmarks','workbench-ui-acceptance.json'),JSON.stringify({passed:true,checks:['folder import preserves hierarchy','Monaco loaded and Ctrl+S saved edit','JavaScript executes in Docker','PDF extracted text visible','automatic calculator task','mobile viewport'],browserErrors:errors},null,2));
+  console.log('Workbench acceptance passed');
+ }finally{await browser.close();}
+})().catch(e=>{console.error(e);process.exitCode=1;});

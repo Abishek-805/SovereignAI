@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount, tick } from 'svelte';
-	import { conversationsStore, uiStore } from '$lib/stores';
+	import { chatStore, conversationsStore, uiStore } from '$lib/stores';
 	import DockerControl from './DockerControl.svelte';
 	import { ArrowLeft, Bot, Code2, Cpu, FileText, FolderDown, MessageSquare, Download, RefreshCw, Table2, Presentation, FileCode2, CheckCircle2, AlertCircle, Trash2 } from '@lucide/svelte';
 	import { setMode } from 'mode-watcher';
@@ -32,6 +32,7 @@
 	let imageQuestion = $state('');
 	let imageFile = $state<File | null>(null);
 	let imageAnswer = $state('');
+	let visionController: AbortController | null = null;
 	let codingResult = $state<{ status: string; task_id: string; checks: Record<string, boolean>; attempts: number; code?: string; message?: string } | null>(null);
 	let agentGoal = $state('');
 	let agentTrace = $state('');
@@ -57,6 +58,8 @@
 	let visited = $state<PanelTab[]>([]);
 	let runningView = $state('');
 	let runningStage = $state('');
+	let runningJobId = $state('');
+	async function stopRunningJob(){if(!runningJobId)return;runningStage='Stopping after the current step…';await fetch('/coding/jobs/'+runningJobId+'/stop',{method:'POST'});}
 	function workbenchKeys(event: KeyboardEvent) {
 		if (event.ctrlKey && event.altKey && !event.shiftKey && /^[1-7]$/.test(event.key)) {
 			event.preventDefault();
@@ -82,9 +85,10 @@
 		};
 		window.addEventListener('sovereign-open-workspace', handleOpen);
 		const handleActivity = (event: Event) => {
-			const detail = (event as CustomEvent<{view:string;stage:string;running:boolean}>).detail;
+			const detail = (event as CustomEvent<{view:string;stage:string;running:boolean;jobId?:string}>).detail;
 			runningView = detail.running ? detail.view : '';
 			runningStage = detail.running ? detail.stage : '';
+			runningJobId = detail.running ? detail.jobId || '' : '';
 		};
 		window.addEventListener('sovereign-activity', handleActivity);
 		const close = () => { open = false; tabHistory = []; };
@@ -287,12 +291,14 @@
 			const form = new FormData();
 			form.append('file', imageFile);
 			form.append('question', imageQuestion);
-			const result = await readJson(await fetch('/vision/ask', { method: 'POST', body: form }));
+			visionController = new AbortController();
+			const result = await readJson(await fetch('/vision/ask', { method: 'POST', body: form, signal: visionController.signal }));
 			imageAnswer = result.answer;
 			message = 'Vision answer ready. Check it against the original image.';
 		} catch (error) {
-			message = userError(error);
+			message = error instanceof Error && error.name === 'AbortError' ? 'Image request stopped.' : userError(error);
 		} finally {
+			visionController = null;
 			busy = false;
 		}
 	}
@@ -372,7 +378,8 @@
 	<aside id="sovereign-documents" class="workbench-canvas" class:canvas-hidden={!open} style:--sidebar-space={uiStore.isSidebarExpanded ? '304px' : '64px'} aria-label="SovereignAI workbench" aria-hidden={!open}>
 		<header class="workbench-header flex items-center justify-between border-b border-border px-4 py-3">
 			<div class="workbench-header-start"><button class="workbench-back" onclick={goBack} aria-label="Go back" title={tabHistory.length ? 'Previous section' : 'Return to chat'}><ArrowLeft size={17} /></button><h2 tabindex="-1" class="font-semibold">SovereignAI <span class="text-muted-foreground">/ {activeTab === 'knowledge' || activeTab === 'workflows' || activeTab === 'vision' ? 'Knowledge' : activeTab === 'code' ? 'Code' : activeTab === 'agent' ? 'Agent' : activeTab === 'artifacts' ? 'Downloads' : 'Control Center'}</span></h2></div>
-			{#if runningView}<button class="activity-chip" onclick={()=>openTab(runningView === 'Code' ? 'code' : runningView === 'Documents' ? 'knowledge' : 'agent')}><i></i>{runningView} · {runningStage}</button>{/if}
+			{#if runningView}<div class="activity-controls"><button class="activity-chip" onclick={()=>openTab(runningView === 'Code' ? 'code' : runningView === 'Documents' ? 'knowledge' : 'agent')}><i></i>{runningView} · {runningStage}</button>{#if runningJobId}<button class="activity-stop" onclick={stopRunningJob}>Stop</button>{/if}</div>{/if}
+			{#if chatStore.isLoading || chatStore.isStreaming()}<div class="activity-controls"><span class="activity-chip"><i></i>Chat · generating</span><button class="activity-stop" onclick={()=>void chatStore.stopGeneration()}>Stop</button></div>{/if}
 		</header>
 
 		<div class="workbench-content space-y-6 overflow-y-auto text-sm" class:code-view={activeTab === 'code'}>
@@ -384,6 +391,7 @@
 				<input aria-label="Select PNG or JPEG image" type="file" accept=".png,.jpg,.jpeg" disabled={busy} onchange={(event) => { imageFile = event.currentTarget.files?.[0] || null; }} />
 				<input aria-label="Image question" class="w-full rounded-lg border border-border bg-background p-2" bind:value={imageQuestion} placeholder="What is visible in this image?" />
 				<button class="rounded-lg border border-border px-3 py-2 disabled:opacity-50" disabled={busy || !imageFile || !imageQuestion.trim()}>Ask image</button>
+				{#if busy}<button type="button" class="rounded-lg border border-border px-3 py-2" onclick={()=>{visionController?.abort();message='Image request stopped.';}}>Stop</button>{/if}
 				{#if imageAnswer}<p class="whitespace-pre-wrap rounded-lg bg-muted p-3">{imageAnswer}</p>{/if}
 			</form>
 			{/if}
@@ -445,7 +453,9 @@
   :global(body.sovereign-code-focus #sovereign-documents .workbench-content.code-view .ide.focus-mode) { height: 100dvh; min-height: 0; }
  .workbench-canvas { position:fixed; left:var(--sidebar-space); right:0; top:0; bottom:0; z-index:20; display:flex; flex-direction:column; background:var(--background); color:var(--foreground); }
  .canvas-hidden,.hidden-view{display:none!important}
- .activity-chip{margin-left:auto;margin-right:16px;display:flex;align-items:center;gap:8px;max-width:38%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border:1px solid var(--border);border-radius:8px;padding:5px 10px;color:var(--muted-foreground);font-size:11px}
+ .activity-controls{margin-left:auto;margin-right:16px;display:flex;align-items:center;gap:6px;min-width:0;max-width:46%}
+ .activity-chip{display:flex;align-items:center;gap:8px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border:1px solid var(--border);border-radius:8px;padding:5px 10px;color:var(--muted-foreground);font-size:11px}
+ .activity-stop{flex:none;border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:11px}
  .activity-chip i{width:7px;height:7px;flex:none;border-radius:50%;background:#7ca6ed;animation:activity-pulse 1.5s infinite}@keyframes activity-pulse{50%{opacity:.35}}
  @media(prefers-reduced-motion:reduce){.activity-chip i{animation:none}}
  .workbench-content { width:100%; max-width:none; margin:0 auto; padding:16px 20px; flex:1; min-height:0; }

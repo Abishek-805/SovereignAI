@@ -21,5 +21,5 @@ def test_greeting_skips_document_catalog_and_embeddings():
     class UnreadableStore:
         def documents(self):
             raise AssertionError('Greeting must not inspect document metadata')
-    for greeting in ('Hi!', 'hay'):
+    for greeting in ('Hi!', 'hay', 'yoy'):
         assert relevant_passages(UnreadableStore(), object(), greeting) == []

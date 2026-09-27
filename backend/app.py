@@ -298,10 +298,8 @@ def create_app(service=None):
             if job.cancel.is_set():return {'state':'cancelled'}
             job.progress('Creating Word report' if payload.kind=='report' else 'Generating sourced answer')
             if payload.kind=='report':
-                return (service.create_document_report(payload.question,payload.document_ids,payload.history)
-                        if payload.history else service.create_document_report(payload.question,payload.document_ids))
-            return (service.ask(payload.question,payload.document_ids,payload.history)
-                    if payload.history else service.ask(payload.question,payload.document_ids))
+                return service.create_document_report(payload.question,payload.document_ids,payload.history,job=job)
+            return service.ask(payload.question,payload.document_ids,payload.history,job=job)
         return jobs.start('document',run)
 
     @app.post('/agent/jobs')

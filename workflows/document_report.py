@@ -1,11 +1,43 @@
 """Export a grounded document answer as a reviewable Word report."""
 import hashlib
 import json
+import re
 import time
 from tempfile import TemporaryDirectory
 from pathlib import Path
 from docx import Document
 from backend.contracts import WorkbenchError
+
+
+def is_overview_request(question):
+    return bool(re.fullmatch(
+        r'(?:please\s+)?(?:generate|create|write|make|prepare|draft)(?:\s+me)?\s+(?:a\s+)?(?:word\s+)?report(?:\s+(?:on|about|from|of)\s+(?:the\s+)?(?:selected\s+)?(?:documents|files))?[.! ]*',
+        question.strip(), re.I))
+
+
+def selected_document_overview(chunks, question):
+    """Build a cited inventory when no narrower report topic was supplied."""
+    first_by_document = {}
+    for chunk, _vector in chunks:
+        first_by_document.setdefault(chunk.document_id, chunk)
+    if not first_by_document:
+        raise WorkbenchError('missing_evidence', 'Select documents with readable text before creating a report.')
+    sources = []
+    paragraphs = [f'Overview of {len(first_by_document)} selected document(s). Each entry below is an excerpt from the indexed file; review the source for full context.']
+    for chunk in sorted(first_by_document.values(), key=lambda item: item.display_name.casefold()):
+        label = f'S{len(sources) + 1}'
+        excerpt = re.sub(r'\s+', ' ', chunk.text).strip()[:600]
+        if not excerpt:
+            continue
+        sources.append({**chunk.to_dict(), 'label': label})
+        paragraphs.append(f'{chunk.display_name}: {excerpt}{"…" if len(chunk.text) > 600 else ""} [{label}]')
+    if not sources:
+        raise WorkbenchError('missing_evidence', 'The selected documents have no readable text for a report.')
+    return {'status': 'answered', 'answer': '\n\n'.join(paragraphs), 'sources': sources,
+            'checks': {'citation_ids_valid': True, 'semantic_support': 'source_excerpts'},
+            'timings': {}, 'model': None,
+            'routing': {'capability': 'document_report', 'model': 'No model used',
+                        'reason': 'Cited excerpts from the selected files'}}
 
 
 def publish_report(settings, task_id, question, result):

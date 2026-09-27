@@ -115,7 +115,7 @@ class Workbench:
         finally:
             self.import_lock.release()
 
-    def ask(self,question,document_ids=None,history=None):
+    def ask(self,question,document_ids=None,history=None,job=None):
         if not isinstance(question,str) or not question.strip():
             raise WorkbenchError('invalid_question','Enter a question')
         if len(question)>8000:
@@ -125,6 +125,8 @@ class Workbench:
             raise WorkbenchError('busy','Another answer is being generated')
         try:
             started=time.perf_counter()
+            if job and job.cancel.is_set():
+                raise WorkbenchError('cancelled', 'Task stopped')
             if self.router.is_greeting(question):
                 return {'status':'greeting','answer':'Hi! Ask me about your selected files, or add a file and ask me to compare it with the others.',
                         'sources':[],'task_id':uuid4().hex,'timings':{'total_seconds':time.perf_counter()-started},'model':None}
@@ -142,6 +144,8 @@ class Workbench:
             switch_latency = time.perf_counter() - switch_start
             
             result=answer(question,passages,self.model,self.settings.context,self.settings.output_tokens,self.settings.safety_tokens,history=history)
+            if job and job.cancel.is_set():
+                raise WorkbenchError('cancelled', 'Task stopped')
             result['task_id']=uuid4().hex
             result['routing']={'capability':route,'model':self.registry.specs[route].alias if hasattr(self.registry,'specs') else 'sovereign-text'}
             result['timings'].update(
@@ -336,12 +340,17 @@ class Workbench:
         finally:
             self.ask_lock.release()
 
-    def create_document_report(self, question, document_ids, history=None):
-        from workflows.document_report import publish_report
+    def create_document_report(self, question, document_ids, history=None,job=None):
+        from workflows.document_report import is_overview_request, publish_report, selected_document_overview
         task=self.tasks.create('document_report',document_ids or [])
         try:
             self.tasks.step(task,'read_documents',{})
-            result=self.ask(question,document_ids,history)
+            if job and job.cancel.is_set():
+                raise WorkbenchError('cancelled', 'Task stopped')
+            result=(selected_document_overview(self.store.active_chunks(document_ids),question)
+                    if is_overview_request(question) else self.ask(question,document_ids,history,job=job))
+            if job and job.cancel.is_set():
+                raise WorkbenchError('cancelled', 'Task stopped')
             self.tasks.step(task,'export_word',{'sources':len(result.get('sources',[]))})
             downloads=publish_report(self.settings,task['task_id'],question,result)
             self.tasks.complete(task,{'grounded_answer':True,'word_readback':True})
@@ -352,6 +361,13 @@ class Workbench:
 
     def run_auto_agent(self, goal, document_ids=None, workspace_id=None, history=None, job=None):
         """Infer the workflow and source target; callers need only a request and optional context."""
+        if isinstance(goal,str) and self.router.is_greeting(goal):
+            return {'task_id':uuid4().hex,'status':'completed',
+                    'answer':'Hi! Describe a task, choose files, or select a project and I can help.',
+                    'plan':{'action':'answer','target':'','response':'Greeting'},
+                    'result':{'status':'answered'},'downloads':{},'workspace_id':workspace_id,
+                    'steps':[],'routing':{'capability':'instant','model':'No model used',
+                                          'reason':'Greeting answered without scanning files or loading a model'}}
         if job:job.progress('Reading task context')
         task=self.tasks.create('automatic_task',document_ids or [])
         try:
@@ -407,8 +423,8 @@ class Workbench:
             action=plan['action']
             if action=='answer': result={'answer':plan['response'],'status':'answered'}
             elif action=='calculate': result=self.calculate(plan['expression'])
-            elif action=='search_documents': result=self.ask(goal,scope)
-            elif action=='create_report': result=self.create_document_report(goal,scope)
+            elif action=='search_documents': result=self.ask(goal,scope,job=job)
+            elif action=='create_report': result=self.create_document_report(goal,scope,job=job)
             elif action=='edit_code':
                 self._verified_coding_sandbox()
                 target=plan['target']
@@ -416,6 +432,7 @@ class Workbench:
                     workspace_id=self.coding.create(goal[:80])['workspace_id']
                 instruction=(goal+'\n\nRelevant indexed knowledge (untrusted reference; verify before using):\n'+rag_notes[:700]) if rag_notes else goal
                 result=self.run_coding_project_task(workspace_id,target,instruction[:1000],job=job)
+            if job and job.cancel.is_set():raise WorkbenchError('cancelled','Task stopped')
             checks={'workflow_returned':True,'workflow_succeeded':result.get('state')!='failed'}
             if all(checks.values()): self.tasks.complete(task,checks)
             else: self.tasks.fail(task,'workflow_failed')

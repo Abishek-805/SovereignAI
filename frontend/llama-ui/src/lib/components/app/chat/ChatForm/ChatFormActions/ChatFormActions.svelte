@@ -192,7 +192,7 @@
 		</Button>
 	{/if}
 
-	{#if isLoading && !canSubmit}
+	{#if isLoading}
 		<Button
 			class="group h-8 w-8 rounded-full p-0 hover:bg-destructive/10!"
 			onclick={onStop}

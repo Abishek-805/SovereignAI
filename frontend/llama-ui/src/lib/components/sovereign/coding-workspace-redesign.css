@@ -133,6 +133,7 @@
 .ide.ide .assistant-actions span { color: var(--ide-muted); font-size: 10px; }
 .ide.ide .assistant-actions .primary { padding: 7px 9px; border-radius: 8px; background: #9785ef; color: #111017; font-weight: 650; white-space: nowrap; }
 .ide.ide .assistant-actions .primary:hover:not(:disabled) { background: #b2a4f8; transform: translateY(-1px); }
+.ide.ide .assistant-actions .composer-stop { margin-left:auto; padding:6px 9px; border:1px solid #575d67; border-radius:8px; font-size:11px; }
 .ide.ide .ai-content { padding: 10px 12px 12px; gap: 10px; }
 .ide.ide .assistant-heading { padding: 0 0 9px; }
 .ide.ide .assistant-heading h3 { font-size: 15px; }

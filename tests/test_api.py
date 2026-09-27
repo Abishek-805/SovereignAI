@@ -72,7 +72,7 @@ def test_coding_greeting_does_not_load_model_or_sandbox(service, monkeypatch):
     monkeypatch.setattr(service, '_verified_coding_sandbox', unexpected)
     monkeypatch.setattr(service.registry, 'acquire_lease', unexpected)
     monkeypatch.setattr(service.coding, 'run_project', unexpected)
-    for greeting in ('Hi!', 'hay'):
+    for greeting in ('Hi!', 'hay', 'yoy'):
         result=service.run_coding_project_task('unused', '', greeting)
         assert result['state']=='answered'
         assert result['routing']['model'] is None
@@ -112,7 +112,7 @@ def test_delete_download_removes_only_selected_artifact(service):
 
 def test_document_job_forwards_followup_context(service, monkeypatch):
     calls=[]
-    monkeypatch.setattr(service,'ask',lambda question,document_ids,history: calls.append((question,document_ids,history)) or {'status':'answered','answer':'ok','sources':[]})
+    monkeypatch.setattr(service,'ask',lambda question,document_ids,history,job=None: calls.append((question,document_ids,history)) or {'status':'answered','answer':'ok','sources':[]})
     with client_for(service) as client:
         job=client.post('/documents/jobs',json={'kind':'ask','question':'Compare it','document_ids':[],'history':['Summarize report A']}).json()
         import time
@@ -154,7 +154,7 @@ def test_ask_and_upload(service,tmp_path):
 def test_document_greeting_does_not_search_unrelated_files(service, monkeypatch):
     monkeypatch.setattr(service.embedder, 'encode', lambda *_: (_ for _ in ()).throw(AssertionError('greeting searched documents')))
     with client_for(service) as client:
-        for greeting in ('hi', 'hay'):
+        for greeting in ('hi', 'hay', 'yoy'):
             result=client.post('/ask',json={'question':greeting}).json()
             assert result['status']=='greeting'
             assert result['sources']==[]
@@ -336,7 +336,7 @@ def test_sleeping_model_keeps_last_known_ui_metadata(service, monkeypatch):
 
 def test_document_job_can_be_rejoined_after_navigation(service, monkeypatch):
     import time
-    monkeypatch.setattr(service,'ask',lambda question,document_ids:{'status':'answered','answer':question,'sources':[]})
+    monkeypatch.setattr(service,'ask',lambda question,document_ids,history=None,job=None:{'status':'answered','answer':question,'sources':[]})
     with client_for(service) as client:
         started=client.post('/documents/jobs',json={'kind':'ask','question':'Where is the source?','document_ids':[]})
         assert started.status_code==200
@@ -558,6 +558,53 @@ def test_document_content_and_generic_report(service):
         wid=client.post('/coding/workspaces',json={'name':'Nested project'}).json()['workspace_id']
         assert client.put(f'/coding/workspaces/{wid}/files/src%2Fmain.js',json={'content':'console.log(42)'}).status_code==200
         assert client.get(f'/coding/workspaces/{wid}/files/src%2Fmain.js').json()['content']=='console.log(42)'
+
+
+def test_generic_word_report_covers_selected_files_without_model_refusal(service, monkeypatch):
+    monkeypatch.setattr(service.model, 'complete', lambda *_args, **_kwargs: (_ for _ in ()).throw(AssertionError('Generic report must use selected source text')))
+    with client_for(service) as client:
+        first=client.post('/documents/import', files={'file':('inspection.txt', b'Pump P-101 vibration measured 8.2 mm/s.')}).json()
+        second=client.post('/documents/import', files={'file':('sop.txt', b'Investigate vibration above 7.1 mm/s.')}).json()
+        response=client.post('/documents/report', json={'question':'generate me a report', 'document_ids':[first['document_id'],second['document_id']]})
+        assert response.status_code==200,response.text
+        report=response.json()
+        assert report['status']=='answered'
+        assert {source['display_name'] for source in report['sources']}=={'inspection.txt','sop.txt'}
+        assert '[S1]' in report['answer'] and '[S2]' in report['answer']
+        assert client.get(report['downloads']['word']).status_code==200
+
+
+def test_stopped_document_report_does_not_publish_download(service, monkeypatch):
+    import threading
+    import time
+    entered=threading.Event()
+    release=threading.Event()
+    def delayed_answer(question, document_ids, history=None, job=None):
+        entered.set()
+        assert release.wait(3)
+        return {'status':'answered','answer':'Value [S1]','sources':[{'label':'S1','display_name':'note.txt','page':None,'text':'Value'}]}
+    monkeypatch.setattr(service, 'ask', delayed_answer)
+    with client_for(service) as client:
+        started=client.post('/documents/jobs',json={'kind':'report','question':'What is the value?','document_ids':[]}).json()
+        assert entered.wait(3)
+        client.post('/coding/jobs/'+started['job_id']+'/stop')
+        release.set()
+        for _ in range(80):
+            state=client.get('/coding/jobs/'+started['job_id']).json()
+            if state['state']!='running':break
+            time.sleep(.025)
+    assert state['state']=='cancelled'
+    assert state['result'] is None
+
+
+def test_auto_agent_greeting_skips_project_and_model(service, monkeypatch):
+    def unexpected(*_args, **_kwargs):
+        raise AssertionError('Greeting must not inspect files or load a model')
+    monkeypatch.setattr(service, 'documents', unexpected)
+    monkeypatch.setattr(service.model, 'plan_task', unexpected, raising=False)
+    result=service.run_auto_agent('yoy')
+    assert result['status']=='completed'
+    assert result['routing']['capability']=='instant'
 
 
 def test_auto_agent_dispatches_calculation_without_manual_fields(service):

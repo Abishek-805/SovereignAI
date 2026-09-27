@@ -13,6 +13,18 @@ class CapabilityRouter:
     def is_greeting(goal: str) -> bool:
         return bool(re.fullmatch(r"(?:hi|hello|hey|hay|hai|yo|yoy|hiya|good morning|good afternoon|good evening|what(?:\s+is|\u2019s|'s|s)?\s+up|how(?:\s+are|\u2019re|'re)\s+(?:you|u)|sup)[!.? ]*", goal.strip(), re.I))
 
+    @staticmethod
+    def instant_reply(goal: str) -> Optional[str]:
+        """Answer unambiguous social turns before loading files or models."""
+        if not isinstance(goal, str):
+            return None
+        if CapabilityRouter.is_greeting(goal):
+            return 'Hi! Ask me a question or describe a task, and I will route it to the right local tool.'
+        normalized = re.sub(r"[?.!]+$", "", goal.strip().lower()).replace('\u2019', "'")
+        if re.fullmatch(r"(?:what(?:'s| is|s) your name|what(?:'s| is|s) the name of (?:this |the )?(?:assistant|agent|ai)|who are you|tell me your name|your name)", normalized):
+            return "I'm SovereignAI, your local assistant."
+        return None
+
     def classify_agent_goal(self, goal: str, *, document_ids=None, workspace_id=None, image=False) -> str:
         """Classify explicit agent requests using bounded metadata, without chat history."""
         if not isinstance(goal, str) or not goal.strip() or len(goal) > 2000:

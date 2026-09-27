@@ -14,7 +14,10 @@ class Job:
         with self.lock:
             self.stage=stage;self.events.append({'stage':stage,'at':time.time()});self.events=self.events[-40:]
     def append(self,channel,text):
-        with self.lock:self.output=(self.output+text)[-65536:]
+        with self.lock:
+            self.output=(self.output+text)[-65536:]
+            if self.kind in {'run','terminal'} and channel=='stdout' and self.output.rstrip().endswith((':','?')):
+                self.stage='Waiting for program input'
     def snapshot(self):
         with self.lock:return {'job_id':self.id,'kind':self.kind,'state':self.state,'stage':self.stage,'output':self.output,'result':self.result,'error':self.error,'events':list(self.events),'elapsed':round(time.time()-self.created,1)}
 

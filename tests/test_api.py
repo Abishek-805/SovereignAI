@@ -72,7 +72,7 @@ def test_coding_greeting_does_not_load_model_or_sandbox(service, monkeypatch):
     monkeypatch.setattr(service, '_verified_coding_sandbox', unexpected)
     monkeypatch.setattr(service.registry, 'acquire_lease', unexpected)
     monkeypatch.setattr(service.coding, 'run_project', unexpected)
-    for greeting in ('Hi!', 'hay', 'yoy'):
+    for greeting in ('Hi!', 'hay', 'yoy', 'whats your name?', "what's your name?", 'who are you?'):
         result=service.run_coding_project_task('unused', '', greeting)
         assert result['state']=='answered'
         assert result['routing']['model'] is None
@@ -602,9 +602,23 @@ def test_auto_agent_greeting_skips_project_and_model(service, monkeypatch):
         raise AssertionError('Greeting must not inspect files or load a model')
     monkeypatch.setattr(service, 'documents', unexpected)
     monkeypatch.setattr(service.model, 'plan_task', unexpected, raising=False)
-    result=service.run_auto_agent('yoy')
-    assert result['status']=='completed'
-    assert result['routing']['capability']=='instant'
+    for question in ('yoy', 'whats your name?', 'who are you?'):
+        result=service.run_auto_agent(question,workspace_id='unused')
+        assert result['status']=='completed'
+        assert result['routing']['capability']=='instant'
+        assert result['steps']==[]
+
+
+def test_auto_agent_general_question_does_not_read_selected_project(service, monkeypatch):
+    def unexpected(*_args, **_kwargs):
+        raise AssertionError('A general question must not scan local files or documents')
+    monkeypatch.setattr(service, 'documents', unexpected)
+    monkeypatch.setattr(service.coding, 'get', unexpected)
+    service.model.plan_task=lambda goal,docs,files,history: {
+        'action':'answer','target':'','expression':'','response':'SovereignAI is a local assistant.'}
+    result=service.run_auto_agent('What can you do?',workspace_id='selected-but-not-needed')
+    assert result['answer']=='SovereignAI is a local assistant.'
+    assert result['plan']['action']=='answer'
 
 
 def test_auto_agent_dispatches_calculation_without_manual_fields(service):

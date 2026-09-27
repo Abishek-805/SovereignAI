@@ -262,9 +262,10 @@ class Workbench:
             self.ask_lock.release()
 
     def run_coding_project_task(self, workspace_id, target, instruction, job=None):
-        if self.router.is_greeting(instruction):
-            return {'state':'answered','answer':'Hi! Describe a code change or ask me to inspect a project.',
-                    'routing':{'capability':'greeting','model':None,'reason':'No model or project scan needed'}}
+        instant=self.router.instant_reply(instruction)
+        if instant:
+            return {'state':'answered','answer':instant,
+                    'routing':{'capability':'instant','model':None,'reason':'Social question answered before scanning the project'}}
         if not self.ask_lock.acquire(blocking=False):
             raise WorkbenchError('busy','Another task is running')
         try:
@@ -371,23 +372,26 @@ class Workbench:
                     'result':result,'downloads':{},'workspace_id':None,'steps':result['steps'],
                     'routing':{'capability':'calculation','model':'No model used',
                                'reason':'Arithmetic expression evaluated without loading a model'}}
-        if isinstance(goal,str) and self.router.is_greeting(goal):
+        instant=self.router.instant_reply(goal)
+        if instant:
             return {'task_id':uuid4().hex,'status':'completed',
-                    'answer':'Hi! Describe a task, choose files, or select a project and I can help.',
-                    'plan':{'action':'answer','target':'','response':'Greeting'},
+                    'answer':instant,
+                    'plan':{'action':'answer','target':'','response':'Instant social reply'},
                     'result':{'status':'answered'},'downloads':{},'workspace_id':workspace_id,
                     'steps':[],'routing':{'capability':'instant','model':'No model used',
-                                          'reason':'Greeting answered without scanning files or loading a model'}}
-        if job:job.progress('Reading task context')
+                                          'reason':'Social question answered without scanning files or loading a model'}}
+        project_context=bool(workspace_id and re.search(r'\b(?:code|coding|project|workspace|source|file|files|folder|directory|function|class|module|script|program|app|build|test|tests|bug|error|fix|debug|refactor|implement|create|modify|delete|rename|run)\b|\.[a-z0-9]{1,6}\b',goal,re.I))
+        document_context=bool(document_ids or re.search(r'\b(?:document|documents|pdf|uploaded|attachment|attachments|library|knowledge|report|cite|citation)\b',goal,re.I) or (not workspace_id and re.search(r'\b(?:files?|sources?)\b',goal,re.I)))
+        if job:job.progress('Understanding the request')
         task=self.tasks.create('automatic_task',document_ids or [])
         try:
-            docs=self.documents()
+            docs=self.documents() if document_context else []
             if document_ids:
                 self.store.active_chunks(document_ids)  # validate IDs before model planning
                 docs=[doc for doc in docs if doc['document_id'] in document_ids]
             rag_passages = relevant_passages(self.store,self.embedder,goal,document_ids,limit=2) if docs else []
             rag_notes = chat_evidence(rag_passages)
-            files=self.coding.get(workspace_id)['files'] if workspace_id else []
+            files=self.coding.get(workspace_id)['files'] if project_context else []
             planning_files=[]
             remaining=10000
             for file in files:
@@ -406,6 +410,8 @@ class Workbench:
                                           planning_history)
             finally:
                 self.ask_lock.release()
+            if plan['action']=='edit_code' and not project_context:
+                raise WorkbenchError('needs_input','Ask for a project or file change explicitly before the agent edits workspace files')
             code_repair=bool(re.search(r'\b(fix|solve|repair|debug)\b.*\b(error|errors|bug|bugs|code|codes|program|project)\b',goal,re.I))
             if code_repair:
                 if not workspace_id or not files:

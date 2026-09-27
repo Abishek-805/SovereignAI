@@ -331,6 +331,7 @@ def create_app(service=None):
         try:job.input.put_nowait(payload.text)
         except Full:raise WorkbenchError('busy','Input queue is full')
         job.append('stdin', '\n› Input sent\n')
+        job.progress('Input sent; program running')
         return {'accepted':True}
 
     @app.post('/workbench/model/unload')

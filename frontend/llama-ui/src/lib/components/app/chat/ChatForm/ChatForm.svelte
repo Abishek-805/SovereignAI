@@ -62,6 +62,7 @@
 		isAudioRecordingSupported
 	} from '$lib/utils/browser-only';
 	import { onMount } from 'svelte';
+	import { toast } from 'svelte-sonner';
 
 	interface Props {
 		// Data
@@ -324,20 +325,36 @@
 	}
 
 	function submitOrSwitch() {
-		// Navigation requests are application actions; a text-only model cannot
-		// actually change modes by describing how to do so.
-		const navigation = hasAttachments ? null : value.trim().match(/^(?:(?:can|could|would)\s+(?:you|u)\s+)?(?:please\s+)?(?:switch|change|move|go)(?:\s+me)?(?:\s+to)?(?:\s+the)?\s+agent\b[,.!?\s]*(.*)$/i);
-		if (!hasAttachments && (navigation || /^agent[.!?]?$/i.test(value.trim()))) {
-			openAgent(navigation?.[1]?.replace(/^and\s+/i, '').trim() || '');
-			return;
+		const request = value.trim();
+		if (!hasAttachments) {
+			if (/^(?:(?:can|could|would)\s+(?:you|u)\s+)?(?:please\s+)?(?:generate|create|draw|make)\s+(?:(?:me|a|an|the|some)\s+)?(?:\w+\s+){0,2}(?:image|picture|photo|artwork)\b/i.test(request)) {
+				toast.info('Image generation is not installed. The local vision model can analyze images, but it cannot create them.', { duration: 8000 });
+				return;
+			}
+			const navigation = request.match(/^(?:(?:can|could|would)\s+(?:you|u)\s+)?(?:please\s+)?(?:open|show|switch|change|move|go|navigate)(?:\s+me)?(?:\s+to)?(?:\s+the)?\s+(agent|code|documents|knowledge|downloads|control center|settings)\b[.!?\s]*$/i);
+			if (navigation || /^(?:agent|code|documents|knowledge|downloads)[.!?]?$/i.test(request)) {
+				const destination = (navigation?.[1] || request).toLowerCase();
+				const tab = destination === 'downloads' ? 'artifacts' : destination === 'control center' || destination === 'settings' ? 'runtime' : destination === 'documents' ? 'knowledge' : destination;
+				value = '';
+				onValueChange?.('');
+				window.dispatchEvent(new CustomEvent('sovereign-open-workspace', { detail: { tab } }));
+				return;
+			}
+			const agentNavigation = request.match(/^(?:(?:can|could|would)\s+(?:you|u)\s+)?(?:please\s+)?(?:switch|change|move|go)(?:\s+me)?(?:\s+to)?(?:\s+the)?\s+agent\b[,.!?\s]*(.*)$/i);
+			if (agentNavigation) { openAgent(agentNavigation[1]?.replace(/^and\s+/i, '').trim() || ''); return; }
+			const projectAction = /^(?:(?:can|could|would)\s+(?:you|u)\s+)?(?:please\s+)?(?:create|write|add|edit|modify|delete|remove|fix|refactor|build)\b/i.test(request) && /\b(?:file|folder|project|codebase|workspace)\b/i.test(request);
+			if (projectAction) { openAgent(request, Boolean(localStorage.getItem('sovereign-active-workspace'))); return; }
+			if (/^calculate:\s*\S/i.test(request)) { openAgent(request, true); return; }
+			const arithmetic = request.match(/^(?:what(?:'s| is)|calculate|compute)\s+([0-9.\s()+*/-]+)\??$/i);
+			if (arithmetic && /[+*/-]/.test(arithmetic[1])) { openAgent('Calculate: '+arithmetic[1].trim(), true); return; }
 		}
 		onSubmit?.();
 	}
 
-	function openAgent(draft: string) {
+	function openAgent(draft: string, autoSend = false) {
 		value = '';
 		onValueChange?.('');
-		window.dispatchEvent(new CustomEvent('sovereign-open-workspace', { detail: { tab: 'agent', draft } }));
+		window.dispatchEvent(new CustomEvent('sovereign-open-workspace', { detail: { tab: 'agent', draft, autoSend } }));
 	}
 
 	function handlePaste(event: ClipboardEvent) {

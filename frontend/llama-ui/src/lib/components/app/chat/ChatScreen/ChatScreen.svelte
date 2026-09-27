@@ -28,6 +28,7 @@
 	} from '$lib/stores';
 	import { parseFilesToMessageExtras } from '$lib/utils/browser-only';
 	import { onDestroy, onMount, tick } from 'svelte';
+	import { toast } from 'svelte-sonner';
 
 	let { showCenteredEmpty = false } = $props();
 
@@ -108,6 +109,10 @@
 		const chatVisionAvailable = serverStore.isRouterMode && modelsStore.models.some((model) =>
 			modelsStore.props.modelSupportsVision(model.model)
 		);
+		if (images.length && !chatVisionAvailable && files?.length !== 1) {
+			toast.error('Send one image at a time from Chat, or attach the other files in Agent.');
+			return false;
+		}
 		if (images.length === 1 && files?.length === 1 && !chatVisionAvailable) {
 			window.dispatchEvent(new CustomEvent('sovereign-open-workspace', {
 				detail: { tab: 'agent', draft: message.trim() || 'Describe this image.', image: images[0].file, autoSend: true }

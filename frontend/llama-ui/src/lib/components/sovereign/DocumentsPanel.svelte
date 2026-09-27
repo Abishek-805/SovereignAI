@@ -36,6 +36,7 @@
 	let codingResult = $state<{ status: string; task_id: string; checks: Record<string, boolean>; attempts: number; code?: string; message?: string } | null>(null);
 	let agentGoal = $state('');
 	let agentAutoSend = $state(false);
+	let agentRequestId = $state('');
 	let agentTrace = $state('');
 	let agentResult = $state<AgentResult | null>(null);
 	let agentWorkspace = $state('');
@@ -82,7 +83,13 @@
 				agentGoal = detail.draft.slice(0, 2000);
 				agentImage = detail.image || null;
 				agentAutoSend = Boolean(detail.autoSend);
+				agentRequestId = detail.autoSend ? crypto.randomUUID() : '';
 				if (/^calculate:/i.test(agentGoal.trim())) agentMode = 'calculate';
+			} else if (detail?.tab === 'agent') {
+				agentGoal = '';
+				agentImage = null;
+				agentAutoSend = false;
+				agentRequestId = '';
 			}
 			openTab(detail?.tab || 'agent');
 		};
@@ -387,7 +394,7 @@
 
 		<div class="workbench-content space-y-6 overflow-y-auto text-sm" class:code-view={activeTab === 'code'}>
 			{#if visited.includes('knowledge') || visited.includes('workflows')}<div class:hidden-view={activeTab !== 'knowledge' && activeTab !== 'workflows'}><DocumentLibrary report={activeTab === 'workflows'}/></div>{/if}
-			{#if visited.includes('agent')}<div class:hidden-view={activeTab !== 'agent'}><AgentChat draft={agentGoal} incomingImage={agentImage} autoSend={agentAutoSend}/></div>{/if}
+			{#if visited.includes('agent')}<div class:hidden-view={activeTab !== 'agent'}><AgentChat draft={agentGoal} incomingImage={agentImage} autoSend={agentAutoSend} requestId={agentRequestId}/></div>{/if}
 			{#if activeTab === 'vision'}
 			<form class="space-y-2 border-t border-border pt-3" onsubmit={(event) => { event.preventDefault(); void askImage(); }}>
 				<h3 class="font-medium">Ask about an image</h3>

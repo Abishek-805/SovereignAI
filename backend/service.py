@@ -361,6 +361,16 @@ class Workbench:
 
     def run_auto_agent(self, goal, document_ids=None, workspace_id=None, history=None, job=None):
         """Infer the workflow and source target; callers need only a request and optional context."""
+        if isinstance(goal,str) and not document_ids and not workspace_id and re.match(r'^\s*calculate\s*:',goal,re.I):
+            expression=re.split(r'^\s*calculate\s*:\s*',goal,maxsplit=1,flags=re.I)[1]
+            if job:job.progress('Calculating locally')
+            result=self.calculate(expression)
+            return {'task_id':result['task_id'],'status':'completed',
+                    'answer':f"{result['expression']} = {result['result']}",
+                    'plan':{'action':'calculate','target':'','response':'Arithmetic evaluated locally'},
+                    'result':result,'downloads':{},'workspace_id':None,'steps':result['steps'],
+                    'routing':{'capability':'calculation','model':'No model used',
+                               'reason':'Arithmetic expression evaluated without loading a model'}}
         if isinstance(goal,str) and self.router.is_greeting(goal):
             return {'task_id':uuid4().hex,'status':'completed',
                     'answer':'Hi! Describe a task, choose files, or select a project and I can help.',

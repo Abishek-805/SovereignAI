@@ -257,6 +257,21 @@ class Workbench:
         finally:
             self.ask_lock.release()
 
+    def run_coding_project_task(self, workspace_id, target, instruction, job=None):
+        if not self.ask_lock.acquire(blocking=False):
+            raise WorkbenchError('busy','Another task is running')
+        try:
+            sandbox=self._verified_coding_sandbox()
+            capability=self.router.route_request('code')
+            if job:job.progress('Reading project structure');sandbox.on_output=job.append;sandbox.cancel_event=job.cancel
+            self.registry.acquire_lease(capability)
+            specs=getattr(self.registry,'specs',{})
+            alias=specs[capability].alias if capability in specs else 'sovereign-text'
+            return self.coding.run_project(workspace_id,target,instruction,self.model,sandbox,self.tasks,
+                                           model_alias=alias,progress=job.progress if job else None,cancel=job.cancel if job else None)
+        finally:
+            self.ask_lock.release()
+
     def execute_coding_file(self, workspace_id, target, job=None):
         from workflows.code_runtime import runner
         if not self.ask_lock.acquire(blocking=False):
@@ -393,14 +408,11 @@ class Workbench:
             elif action=='create_report': result=self.create_document_report(goal,scope)
             elif action=='edit_code':
                 self._verified_coding_sandbox()
-                target=self.coding._name(plan['target'])
+                target=plan['target']
                 if not workspace_id:
                     workspace_id=self.coding.create(goal[:80])['workspace_id']
-                current=self.coding.get(workspace_id)
-                if target not in {file['name'] for file in current['files']}:
-                    self.coding.write(workspace_id,target,'')
                 instruction=(goal+'\n\nRelevant indexed knowledge (untrusted reference; verify before using):\n'+rag_notes[:700]) if rag_notes else goal
-                result=self.run_coding_workspace_task(workspace_id,target,instruction[:1000],job=job)
+                result=self.run_coding_project_task(workspace_id,target,instruction[:1000],job=job)
             checks={'workflow_returned':True,'workflow_succeeded':result.get('state')!='failed'}
             if all(checks.values()): self.tasks.complete(task,checks)
             else: self.tasks.fail(task,'workflow_failed')

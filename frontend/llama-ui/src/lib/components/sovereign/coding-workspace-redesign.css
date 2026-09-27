@@ -123,6 +123,12 @@
 .ide.ide .assistant-composer { border: 1px solid #454a54; border-radius: 14px; background: #22252b; box-shadow: 0 10px 25px #0002; overflow: hidden; }
 .ide.ide .assistant-composer:focus-within { border-color: #5c616b; }
 .ide.ide .assistant-composer textarea { display: block; min-height: 125px; width: 100%; padding: 13px; border: 0; border-radius: 0; resize: vertical; background: transparent; color: #f0f1f5; font: 12px/1.5 system-ui,sans-serif; }
+.ide.ide .assistant-composer textarea { min-height: 68px; height: 74px; max-height: 180px; padding: 10px 12px; }
+.ide.ide .coding-conversation { display:flex; flex-direction:column; gap:12px; min-height:90px; }
+.ide.ide .coding-turn { display:flex; flex-direction:column; align-items:flex-end; gap:5px; }
+.ide.ide .coding-request { max-width:100%; margin:0; padding:10px 12px; border-radius:12px; background:#30343d; color:#f1f2f6; font-size:12px; line-height:1.45; overflow-wrap:anywhere; white-space:pre-wrap; }
+.ide.ide .coding-turn-status { display:flex; align-items:center; gap:8px; color:#aeb5c1; font-size:10px; }
+.ide.ide .coding-turn-status button { padding:3px 6px; border:1px solid #4a4e59; border-radius:5px; font-size:10px; }
 .ide.ide .assistant-actions { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px; }
 .ide.ide .assistant-actions span { color: var(--ide-muted); font-size: 10px; }
 .ide.ide .assistant-actions .primary { padding: 7px 9px; border-radius: 8px; background: #9785ef; color: #111017; font-weight: 650; white-space: nowrap; }

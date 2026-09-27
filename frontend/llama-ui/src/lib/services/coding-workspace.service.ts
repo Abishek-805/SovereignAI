@@ -26,6 +26,8 @@ export type CodingTask = {
 	events: ToolEvent[];
 	checks: Record<string, boolean>;
 	diff: string;
+	instruction?: string;
+	changes?: Array<{ action: 'create' | 'edit' | 'delete' | 'mkdir' | 'rmdir'; path: string; before: string | null; after: string | null }>;
 	original_content?: string;
 	applied_hash?: string;
 	stdout: string;

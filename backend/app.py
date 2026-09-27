@@ -312,7 +312,7 @@ def create_app(service=None):
     def start_workspace_job(workspace_id:str,payload:WorkspaceJobRequest):
         service.coding.get(workspace_id)
         if payload.kind=='terminal' and not payload.command.strip():raise WorkbenchError('invalid_command','Enter a terminal command')
-        return jobs.start(payload.kind,lambda job: service.execute_terminal(workspace_id,payload.command,job) if payload.kind=='terminal' else service.execute_coding_file(workspace_id,payload.target,job) if payload.kind=='run' else service.run_coding_workspace_task(workspace_id,payload.target,payload.instruction,job))
+        return jobs.start(payload.kind,lambda job: service.execute_terminal(workspace_id,payload.command,job) if payload.kind=='terminal' else service.execute_coding_file(workspace_id,payload.target,job) if payload.kind=='run' else service.run_coding_project_task(workspace_id,payload.target,payload.instruction,job))
 
     @app.get('/coding/jobs/{job_id}')
     def read_workspace_job(job_id:str):return jobs.get(job_id).snapshot()

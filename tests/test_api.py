@@ -111,6 +111,23 @@ def test_document_job_forwards_followup_context(service, monkeypatch):
     assert state['state']=='completed'
     assert calls==[('Compare it',[],['Summarize report A'])]
 
+
+def test_code_job_uses_project_task_without_requiring_open_file(service, monkeypatch):
+    workspace_id=service.coding.create('Project edit')['workspace_id']
+    calls=[]
+    monkeypatch.setattr(service,'run_coding_project_task',lambda wid,target,instruction,job:
+                        calls.append((wid,target,instruction)) or {'state':'completed','changes':[]})
+    with client_for(service) as client:
+        job=client.post(f'/coding/workspaces/{workspace_id}/jobs',json={
+            'kind':'edit','target':'','instruction':'Create a new addition.py file'}).json()
+        import time
+        for _ in range(40):
+            state=client.get('/coding/jobs/'+job['job_id']).json()
+            if state['state']!='running':break
+            time.sleep(.025)
+    assert state['state']=='completed'
+    assert calls==[(workspace_id,'','Create a new addition.py file')]
+
 def test_ask_and_upload(service,tmp_path):
     with client_for(service) as client:
         assert client.post('/ask',json={'question':' '}).status_code==422
@@ -579,7 +596,7 @@ def test_auto_agent_routes_explicit_error_repair_to_code_tool(service):
     def repair(workspace_id,target,instruction,job=None):
         calls.append((workspace_id,target,instruction))
         return {'state':'completed','target':target,'validation':'runtime_check','checks':{'runtime_passed':True}}
-    service.run_coding_workspace_task=repair
+    service.run_coding_project_task=repair
     result=service.run_auto_agent('Solve the errors in the code',workspace_id=wid)
     assert result['plan']['action']=='edit_code'
     assert calls and calls[0][:2]==(wid,'broken.py')

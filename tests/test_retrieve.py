@@ -7,6 +7,7 @@ def test_filename_reference_scopes_selected_library():
     documents=[{'document_id':'a','display_name':'other-report.pdf'},
                {'document_id':'b','display_name':'24ALR001_ABISHEK M.pdf'}]
     assert document_scope_for_question(documents,'Tell me what 24alr001 pdf says',['a','b'])==['b']
+    assert document_scope_for_question(documents,'Tell me what 24alr001 pdf says',[])==['b']
     assert document_scope_for_question(documents,'Summarize all documents',['a','b'])==['a','b']
 
 def test_rank_agreement():

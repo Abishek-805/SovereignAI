@@ -24,7 +24,7 @@ def document_scope_for_question(documents, question, document_ids=None):
     A filename token such as 24ALR001 is a reference to the indexed document,
     not an exact document key and usually does not occur in its page text.
     """
-    allowed = set(document_ids) if document_ids is not None else None
+    allowed = set(document_ids) if document_ids else None
     compact_question = re.sub(r'[^\w]', '', question, flags=re.UNICODE).casefold()
     matches = []
     for document in documents:

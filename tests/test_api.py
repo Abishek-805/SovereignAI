@@ -503,6 +503,16 @@ def test_auto_agent_reads_selected_documents_even_if_planner_tries_to_guess(serv
         assert result['result']['sources'] and result['answer']!='Invented answer'
 
 
+def test_auto_agent_reads_named_document_without_explicit_selection(service):
+    service.model.plan_task=lambda *args: {'action':'answer','target':'','expression':'','response':'I cannot access that PDF'}
+    with client_for(service) as client:
+        doc=client.post('/documents/import',files={'file':('24ALR001_notes.txt',b'The report describes database architecture and machine learning.','text/plain')}).json()
+        result=client.post('/agent/auto',json={'goal':'Tell me about the 24alr001 file'}).json()
+        assert result['plan']['action']=='search_documents'
+        assert result['result']['sources'][0]['document_id']==doc['document_id']
+        assert result['answer']!='I cannot access that PDF'
+
+
 def test_auto_agent_explanation_receives_source_and_does_not_edit(service):
     wid=service.coding.create('Explain source')['workspace_id']
     service.coding.write(wid,'src/main.js','console.log(42)')

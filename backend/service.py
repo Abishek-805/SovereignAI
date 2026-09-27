@@ -13,7 +13,7 @@ from backend.model import LocalModel
 from rag.embedding import Embedder
 from rag.ingest import extract, chunk_pages, SUPPORTED
 from rag.store import Store
-from rag.retrieve import retrieve
+from rag.retrieve import retrieve, document_scope_for_question
 from rag.context import relevant_passages, chat_evidence
 from rag.answer import answer
 from rag.vision import ask_vision
@@ -368,7 +368,9 @@ class Workbench:
                         source=[name for name in available if name.endswith(('.py','.js','.ts','.java','.cpp','.go','.rs'))]
                         if len(source)==1: plan['target']=source[0]
                         else: raise WorkbenchError('needs_input','Name the source file to repair; this project has several candidates')
-            if plan['action']=='answer' and (document_ids or rag_passages):
+            named_documents=document_scope_for_question(docs,goal,document_ids)
+            asks_about_documents=not workspace_id and bool(re.search(r'\b(document|documents|pdf|uploaded|library|knowledge)\b',goal,re.I))
+            if plan['action']=='answer' and docs and (document_ids or rag_passages or named_documents or asks_about_documents):
                 plan['action']='search_documents'
             if plan['action']!='answer':
                 plan['response']={'calculate':'Evaluate the expression with the local calculator.','edit_code':'Edit the selected source and validate it in Docker.','search_documents':'Retrieve evidence from the indexed documents.','create_report':'Retrieve evidence and export a cited Word report.'}[plan['action']]

@@ -326,14 +326,18 @@
 	function submitOrSwitch() {
 		// Navigation requests are application actions; a text-only model cannot
 		// actually change modes by describing how to do so.
-		if (!hasAttachments && /\b(?:switch|change|move|go)\s+(?:me\s+)?to\s+(?:the\s+)?agent\b/i.test(value)) {
-			const draft = value.replace(/^.*?\b(?:switch|change|move|go)\s+(?:me\s+)?to\s+(?:the\s+)?agent\b[,\s]*/i, '').replace(/^and\s+/i, '').trim();
-			value = '';
-			onValueChange?.('');
-			window.dispatchEvent(new CustomEvent('sovereign-open-workspace', { detail: { tab: 'agent', draft } }));
+		const navigation = hasAttachments ? null : value.trim().match(/^(?:(?:can|could|would)\s+(?:you|u)\s+)?(?:please\s+)?(?:switch|change|move|go)(?:\s+me)?(?:\s+to)?(?:\s+the)?\s+agent\b[,.!?\s]*(.*)$/i);
+		if (!hasAttachments && (navigation || /^agent[.!?]?$/i.test(value.trim()))) {
+			openAgent(navigation?.[1]?.replace(/^and\s+/i, '').trim() || '');
 			return;
 		}
 		onSubmit?.();
+	}
+
+	function openAgent(draft: string) {
+		value = '';
+		onValueChange?.('');
+		window.dispatchEvent(new CustomEvent('sovereign-open-workspace', { detail: { tab: 'agent', draft } }));
 	}
 
 	function handlePaste(event: ClipboardEvent) {
@@ -590,7 +594,7 @@
 
 	<div class="mb-2 flex items-center gap-1 px-2 text-xs" aria-label="Work mode">
 		<span class="rounded-full border border-border bg-accent px-3 py-1 font-medium" aria-current="page">Chat</span>
-		<button type="button" class="rounded-full border border-border px-3 py-1 text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:outline-2" title="Open the bounded Agent workspace with this draft" onclick={() => window.dispatchEvent(new CustomEvent('sovereign-open-workspace', { detail: { tab: 'agent', draft: value } }))}>Agent</button>
+		<button type="button" class="rounded-full border border-border px-3 py-1 text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:outline-2" title="Open the bounded Agent workspace with this draft" onclick={() => openAgent(value)}>Agent</button>
 		<span class="ml-auto hidden text-muted-foreground sm:inline">Chat: local model response · Agent: tools and checks</span>
 	</div>
 

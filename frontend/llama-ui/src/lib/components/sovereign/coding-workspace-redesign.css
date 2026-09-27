@@ -110,6 +110,11 @@
 .ide.ide .assistant-composer { order:10; margin-top:auto; position:sticky; bottom:0; z-index:2; box-shadow:0 -12px 28px #14151caa, 0 10px 25px #0002; }
 .ide.ide .assistant-heading { padding-top:12px; padding-bottom:16px; border-bottom:1px solid var(--ide-stroke); }
 .ide.ide .ai-content .result { box-shadow:0 10px 22px #0002; }
+.ide.ide .ai-content .result.failed { background:color-mix(in srgb,#d66b6b 9%,transparent);border-color:color-mix(in srgb,#d66b6b 35%,var(--border)); }
+.ide .review-actions { display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px; }
+.ide .review-actions .change-stats { width:100%;font:11px Consolas,monospace;color:#9fd5af; }
+.ide .review-actions button { border:1px solid var(--border);border-radius:7px;padding:6px 9px;font-size:11px; }
+.ide .output-panel .diff { margin:0;white-space:pre;overflow:auto;user-select:text;min-height:120px;background:#171a20;color:#d9e5df; }
 .ide.ide .runtime-subheading { margin:24px 0 10px; }
 .ide.ide .ai-content { padding: 16px; gap: 16px; }
 .ide.ide .assistant-heading { padding: 8px 0 1px; }

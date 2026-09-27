@@ -355,6 +355,19 @@ class Workbench:
                                           planning_history)
             finally:
                 self.ask_lock.release()
+            code_repair=bool(re.search(r'\b(fix|solve|repair|debug)\b.*\b(error|errors|bug|bugs|code|codes|program|project)\b',goal,re.I))
+            if code_repair:
+                if not workspace_id or not files:
+                    raise WorkbenchError('needs_input','Choose a code project with source files before asking the agent to fix errors')
+                plan['action']='edit_code'
+                available={entry['name'] for entry in files}
+                if plan['target'] not in available:
+                    mentioned=[name for name in available if name.casefold() in goal.casefold()]
+                    if len(mentioned)==1: plan['target']=mentioned[0]
+                    else:
+                        source=[name for name in available if name.endswith(('.py','.js','.ts','.java','.cpp','.go','.rs'))]
+                        if len(source)==1: plan['target']=source[0]
+                        else: raise WorkbenchError('needs_input','Name the source file to repair; this project has several candidates')
             if plan['action']=='answer' and (document_ids or rag_passages):
                 plan['action']='search_documents'
             if plan['action']!='answer':

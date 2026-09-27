@@ -164,6 +164,19 @@ class CodingWorkspace:
             raise WorkbenchError('invalid_task', 'Coding task does not exist')
         return json.loads(path.read_text(encoding='utf-8'))
 
+    def undo(self, workspace_id: str, task_id: str):
+        result = self.result(workspace_id, task_id)
+        if result.get('state') != 'completed' or not isinstance(result.get('original_content'), str):
+            raise WorkbenchError('invalid_task', 'Only an applied coding change can be undone')
+        current = self.read(workspace_id, result['target'])['content']
+        if hashlib.sha256(current.encode('utf-8')).hexdigest() != result.get('applied_hash'):
+            raise WorkbenchError('workspace_conflict', 'The file changed since this task; review it before undoing')
+        self.write(workspace_id, result['target'], result['original_content'])
+        result['state'] = 'undone'
+        result['checks']['target_committed'] = False
+        self._save_result(workspace_id, result)
+        return result
+
     def _save_result(self, workspace_id: str, result: dict):
         directory = self._directory(workspace_id) / 'tasks'
         path = directory / (result['task_id'] + '.json')
@@ -224,9 +237,10 @@ class CodingWorkspace:
         sandbox._ready()  # Fail before creating a task when verified Docker is unavailable.
         task = ledger.create('coding_workspace', [])
         original = files[target]
+        runtime_check = not trusted_tests and target.endswith('.py') and bool(re.search(r'\b(fix|solve|repair|error|bug|crash|traceback|fail)\b', instruction, re.I))
         events = []
         result = {'task_id': task['task_id'], 'workspace_id': workspace_id, 'target': target,
-                  'state': 'running', 'validation': 'supplied_tests' if trusted_tests else 'syntax_or_format_check', 'context_files': sorted(context_files), 'omitted_context_files': sorted(set(files)-set(context_files)), 'attempts': 0, 'events': events, 'checks': {},
+                  'state': 'running', 'validation': 'supplied_tests' if trusted_tests else 'runtime_check' if runtime_check else 'syntax_or_format_check', 'context_files': sorted(context_files), 'omitted_context_files': sorted(set(files)-set(context_files)), 'attempts': 0, 'events': events, 'checks': {},
                   'diff': '', 'stdout': '', 'stderr': '', 'output_files': [],
                   'routing': {'capability': 'code', 'model': model_alias,
                               'reason': 'Configured local text model for bounded source editing'},
@@ -243,6 +257,12 @@ class CodingWorkspace:
                  '\n'.join(f'--- {name} ---\n{content}' for name, content in sorted(context_files.items()))}
             ]
             base_messages = list(messages)
+            if runtime_check:
+                stage('Reproducing the reported error')
+                baseline = sandbox.execute(runner(target, mode='run'), input_files={name: content.encode('utf-8') for name, content in files.items()})
+                if baseline.stderr:
+                    messages.append({'role':'user','content':'The current file fails when run in Docker. Fix this actual traceback, then return the complete corrected file:\n'+baseline.stderr[-2500:]})
+                    base_messages = list(messages)
             for attempt in range(3):
                 stage('Generating change' if attempt==0 else f'Repairing after failed check ({attempt+1}/3)')
                 candidate = model.complete_code(messages, max_tokens=2048)['code']
@@ -253,7 +273,7 @@ class CodingWorkspace:
                 events.append({'event': 'editing_file' if not attempt else f'repair_attempt_{attempt}', 'file': target})
                 ledger.step(task, f'edit_{attempt + 1}', {'target': target, 'attempt': attempt + 1})
                 stage('Running supplied tests' if trusted_tests else 'Checking source in Docker')
-                execution = sandbox.execute(TEST_RUNNER if trusted_tests else runner(target), input_files={name: content.encode('utf-8')
+                execution = sandbox.execute(TEST_RUNNER if trusted_tests else runner(target, mode='run' if runtime_check else 'check'), input_files={name: content.encode('utf-8')
                                                                         for name, content in trial.items()})
                 safe_stderr = execution.stderr.replace(str(self.root), '[workspace]')
                 task_root = getattr(sandbox, 'task_root', None)
@@ -267,7 +287,7 @@ class CodingWorkspace:
                               diff=''.join(difflib.unified_diff(original.splitlines(True),candidate.splitlines(True),
                                      fromfile='a/'+target,tofile='b/'+target)),
                               output_files=[])
-                if execution.executed and execution.exit_code == 0:
+                if execution.executed and execution.exit_code == 0 and candidate != original:
                     current = {entry['name']: self.read(workspace_id, entry['name'])['content']
                                for entry in self.get(workspace_id)['files']}
                     if current != files:
@@ -276,12 +296,16 @@ class CodingWorkspace:
                                                                     execution.output_files)
                     stage('Saving checked change')
                     self.write(workspace_id, target, candidate)
-                    result['checks'] = {'container_executed': True, ('tests_passed' if trusted_tests else 'syntax_or_format_checked'): True,
+                    result['checks'] = {'container_executed': True, ('tests_passed' if trusted_tests else 'runtime_passed' if runtime_check else 'syntax_or_format_checked'): True,
                                         'target_committed': True}
+                    result['original_content'] = original
+                    result['applied_hash'] = hashlib.sha256(candidate.encode('utf-8')).hexdigest()
                     result['state'] = 'completed'
                     events.append({'event': 'verification', 'checks': result['checks']})
                     ledger.complete(task, result['checks'])
                     break
+                if candidate == original and execution.exit_code == 0:
+                    safe_stderr = 'The model returned the original file unchanged. Produce a real edit that addresses the request.'
                 events.append({'event': 'test_failed', 'attempt': attempt + 1})
                 if attempt < 2:
                     messages = base_messages + [
@@ -291,7 +315,7 @@ class CodingWorkspace:
                 result['output_files'] = self._store_artifacts(workspace_id, task['task_id'],
                                                                 execution.output_files)
                 result['state'] = 'failed'
-                result['checks'] = {'container_executed': bool(execution.executed), ('tests_passed' if trusted_tests else 'syntax_or_format_checked'): False,
+                result['checks'] = {'container_executed': bool(execution.executed), ('tests_passed' if trusted_tests else 'runtime_passed' if runtime_check else 'syntax_or_format_checked'): False,
                                     'target_committed': False}
                 ledger.fail(task, 'trusted_tests_failed' if trusted_tests else 'validation_failed')
             self._save_result(workspace_id, result)

@@ -128,6 +128,45 @@ def test_failed_tests_do_not_commit(tmp_path):
     assert work.read(workspace_id, 'solution.py')['content'].endswith('return 0\n')
 
 
+def test_error_repair_runs_file_and_can_be_undone(tmp_path):
+    work=CodingWorkspace(tmp_path)
+    wid=work.create('Broken program')['workspace_id']
+    work.write(wid,'broken.py','print(sales)\n')
+    class RuntimeSandbox:
+        def _ready(self): pass
+        def execute(self,code,input_files):
+            assert '"run"' in code
+            failing=input_files['broken.py']!=b'print(42)\n'
+            return SandboxResult(1 if failing else 0,'42\n' if not failing else '',
+                                 'NameError: sales is not defined' if failing else '',True)
+    result=work.run(wid,'broken.py','Solve the runtime error',Model('print(sales)\n','print(42)\n'),RuntimeSandbox(),TaskLedger(tmp_path))
+    assert result['state']=='completed' and result['validation']=='runtime_check'
+    assert result['checks']['runtime_passed'] and '+print(42)' in result['diff']
+    assert work.undo(wid,result['task_id'])['state']=='undone'
+    assert work.read(wid,'broken.py')['content']=='print(sales)\n'
+
+
+def test_undo_does_not_overwrite_later_edits(tmp_path):
+    work,wid=workspace(tmp_path)
+    result=work.run(wid,'solution.py','Fix add',Model('def add(a, b):\n    return a + b\n'),Sandbox(),TaskLedger(tmp_path))
+    work.write(wid,'solution.py','def add(a, b):\n    return 99\n')
+    with pytest.raises(WorkbenchError) as error:
+        work.undo(wid,result['task_id'])
+    assert error.value.code=='workspace_conflict'
+
+
+def test_unchanged_candidate_is_not_reported_as_applied(tmp_path):
+    work=CodingWorkspace(tmp_path)
+    wid=work.create('No change')['workspace_id']
+    work.write(wid,'main.js','console.log(1)')
+    class CheckSandbox:
+        def _ready(self): pass
+        def execute(self,code,input_files): return SandboxResult(0,'Check passed','',True)
+    result=work.run(wid,'main.js','Improve the output',Model(*(['console.log(1)']*3)),CheckSandbox(),TaskLedger(tmp_path))
+    assert result['state']=='failed' and not result['checks']['target_committed']
+    assert work.read(wid,'main.js')['content']=='console.log(1)'
+
+
 def test_requires_sandbox(tmp_path):
     work = CodingWorkspace(tmp_path)
     workspace_id = work.create('No tests')['workspace_id']

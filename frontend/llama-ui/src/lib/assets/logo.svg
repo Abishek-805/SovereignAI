@@ -1,6 +1,6 @@
 <svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="SovereignAI">
-  <path d="M256 38 438 143v226L256 474 74 369V143L256 38Z" stroke="currentColor" stroke-width="29" stroke-linejoin="round"/>
-  <path d="M353 169H211c-35 0-58 18-58 47 0 25 16 39 50 43l106 12c35 4 52 18 52 43 0 30-24 49-60 49H160" stroke="currentColor" stroke-width="35" stroke-linecap="round"/>
-  <path d="M256 126v56M256 330v56" stroke="currentColor" stroke-width="24" stroke-linecap="round"/>
-  <circle cx="380" cy="139" r="16" fill="currentColor"/>
+  <path d="M100 292c22 85 84 140 164 140 98 0 168-73 168-174 0-28-6-54-18-78" stroke="currentColor" stroke-width="30" stroke-linecap="round"/>
+  <path d="M402 154C372 109 323 80 264 80 174 80 109 139 92 221" stroke="currentColor" stroke-width="30" stroke-linecap="round"/>
+  <path d="m256 154 24 78 78 24-78 24-24 78-24-78-78-24 78-24 24-78Z" fill="currentColor"/>
+  <circle cx="414" cy="165" r="25" fill="currentColor"/>
 </svg>

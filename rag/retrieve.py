@@ -1,5 +1,6 @@
 from collections import defaultdict
 import re
+from pathlib import PurePath
 import numpy as np
 from backend.contracts import WorkbenchError
 
@@ -17,7 +18,28 @@ def rrf(rankings):
     return sorted(scores,key=lambda key:(-scores[key],key))
 
 
+def document_scope_for_question(documents, question, document_ids=None):
+    """Narrow a selected library when a question names a document identifier.
+
+    A filename token such as 24ALR001 is a reference to the indexed document,
+    not an exact document key and usually does not occur in its page text.
+    """
+    allowed = set(document_ids) if document_ids is not None else None
+    compact_question = re.sub(r'[^\w]', '', question, flags=re.UNICODE).casefold()
+    matches = []
+    for document in documents:
+        if allowed is not None and document['document_id'] not in allowed:
+            continue
+        stem = PurePath(document['display_name']).stem
+        identifiers = [piece.casefold() for piece in re.findall(r'[^\W_]+', stem, re.UNICODE)
+                       if len(piece) >= 5]
+        if any(identifier in compact_question for identifier in identifiers):
+            matches.append(document['document_id'])
+    return matches or document_ids
+
+
 def retrieve(store, embedder, question, document_ids=None, limit=6):
+    document_ids = document_scope_for_question(store.documents(), question, document_ids)
     active=store.active_chunks(document_ids)
     if not active:
         return []

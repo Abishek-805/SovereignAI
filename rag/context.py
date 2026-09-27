@@ -5,7 +5,7 @@ at least two distinctive terms match a passage, avoiding unrelated RAG context.
 """
 import re
 
-from rag.retrieve import fts_query, retrieve
+from rag.retrieve import document_scope_for_question, fts_query, retrieve
 
 _WORDS = re.compile(r"[\w-]+", re.UNICODE)
 _COMMON = {'about', 'after', 'before', 'could', 'does', 'from', 'have', 'into',
@@ -26,6 +26,7 @@ def relevant_passages(store, embedder, question, document_ids=None, limit=4):
         return []
     if document_ids:
         store.active_chunks(document_ids)  # reject unknown selections
+    focused_ids = document_scope_for_question(documents, question, document_ids)
     words = {word.lower() for word in _WORDS.findall(question)}
     terms = {word for word in words if len(word) >= 4 and word not in _COMMON}
     names = {word.lower() for doc in documents for word in _WORDS.findall(doc['display_name'])
@@ -33,15 +34,15 @@ def relevant_passages(store, embedder, question, document_ids=None, limit=4):
     explicit = bool(document_ids or words & _DOCUMENT_CUES or terms & names)
     if not terms and not explicit:
         return []
-    candidates = store.lexical(fts_query(question), limit=8, document_ids=document_ids)
-    if not candidates:
+    candidates = store.lexical(fts_query(question), limit=8, document_ids=focused_ids)
+    if not candidates and focused_ids is document_ids:
         return []
     if not explicit:
         matches = max((len(terms & {word.lower() for word in _WORDS.findall(store.get_chunk(key).text)})
                        for key in candidates), default=0)
         if matches < 2:
             return []
-    return retrieve(store, embedder, question, document_ids, limit=limit)
+    return retrieve(store, embedder, question, focused_ids, limit=limit)
 
 
 def chat_evidence(passages):

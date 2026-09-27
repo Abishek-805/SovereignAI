@@ -318,9 +318,22 @@
 
 				if (!canSubmit || disabled || hasLoadingAttachments) return;
 
-				onSubmit?.();
+				submitOrSwitch();
 			}
 		}
+	}
+
+	function submitOrSwitch() {
+		// Navigation requests are application actions; a text-only model cannot
+		// actually change modes by describing how to do so.
+		if (!hasAttachments && /\b(?:switch|change|move|go)\s+(?:me\s+)?to\s+(?:the\s+)?agent\b/i.test(value)) {
+			const draft = value.replace(/^.*?\b(?:switch|change|move|go)\s+(?:me\s+)?to\s+(?:the\s+)?agent\b[,\s]*/i, '').replace(/^and\s+/i, '').trim();
+			value = '';
+			onValueChange?.('');
+			window.dispatchEvent(new CustomEvent('sovereign-open-workspace', { detail: { tab: 'agent', draft } }));
+			return;
+		}
+		onSubmit?.();
 	}
 
 	function handlePaste(event: ClipboardEvent) {
@@ -544,7 +557,7 @@
 
 		if (!canSubmit || disabled || hasLoadingAttachments) return;
 
-		onSubmit?.();
+		submitOrSwitch();
 	}}
 >
 	<ChatFormPickers

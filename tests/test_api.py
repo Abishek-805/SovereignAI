@@ -135,6 +135,9 @@ def test_coding_workspace_api_is_bounded(service):
         assert result['state'] == 'completed' and '+    return a + b' in result['diff']
         assert client.get(f"/coding/workspaces/{workspace_id}/tasks/{result['task_id']}").json()['checks']['tests_passed']
         assert client.get(result['output_files'][0]['url']).content == b'ok'
+        undone=client.post(f"/coding/workspaces/{workspace_id}/tasks/{result['task_id']}/undo")
+        assert undone.status_code==200 and undone.json()['state']=='undone'
+        assert client.get(f'/coding/workspaces/{workspace_id}/files/solution.py').json()['content'].endswith('return 0\n')
 
 
 def test_docx_preview_and_import(service):
@@ -510,6 +513,21 @@ def test_auto_agent_explanation_receives_source_and_does_not_edit(service):
     result=service.run_auto_agent('Explain this source',workspace_id=wid)
     assert result['answer']=='Prints 42.'
     assert service.coding.read(wid,'src/main.js')['content']=='console.log(42)'
+
+
+def test_auto_agent_routes_explicit_error_repair_to_code_tool(service):
+    wid=service.coding.create('Broken code')['workspace_id']
+    service.coding.write(wid,'broken.py','print(sales)\n')
+    service.model.plan_task=lambda *args: {'action':'answer','target':'','expression':'','response':'I fixed it'}
+    service._verified_coding_sandbox=lambda: object()
+    calls=[]
+    def repair(workspace_id,target,instruction,job=None):
+        calls.append((workspace_id,target,instruction))
+        return {'state':'completed','target':target,'validation':'runtime_check','checks':{'runtime_passed':True}}
+    service.run_coding_workspace_task=repair
+    result=service.run_auto_agent('Solve the errors in the code',workspace_id=wid)
+    assert result['plan']['action']=='edit_code'
+    assert calls and calls[0][:2]==(wid,'broken.py')
 
 
 def test_spreadsheet_original_is_retrievable(service):

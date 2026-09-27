@@ -376,6 +376,10 @@ def create_app(service=None):
     def get_coding_workspace_task(workspace_id:str,task_id:str):
         return service.coding.result(workspace_id,task_id)
 
+    @app.post('/coding/workspaces/{workspace_id}/tasks/{task_id}/undo')
+    def undo_coding_workspace_task(workspace_id:str,task_id:str):
+        return service.coding.undo(workspace_id,task_id)
+
     @app.get('/coding/workspaces/{workspace_id}/tasks/{task_id}/artifacts/{name}')
     def get_coding_artifact(workspace_id:str,task_id:str,name:str):
         return FileResponse(service.coding.artifact(workspace_id,task_id,name),

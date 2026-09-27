@@ -21,11 +21,13 @@ export type CodingTask = {
 	task_id: string;
 	workspace_id: string;
 	target: string;
-	state: 'running' | 'completed' | 'failed';
+	state: 'running' | 'completed' | 'failed' | 'undone';
 	attempts: number;
 	events: ToolEvent[];
 	checks: Record<string, boolean>;
 	diff: string;
+	original_content?: string;
+	applied_hash?: string;
 	stdout: string;
 	stderr: string;
 	output_files: Array<{ name: string; bytes: number; sha256: string; url: string }>;
@@ -70,5 +72,9 @@ export class CodingWorkspaceService {
 			method: 'POST',
 			body: JSON.stringify({ target, instruction })
 		});
+	}
+
+	static undo(id: string, taskId: string): Promise<CodingTask> {
+		return apiFetch('/coding/workspaces/' + encodeURIComponent(id) + '/tasks/' + encodeURIComponent(taskId) + '/undo', { method: 'POST' });
 	}
 }

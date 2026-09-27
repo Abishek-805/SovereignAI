@@ -1,7 +1,13 @@
 from dataclasses import replace
 import numpy as np
 import pytest
-from rag.retrieve import rrf,fts_query,retrieve
+from rag.retrieve import rrf,fts_query,retrieve,document_scope_for_question
+
+def test_filename_reference_scopes_selected_library():
+    documents=[{'document_id':'a','display_name':'other-report.pdf'},
+               {'document_id':'b','display_name':'24ALR001_ABISHEK M.pdf'}]
+    assert document_scope_for_question(documents,'Tell me what 24alr001 pdf says',['a','b'])==['b']
+    assert document_scope_for_question(documents,'Summarize all documents',['a','b'])==['a','b']
 
 def test_rank_agreement():
     assert rrf([['a','b'],['b','c']])[0]=='b'
@@ -34,3 +40,12 @@ def test_scope_paraphrase_and_identifiers(store,one_chunk,one_vector):
     assert retrieve(store,FakeEmbedder(),'What shaking level requires attention?')[0].document_id=='d1'
     assert retrieve(store,FakeEmbedder(),'P-101')[0].document_id=='d1'
     assert all(c.document_id=='d2' for c in retrieve(store,FakeEmbedder(),'P-101',['d2']))
+
+
+def test_named_pdf_reference_excludes_unrelated_selected_documents(store,one_chunk,one_vector):
+    unrelated=replace(one_chunk,chunk_id='other',document_id='other',text='General engineering skills and assessments')
+    requested=replace(one_chunk,chunk_id='requested',document_id='requested',text='The requested document discusses databases')
+    store.publish('other','Maintenance Evidence Draft.docx','other','v1',[unrelated],one_vector,'emb1',[])
+    store.publish('requested','24ALR001_ABISHEK M.pdf','requested','v1',[requested],one_vector,'emb1',[])
+    passages=retrieve(store,FakeEmbedder(),'Tell me what the 24alr001 PDF says',['other','requested'])
+    assert passages and {passage.document_id for passage in passages}=={'requested'}

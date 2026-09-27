@@ -71,7 +71,7 @@
    <div class="route-flow" aria-label="Routing flow"><span>Request</span><span>→</span><span>Router</span><span>→</span><span>Local model or tool</span></div>
    <div class="last-route"><span class="eyebrow">LAST RECORDED ROUTE</span>{#if lastRoute}<strong>{lastRoute.task}</strong><p>Selected: {lastRoute.model} ({lastRoute.capability})</p>{#if lastRoute.reason}<p>{lastRoute.reason}</p>{/if}{:else}<p>No routed task has completed in this browser session.</p>{/if}</div>
    <div class="models"><span class="eyebrow">REGISTERED MODELS</span>{#if info?.models?.length}{#each info.models as model}<div class="model-row"><Cpu size={15} aria-hidden="true"/><div><strong>{model.model_id}</strong><small>{model.capability} · {model.context.toLocaleString()} context · {model.quantization}</small></div><span>{!model.enabled ? 'Disabled' : !model.assets_present ? 'Files missing' : generator?.available && generator.alias === model.alias ? generator.is_sleeping ? 'Sleeping' : 'Loaded' : 'Installed'}</span></div>{/each}{:else}<p>Model registry unavailable.</p>{/if}</div>
-   <p class="footnote">Code currently uses the registered text model. A separate coding model is not installed. GPU placement is not reported by this status endpoint.</p>
+   <p class="footnote">Code route: {info?.routing?.routes?.code?.model || 'Unavailable'}. Greetings skip inference. A separate coding model is enabled only after it improves local quality and end-to-end latency. GPU placement is not reported by this status endpoint.</p>
   </div>
  {/if}
 </div>

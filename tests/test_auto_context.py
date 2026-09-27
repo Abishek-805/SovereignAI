@@ -15,3 +15,10 @@ def test_unrelated_chat_does_not_attach_library_passages(store, one_chunk, one_v
     store.publish('d1', 'a.txt', 'a', 'v1', [one_chunk], one_vector, 'emb1', [])
     assert relevant_passages(store, FakeEmbedder(), 'Write a Python hello world program') == []
     assert chat_evidence([]) is None
+
+
+def test_greeting_skips_document_catalog_and_embeddings():
+    class UnreadableStore:
+        def documents(self):
+            raise AssertionError('Greeting must not inspect document metadata')
+    assert relevant_passages(UnreadableStore(), object(), 'Hi!') == []

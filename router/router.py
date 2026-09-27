@@ -1,4 +1,5 @@
 import logging
+import re
 from typing import Optional
 from backend.contracts import WorkbenchError
 
@@ -7,6 +8,10 @@ logger = logging.getLogger(__name__)
 class CapabilityRouter:
     def __init__(self, model_registry):
         self.model_registry = model_registry
+
+    @staticmethod
+    def is_greeting(goal: str) -> bool:
+        return bool(re.fullmatch(r'(?:hi|hello|hey|good morning|good afternoon|good evening)[!. ]*', goal.strip(), re.I))
 
     def classify_agent_goal(self, goal: str, *, document_ids=None, workspace_id=None, image=False) -> str:
         """Classify explicit agent requests using bounded metadata, without chat history."""

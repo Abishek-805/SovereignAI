@@ -258,6 +258,9 @@ class Workbench:
             self.ask_lock.release()
 
     def run_coding_project_task(self, workspace_id, target, instruction, job=None):
+        if self.router.is_greeting(instruction):
+            return {'state':'answered','answer':'Hi! Describe a code change or ask me to inspect a project.',
+                    'routing':{'capability':'greeting','model':None,'reason':'No model or project scan needed'}}
         if not self.ask_lock.acquire(blocking=False):
             raise WorkbenchError('busy','Another task is running')
         try:
@@ -563,7 +566,7 @@ class Workbench:
                  'assets_present':all(path.is_file() for path in self.registry._model_paths(spec))
                     if hasattr(self.registry,'_model_paths') else False}
                 for key,spec in specs.items()]
-        routes={}
+        routes={'greeting':{'capability':'instant','model':'No model used'}}
         for task_type in ('text','code','vision'):
             try:
                 capability=self.router.route_request(task_type)

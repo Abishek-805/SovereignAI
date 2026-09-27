@@ -145,6 +145,7 @@
 .ide.ide .coding-empty p { margin: 5px 0 10px; font-size: 11px; line-height: 1.45; }
 .ide.ide .coding-empty div { display: flex; flex-wrap: wrap; gap: 5px; }
 .ide.ide .coding-empty button { padding: 5px 7px; border: 1px solid #454a54; border-radius: 6px; font-size: 10px; }
+.ide.ide .coding-answer { align-self: stretch; margin: 0; padding: 8px 10px; border-radius: 8px; background: #252932; color: #f0f1f5; font-size: 11px; line-height: 1.5; }
 .ide.ide .assistant-composer { order: 0; position: static; margin-top: auto; }
 .ide.ide .assistant-composer textarea { min-height: 54px; height: 58px; }
 .ide.ide .assistant-actions { padding: 5px 7px 7px; }

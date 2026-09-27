@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount, tick } from 'svelte';
-	import { uiStore } from '$lib/stores';
+	import { conversationsStore, uiStore } from '$lib/stores';
 	import DockerControl from './DockerControl.svelte';
 	import { ArrowLeft, Bot, Code2, Cpu, FileText, FolderDown, MessageSquare, Download, RefreshCw, Table2, Presentation, FileCode2, CheckCircle2, AlertCircle, Trash2 } from '@lucide/svelte';
 	import { setMode } from 'mode-watcher';
@@ -413,9 +413,10 @@
 				</nav><div class="control-body">
 					{#if !workbenchInfo}<div class="control-card" role="status"><h4>{runtimeLoading ? 'Loading local status…' : 'Local status unavailable'}</h4><p>{runtimeLoading ? 'Reading the model registry and Docker state.' : runtimeError || 'Start SovereignAI and refresh to inspect runtime state.'}</p></div>{:else}
 					{#if controlSection === 'models'}
-						<h4>Models & routing</h4><p class="control-muted">Requests are routed by capability. Code currently uses the text model; a dedicated coding model is not installed.</p>
+						<h4>Models & routing</h4><p class="control-muted">Greetings use no model. Document questions use retrieval and the text model; project edits use the text model and Docker checks. Vision requests use the vision model. A coding model will be enabled only after it improves validated tasks and total response time on this computer.</p>
 						<div class="control-card"><span>Current model</span><strong>{workbenchInfo.runtime.generator.available ? workbenchInfo.runtime.generator.alias || 'Model name unavailable' : 'No model running'}</strong><p>{workbenchInfo.runtime.generator.available ? workbenchInfo.runtime.generator.is_sleeping ? 'Sleeping · wakes for the next request' : 'Loaded locally' : 'Stopped or unavailable'} · {workbenchInfo.runtime.busy ? 'Task running' : 'Idle'}</p></div>
 						<div class="control-card"><span>Routing policy</span><strong>{workbenchInfo.routing?.mode === 'automatic' ? 'Automatic' : 'Unavailable'}</strong>{#each Object.entries(workbenchInfo.routing?.routes || {}) as [task, route]}<p>{task}: {route.model || 'No available model'}</p>{/each}</div>
+						<div class="control-card"><span>Context window</span><strong>Start a fresh chat</strong><p>Local tokens are a per-conversation context limit, not a refillable quota. Starting a new chat clears the active prompt history while keeping earlier chats in History. Knowledge has its own New chat button.</p><button class="control-button" onclick={() => void conversationsStore.openNewChat()}>Reset chat tokens · New chat</button></div>
 						<div class="control-grid">{#each workbenchInfo.models as model}<div class="control-card"><span>{model.capability.toUpperCase()}</span><strong>{model.model_id}</strong><p>{!model.enabled ? 'Disabled' : !model.assets_present ? 'Model files missing' : workbenchInfo.runtime.generator.available && workbenchInfo.runtime.generator.alias === model.alias ? workbenchInfo.runtime.generator.is_sleeping ? 'Sleeping' : 'Loaded' : 'Installed'} · {model.quantization} · {model.context.toLocaleString()} context</p><p>Observed GPU memory: {model.observed_gpu_mib === null ? 'Not measured' : `${model.observed_gpu_mib} MiB`}</p></div>{/each}</div>
 						<button class="control-button" onclick={async()=>{try{const response=await fetch('/workbench/model/unload',{method:'POST'});const body=await response.json();message=body.message||body.status;await refresh();}catch(e){message=String(e);}}}>Free AI memory</button>
 					{:else if controlSection === 'knowledge'}

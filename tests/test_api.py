@@ -66,6 +66,17 @@ def test_workbench_info_exposes_actual_capability_routes_and_model_files(service
     assert {model['capability']:model['assets_present'] for model in info['models']}=={'text':True,'vision':False}
 
 
+def test_coding_greeting_does_not_load_model_or_sandbox(service, monkeypatch):
+    def unexpected(*args, **kwargs):
+        raise AssertionError('Greeting must not read project files or load a runtime')
+    monkeypatch.setattr(service, '_verified_coding_sandbox', unexpected)
+    monkeypatch.setattr(service.registry, 'acquire_lease', unexpected)
+    monkeypatch.setattr(service.coding, 'run_project', unexpected)
+    result=service.run_coding_project_task('unused', '', 'Hi!')
+    assert result['state']=='answered'
+    assert result['routing']['model'] is None
+
+
 def test_artifact_catalog_withholds_download_when_hash_fails(service):
     import json
     task_id='a'*32

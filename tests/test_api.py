@@ -72,9 +72,10 @@ def test_coding_greeting_does_not_load_model_or_sandbox(service, monkeypatch):
     monkeypatch.setattr(service, '_verified_coding_sandbox', unexpected)
     monkeypatch.setattr(service.registry, 'acquire_lease', unexpected)
     monkeypatch.setattr(service.coding, 'run_project', unexpected)
-    result=service.run_coding_project_task('unused', '', 'Hi!')
-    assert result['state']=='answered'
-    assert result['routing']['model'] is None
+    for greeting in ('Hi!', 'hay'):
+        result=service.run_coding_project_task('unused', '', greeting)
+        assert result['state']=='answered'
+        assert result['routing']['model'] is None
 
 
 def test_artifact_catalog_withholds_download_when_hash_fails(service):
@@ -153,10 +154,11 @@ def test_ask_and_upload(service,tmp_path):
 def test_document_greeting_does_not_search_unrelated_files(service, monkeypatch):
     monkeypatch.setattr(service.embedder, 'encode', lambda *_: (_ for _ in ()).throw(AssertionError('greeting searched documents')))
     with client_for(service) as client:
-        result=client.post('/ask',json={'question':'hi'}).json()
-    assert result['status']=='greeting'
-    assert result['sources']==[]
-    assert 'Ask me about your selected files' in result['answer']
+        for greeting in ('hi', 'hay'):
+            result=client.post('/ask',json={'question':greeting}).json()
+            assert result['status']=='greeting'
+            assert result['sources']==[]
+            assert 'Ask me about your selected files' in result['answer']
 
 
 def test_document_manager_rename_and_remove(service):

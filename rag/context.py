@@ -21,7 +21,7 @@ def relevant_passages(store, embedder, question, document_ids=None, limit=4):
     """Return relevant indexed passages, or [] for ordinary conversation."""
     if not isinstance(question, str) or not question.strip():
         return []
-    if re.fullmatch(r'(?:hi|hello|hey|good morning|good afternoon|good evening)[!. ]*', question.strip(), re.I):
+    if re.fullmatch(r'(?:hi|hello|hey|hay|hai|good morning|good afternoon|good evening)[!. ]*', question.strip(), re.I):
         return []
     documents = store.documents()
     if not documents:

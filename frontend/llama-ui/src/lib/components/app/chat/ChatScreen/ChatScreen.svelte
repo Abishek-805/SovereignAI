@@ -22,6 +22,7 @@
 		chatStore,
 		conversationsStore,
 		deviceStore,
+		modelsStore,
 		serverStore,
 		settingsStore
 	} from '$lib/stores';
@@ -103,6 +104,16 @@
 	}
 
 	async function handleSendMessage(message: string, files?: ChatUploadedFile[]): Promise<boolean> {
+		const images = files?.filter((file) => /^image\/(?:png|jpeg)$/.test(file.type)) ?? [];
+		const chatVisionAvailable = serverStore.isRouterMode && modelsStore.models.some((model) =>
+			modelsStore.props.modelSupportsVision(model.model)
+		);
+		if (images.length === 1 && files?.length === 1 && !chatVisionAvailable) {
+			window.dispatchEvent(new CustomEvent('sovereign-open-workspace', {
+				detail: { tab: 'agent', draft: message.trim() || 'Describe this image.', image: images[0].file, autoSend: true }
+			}));
+			return true;
+		}
 		const plainFiles = files ? $state.snapshot(files) : undefined;
 		const result = plainFiles
 			? await parseFilesToMessageExtras(plainFiles, activeModel.activeModelId ?? undefined)

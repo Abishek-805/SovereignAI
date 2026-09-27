@@ -11,7 +11,7 @@ class CapabilityRouter:
 
     @staticmethod
     def is_greeting(goal: str) -> bool:
-        return bool(re.fullmatch(r'(?:hi|hello|hey|hay|hai|yo|yoy|hiya|good morning|good afternoon|good evening)[!. ]*', goal.strip(), re.I))
+        return bool(re.fullmatch(r"(?:hi|hello|hey|hay|hai|yo|yoy|hiya|good morning|good afternoon|good evening|what(?:\s+is|\u2019s|'s|s)?\s+up|how(?:\s+are|\u2019re|'re)\s+(?:you|u)|sup)[!.? ]*", goal.strip(), re.I))
 
     def classify_agent_goal(self, goal: str, *, document_ids=None, workspace_id=None, image=False) -> str:
         """Classify explicit agent requests using bounded metadata, without chat history."""

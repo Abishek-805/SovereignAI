@@ -330,6 +330,7 @@ def create_app(service=None):
         if job.kind not in {'run','terminal'}:raise WorkbenchError('invalid_input','The agent does not accept terminal input during an edit')
         try:job.input.put_nowait(payload.text)
         except Full:raise WorkbenchError('busy','Input queue is full')
+        job.append('stdin', '\n› Input sent\n')
         return {'accepted':True}
 
     @app.post('/workbench/model/unload')

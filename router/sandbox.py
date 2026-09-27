@@ -29,7 +29,7 @@ LOCAL_ENGINE = 'npipe:////./pipe/dockerDesktopLinuxEngine'
 SANDBOX_POLICY = {
     'backend': 'Docker Linux', 'network': 'none', 'user': '65534:65534',
     'filesystem': 'read-only root; isolated input/output mounts',
-    'cpus': 1, 'memory_mb': 512, 'timeout_seconds': 30,
+    'cpus': 1, 'memory_mb': 512, 'timeout_seconds': 120,
     'privileged': False, 'docker_socket': False,
 }
 
@@ -97,7 +97,7 @@ class CodeSandbox:
                 'A validated Linux container runner is not available. Code was not executed.', False)
         if self.backend_type != 'docker':
             raise WorkbenchError('sandbox_error', f'Unsupported sandbox backend: {self.backend_type}')
-        if not isinstance(code, str) or len(code.encode('utf-8')) > 100_000 or not 1 <= timeout <= 30:
+        if not isinstance(code, str) or len(code.encode('utf-8')) > 100_000 or not 1 <= timeout <= 120:
             raise WorkbenchError('sandbox_input', 'Code or time budget is invalid')
         input_files = input_files or {}
         if not isinstance(input_files, dict) or len(input_files) > 256 or any(not safe_relative_name(name)

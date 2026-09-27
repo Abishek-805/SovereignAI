@@ -9,6 +9,8 @@
 
 import { filterFilesByModalities, isFileTypeSupported } from '$lib/utils';
 import { processFilesToChatUploaded } from '$lib/utils/browser-only';
+import { modelsStore } from '$lib/stores/models/index.svelte';
+import { serverStore } from '$lib/stores/server.svelte';
 
 interface UseChatScreenFileUploadOptions {
 	capabilities: () => { hasVision: boolean; hasAudio: boolean; hasVideo: boolean };
@@ -33,20 +35,28 @@ export function useChatScreenFileUpload(options: UseChatScreenFileUploadOptions)
 	});
 
 	async function processFiles(files: File[]) {
+		if (serverStore.isRouterMode && files.some((file) => file.type.startsWith('image/'))) {
+			const visionModel = modelsStore.models.find((model) =>
+				modelsStore.props.modelSupportsVision(model.model)
+			);
+			if (visionModel) modelsStore.selectModelByName(visionModel.model);
+		}
 		const generallySupported: File[] = [];
 		const generallyUnsupported: File[] = [];
 
 		for (const file of files) {
-			if (isFileTypeSupported(file.name, file.type)) {
+			if (isFileTypeSupported(file.name, file.type) &&
+				(!file.type.startsWith('image/') || /^image\/(?:png|jpeg)$/.test(file.type) || options.capabilities().hasVision)) {
 				generallySupported.push(file);
 			} else {
 				generallyUnsupported.push(file);
 			}
 		}
 
+		const canUseWorkbenchVision = files.some((file) => /^image\/(?:png|jpeg)$/.test(file.type));
 		const { modalityReasons, supportedFiles, unsupportedFiles } = filterFilesByModalities(
 			generallySupported,
-			options.capabilities()
+			{ ...options.capabilities(), hasVision: options.capabilities().hasVision || canUseWorkbenchVision }
 		);
 		const allUnsupportedFiles = [...generallyUnsupported, ...unsupportedFiles];
 

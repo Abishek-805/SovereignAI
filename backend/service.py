@@ -294,7 +294,7 @@ class Workbench:
             script = runner(target, mode='run')
             task = self.tasks.create('workspace_execution', [])
             self.tasks.step(task, 'docker_run', {'target':target})
-            execution = sandbox.execute(script,input_files=files)
+            execution = sandbox.execute(script,timeout=120,input_files=files)
             checks = {'container_executed':execution.executed, 'exit_success':execution.exit_code == 0}
             if all(checks.values()): self.tasks.complete(task,checks)
             else: self.tasks.fail(task,'execution_failed')
@@ -314,7 +314,7 @@ class Workbench:
             sandbox.on_output=job.append;sandbox.cancel_event=job.cancel;sandbox.stdin_queue=job.input
             job.progress('Terminal running in Docker')
             script="import os,shutil,subprocess,sys\nshutil.copytree('/input','/output/project',ignore=shutil.ignore_patterns('program.py'))\nos.chdir('/output/project')\nsys.exit(subprocess.call(['bash','--noprofile','--norc','-c',"+repr(command)+"]))"
-            result=sandbox.execute(script,input_files=files)
+            result=sandbox.execute(script,timeout=120,input_files=files)
             return {'state':'completed' if result.exit_code==0 else 'failed','exit_code':result.exit_code,'stdout':result.stdout,'stderr':result.stderr}
         finally:self.ask_lock.release()
 

@@ -11,6 +11,7 @@
 
 import { CWD_CLEARED_TEXT, SYSTEM_MESSAGE_PLACEHOLDER, TITLE_GENERATION } from '$lib/constants';
 import {
+	AttachmentType,
 	ErrorDialogType,
 	MessageRole,
 	MessageType,
@@ -630,6 +631,21 @@ class ChatStore implements ChatStreamHost, ChatFlowsHost {
 		// Consume MCP resource attachments - converts them to extras and clears the live store
 		const resourceExtras = mcpStore.consumeResourceAttachmentsAsExtras();
 		const allExtras = resourceExtras.length > 0 ? [...(extras || []), ...resourceExtras] : extras;
+		let capabilityModel: string | undefined;
+		if (serverStore.isRouterMode && allExtras?.some((extra) => extra.type === AttachmentType.IMAGE)) {
+			const visionModel = modelsStore.models.find((model) =>
+				modelsStore.props.modelSupportsVision(model.model)
+			);
+			if (!visionModel) {
+				this.showErrorDialog({
+					message: 'No vision model is available. Add or enable a vision model before asking about this image.',
+					type: ErrorDialogType.SERVER
+				});
+				return;
+			}
+			capabilityModel = visionModel.model;
+			modelsStore.selectModelByName(visionModel.model);
+		}
 
 		let isNewConversation = false;
 
@@ -705,7 +721,7 @@ class ChatStore implements ChatStreamHost, ChatFlowsHost {
 				assistantMessage,
 				undefined,
 				undefined,
-				undefined,
+				capabilityModel,
 				settingsStore.config.titleGenerationUseLLM && isNewConversation ? content : undefined
 			);
 		} catch (error) {

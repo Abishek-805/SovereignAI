@@ -23,7 +23,7 @@ shutil.copytree('/input', root, ignore=shutil.ignore_patterns('program.py'))
 os.chdir(root)
 os.environ.update(HOME='/output', TMPDIR='/output', GOCACHE='/output/go-cache', GOTOOLCHAIN='local', GOPROXY='off', GOSUMDB='off')
 def command(args):
-    completed = subprocess.run(args, timeout=25)
+    completed = subprocess.run(args, timeout=110 if run else 25)
     if completed.returncode: sys.exit(completed.returncode)
 run = mode == 'run'
 if suffix == '.py':

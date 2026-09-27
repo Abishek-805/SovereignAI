@@ -33,7 +33,9 @@
      theme: document.documentElement.classList.contains('dark') ? 'vs-dark' : 'vs',
      readOnly: true, originalEditable: false, renderSideBySide: false,
      automaticLayout: true, minimap: { enabled: false }, fontSize: 13,
-     scrollBeyondLastLine: false, diffWordWrap: 'on', padding: { top: 12 }
+     scrollBeyondLastLine: false, diffWordWrap: 'on', padding: { top: 12 },
+     diffAlgorithm: 'advanced', ignoreTrimWhitespace: true,
+     hideUnchangedRegions: { enabled: true, contextLineCount: 2, minimumLineCount: 4, revealLineCount: 5 }
     });
     editor.setModel({ original: before, modified: after });
    } catch (error) { failure = String(error); }

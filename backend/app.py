@@ -20,6 +20,7 @@ from rag.context import relevant_passages, chat_evidence
 class AskRequest(BaseModel):
     question: str=Field(min_length=1,max_length=8000)
     document_ids: list[str] | None=Field(default=None,max_length=100)
+    history: list[str]=Field(default_factory=list,max_length=6)
 
     @field_validator('question')
     @classmethod
@@ -174,6 +175,11 @@ def create_app(service=None):
     @app.get('/workbench/artifacts')
     def workbench_artifacts(): return service.artifact_catalog()
 
+    @app.delete('/workbench/artifacts/{task_id}/{name}')
+    def delete_workbench_artifact(task_id: str, name: str):
+        service.delete_artifact(task_id,name)
+        return {'deleted':True}
+
     @app.get('/documents')
     def documents(): return service.documents()
 
@@ -201,7 +207,8 @@ def create_app(service=None):
 
     @app.post('/documents/report')
     def document_report(payload:AskRequest):
-        return service.create_document_report(payload.question,payload.document_ids)
+        return (service.create_document_report(payload.question,payload.document_ids,payload.history)
+                if payload.history else service.create_document_report(payload.question,payload.document_ids))
 
     @app.get('/sources/{chunk_id}')
     def source_detail(chunk_id:str):
@@ -233,7 +240,9 @@ def create_app(service=None):
         return FileResponse(path,filename=chunk.display_name,media_type=media.get(path.suffix.lstrip('.'),'text/plain'),content_disposition_type='inline' if path.suffix=='.pdf' else 'attachment')
 
     @app.post('/ask')
-    def ask(payload:AskRequest): return service.ask(payload.question,payload.document_ids)
+    def ask(payload:AskRequest):
+        return (service.ask(payload.question,payload.document_ids,payload.history)
+                if payload.history else service.ask(payload.question,payload.document_ids))
 
     @app.post('/vision/ask')
     @app.post('/agent/vision')
@@ -287,8 +296,11 @@ def create_app(service=None):
             job.progress('Reading selected documents')
             if job.cancel.is_set():return {'state':'cancelled'}
             job.progress('Creating Word report' if payload.kind=='report' else 'Generating sourced answer')
-            return (service.create_document_report(payload.question,payload.document_ids)
-                    if payload.kind=='report' else service.ask(payload.question,payload.document_ids))
+            if payload.kind=='report':
+                return (service.create_document_report(payload.question,payload.document_ids,payload.history)
+                        if payload.history else service.create_document_report(payload.question,payload.document_ids))
+            return (service.ask(payload.question,payload.document_ids,payload.history)
+                    if payload.history else service.ask(payload.question,payload.document_ids))
         return jobs.start('document',run)
 
     @app.post('/agent/jobs')

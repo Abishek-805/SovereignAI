@@ -79,6 +79,38 @@ def test_artifact_catalog_withholds_download_when_hash_fails(service):
         entry=client.get('/workbench/artifacts').json()[0]
         assert entry['validated'] is False and entry['url'] is None
 
+def test_delete_download_removes_only_selected_artifact(service):
+    import hashlib, json
+    task_id='b'*32
+    directory=service.settings.data_dir.parent/'outputs'/task_id
+    directory.mkdir(parents=True)
+    files=[]
+    for name in ('first.docx','second.xlsx'):
+        content=name.encode()
+        (directory/name).write_bytes(content)
+        files.append({'name':name,'sha256':hashlib.sha256(content).hexdigest()})
+    (directory/'manifest.json').write_text(json.dumps({'task_id':task_id,'files':files}))
+    with client_for(service) as client:
+        assert client.delete(f'/workbench/artifacts/{task_id}/first.docx').json()=={'deleted':True}
+        assert not (directory/'first.docx').exists()
+        assert (directory/'second.xlsx').exists()
+        assert [item['name'] for item in client.get('/workbench/artifacts').json()]==['second.xlsx']
+        assert client.delete(f'/workbench/artifacts/{task_id}/first.docx').status_code!=200
+
+
+def test_document_job_forwards_followup_context(service, monkeypatch):
+    calls=[]
+    monkeypatch.setattr(service,'ask',lambda question,document_ids,history: calls.append((question,document_ids,history)) or {'status':'answered','answer':'ok','sources':[]})
+    with client_for(service) as client:
+        job=client.post('/documents/jobs',json={'kind':'ask','question':'Compare it','document_ids':[],'history':['Summarize report A']}).json()
+        import time
+        for _ in range(40):
+            state=client.get('/coding/jobs/'+job['job_id']).json()
+            if state['state']!='running':break
+            time.sleep(.025)
+    assert state['state']=='completed'
+    assert calls==[('Compare it',[],['Summarize report A'])]
+
 def test_ask_and_upload(service,tmp_path):
     with client_for(service) as client:
         assert client.post('/ask',json={'question':' '}).status_code==422
@@ -135,6 +167,10 @@ def test_coding_workspace_api_is_bounded(service):
         assert result['state'] == 'completed' and '+    return a + b' in result['diff']
         assert client.get(f"/coding/workspaces/{workspace_id}/tasks/{result['task_id']}").json()['checks']['tests_passed']
         assert client.get(result['output_files'][0]['url']).content == b'ok'
+        artifact_name=result['output_files'][0]['name']
+        assert client.delete(f"/workbench/artifacts/{result['task_id']}/{artifact_name}").json()=={'deleted':True}
+        assert all(item['name']!=artifact_name or item['task_id']!=result['task_id']
+                   for item in client.get('/workbench/artifacts').json())
         undone=client.post(f"/coding/workspaces/{workspace_id}/tasks/{result['task_id']}/undo")
         assert undone.status_code==200 and undone.json()['state']=='undone'
         assert client.get(f'/coding/workspaces/{workspace_id}/files/solution.py').json()['content'].endswith('return 0\n')

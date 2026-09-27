@@ -114,18 +114,20 @@ class Workbench:
         finally:
             self.import_lock.release()
 
-    def ask(self,question,document_ids=None):
+    def ask(self,question,document_ids=None,history=None):
         if not isinstance(question,str) or not question.strip():
             raise WorkbenchError('invalid_question','Enter a question')
         if len(question)>8000:
             raise WorkbenchError('question_too_long','Question exceeds 8000 characters')
+        history=[item[:500] for item in (history or [])[-6:] if isinstance(item,str)]
         if not self.ask_lock.acquire(blocking=False):
             raise WorkbenchError('busy','Another answer is being generated')
         try:
             started=time.perf_counter()
             # Validate filters even for an empty collection, without loading embeddings.
             active=self.store.active_chunks(document_ids)
-            passages=retrieve(self.store,self.embedder,question,document_ids) if active else []
+            retrieval_query=' '.join([*history[-2:],question])[:4000]
+            passages=retrieve(self.store,self.embedder,retrieval_query,document_ids) if active else []
             retrieval_seconds=time.perf_counter()-started
             
             # Switch to text model if needed
@@ -134,7 +136,7 @@ class Workbench:
             self.registry.acquire_lease(route)
             switch_latency = time.perf_counter() - switch_start
             
-            result=answer(question,passages,self.model,self.settings.context,self.settings.output_tokens,self.settings.safety_tokens)
+            result=answer(question,passages,self.model,self.settings.context,self.settings.output_tokens,self.settings.safety_tokens,history=history)
             result['task_id']=uuid4().hex
             result['routing']={'capability':route,'model':self.registry.specs[route].alias if hasattr(self.registry,'specs') else 'sovereign-text'}
             result['timings'].update(
@@ -311,12 +313,12 @@ class Workbench:
         finally:
             self.ask_lock.release()
 
-    def create_document_report(self, question, document_ids):
+    def create_document_report(self, question, document_ids, history=None):
         from workflows.document_report import publish_report
         task=self.tasks.create('document_report',document_ids or [])
         try:
             self.tasks.step(task,'read_documents',{})
-            result=self.ask(question,document_ids)
+            result=self.ask(question,document_ids,history)
             self.tasks.step(task,'export_word',{'sources':len(result.get('sources',[]))})
             downloads=publish_report(self.settings,task['task_id'],question,result)
             self.tasks.complete(task,{'grounded_answer':True,'word_readback':True})
@@ -606,3 +608,44 @@ class Workbench:
                 except (OSError,ValueError,KeyError,TypeError,WorkbenchError):
                     continue
         return sorted(items,key=lambda item:str(item.get('created_at') or ''),reverse=True)[:50]
+
+    def delete_artifact(self, task_id, name):
+        """Delete one catalogued output and remove only its catalog entry."""
+        if not re.fullmatch(r'[a-f0-9]{32}',task_id) or Path(name).name!=name:
+            raise WorkbenchError('unknown_artifact','Artifact does not exist')
+        entry=next((item for item in self.artifact_catalog()
+                    if item['task_id']==task_id and item['name']==name),None)
+        if entry is None or not entry['validated']:
+            raise WorkbenchError('unknown_artifact','Artifact does not exist or failed validation')
+        if entry['kind']=='code_result':
+            for workspace in self.coding.list():
+                try:
+                    result=self.coding.result(workspace['workspace_id'],task_id)
+                    path=self.coding.artifact(workspace['workspace_id'],task_id,name)
+                except WorkbenchError:
+                    continue
+                path.unlink()
+                result['output_files']=[item for item in result['output_files'] if item['name']!=name]
+                self.coding._save_result(workspace['workspace_id'],result)
+                return
+        else:
+            directory=self.settings.data_dir.parent/'outputs'/task_id
+            manifest=directory/'manifest.json'
+            if directory.is_symlink() or manifest.is_symlink():
+                raise WorkbenchError('artifact_invalid','Artifact path failed validation')
+            metadata=json.loads(manifest.read_text(encoding='utf-8'))
+            files=metadata.get('files',[])
+            match=next((item for item in files if item.get('name')==name),None)
+            path=directory/name
+            if metadata.get('task_id')!=task_id or match is None or path.is_symlink() or not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest()!=match.get('sha256'):
+                raise WorkbenchError('artifact_invalid','Artifact failed validation')
+            path.unlink()
+            metadata['files']=[item for item in files if item.get('name')!=name]
+            temporary=directory/(uuid4().hex+'.tmp')
+            try:
+                temporary.write_text(json.dumps(metadata,indent=2),encoding='utf-8')
+                temporary.replace(manifest)
+            finally:
+                temporary.unlink(missing_ok=True)
+            return
+        raise WorkbenchError('unknown_artifact','Artifact does not exist')

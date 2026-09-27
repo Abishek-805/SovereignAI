@@ -32,4 +32,7 @@ export type ArtifactEntry = {
 export class WorkbenchService {
 	static info(): Promise<WorkbenchInfo> { return apiFetch('/workbench/info'); }
 	static artifacts(): Promise<ArtifactEntry[]> { return apiFetch('/workbench/artifacts'); }
+	static deleteArtifact(taskId: string, name: string): Promise<{ deleted: boolean }> {
+		return apiFetch(`/workbench/artifacts/${encodeURIComponent(taskId)}/${encodeURIComponent(name)}`, { method: 'DELETE' });
+	}
 }

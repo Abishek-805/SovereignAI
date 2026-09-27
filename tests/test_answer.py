@@ -18,6 +18,15 @@ def test_valid(one_chunk):
     assert result['sources'][0]['chunk_id']=='c1'
     assert result['checks']['semantic_support']=='not_automatically_proven'
 
+def test_followup_history_is_context_not_evidence(one_chunk):
+    model=FakeModel()
+    result=answer('What about that limit?',[one_chunk],model,history=['What is the limit?'])
+    payload=model.calls[0][-1]['content']
+    assert result['status']=='answered'
+    assert 'previous_user_questions_for_reference_only' in payload
+    assert 'What is the limit?' in payload
+    assert result['sources'][0]['display_name']==one_chunk.display_name
+
 @pytest.mark.parametrize('text,unknown',[('Limit is 7.1 mm/s.',[]),('Limit is 7.1 [S9].',['S9'])])
 def test_invalid_citations(one_chunk,text,unknown):
     model=FakeModel(); model.output['answer']=text

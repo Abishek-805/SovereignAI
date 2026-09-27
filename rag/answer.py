@@ -17,13 +17,13 @@ Return only a JSON object with status (answered or insufficient_evidence) and an
 Valid citation IDs only establish source linkage; never claim guaranteed correctness or safety.'''
 
 
-def _messages(question,sources):
+def _messages(question,sources,history=None):
     metadata=''
     if re.search(r'\b(today|current date|current time)\b',question,re.I):
         metadata='\nHost clock metadata: '+datetime.now().astimezone().isoformat()
     evidence=[{'citation':'['+s['label']+']','source':s['display_name'],'page':s['page'],'line_start':s['line_start'],'line_end':s['line_end'],'text':s['text']} for s in sources]
     return [{'role':'system','content':SYSTEM+metadata},
-            {'role':'user','content':json.dumps({'question':question,'evidence':evidence},ensure_ascii=False)+'\nUse the exact bracketed citation strings from the evidence in your answer. Filenames alone are not citations. Return the required JSON.'}]
+            {'role':'user','content':json.dumps({'question':question,'previous_user_questions_for_reference_only':history or [],'evidence':evidence},ensure_ascii=False)+'\nAnswer the current question. Previous questions provide conversational context, not factual evidence. Use the exact bracketed citation strings from the evidence in your answer. Filenames alone are not citations. Return the required JSON.'}]
 
 
 def _unsupported_numbers(answer_text,sources):
@@ -45,25 +45,25 @@ def _unsupported_numbers(answer_text,sources):
     return sorted(unsupported)
 
 
-def answer(question,passages,model,context=4096,output_tokens=512,safety_tokens=64):
+def answer(question,passages,model,context=4096,output_tokens=512,safety_tokens=64,history=None):
     started=time.perf_counter()
     if not passages:
         return {'status':'insufficient_evidence','answer':'No indexed evidence is available for this question. Import or select relevant documents.',
                 'sources':[],'checks':{'citation_ids_valid':True,'unknown_citations':[],'semantic_support':'not_automatically_proven'},'timings':{'total_seconds':time.perf_counter()-started},'model':None}
     budget=context-output_tokens-safety_tokens
-    if model.count_messages(_messages(question,[]))>budget:
+    if model.count_messages(_messages(question,[],history))>budget:
         raise WorkbenchError('question_too_long','Question and instructions exceed the model context budget')
     sources=[]
     prompt_tokens=0
     for passage in passages:
         candidate={**passage.to_dict(),'label':f'S{len(sources)+1}'}
-        count=model.count_messages(_messages(question,[*sources,candidate]))
+        count=model.count_messages(_messages(question,[*sources,candidate],history))
         if count<=budget:
             sources.append(candidate)
             prompt_tokens=count
     if not sources:
         raise WorkbenchError('context_budget','No complete evidence passage fits; shorten the question')
-    response=model.complete(_messages(question,sources),max_tokens=output_tokens)
+    response=model.complete(_messages(question,sources,history),max_tokens=output_tokens)
     result=response.get('result',{})
     if result.get('status') not in {'answered','insufficient_evidence'} or not isinstance(result.get('answer'),str) or not result['answer'].strip():
         raise WorkbenchError('generation_format','Model did not return the required answer format')

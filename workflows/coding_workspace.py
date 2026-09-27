@@ -252,7 +252,7 @@ class CodingWorkspace:
             ledger.step(task, 'read_files', {'files': sorted(files)})
             events.append({'event': 'reading_files', 'files': sorted(files)})
             messages = [
-                {'role': 'system', 'content': 'Return only the complete source code for the selected file in the JSON code field. Match its language. Edit only that file. Do not change supplied tests. The file will be checked in an isolated container.'},
+                {'role': 'system', 'content': 'Return only the complete source code for the selected file in the JSON code field. Match its language. Edit only that file. Preserve every unrelated line exactly, including comments, imports, blank lines, and formatting. Make the smallest change that solves the task. Do not change supplied tests. The file will be checked in an isolated container.'},
                 {'role': 'user', 'content': f'Task: {instruction.strip()}\nTarget: {target}\nFiles:\n' +
                  '\n'.join(f'--- {name} ---\n{content}' for name, content in sorted(context_files.items()))}
             ]

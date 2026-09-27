@@ -141,8 +141,9 @@
   <aside class="ai-panel">
    <div class="pane-title"><span><Sparkles size={15}/> ASSISTANT</span><span class="local-badge">LOCAL</span></div>
    <div class="ai-content">
-    <div class="assistant-heading"><h3>Ask about your project</h3><p>{workspace?.name||'Open or create a workspace'} · {workspace?.files.length||0} files</p></div>
+    <div class="assistant-heading"><h3>Ask about your project</h3><p>{workspace?.name||'Open or create a workspace'} · {workspace?.files.length||0} files</p><details class="safety-details"><summary>How changes are checked</summary><p class="small">The assistant reads the project tree, plans bounded file and folder changes, and validates the project in an isolated Docker sandbox before saving. You can switch files while it runs; edits made during validation cause a conflict instead of being overwritten.</p></details></div>
     <div class="coding-conversation" aria-label="Coding task conversation">
+     {#if !codingTurns.length && !task}<div class="coding-empty"><strong>Work across your project</strong><p>Ask the assistant to inspect the file tree, make changes, and check the result.</p><div><button onclick={()=>prompt='Find and fix errors in this project. Inspect the relevant files and run the available checks.'}>Find and fix errors</button><button onclick={()=>prompt='Create a new file for this feature. Inspect the project structure and place it in the appropriate folder.'}>Create a file</button></div></div>{/if}
      {#each codingTurns as turn (turn.jobId)}
       <div class="coding-turn"><p class="coding-request">{turn.instruction}</p><div class="coding-turn-status"><span>{turn.state==='running'?'Working on project':turn.state==='completed'?'Changes applied':turn.state==='stopped'?'Stopped':'Check failed'}</span>{#if turn.state!=='running'}<button onclick={()=>void openCodingTurn(turn)}>Review</button>{/if}</div></div>
      {/each}
@@ -151,7 +152,6 @@
     </div>
     <div class="assistant-composer"><textarea aria-label="Coding task" bind:value={prompt} placeholder="Describe a project change, new file, or folder…" onkeydown={e=>{if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();void askAI();}}}></textarea><div class="assistant-actions"><span>Ctrl+Enter to apply</span><button class="primary" onclick={askAI} disabled={busy||!prompt.trim()||!runtime?.sandbox.ready}><Sparkles size={14}/>{busy?'Working…':'Apply change'}</button></div></div>
     {#if !runtime?.sandbox.ready}<DockerControl onready={()=>void refreshRuntime()}/>{/if}
-    <details class="safety-details"><summary>How changes are checked</summary><p class="small">The assistant reads the project tree, plans bounded file and folder changes, and validates the project in an isolated Docker sandbox before saving. You can switch files while it runs; edits made during validation cause a conflict instead of being overwritten.</p></details>
    </div>
   </aside>
   {/if}

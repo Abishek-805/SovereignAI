@@ -89,4 +89,25 @@
  @media(max-width:600px){.manage-row-actions{flex-wrap:wrap;justify-content:flex-end}.manage-row-actions button{font-size:10px}}
 .documents-layout{grid-template-rows:minmax(0,1fr);overflow:hidden}.documents .ask-pane{display:flex;flex-direction:column;min-height:0;padding:0;overflow:hidden}.documents .knowledge-feed{flex:1;min-height:0;overflow:auto}.documents .knowledge-composer{flex:none}@media(max-width:800px){.documents .ask-pane{height:540px;min-height:400px}}
 .documents .knowledge-heading{padding:10px 13px 8px}.knowledge-header-row{display:flex;align-items:center;justify-content:space-between;gap:8px}.knowledge-header-row h2{font-size:16px;margin:5px 0 0}.knowledge-header-row .local-badge{float:none;font-size:9px}.knowledge-chat-actions{display:flex;gap:7px;margin-top:10px}.knowledge-chat-actions button{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:32px;padding:6px 9px;border:1px solid var(--border);border-radius:8px;background:var(--background);color:var(--foreground);font-size:11px;font-weight:600}.knowledge-chat-actions button:hover,.knowledge-history .history-entry:hover{background:var(--accent)}.knowledge-chat-actions button:disabled{opacity:.5}.knowledge-chat-actions .new-conversation{background:var(--foreground);color:var(--background);border-color:var(--foreground)}.knowledge-chat-actions .history-button span{color:var(--muted-foreground);font-size:10px}.knowledge-history{max-height:190px;overflow:auto;margin-top:9px;padding:5px;border:1px solid var(--border);border-radius:9px;background:var(--background)}.knowledge-history>p{padding:10px;color:var(--muted-foreground);font-size:11px}.history-entry{display:flex;align-items:center;gap:3px;border-radius:6px}.history-entry.current{background:var(--accent)}.history-entry .history-open{min-width:0;flex:1;padding:7px;text-align:left}.history-entry strong,.history-entry small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.history-entry strong{font-size:11px}.history-entry small{margin-top:3px;color:var(--muted-foreground);font-size:9px}.history-entry .history-delete{flex:none;padding:6px;color:var(--muted-foreground)}.documents .knowledge-composer{padding:7px 9px}.documents .knowledge-composer .ask-form textarea{height:65px;min-height:55px;padding:10px 11px}.knowledge-composer .scope{padding:2px 10px 6px;font-size:9px}.knowledge-composer .ask-actions{padding:0 6px 6px;gap:6px}.composer-tools{display:flex;align-items:center;gap:5px;min-width:0}.composer-upload{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;font-size:10px;padding:6px;cursor:pointer}.composer-upload input{position:absolute;width:1px;height:1px;opacity:0}.knowledge-composer .mode-switch button{padding:6px;font-size:10px}.knowledge-composer .send{padding:7px}.documents .knowledge-feed{padding:0 13px 13px}.knowledge-feed .conversation{margin-top:10px}
+.documents .documents-head{padding:10px 18px;gap:12px;min-height:76px}
+.documents .documents-head h1{font-size:21px;margin:1px 0}
+.documents .documents-head p{font-size:11px;line-height:1.3}
+.documents .document-head-actions{gap:7px}
+.documents .document-head-actions .upload{padding:8px 10px;font-size:11px}
+.documents .document-head-actions .manage-button{padding:7px 9px;font-size:11px}
+.documents .knowledge-heading{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:7px;row-gap:5px;padding:8px 12px}
+.documents .knowledge-header-row:first-child{grid-column:1/-1}
+.documents .knowledge-header-row:nth-child(2){grid-column:1;grid-row:2;min-width:0}
+.documents .knowledge-header-row h2{font-size:15px;margin:0;white-space:nowrap}
+.documents .knowledge-chat-actions{grid-column:2;grid-row:2;gap:5px;margin:0}
+.documents .knowledge-chat-actions button{min-height:28px;padding:4px 6px;font-size:10px;gap:3px}
+.documents .knowledge-history{grid-column:1/-1;margin-top:3px}
+.documents .knowledge-composer{padding:5px 8px}
+.documents .knowledge-composer .ask-form textarea{height:48px;min-height:45px;padding:8px 10px}
+.documents .knowledge-composer .scope{padding:0 9px 3px}
+.documents .knowledge-composer .ask-actions{padding:0 5px 5px}
+.documents .knowledge-composer .mode-switch button{padding:5px}
+.documents .knowledge-composer .send{padding:6px}
+.documents .knowledge-feed{padding:0 12px 10px}
+@media(max-width:800px){.documents .documents-head{padding:10px 12px}.documents .document-head-actions{width:100%}}
 </style>

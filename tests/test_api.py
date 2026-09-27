@@ -122,6 +122,15 @@ def test_ask_and_upload(service,tmp_path):
         assert client.get('/documents').json()[0]['chunk_count']==1
 
 
+def test_document_greeting_does_not_search_unrelated_files(service, monkeypatch):
+    monkeypatch.setattr(service.embedder, 'encode', lambda *_: (_ for _ in ()).throw(AssertionError('greeting searched documents')))
+    with client_for(service) as client:
+        result=client.post('/ask',json={'question':'hi'}).json()
+    assert result['status']=='greeting'
+    assert result['sources']==[]
+    assert 'Ask me about your selected files' in result['answer']
+
+
 def test_document_manager_rename_and_remove(service):
     with client_for(service) as client:
         response = client.post('/documents/import', files={'file': ('manage.txt', b'Local document management.')})

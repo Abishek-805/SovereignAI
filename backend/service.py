@@ -125,6 +125,9 @@ class Workbench:
             raise WorkbenchError('busy','Another answer is being generated')
         try:
             started=time.perf_counter()
+            if question.strip().lower().rstrip('!. ') in {'hi', 'hello', 'hey', 'good morning', 'good afternoon', 'good evening'}:
+                return {'status':'greeting','answer':'Hi! Ask me about your selected files, or add a file and ask me to compare it with the others.',
+                        'sources':[],'task_id':uuid4().hex,'timings':{'total_seconds':time.perf_counter()-started},'model':None}
             # Validate filters even for an empty collection, without loading embeddings.
             active=self.store.active_chunks(document_ids)
             retrieval_query=' '.join([*history[-2:],question])[:4000]

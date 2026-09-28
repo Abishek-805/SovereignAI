@@ -23,7 +23,8 @@
 	});
 </script>
 
-<div class={showTabs ? 'md:[--chat-tabs-offset:1.25rem]' : ''}>
+<!-- Reserve the fixed Chat header even when conversation tabs are disabled. -->
+<div class="md:[--chat-tabs-offset:4rem]">
 	{#if showTabs}
 		<ChatTabs />
 	{/if}

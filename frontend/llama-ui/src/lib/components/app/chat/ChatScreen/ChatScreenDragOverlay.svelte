@@ -1,5 +1,5 @@
 <script>
-	import { Upload } from '@lucide/svelte';
+	import Upload from '@lucide/svelte/icons/upload';
 </script>
 
 <div

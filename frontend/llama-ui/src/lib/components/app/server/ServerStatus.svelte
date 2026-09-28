@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { AlertTriangle, Server } from '@lucide/svelte';
+	import AlertTriangle from '@lucide/svelte/icons/alert-triangle';
+import Server from '@lucide/svelte/icons/server';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
 	import { ICON_CLASS_DEFAULT } from '$lib/constants';

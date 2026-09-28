@@ -1,5 +1,10 @@
 <script lang="ts">
-	import { ArrowRight, Copy, Edit, GitBranch, RefreshCw, Trash2 } from '@lucide/svelte';
+	import ArrowRight from '@lucide/svelte/icons/arrow-right';
+import Copy from '@lucide/svelte/icons/copy';
+import Edit from '@lucide/svelte/icons/edit';
+import GitBranch from '@lucide/svelte/icons/git-branch';
+import RefreshCw from '@lucide/svelte/icons/refresh-cw';
+import Trash2 from '@lucide/svelte/icons/trash-2';
 	import {
 		ActionIcon,
 		ChatMessageActionIconsBranchingControls,

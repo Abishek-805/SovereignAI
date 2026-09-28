@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { parseWriteFileMeta, parseWriteFileTitleMeta } from './parsers/write-file';
 	import ToolCallBlock from './ToolCallBlock.svelte';
-	import { XCircle } from '@lucide/svelte';
+	import XCircle from '@lucide/svelte/icons/x-circle';
 	import { SyntaxHighlightedCode } from '$lib/components/app';
 	import { MAX_HEIGHT_CODE_BLOCK, RESULT_STAT_SEPARATOR } from '$lib/constants';
 	import { toolsStore } from '$lib/stores';

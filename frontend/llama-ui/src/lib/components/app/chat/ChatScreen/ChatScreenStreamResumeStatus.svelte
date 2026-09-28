@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Loader2 } from '@lucide/svelte';
+	import Loader2 from '@lucide/svelte/icons/loader-2';
 	import { StreamConnectionState } from '$lib/enums';
 	import { chatStore } from '$lib/stores';
 

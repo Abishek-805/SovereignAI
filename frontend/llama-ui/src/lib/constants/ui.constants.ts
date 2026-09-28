@@ -1,4 +1,7 @@
-import { Package, Search, Settings, SquarePen } from '@lucide/svelte';
+import Package from '@lucide/svelte/icons/package';
+import Search from '@lucide/svelte/icons/search';
+import Settings from '@lucide/svelte/icons/settings';
+import SquarePen from '@lucide/svelte/icons/square-pen';
 import { SidebarAction, ToolSource } from '$lib/enums';
 import type { DesktopIconStripItem } from '$lib/types';
 

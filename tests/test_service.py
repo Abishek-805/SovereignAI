@@ -36,7 +36,9 @@ def test_import_unchanged_and_replace(service,tmp_path):
 
 def test_busy_and_empty(service):
     assert service.ask('limit?')['status']=='insufficient_evidence'
-    assert service.ask('limit?')['routing']=={'capability':'text','model':'sovereign-text'}
+    routing=service.ask('limit?')['routing']
+    assert {k:routing[k] for k in ('capability','model')}=={'capability':'text','model':'sovereign-text'}
+    assert routing['decision']['request_id']
     service.ask_lock.acquire()
     try:
         with pytest.raises(WorkbenchError) as error: service.ask('limit?')
@@ -53,7 +55,8 @@ def test_text_and_vision_use_distinct_capability_routes(service,tmp_path,monkeyp
     monkeypatch.setattr('backend.service.ask_vision',lambda img,question:{'status':'answered','answer':'P-101'})
     result=service.ask_vision(image,'What is printed?')
     assert leases==['text','vision']
-    assert result['routing']=={'capability':'vision','model':'sovereign-vision'}
+    assert {k:result['routing'][k] for k in ('capability','model')}=={'capability':'vision','model':'sovereign-vision'}
+    assert result['routing']['decision']['capability']=='vision'
 
 
 def test_coding_workflow_requires_verified_sandbox(service):

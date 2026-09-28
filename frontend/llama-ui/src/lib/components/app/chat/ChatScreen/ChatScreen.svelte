@@ -29,6 +29,7 @@
 	import { parseFilesToMessageExtras } from '$lib/utils/browser-only';
 	import { onDestroy, onMount, tick } from 'svelte';
 	import { toast } from 'svelte-sonner';
+	import { knowledgeContext } from '$lib/stores/knowledge-context.svelte';
 
 	let { showCenteredEmpty = false } = $props();
 
@@ -105,18 +106,47 @@
 	}
 
 	async function handleSendMessage(message: string, files?: ChatUploadedFile[]): Promise<boolean> {
+		let knowledgeDocuments;
+		try {
+			knowledgeDocuments =
+				files?.length && knowledgeContext.scope === 'all'
+					? []
+					: await knowledgeContext.resolve('chat');
+		} catch (e) {
+			toast.error('Could not read connected Knowledge: ' + String(e));
+			return false;
+		}
+		if (knowledgeDocuments.length) {
+			if (files?.length) {
+				toast.error(
+					'Send uploaded files separately, or connect the document from Knowledge. Your attachments remain ready.'
+				);
+				return false;
+			}
+			handleSendLikeScroll();
+			await chatStore.sendMessage(message, undefined, $state.snapshot(knowledgeDocuments));
+			knowledgeContext.pending = [];
+			return true;
+		}
 		const images = files?.filter((file) => /^image\/(?:png|jpeg)$/.test(file.type)) ?? [];
-		const chatVisionAvailable = serverStore.isRouterMode && modelsStore.models.some((model) =>
-			modelsStore.props.modelSupportsVision(model.model)
-		);
+		const chatVisionAvailable =
+			serverStore.isRouterMode &&
+			modelsStore.models.some((model) => modelsStore.props.modelSupportsVision(model.model));
 		if (images.length && !chatVisionAvailable && files?.length !== 1) {
 			toast.error('Send one image at a time from Chat, or attach the other files in Agent.');
 			return false;
 		}
 		if (images.length === 1 && files?.length === 1 && !chatVisionAvailable) {
-			window.dispatchEvent(new CustomEvent('sovereign-open-workspace', {
-				detail: { tab: 'agent', draft: message.trim() || 'Describe this image.', image: images[0].file, autoSend: true }
-			}));
+			window.dispatchEvent(
+				new CustomEvent('sovereign-open-workspace', {
+					detail: {
+						tab: 'agent',
+						draft: message.trim() || 'Describe this image.',
+						image: images[0].file,
+						autoSend: true
+					}
+				})
+			);
 			return true;
 		}
 		const plainFiles = files ? $state.snapshot(files) : undefined;
@@ -220,7 +250,12 @@
 				});
 			} else if (lastUserBubble) {
 				// On desktop, place the last user message near the top of the viewport
-				const topPadding = 24;
+				const tabs = document.querySelector('.chat-tabs-fade');
+				const topPadding = Math.max(
+					64,
+					container.getBoundingClientRect().top + 16,
+					(tabs?.getBoundingClientRect().bottom ?? 0) + 12
+				);
 				const bubbleRect = lastUserBubble.getBoundingClientRect();
 
 				container.scrollTo({

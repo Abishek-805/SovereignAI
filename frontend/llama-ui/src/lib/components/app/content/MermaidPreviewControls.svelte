@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Download } from '@lucide/svelte';
+	import Download from '@lucide/svelte/icons/download';
 	import RotateCcwIcon from '@lucide/svelte/icons/rotate-ccw';
 	import ZoomInIcon from '@lucide/svelte/icons/zoom-in';
 	import ZoomOutIcon from '@lucide/svelte/icons/zoom-out';

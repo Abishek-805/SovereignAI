@@ -5,7 +5,11 @@
 		type ResourceTreeNode,
 		sortTreeChildren
 	} from './mcp-resources-browser';
-	import { Braces, ChevronDown, ChevronRight, FolderOpen, Loader2 } from '@lucide/svelte';
+	import Braces from '@lucide/svelte/icons/braces';
+import ChevronDown from '@lucide/svelte/icons/chevron-down';
+import ChevronRight from '@lucide/svelte/icons/chevron-right';
+import FolderOpen from '@lucide/svelte/icons/folder-open';
+import Loader2 from '@lucide/svelte/icons/loader-2';
 	import { McpServerIdentity } from '$lib/components/app/mcp';
 	import { Checkbox } from '$lib/components/ui/checkbox';
 	import * as Collapsible from '$lib/components/ui/collapsible';

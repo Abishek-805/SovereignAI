@@ -9,7 +9,8 @@
 
 	let fileInputElement: HTMLInputElement | undefined;
 
-	export function click() {
+	export function click(accept = '') {
+		if (fileInputElement) fileInputElement.accept = accept;
 		fileInputElement?.click();
 	}
 
@@ -19,6 +20,7 @@
 		if (input.files) {
 			onFileSelect?.(Array.from(input.files));
 		}
+		input.value = '';
 	}
 </script>
 

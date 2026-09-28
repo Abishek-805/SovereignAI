@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Plus } from '@lucide/svelte';
+	import Plus from '@lucide/svelte/icons/plus';
 	import { replaceState } from '$app/navigation';
 	import { page } from '$app/state';
 	import { McpServerCard, McpServerCardSkeleton } from '$lib/components/app';

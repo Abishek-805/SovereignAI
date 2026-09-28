@@ -9,7 +9,8 @@
 	// Components supply only their `meta`, a title snippet, and a body
 	// snippet - everything around them is this single source of truth.
 
-	import { Loader2, Wrench } from '@lucide/svelte';
+	import Loader2 from '@lucide/svelte/icons/loader-2';
+import Wrench from '@lucide/svelte/icons/wrench';
 	import { CollapsibleContentBlock } from '$lib/components/app';
 	import { ICON_CLASS_DEFAULT, ICON_CLASS_SPIN } from '$lib/constants';
 	import { AgenticSectionType } from '$lib/enums';

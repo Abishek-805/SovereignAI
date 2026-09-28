@@ -9,6 +9,8 @@ setup-staging/
 llama.cpp/
 benchmarks/*.log
 benchmarks/*.pid
+benchmarks/ui-acceptance/
+benchmarks/ui-knowledge-before.png
 
 .app-venv/
 .offline-test-venv/
@@ -33,3 +35,20 @@ offline/wheels/
 *.log
 *.pid
 offline-manifest.json
+/benchmarks/knowledge-context-acceptance/
+/benchmarks/knowledge-management-acceptance/
+/benchmarks/ide-navigation-acceptance/
+/benchmarks/agent-layout-acceptance/
+/benchmarks/knowledge-toggle-drag-acceptance/
+/benchmarks/ide-review-drag-acceptance/
+
+# Local live-run snapshots can contain project files and document metadata.
+/benchmarks/*/
+!/benchmarks/heldout-fixtures/
+/benchmarks/*-results.json
+/benchmarks/*-results.csv
+/benchmarks/*-job.json
+/benchmarks/routing-system-integration-corrections.json
+/benchmarks/routing-system-integration-corrections.csv
+/benchmarks/routing-report-correction-results.json
+/benchmarks/cpu-calculator-live-results-invalid-draft.json

@@ -1,5 +1,13 @@
 import { CONFIG_LOCALSTORAGE_KEY, STORAGE_APP_NAME } from '$lib/constants';
-import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import Dexie from 'dexie';
+import { MigrationService } from '$lib/services/migration.service';
+
+// These cases verify localStorage defaults, not browser IndexedDB migrations.
+// Keep the unrelated database empty rather than opening IndexedDB in Node.
+vi.mock('$lib/services/database.service', () => ({
+	DatabaseService: { getAllConversations: vi.fn().mockResolvedValue([]) }
+}));
 
 // node env unit project has no DOM, install a minimal localStorage backed by a Map
 beforeAll(() => {
@@ -33,20 +41,18 @@ describe('mcp-default-overrides-merge-v1 migration', () => {
 	const MCP_DEFAULT_OVERRIDES_KEY = `${STORAGE_APP_NAME}.mcpDefaultServerOverrides`;
 
 	beforeEach(async () => {
+		vi.spyOn(Dexie, 'getDatabaseNames').mockResolvedValue([]);
 		localStorage.clear();
 		// Reset the migration run counter so `runAllMigrations` is guaranteed to execute.
-		await import('$lib/services/migration.service').then((mod) =>
-			mod.MigrationService.resetState()
-		);
+		MigrationService.resetState();
 	});
 
 	afterEach(() => {
 		localStorage.clear();
+		vi.restoreAllMocks();
 	});
 
 	async function runMigrations() {
-		const { MigrationService } = await import('$lib/services/migration.service');
-
 		await MigrationService.runAllMigrations();
 	}
 

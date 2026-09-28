@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { ChevronDown, ShieldQuestion } from '@lucide/svelte';
+	import ChevronDown from '@lucide/svelte/icons/chevron-down';
+import ShieldQuestion from '@lucide/svelte/icons/shield-question';
 	import { ChatMessageActionCard } from '$lib/components/app';
 	import { Button, buttonVariants } from '$lib/components/ui/button';
 	import * as ButtonGroup from '$lib/components/ui/button-group';

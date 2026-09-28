@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Search, X } from '@lucide/svelte';
+	import Search from '@lucide/svelte/icons/search';
+import X from '@lucide/svelte/icons/x';
 	import { Input } from '$lib/components/ui/input';
 	import { ICON_CLASS_DEFAULT } from '$lib/constants';
 

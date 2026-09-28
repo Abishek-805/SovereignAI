@@ -41,8 +41,9 @@ test.describe('PWA Service Worker', () => {
 		const swContent = await swResponse.text();
 
 		// Precache contains SvelteKit content-hashed bundle paths
-		expect(swContent).toMatch(/"_app\/immutable\/bundle\.[a-zA-Z0-9_-]+\.js"/);
-		expect(swContent).toMatch(/"_app\/immutable\/assets\/bundle\.[a-zA-Z0-9_-]+\.css"/);
+		expect(swContent).toMatch(/"_app\/immutable\/entry\/start\.[a-zA-Z0-9_-]+\.js"/);
+		expect(swContent).toMatch(/"_app\/immutable\/entry\/app\.[a-zA-Z0-9_-]+\.js"/);
+		expect(swContent).toMatch(/"_app\/immutable\/assets\/[^"/]+\.css"/);
 		expect(swContent).toMatch(/"manifest\.webmanifest"/);
 		expect(swContent).toMatch(/"_app\/version\.json"/);
 		// NavigationRoute is intentionally absent — server API endpoints

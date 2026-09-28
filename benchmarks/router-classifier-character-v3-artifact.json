@@ -1,0 +1,32 @@
+{
+  "release_ready": false,
+  "production_enabled": false,
+  "root_integration_validation_required": true,
+  "feature_mode": "character",
+  "development_file": "router-development-v3.json",
+  "development_sha256": "0b4642529a1a43509678f3a6941d5b7d2128ac20d28e1ddec2f5fe065ed6a68e",
+  "ridge_alpha": 0.5,
+  "policy": {
+    "minimum_score": 0.6,
+    "minimum_margin": 0.5,
+    "selection": "maximum calibration coverage with zero accepted calibration mistakes; stricter score/margin tie break",
+    "calibration_accepted": 10,
+    "minimum_parent_score": 0.6,
+    "minimum_parent_margin": 0.5
+  },
+  "accepted_labels": [
+    "answer",
+    "calculate",
+    "clarify",
+    "vision",
+    "search_documents",
+    "inspect_code",
+    "edit_code"
+  ],
+  "heldout_sha256": "8349265ff6e066929b2abb2cc6319ca8683c4e21112651a625b72decdf73c79b",
+  "release_gate_failures": [
+    "heldout_accuracy",
+    "accepted_coverage"
+  ],
+  "module_sha256": "27a3efa2eef602e0f47d4736a47107717c657a55c999b67068f2613a35281444"
+}

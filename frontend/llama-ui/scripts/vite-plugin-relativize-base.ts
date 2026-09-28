@@ -49,6 +49,15 @@ export function relativizeBasePlugin(): Plugin {
 					// index.html: modulepreload, stylesheet and bootstrap import reference "/_app/
 					rewrite(resolve(outDir, 'index.html'), [['"/_app/', '"./_app/']]);
 
+					// The fallback boots via dynamic module imports. Speculative HTML modulepreloads
+					// can start before service-worker control changes and cannot be reused across
+					// that boundary in Chromium. Keep imports and runtime chunk loading intact.
+					const fallbackPath = resolve(outDir, 'index.html');
+					if (existsSync(fallbackPath)) {
+						const fallback = readFileSync(fallbackPath, 'utf-8');
+						writeFileSync(fallbackPath, fallback.replace(/\s*<link\b[^>]*\brel="modulepreload"[^>]*>/g, ''), 'utf-8');
+					}
+
 					// sw.js: the only absolute entries are the navigate fallback precache key and handler
 					rewrite(resolve(outDir, 'sw.js'), [
 						['{url:"/"', '{url:"./"'],

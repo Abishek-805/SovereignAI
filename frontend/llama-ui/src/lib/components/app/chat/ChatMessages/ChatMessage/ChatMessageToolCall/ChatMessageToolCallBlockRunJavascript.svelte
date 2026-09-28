@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { parseRunJavascriptMeta } from './parsers/run-javascript';
 	import ToolCallBlock from './ToolCallBlock.svelte';
-	import { Terminal, XCircle } from '@lucide/svelte';
+	import Terminal from '@lucide/svelte/icons/terminal';
+import XCircle from '@lucide/svelte/icons/x-circle';
 	import { SyntaxHighlightedCode } from '$lib/components/app';
 	import { MAX_HEIGHT_CODE_BLOCK } from '$lib/constants';
 	import { FileTypeText } from '$lib/enums';

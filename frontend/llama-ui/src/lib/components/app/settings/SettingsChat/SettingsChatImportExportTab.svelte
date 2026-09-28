@@ -1,6 +1,8 @@
 <script lang="ts">
 	import SettingsChatImportExportSection from './SettingsChatImportExportSection.svelte';
-	import { Download, Trash2, Upload } from '@lucide/svelte';
+	import Download from '@lucide/svelte/icons/download';
+import Trash2 from '@lucide/svelte/icons/trash-2';
+import Upload from '@lucide/svelte/icons/upload';
 	import {
 		DialogConfirmation,
 		DialogConversationSelection,

@@ -1,124 +1,612 @@
 <script lang="ts">
- import { onMount, tick } from 'svelte';
- import { FileText, Upload, Search, Send, Download, Eye, PanelLeft, PanelRight, FolderOpen, X, Plus, History } from '@lucide/svelte';
- type Doc={document_id:string;display_name:string;chunk_count:number;warnings?:string[]};
- type Content=Doc & {pages:number[];methods:string[];text:string;original_url:string|null};
- type Answer={status:string;answer:string;sources?:{label:string;display_name:string;page:number|null;text:string;chunk_id:string;document_id?:string}[];downloads?:Record<string,string>};
- let { report=false }: {report?:boolean}=$props();
- let docs=$state<Doc[]>([]),selected=$state<string[]>([]),active=$state<Content|null>(null),filter=$state(''),question=$state('');
- let view=$state('document'),mode=$state('ask');
- $effect(()=>{if(report)mode='report';});
- type Turn={question:string;result:Answer;documentIds:string[];availableDocumentIds?:string[];taskId?:string};
- let turns=$state<Turn[]>([]),pendingQuestion=$state(''),pendingSelection=$state<string[]>([]),pendingAvailableSelection=$state<string[]>([]);
- type KnowledgeChat={id:string;title:string;updatedAt:number;turns:Turn[];selected:string[];mode:string};
- let chats=$state<KnowledgeChat[]>([]),chatId=$state(''),historyOpen=$state(false);
- let result=$state<Answer|null>(null),busy=$state(false),notice=$state(''),showOriginal=$state(false),documentJob=$state('');
- let showLibrary=$state(true),showAssistant=$state(true);
- let manageOpen=$state(false),manageFilter=$state(''),folders=$state<Record<string,string>>({});
- let documentAction=$state<{kind:'rename'|'remove';doc:Doc}|null>(null),newDocumentName=$state('');
- let libraryWidth=$state(265),assistantWidth=$state(335);
- let documentsElement=$state<HTMLElement>();
- const selectedDocs=$derived(docs.filter(doc=>selected.includes(doc.document_id)));
- const visibleDocs=$derived(docs.filter(doc=>doc.display_name.toLowerCase().includes(manageFilter.toLowerCase())||(folders[doc.document_id]||'').toLowerCase().includes(manageFilter.toLowerCase())));
- function instantKnowledgeReply(value:string){const text=value.trim().replaceAll('’',"'");if(/^(?:what(?:'s| is|s) your name|what(?:'s| is|s) the name of (?:this |the )?(?:assistant|agent|ai)|who are you|tell me your name|your name)[!.? ]*$/i.test(text))return "I'm SovereignAI, your local assistant.";if(/^(?:hi|hello|hey|hay|hai|yo|yoy|hiya|good morning|good afternoon|good evening|what(?:'s| is|s) up|how(?:'s| is) it going|sup)[!.? ]*$/i.test(text))return 'Hi! Ask me about your selected files, or add a file and ask me to compare it with the others.';return '';}
- function isGreeting(value:string){return !!instantKnowledgeReply(value);}
- function setSelection(ids:string[]){selected=ids.slice(0,100);if(ids.length>100)notice='You can search up to 100 documents at once.';saveSession();}
- function toggleSelection(id:string){setSelection(selected.includes(id)?selected.filter(item=>item!==id):[...selected,id]);}
- function beginDocumentAction(kind:'rename'|'remove',doc:Doc){documentAction={kind,doc};newDocumentName=doc.display_name;}
- async function confirmDocumentAction(){if(!documentAction)return;const {kind,doc}=documentAction;busy=true;try{const response=await fetch(`/documents/${doc.document_id}`,{method:kind==='rename'?'PATCH':'DELETE',headers:kind==='rename'?{'content-type':'application/json'}:undefined,body:kind==='rename'?JSON.stringify({display_name:newDocumentName.trim()}):undefined});await json(response);if(kind==='rename'&&active?.document_id===doc.document_id)active={...active,display_name:newDocumentName.trim()};if(kind==='remove'){selected=selected.filter(id=>id!==doc.document_id);if(active?.document_id===doc.document_id)active=null;delete folders[doc.document_id];localStorage.setItem('sovereign-document-folders',JSON.stringify(folders));}await refresh();saveSession();notice=kind==='rename'?'Document renamed.':'Document removed from the library. Source files on disk are unchanged.';documentAction=null;}catch(e){notice=String(e);}finally{busy=false;}}
- function resizePane(side:'library'|'assistant',event:PointerEvent){if(event.button!==0)return;event.preventDefault();const startX=event.clientX,start=side==='library'?libraryWidth:assistantWidth;const move=(e:PointerEvent)=>{const width=Math.max(190,Math.min(560,start+(side==='library'?e.clientX-startX:startX-e.clientX)));if(side==='library')libraryWidth=width;else assistantWidth=width;};const stop=()=>{window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',stop);localStorage.setItem('sovereign-doc-library-width',String(libraryWidth));localStorage.setItem('sovereign-doc-assistant-width',String(assistantWidth));};window.addEventListener('pointermove',move);window.addEventListener('pointerup',stop);}
- function nudgePane(side:'library'|'assistant',event:KeyboardEvent){if(event.key!=='ArrowLeft'&&event.key!=='ArrowRight')return;event.preventDefault();const amount=(event.key==='ArrowRight'?20:-20)*(side==='library'?1:-1);if(side==='library'){libraryWidth=Math.max(190,Math.min(560,libraryWidth+amount));localStorage.setItem('sovereign-doc-library-width',String(libraryWidth));}else{assistantWidth=Math.max(190,Math.min(560,assistantWidth+amount));localStorage.setItem('sovereign-doc-assistant-width',String(assistantWidth));}}
- function activity(running:boolean,stage:string){window.dispatchEvent(new CustomEvent('sovereign-activity',{detail:{view:'Documents',running,stage,jobId:documentJob}}));}
- async function json(response:Response){const data=await response.json();if(!response.ok)throw Error(data.message||'Request failed');return data;}
- async function refresh(){try{docs=await json(await fetch('/documents'));selected=selected.filter(id=>docs.some(doc=>doc.document_id===id));}catch(e){notice=String(e);}}
- onMount(()=>{libraryWidth=Math.max(190,Math.min(560,Number(localStorage.getItem('sovereign-doc-library-width'))||265));assistantWidth=Math.max(190,Math.min(560,Number(localStorage.getItem('sovereign-doc-assistant-width'))||335));try{folders=JSON.parse(localStorage.getItem('sovereign-document-folders')||'{}');}catch{folders={};}try{const stored=JSON.parse(localStorage.getItem('sovereign-knowledge-history')||'[]');chats=Array.isArray(stored)?stored:[];}catch{chats=[];}void (async()=>{try{const saved=JSON.parse(sessionStorage.getItem('sovereign-document-session')||'null');chatId=saved?.chatId||crypto.randomUUID();if(saved){question=saved.question||'';result=saved.result||null;turns=Array.isArray(saved.turns)?saved.turns:[];pendingQuestion=saved.pendingQuestion||'';pendingSelection=Array.isArray(saved.pendingSelection)?saved.pendingSelection:[];pendingAvailableSelection=Array.isArray(saved.pendingAvailableSelection)?saved.pendingAvailableSelection:[];mode=saved.mode||'ask';showLibrary=saved.showLibrary!==false;showAssistant=saved.showAssistant!==false;}else{const latest=chats[0];if(latest){chatId=latest.id;turns=latest.turns;result=turns.at(-1)?.result||null;mode=latest.mode||'ask';}}await refresh();selected=Array.isArray(saved?.selected)?saved.selected.filter((id:string)=>docs.some(doc=>doc.document_id===id)).slice(0,100):Array.isArray(chats.find(chat=>chat.id===chatId)?.selected)?chats.find(chat=>chat.id===chatId)!.selected.filter(id=>docs.some(doc=>doc.document_id===id)):docs.slice(0,100).map(doc=>doc.document_id);if(saved?.activeId){const doc=docs.find(d=>d.document_id===saved.activeId);if(doc){active=await json(await fetch(`/documents/${doc.document_id}/content`));showOriginal=doc.display_name.toLowerCase().endsWith('.pdf');}}const pending=sessionStorage.getItem('sovereign-document-job');if(pending){documentJob=pending;busy=true;void pollDocument(pending);}else if(turns.length)saveSession();}catch(e){notice=String(e);}})();});
- onMount(()=>{const fitToViewport=()=>{if(!documentsElement)return;if(window.matchMedia('(max-width:800px)').matches){documentsElement.style.removeProperty('height');return;}documentsElement.style.height=`${Math.max(0,window.innerHeight-documentsElement.getBoundingClientRect().top)}px`;};fitToViewport();window.addEventListener('resize',fitToViewport);return ()=>window.removeEventListener('resize',fitToViewport);});
- async function open(doc:Doc){try{active=await json(await fetch(`/documents/${doc.document_id}/content`));showOriginal=doc.display_name.toLowerCase().endsWith('.pdf');view='document';notice='';saveSession();}catch(e){notice=String(e);}}
- async function upload(event:Event){const input=event.currentTarget as HTMLInputElement;const files=Array.from(input.files||[]).filter(file=>/\.(pdf|docx|txt|md|csv|json|log|xlsx|pptx)$/i.test(file.name));if(!files.length)return;busy=true;activity(true,'Importing files');const added:string[]=[];try{for(const file of files){notice='Reading '+file.name+'…';const form=new FormData();form.append('file',file);const imported=await json(await fetch('/documents/import',{method:'POST',body:form}));added.push(imported.document_id);if(file.webkitRelativePath){folders[imported.document_id]=file.webkitRelativePath.split('/').slice(0,-1).join('/');}}localStorage.setItem('sovereign-document-folders',JSON.stringify(folders));await refresh();setSelection([...new Set([...selected,...added])]);const doc=docs.find(d=>d.document_id===added[0]);if(doc)await open(doc);notice=`${added.length} document${added.length===1?'':'s'} ready. Select files to include in questions.`;}catch(e){notice=String(e);}finally{busy=false;input.value='';activity(false,'');}}
- async function pollDocument(id:string){try{let job=await json(await fetch('/coding/jobs/'+id));while(job.state==='running'){notice=job.stage+' · '+job.elapsed+'s';activity(true,job.stage);await new Promise(resolve=>setTimeout(resolve,650));job=await json(await fetch('/coding/jobs/'+id));}if(job.error)throw Error(job.error);if(job.state==='cancelled')throw Error('Task stopped');result=job.result;if(result&&pendingQuestion){const index=turns.findIndex(turn=>turn.result.status==='pending'&&turn.question===pendingQuestion);if(index>=0){turns[index]={...turns[index],result,documentIds:result.status==='greeting'?[]:pendingSelection,taskId:id};turns=[...turns];}else if(!turns.some(turn=>turn.taskId===id)){turns=[...turns,{question:pendingQuestion,result,documentIds:result.status==='greeting'?[]:pendingSelection,availableDocumentIds:pendingAvailableSelection,taskId:id}];}pendingQuestion='';pendingSelection=[];pendingAvailableSelection=[];await tick();document.querySelector('.knowledge-feed .conversation-turn:last-child')?.scrollIntoView({block:'nearest',behavior:'smooth'});}if((result as Answer & {routing?:{capability:string;model:string;reason?:string}})?.routing)window.dispatchEvent(new CustomEvent('sovereign-route',{detail:{task:'Document analysis',...(result as Answer & {routing:{capability:string;model:string;reason?:string}}).routing}}));notice=result?.status==='greeting'?'':result?.status==='answered'?'Answer ready. Review its sources.':'Review the result and its sources.';saveSession();}catch(e){const index=turns.findIndex(turn=>turn.result.status==='pending'&&turn.question===pendingQuestion);if(index>=0){turns[index]={...turns[index],result:{status:String(e).includes('Task stopped')?'stopped':'error',answer:String(e).includes('Task stopped')?'Task stopped.':String(e),sources:[]}};turns=[...turns];}pendingQuestion='';notice=String(e).includes('Task stopped')?'':String(e);saveSession();}finally{busy=false;documentJob='';sessionStorage.removeItem('sovereign-document-job');activity(false,'');}}
- function scopeForFollowUp(nextQuestion:string){
-  if(!turns.length)return selected;
-  const compact=nextQuestion.toLowerCase().replace(/[^\p{L}\p{N}]/gu,'');
-  const namesDocument=docs.some(doc=>selected.includes(doc.document_id)&&doc.display_name.replace(/\.[^.]+$/,'').split(/[^\p{L}\p{N}]+/u).some(part=>part.length>=5&&compact.includes(part.toLowerCase())));
-  if(namesDocument||!/(\b(he|his|she|her|it|its|that|this|then|same|previous|rating|score|those|they|their)\b)/i.test(nextQuestion))return selected;
-  const cited=turns.slice(-3).map(turn=>new Set((turn.result.sources||[]).map(source=>source.document_id).filter((id):id is string=>!!id))).filter(set=>set.size);
-  if(!cited.length)return selected;
-  const common=new Set(cited[0]);
-  for(const group of cited.slice(1))for(const id of [...common])if(!group.has(id))common.delete(id);
-  const focus=common.size?common:cited[cited.length-1];
-  const previouslyAvailable=turns[turns.length-1].availableDocumentIds||turns[turns.length-1].documentIds;
-  const scoped=selected.filter(id=>focus.has(id)||!previouslyAvailable.includes(id));
-  return scoped.length?scoped:selected;
- }
- function saveSession(){sessionStorage.setItem('sovereign-document-session',JSON.stringify({chatId,question,mode,activeId:active?.document_id,result,turns,pendingQuestion,pendingSelection,pendingAvailableSelection,selected,showLibrary,showAssistant}));if(turns.length&&chatId){const prior=chats.find(chat=>chat.id===chatId);const chat:KnowledgeChat={id:chatId,title:turns[0].question.slice(0,70),updatedAt:Date.now(),turns,selected,mode};chats=[chat,...chats.filter(item=>item.id!==chatId)];try{localStorage.setItem('sovereign-knowledge-history',JSON.stringify(chats));}catch{chats=prior?[prior,...chats.filter(item=>item.id!==chatId)]:chats.filter(item=>item.id!==chatId);notice='Conversation history storage is full. This chat remains available until you close the app.';}}}
- function newChat(){if(busy)return;chatId=crypto.randomUUID();turns=[];result=null;question='';pendingQuestion='';pendingSelection=[];pendingAvailableSelection=[];notice='';historyOpen=false;saveSession();}
- function openChat(chat:KnowledgeChat){if(busy)return;chatId=chat.id;turns=chat.turns;result=turns.at(-1)?.result||null;selected=chat.selected.filter(id=>docs.some(doc=>doc.document_id===id));mode=chat.mode||'ask';question='';notice='';historyOpen=false;saveSession();}
- function deleteChat(id:string){if(busy)return;chats=chats.filter(chat=>chat.id!==id);localStorage.setItem('sovereign-knowledge-history',JSON.stringify(chats));if(chatId===id)newChat();}
- async function ask(asReport=false){if(busy||(!selected.length&&(asReport||!isGreeting(question))))return;pendingQuestion=question.trim()||'Summarize the key information in these documents with citations.';pendingSelection=isGreeting(pendingQuestion)?[]:scopeForFollowUp(pendingQuestion);pendingAvailableSelection=[...selected];const history=turns.filter(turn=>turn.result.status!=='pending').slice(-6).map(turn=>turn.question);question='';turns=[...turns,{question:pendingQuestion,result:{status:'pending',answer:'',sources:[]},documentIds:pendingSelection,availableDocumentIds:pendingAvailableSelection,taskId:crypto.randomUUID()}];saveSession();await tick();document.querySelector('.knowledge-feed .conversation-turn:last-child')?.scrollIntoView({block:'nearest',behavior:'smooth'});if(isGreeting(pendingQuestion)&&!asReport){const greeting:Answer={status:'greeting',answer:instantKnowledgeReply(pendingQuestion),sources:[]};turns[turns.length-1]={...turns[turns.length-1],result:greeting};turns=[...turns];result=greeting;pendingQuestion='';pendingSelection=[];pendingAvailableSelection=[];window.dispatchEvent(new CustomEvent('sovereign-route',{detail:{task:'Document greeting',capability:'instant',model:'No model used',reason:'Greeting answered without retrieval or model inference'}}));saveSession();return;}busy=true;notice=asReport?'Creating your Word report…':'Finding an answer in your documents…';activity(true,notice);saveSession();try{const job=await json(await fetch('/documents/jobs',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({kind:asReport?'report':'ask',question:pendingQuestion,document_ids:pendingSelection,history})}));documentJob=job.job_id;sessionStorage.setItem('sovereign-document-job',job.job_id);activity(true,notice);await pollDocument(job.job_id);}catch(e){const index=turns.findIndex(turn=>turn.result.status==='pending'&&turn.question===pendingQuestion);if(index>=0){turns[index]={...turns[index],result:{status:'error',answer:String(e),sources:[]}};turns=[...turns];}pendingQuestion='';notice=String(e);busy=false;activity(false,'');saveSession();}}
- async function stopDocument(){if(!documentJob)return;notice='Stopping after the current step…';try{await fetch('/coding/jobs/'+documentJob+'/stop',{method:'POST'});}catch(e){notice=String(e);}}
+	import './knowledge-workspace.css';
+	import { onMount, tick } from 'svelte';
+	import FileText from '@lucide/svelte/icons/file-text';
+	import Upload from '@lucide/svelte/icons/upload';
+	import Search from '@lucide/svelte/icons/search';
+	import FolderOpen from '@lucide/svelte/icons/folder-open';
+	import Eye from '@lucide/svelte/icons/eye';
+	import RefreshCw from '@lucide/svelte/icons/refresh-cw';
+	import * as Dialog from '$lib/components/ui/dialog';
+	import {
+		KnowledgeService,
+		knowledgeJson,
+		type KnowledgeDocument
+	} from '$lib/services/knowledge.service';
+	type Content = KnowledgeDocument & {
+		pages: number[];
+		methods: string[];
+		text: string;
+		original_url: string | null;
+		passages?: { chunk_id: string; page: number | null; text: string }[];
+	};
+	let { target }: { target?: { id: string; page?: number | null; chunk?: string } } = $props();
+	$effect(() => {
+		if (target) void open(target.id, target.page, target.chunk);
+	});
+	let docs = $state<KnowledgeDocument[]>([]),
+		active = $state<Content | null>(null),
+		filter = $state(''),
+		folderFilter = $state('');
+	let loading = $state(true),
+		importing = $state(false),
+		opening = $state(false),
+		notice = $state(''),
+		error = $state(''),
+		view = $state('original'),
+		page = $state(1),
+		evidenceChunk = $state(''),
+		listVisible = $state(true);
+	let libraryWidth=$state(280), libraryResizing=$state(false);
+ let libraryGrid: HTMLDivElement;
+ function resizeLibrary(event:PointerEvent){if(event.button!==0)return;event.preventDefault();event.currentTarget instanceof HTMLElement&&event.currentTarget.setPointerCapture(event.pointerId);libraryResizing=true;}
+ function moveLibrary(event:PointerEvent){if(!libraryResizing)return;libraryWidth=Math.max(200,Math.min(460,Math.floor(libraryGrid.clientWidth*.45),event.clientX-libraryGrid.getBoundingClientRect().left));}
+ function finishLibrary(){libraryResizing=false;try{localStorage.setItem('sovereign-knowledge-library-width',String(libraryWidth));}catch{}}
+ let importMenu: HTMLDetailsElement;
+	let filesInput: HTMLInputElement, folderInput: HTMLInputElement;
+	let managing = $state(false),
+		actionError = $state('');
+	let action = $state<'rename' | 'move' | 'remove' | null>(null),
+		name = $state(''),
+		folder = $state('');
+	let requestSequence = 0;
+	const visible = $derived(
+		docs.filter(
+			(doc) =>
+				(doc.display_name + ' ' + (doc.folder || ''))
+					.toLowerCase()
+					.includes(filter.toLowerCase()) &&
+				(!folderFilter || doc.folder === folderFilter)
+		)
+	);
+	const libraryFolders = $derived(
+		[...new Set(docs.map((doc) => doc.folder || '').filter(Boolean))].sort()
+	);
+	const isPdf = $derived(
+		!!active &&
+			(active.source_extension || '.' + active.display_name.split('.').at(-1)?.toLowerCase()) ===
+				'.pdf'
+	);
+	async function refresh() {
+		loading = true;
+		error = '';
+		try {
+			docs = await KnowledgeService.list();
+			if (active && !docs.some((doc) => doc.document_id === active!.document_id)) active = null;
+		} catch (e) {
+			error = String(e);
+		} finally {
+			loading = false;
+		}
+	}
+	async function open(id: string, location?: number | null, chunk?: string) {
+		const sequence = ++requestSequence;
+		opening = true;
+		error = '';
+		try {
+			const content = await knowledgeJson(await fetch(`/documents/${id}/content`));
+			if (sequence !== requestSequence) return;
+			active = content;
+			page = location || content.pages[0] || 1;
+			evidenceChunk = chunk || '';
+			view = chunk ? 'text' : 'original';
+			folder = content.folder || '';
+			sessionStorage.setItem('sovereign-knowledge-active', id);
+			if (window.innerWidth < 700) listVisible = false;
+			await tick();
+			if (chunk) document.getElementById('passage-' + chunk)?.scrollIntoView({ block: 'center' });
+		} catch (e) {
+			if (sequence === requestSequence) error = String(e);
+		} finally {
+			if (sequence === requestSequence) opening = false;
+		}
+	}
+	let dropping = $state(false);
+	async function upload(event: Event) {
+		const input = event.currentTarget as HTMLInputElement;
+		await importFiles(Array.from(input.files || []));
+		input.value = '';
+	}
+	async function importFiles(selected: File[], paths: Map<File, string> = new Map()) {
+		if (importing || managing) return;
+		const files = selected.filter((file) =>
+			/\.(pdf|docx|txt|md|csv|json|log|xlsx|pptx)$/i.test(file.name)
+		);
+		if (!files.length) {
+			notice = 'No supported documents selected.';
+			return;
+		}
+		importing = true;
+		error = '';
+		let count = 0;
+		try {
+			for (const file of files) {
+				notice = 'Importing and indexing ' + file.name + '…';
+				const data = new FormData();
+				data.append('file', file, file.name.split(/[\\/]/).at(-1) || file.name);
+				const added = await knowledgeJson(
+					await fetch('/documents/import', { method: 'POST', body: data })
+				);
+				const relativePath = paths.get(file) || file.webkitRelativePath;
+				if (relativePath)
+					await knowledgeJson(
+						await fetch(`/documents/${added.document_id}/move`, {
+							method: 'POST',
+							headers: { 'content-type': 'application/json' },
+							body: JSON.stringify({
+								folder: relativePath.split('/').slice(0, -1).join('/'),
+								expected_hash: added.active_hash
+							})
+						})
+					);
+				count++;
+			}
+			await refresh();
+			notice = `${count} document${count === 1 ? '' : 's'} indexed.`;
+		} catch (e) {
+			error = String(e);
+			notice = count ? `${count} documents imported before the error.` : '';
+		} finally {
+			importing = false;
+		}
+	}
+	async function dropFiles(event: DragEvent) {
+		event.preventDefault();
+		dropping = false;
+		if (importing || managing || !event.dataTransfer) return;
+		const collected: File[] = [],
+			paths = new Map<File, string>();
+		async function walk(entry: FileSystemEntry, path = '') {
+			if (collected.length >= 1000) throw new Error('Drop up to 1000 files at a time.');
+			const location = path + entry.name;
+			if (entry.isFile) {
+				const file = await new Promise<File>((resolve, reject) =>
+					(entry as FileSystemFileEntry).file(resolve, reject)
+				);
+				collected.push(file);
+				paths.set(file, location);
+			} else if (entry.isDirectory) {
+				const reader = (entry as FileSystemDirectoryEntry).createReader();
+				while (true) {
+					const entries = await new Promise<FileSystemEntry[]>((resolve, reject) =>
+						reader.readEntries(resolve, reject)
+					);
+					if (!entries.length) break;
+					for (const child of entries) await walk(child, location + '/');
+				}
+			}
+		}
+		try {
+			for (const item of Array.from(event.dataTransfer.items)) {
+				const entry = item.webkitGetAsEntry?.();
+				if (entry) await walk(entry);
+				else {
+					const file = item.getAsFile();
+					if (file) collected.push(file);
+				}
+			}
+			await importFiles(collected, paths);
+		} catch (e) {
+			error = String(e);
+		}
+	}
+	async function dropDocument(event: DragEvent, destination: string) {
+		const id = event.dataTransfer?.getData('application/x-sovereign-document');
+		if (!id) return;
+		event.preventDefault();
+		event.stopPropagation();
+		dropping = false;
+		const selected = docs.find((doc) => doc.document_id === id);
+		if (!selected || importing || managing) return;
+		managing = true;
+		error = '';
+		try {
+			await knowledgeJson(
+				await fetch('/documents/' + id + (event.ctrlKey || event.metaKey ? '/copy' : '/move'), {
+					method: 'POST',
+					headers: { 'content-type': 'application/json' },
+					body: JSON.stringify({ folder: destination, expected_hash: selected.active_hash })
+				})
+			);
+			await refresh();
+			if (active?.document_id === id) await open(id);
+			notice =
+				(event.ctrlKey || event.metaKey ? 'Copied to ' : 'Moved to ') +
+				(destination || 'All documents') +
+				'.';
+		} catch (e) {
+			error = String(e);
+		} finally {
+			managing = false;
+		}
+	}
+	async function copyDocument() {
+		if (!active || importing || managing) return;
+		managing = true;
+		error = '';
+		try {
+			const added = await knowledgeJson(
+				await fetch('/documents/' + active.document_id + '/copy', {
+					method: 'POST',
+					headers: { 'content-type': 'application/json' },
+					body: JSON.stringify({ expected_hash: active.active_hash })
+				})
+			);
+			await refresh();
+			await open(added.document_id);
+			notice = 'Document copied. Source snapshots and indexed passages were reused.';
+		} catch (e) {
+			error = String(e);
+		} finally {
+			managing = false;
+		}
+	}
+	function manage(next: 'rename' | 'move' | 'remove') {
+		if (!active || importing || managing) return;
+		actionError = '';
+		name = active.display_name;
+		folder = active.folder || '';
+		action = next;
+	}
+	async function confirm() {
+		if (!active || !action || managing) return;
+		const selected = active,
+			next = action;
+		managing = true;
+		actionError = '';
+		try {
+			const response = await knowledgeJson(
+				await fetch(
+					'/documents/' +
+						selected.document_id +
+						(next === 'move'
+							? '/move'
+							: next === 'remove'
+								? '?expected_hash=' + encodeURIComponent(selected.active_hash || '')
+								: ''),
+					{
+						method: next === 'rename' ? 'PATCH' : next === 'move' ? 'POST' : 'DELETE',
+						headers: next === 'remove' ? undefined : { 'content-type': 'application/json' },
+						body:
+							next === 'remove'
+								? undefined
+								: JSON.stringify({
+										...(next === 'rename'
+											? { display_name: name.trim() }
+											: { folder: folder.trim() }),
+										expected_hash: selected.active_hash
+									})
+					}
+				)
+			);
+			if (next === 'remove') active = null;
+			else active = { ...selected, ...response };
+			notice =
+				next === 'remove'
+					? 'Deleted from the library and index. Original files on your computer are unchanged.'
+					: next === 'move'
+						? 'Moved to library folder ' + (response.folder || 'All documents') + '.'
+						: 'Document renamed.';
+			action = null;
+			await refresh();
+		} catch (e) {
+			actionError = String(e);
+		} finally {
+			managing = false;
+		}
+	}
+	function useIn(target: 'chat' | 'agent') {
+		if (active)
+			KnowledgeService.connect(target, [{ id: active.document_id, name: active.display_name }]);
+	}
+	onMount(() => {
+  const width=Number(localStorage.getItem('sovereign-knowledge-library-width'));if(width>=200&&width<=460)libraryWidth=width;
+		const closeImportMenu = (event: KeyboardEvent) => {
+			if (event.key !== 'Escape' || !importMenu?.open) return;
+			event.preventDefault();
+			event.stopPropagation();
+			importMenu.open = false;
+			importMenu.querySelector('summary')?.focus();
+		};
+		window.addEventListener('keydown', closeImportMenu, true);
+		void refresh().then(() => {
+			const id = sessionStorage.getItem('sovereign-knowledge-active');
+			if (!target && id && docs.some((doc) => doc.document_id === id)) void open(id);
+		});
+		return () => window.removeEventListener('keydown', closeImportMenu, true);
+	});
 </script>
-<svelte:window onkeydown={e=>{if(e.key==='Escape'){if(documentAction){e.preventDefault();documentAction=null;}else if(manageOpen){e.preventDefault();manageOpen=false;}}}}/>
-<section class="documents" bind:this={documentsElement} aria-label="Document library">
- <header class="documents-head"><div><span class="eyebrow">LOCAL KNOWLEDGE</span><h1>Documents</h1><p>Read your files. Ask questions. Create reports with sources.</p></div><div class="document-head-actions"><div class="pane-toggles" role="group" aria-label="Document panels"><button aria-label="Toggle library" aria-pressed={showLibrary} title={showLibrary?'Hide library':'Show library'} onclick={()=>{showLibrary=!showLibrary;saveSession();}}><PanelLeft size={16}/><span>Library</span></button><button aria-label="Toggle document assistant" aria-pressed={showAssistant} title={showAssistant?'Hide document assistant':'Show document assistant'} onclick={()=>{showAssistant=!showAssistant;saveSession();}}><PanelRight size={16}/><span>Assistant</span></button></div><button class="manage-button" onclick={()=>manageOpen=true}>Manage documents <span>{selected.length} selected</span></button><label class="upload"><Upload size={15}/> Import files<input type="file" multiple accept=".pdf,.docx,.txt,.md,.csv,.json,.log,.xlsx,.pptx" onchange={upload} disabled={busy}/></label></div></header>
- <div class="documents-layout" class:library-hidden={!showLibrary} class:assistant-hidden={!showAssistant} style={`--library-width:${libraryWidth}px;--doc-assistant-width:${assistantWidth}px`}>
- {#if showLibrary}<aside class="library-list"><div class="section-title">INCLUDED IN QUESTIONS <span>{selected.length}</span></div><p class="scope">{selected.length?'Only these documents are searched.':'Choose documents to ask a question.'}</p><div class="library-actions"><button onclick={()=>manageOpen=true}>Choose documents</button><button onclick={()=>setSelection([])} disabled={!selected.length||busy}>Clear</button></div><div class="files">{#each selectedDocs as doc}<div class="file-row" class:active={active?.document_id===doc.document_id}><button onclick={()=>open(doc)} disabled={busy} title={doc.display_name}><FileText size={16}/><span><strong>{doc.display_name}</strong><small>{folders[doc.document_id] ? folders[doc.document_id]+' · ' : ''}{doc.chunk_count} passages</small></span></button><button class="remove-selected" aria-label={'Remove '+doc.display_name+' from selection'} title="Remove from questions" onclick={()=>toggleSelection(doc.document_id)} disabled={busy}><X size={14}/></button></div>{/each}{#if !selected.length}<p class="empty-list">No documents selected. Open Manage documents to choose some.</p>{/if}</div><details class="formats"><summary>Formats and limits</summary><p>PDF, Word, Excel, PowerPoint, text, Markdown, CSV and JSON. Up to 20 MB. Scans use local OCR; slide images are not interpreted.</p></details></aside>{/if}
- {#if showLibrary}<button type="button" class="doc-resizer library-resizer" aria-label="Resize document library" onpointerdown={e=>resizePane('library',e)} onkeydown={e=>nudgePane('library',e)}></button>{/if}
- {#if showAssistant}<button type="button" class="doc-resizer assistant-resizer" aria-label="Resize document assistant" onpointerdown={e=>resizePane('assistant',e)} onkeydown={e=>nudgePane('assistant',e)}></button>{/if}
- <main class="document-reader"><div class="reader-toolbar"><div><h2>{active?.display_name||'Select a document'}</h2><p>{active?`${active.pages.length||'Text'} pages · ${active.methods.join(', ').replaceAll('_',' ')}`:'Your files stay on this computer.'}</p></div><div>{#if active?.original_url}<a href={active.original_url} target="_blank" rel="noreferrer"><Eye size={14}/> Original</a>{/if}{#if active?.display_name.toLowerCase().endsWith('.pdf')}<button onclick={()=>showOriginal=!showOriginal}>{showOriginal?'Extracted text':'PDF view'}</button>{/if}</div></div><div class="reader-content">{#if active?.warnings?.length}<div class="warnings">{#each active.warnings as warning}<p>{warning}</p>{/each}</div>{/if}{#if active}{#if showOriginal&&active.original_url&&active.display_name.toLowerCase().endsWith('.pdf')}<iframe title="Original document" src={active.original_url}></iframe>{:else}<article class="paper"><span class="eyebrow">EXTRACTED TEXT</span><pre>{active.text}</pre></article>{/if}{:else}<div class="reader-empty"><FileText size={30}/><h3>Read a document</h3><p>Select a file from the library. Ask the assistant to compare selected files or create a sourced Word report.</p><button onclick={()=>manageOpen=true}>Choose documents</button></div>{/if}</div></main>
- {#if showAssistant}<aside class="ask-pane">
-  <div class="knowledge-heading"><div class="knowledge-header-row"><span class="eyebrow">✧ ASSISTANT</span><span class="local-badge">LOCAL</span></div><div class="knowledge-header-row"><h2>Ask your files</h2></div><div class="knowledge-chat-actions"><button class="new-conversation" onclick={newChat} disabled={busy}><Plus size={14}/> New chat</button><button class="history-button" aria-expanded={historyOpen} onclick={()=>historyOpen=!historyOpen} disabled={busy}><History size={14}/> History{#if chats.length}<span>{chats.length}</span>{/if}</button></div>{#if historyOpen}<div class="knowledge-history" aria-label="Knowledge chat history">{#if chats.length}{#each chats as chat (chat.id)}<div class="history-entry" class:current={chat.id===chatId}><button class="history-open" onclick={()=>openChat(chat)} title={chat.title}><strong>{chat.title}</strong><small>{new Date(chat.updatedAt).toLocaleString()} · {chat.turns.length} message{chat.turns.length===1?'':'s'}</small></button><button class="history-delete" aria-label={'Delete chat '+chat.title} title="Delete chat" onclick={()=>deleteChat(chat.id)}><X size={13}/></button></div>{/each}{:else}<p>No previous chats yet.</p>{/if}</div>{/if}</div>
-  <div class="knowledge-feed" aria-label="Document conversation">
-   {#if turns.length}<div class="conversation">{#each turns as turn (turn.taskId)}<div class="conversation-turn"><div class="turn-question">{turn.question}<small>{turn.result.status==='greeting'?'No documents searched':`${turn.documentIds.length} document${turn.documentIds.length===1?'':'s'} searched`}</small></div><section class="answer" aria-label="Document answer"><span class="eyebrow">{turn.result.status==='pending'?'WORKING':turn.result.status==='error'?'REQUEST FAILED':turn.result.status==='stopped'?'STOPPED':turn.result.status==='greeting'?'ASSISTANT':turn.result.status==='answered'?'ANSWER FROM YOUR FILES':turn.result.status==='citation_failure'?'CITATION CHECK FAILED':'MORE EVIDENCE NEEDED'}</span><p>{turn.result.answer || (turn.result.status==='pending'?'Working on your question…':'')}</p>{#if turn.result.status==='citation_failure'}<p class="citation-warning">The answer failed citation validation. Check the source passages before using it.</p>{/if}{#each Object.entries(turn.result.downloads||{}) as [kind,url]}<a class="download" href={url}><Download size={15}/>Download {kind==='word'?'Word report':kind}</a>{/each}{#if turn.result.sources?.length}<h3>Sources</h3>{#each turn.result.sources as source}<details class="source"><summary><b>{source.label}</b><span>{source.display_name}{source.page?` · p. ${source.page}`:''}</span></summary><p>{source.text}</p><a href={`/sources/${source.chunk_id}/original`} target="_blank" rel="noreferrer">Open source ↗</a></details>{/each}{/if}</section></div>{/each}</div>{:else}<div class="knowledge-empty"><FileText size={24}/><strong>Ask across your selected files</strong><p>Upload a document at any point. Compare it with earlier files and ask for a sourced report.</p></div>{/if}
-   {#if busy}<div class="working" role="status"><i></i>{notice}{#if documentJob}<button onclick={stopDocument}>Stop</button>{/if}</div>{/if}
-   {#if notice&&!busy}<p class="notice" role="status">{notice}</p>{/if}
-  </div>
-  <div class="knowledge-composer"><form class="ask-form" onsubmit={e=>{e.preventDefault();void ask(mode==='report');}}><textarea aria-label="Document question" bind:value={question} oninput={saveSession} placeholder="Ask about your files or request a comparison…" disabled={busy} onkeydown={e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();void ask(mode==='report');}}}></textarea><p class="scope">{selected.length?`${selected.length} selected · follow-ups focus on cited files`:'Choose documents before asking'}</p><div class="ask-actions"><div class="composer-tools"><label class="composer-upload" title="Add files to this conversation"><Upload size={13}/> Add files<input type="file" multiple accept=".pdf,.docx,.txt,.md,.csv,.json,.log,.xlsx,.pptx" onchange={upload} disabled={busy}/></label><div class="mode-switch"><button type="button" class:chosen={mode==='ask'} onclick={()=>mode='ask'}>Answer</button><button type="button" class:chosen={mode==='report'} onclick={()=>mode='report'}>Word report</button></div></div>{#if documentJob}<button type="button" class="stop-request" onclick={stopDocument}>Stop</button>{/if}<button class="send" aria-label="Submit document request" disabled={busy||(!selected.length&&(mode==='report'||!isGreeting(question)))}><Send size={15}/></button></div></form></div>
- </aside>{/if}
- </div>
- {#if manageOpen}<div class="manage-backdrop" role="presentation" onclick={e=>{if(e.target===e.currentTarget)manageOpen=false;}}><div class="manage-dialog" role="dialog" aria-modal="true" aria-label="Manage documents"><header><div><span class="eyebrow">LOCAL LIBRARY</span><h2>Choose documents</h2><p>{selected.length} of {docs.length} selected for questions</p></div><button aria-label="Close document manager" onclick={()=>manageOpen=false}><X size={18}/></button></header><div class="manage-tools"><div class="search-box"><Search size={15}/><input aria-label="Search all documents" placeholder="Search files or folders" bind:value={manageFilter}/></div><button onclick={()=>setSelection(docs.map(doc=>doc.document_id))} disabled={busy||!docs.length}>Select all</button><button onclick={()=>setSelection([])} disabled={busy||!selected.length}>Clear selection</button></div><div class="manage-import"><label class="upload"><Upload size={15}/> Add files<input type="file" multiple accept=".pdf,.docx,.txt,.md,.csv,.json,.log,.xlsx,.pptx" onchange={upload} disabled={busy}/></label><label class="upload secondary"><FolderOpen size={15}/> Add folder<input type="file" multiple webkitdirectory={true} onchange={upload} disabled={busy}/></label><span>Folders are copied into the local library. Unsupported files are skipped.</span></div><div class="manage-list">{#each visibleDocs as doc}<div class="manage-row"><label><input type="checkbox" checked={selected.includes(doc.document_id)} onchange={()=>toggleSelection(doc.document_id)} disabled={busy}/><FileText size={16}/><span><strong>{doc.display_name}</strong><small>{folders[doc.document_id]||'Library'} · {doc.chunk_count} passages</small></span></label><div class="manage-row-actions"><button onclick={()=>{void open(doc);manageOpen=false;}}>Read</button><button onclick={()=>beginDocumentAction('rename',doc)} disabled={busy}>Rename</button><button class="danger" onclick={()=>beginDocumentAction('remove',doc)} disabled={busy}>Remove</button></div></div>{/each}{#if !visibleDocs.length}<p class="empty-list">No matching documents.</p>{/if}</div><footer><span>{selected.length} selected</span><button onclick={()=>manageOpen=false}>Done</button></footer></div></div>{/if}
- {#if documentAction}<div class="document-action-backdrop" role="presentation" onclick={e=>{if(e.target===e.currentTarget)documentAction=null;}}><div class="document-action-dialog" role="dialog" aria-modal="true" aria-label={documentAction.kind==='rename'?'Rename document':'Remove document'}><form onsubmit={e=>{e.preventDefault();void confirmDocumentAction();}}><h2>{documentAction.kind==='rename'?'Rename document':'Remove from library?'}</h2><p>{documentAction.doc.display_name}</p>{#if documentAction.kind==='rename'}<input aria-label="New document name" bind:value={newDocumentName} required maxlength="255"/>{:else}<p>The indexed document will be removed. Its source snapshot on disk will remain.</p>{/if}<div><button type="button" onclick={()=>documentAction=null}>Cancel</button><button type="submit" disabled={busy}>{documentAction.kind==='rename'?'Rename':'Remove'}</button></div></form></div></div>{/if}
+
+<svelte:window
+	onclick={(event) => {
+		if (importMenu?.open && !importMenu.contains(event.target as Node)) importMenu.open = false;
+	}}
+/>
+<section
+	class="documents knowledge-library"
+	class:knowledge-dropping={dropping}
+	aria-label="Knowledge library"
+	ondragover={(event) => {
+		if (event.dataTransfer?.types.includes('Files')) {
+			event.preventDefault();
+			dropping = true;
+		}
+	}}
+	ondragleave={(event) => {
+		if (!event.currentTarget.contains(event.relatedTarget as Node)) dropping = false;
+	}}
+	ondrop={dropFiles}
+>
+	{#if dropping}<div class="knowledge-drop-hint">
+			Drop files or a folder to import into Knowledge
+		</div>{/if}
+	<header class="knowledge-library-head">
+		<div>
+			<span class="eyebrow">LOCAL LIBRARY</span>
+			<h1>Knowledge</h1>
+			<p>Store, find, and inspect your documents.</p>
+		</div>
+		<div>
+			<button title="Refresh library" aria-label="Refresh Knowledge" onclick={refresh}
+				><RefreshCw size={16} /></button
+			>
+			<details class="knowledge-import-menu" bind:this={importMenu}>
+				<summary class="knowledge-add"
+					><Upload size={15} /> {importing ? 'Indexing…' : 'Add documents'}</summary
+				>
+				<div class="knowledge-import-options">
+					<button
+						disabled={importing}
+						onclick={() => {
+							importMenu.open = false;
+							filesInput.click();
+						}}>Upload files</button
+					><button
+						disabled={importing}
+						onclick={() => {
+							importMenu.open = false;
+							folderInput.click();
+						}}><FolderOpen size={14} /> Import folder</button
+					>
+					<p>PDF, Word, Excel, PowerPoint and text · up to 20 MB each</p>
+				</div>
+			</details>
+			<input
+				bind:this={filesInput}
+				type="file"
+				multiple
+				accept=".pdf,.docx,.txt,.md,.csv,.json,.log,.xlsx,.pptx"
+				onchange={upload}
+				disabled={importing}
+			/>
+			<input
+				bind:this={folderInput}
+				type="file"
+				multiple
+				webkitdirectory={true}
+				onchange={upload}
+				disabled={importing}
+			/>
+		</div>
+	</header>
+	{#if notice || error}<div class="knowledge-library-notice" role={error ? 'alert' : 'status'}>
+			{error || notice}{#if error}<button onclick={refresh}>Retry</button>{/if}
+		</div>{/if}
+	<div class="knowledge-library-grid" class:list-hidden={!listVisible} bind:this={libraryGrid} style:--library-width={libraryWidth+'px'}>
+		<aside class="knowledge-list">
+			<div class="context-search">
+				<Search size={16} /><input
+					aria-label="Search documents"
+					bind:value={filter}
+					placeholder="Search your library…"
+				/>
+			</div>
+			{#if libraryFolders.length}<label class="knowledge-folder-filter"
+				>Folder<select aria-label="Filter library folder" bind:value={folderFilter}
+					><option value="">All documents</option>{#each libraryFolders as item}<option value={item}
+							>{item}</option
+						>{/each}</select
+				></label
+			>
+			{/if}<div class="knowledge-folder-targets" aria-label="Library folders">
+				<button
+					class:active={!folderFilter}
+					onclick={() => (folderFilter = '')}
+					ondragover={(event) => {
+						if (event.dataTransfer?.types.includes('application/x-sovereign-document'))
+							event.preventDefault();
+					}}
+					ondrop={(event) => void dropDocument(event, '')}>All documents</button
+				>{#each libraryFolders as destination}<button
+						class:active={folderFilter === destination}
+						onclick={() => (folderFilter = destination)}
+						title={'Drop to move to ' + destination + '; hold Ctrl to copy'}
+						ondragover={(event) => {
+							if (event.dataTransfer?.types.includes('application/x-sovereign-document'))
+								event.preventDefault();
+						}}
+						ondrop={(event) => void dropDocument(event, destination)}>{destination}</button
+					>{/each}
+			</div>
+			<div class="knowledge-list-heading"><strong>Documents</strong><span>{docs.length}</span></div>
+			<div class="knowledge-files">
+				{#if loading}<p role="status">Reading your library…</p>{:else}{#each visible as doc}<button
+							class:active={active?.document_id === doc.document_id}
+							aria-current={active?.document_id === doc.document_id ? 'true' : undefined}
+							onclick={() => open(doc.document_id)}
+							title={doc.display_name}
+							draggable={true}
+							ondragstart={(event) => {
+								event.dataTransfer?.setData('application/x-sovereign-document', doc.document_id);
+							}}
+							><FileText size={18} /><span
+								><strong>{doc.display_name}</strong><small
+									>{(
+										doc.source_extension?.slice(1) || doc.display_name.split('.').at(-1)
+									)?.toUpperCase()} · {doc.chunk_count} passages · Indexed</small
+								>{#if doc.folder}<small>{doc.folder}</small>{/if}</span
+							></button
+						>{/each}{#if !visible.length}<p>
+							{docs.length
+								? 'No matching documents.'
+								: 'No documents yet. Add local files to start your library.'}
+						</p>{/if}{/if}
+			</div>
+		</aside>
+  <!-- Keyboard-adjustable separator follows the ARIA window splitter pattern. -->
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions -->
+  <div class="knowledge-library-resizer" role="separator" aria-label="Resize document library" aria-orientation="vertical" aria-valuemin={200} aria-valuemax={460} aria-valuenow={libraryWidth} tabindex="0" onpointerdown={resizeLibrary} onpointermove={moveLibrary} onpointerup={finishLibrary} onpointercancel={finishLibrary} onkeydown={(event)=>{if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();libraryWidth=Math.max(200,Math.min(460,libraryWidth+(event.key==='ArrowRight'?20:-20)));finishLibrary();}}}></div>
+		<main class="knowledge-preview">
+			<div class="knowledge-preview-head">
+				<div>
+					<button
+						class="knowledge-list-toggle"
+						aria-pressed={listVisible}
+						onclick={() => (listVisible = !listVisible)}>Documents</button
+					>
+					<h2>{active?.display_name || 'Document preview'}</h2>
+				</div>
+				{#if active}<div class="knowledge-preview-actions">
+						<button aria-pressed={view === 'original'} onclick={() => (view = 'original')}
+							><Eye size={14} /> Preview</button
+						><button aria-pressed={view === 'text'} onclick={() => (view = 'text')}
+							>Extracted text</button
+						>
+      <details class="knowledge-file-actions"><summary>Manage</summary><div class="knowledge-file-actions-menu"><button disabled={importing || managing} onclick={() => manage('rename')}>Rename</button><button disabled={importing || managing} onclick={() => manage('move')}>Move</button><button disabled={importing || managing} onclick={copyDocument}>Copy</button><button disabled={importing || managing} onclick={() => manage('remove')}>Delete</button></div></details>
+						<details>
+							<summary>Use as context</summary><button onclick={() => useIn('chat')}
+								>Connect to Chat</button
+							><button onclick={() => useIn('agent')}>Connect to Agent</button>
+						</details>
+					</div>{/if}
+			</div>
+
+			<div class="knowledge-preview-body">
+				{#if opening}<p role="status">
+						Opening document…
+					</p>{:else if active}{#if view === 'original' && isPdf && active.original_url}<iframe
+							title={'Preview ' + active.display_name}
+							src={active.original_url + '#page=' + page}
+						></iframe>{:else if view === 'original' && !isPdf}<article class="knowledge-paper">
+							<span class="eyebrow">EXTRACTED PREVIEW</span>
+							<p class="knowledge-preview-note">
+								{active.display_name.endsWith('.docx')
+									? 'Original Word layout is available by downloading the file.'
+									: 'Text extracted from your original file.'}
+							</p>
+							<pre>{active.text}</pre>
+						</article>{:else}<article class="knowledge-paper">
+							<span class="eyebrow">INDEXED PASSAGES</span
+							>{#each active.passages || [] as passage}<section
+									id={'passage-' + passage.chunk_id}
+									class:highlighted={evidenceChunk === passage.chunk_id}
+								>
+									<small>{passage.page ? `Page ${passage.page}` : 'Text passage'}</small>
+									<pre>{passage.text}</pre>
+								</section>{/each}{#if !active.passages?.length}<pre>{active.text}</pre>{/if}
+						</article>{/if}{:else}<div class="knowledge-library-empty">
+						<FileText size={32} />
+						<h2>Your documents, in one place.</h2>
+						<p>
+							Select a document to preview its original file and inspect indexed passages. Connect
+							it to Chat or Agent when you need an answer or a task.
+						</p>
+					</div>{/if}
+			</div>
+			{#if active}<footer class="knowledge-file-info">
+					<div>
+						<span
+							>{active.pages.length
+								? `${active.pages.length} indexed pages`
+								: 'Text document'}</span
+						><span>{active.chunk_count} passages</span><span
+							>{active.methods.join(', ').replaceAll('_', ' ')}</span
+						>{#if active.active_hash}<span title={active.active_hash}
+								>Version {active.active_hash.slice(0, 8)}</span
+							>{/if}
+					</div>
+					<div>
+						{#if isPdf}<label
+								>Page <select aria-label="Preview page" bind:value={page}
+									>{#each active.pages as pageNumber}<option value={pageNumber}>{pageNumber}</option
+										>{/each}</select
+								></label
+							>{/if}{#if active.original_url}<a
+								href={active.original_url}
+								target="_blank"
+								rel="noreferrer">Original ↗</a
+							>{/if}
+						<details>
+							<summary>File info</summary>
+							<p>
+								Connected context grants read access only. Updates retain the same document ID and
+								preserve earlier source snapshots.
+							</p>
+							{#each active.warnings || [] as warning}<p>{warning}</p>{/each}
+						</details>
+					</div>
+				</footer>{/if}
+		</main>
+	</div>
 </section>
-<style>
-.ask-pane{display:flex;flex-direction:column;padding:0;overflow:hidden}.knowledge-heading{padding:20px 18px 14px;border-bottom:1px solid var(--border)}.knowledge-heading h2{margin:9px 0 3px}.local-badge{float:right;border:1px solid var(--border);border-radius:4px;padding:2px 5px;letter-spacing:.08em}.knowledge-feed{flex:1;min-height:0;overflow:auto;padding:0 18px 18px}.knowledge-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;height:100%;min-height:170px;text-align:center;color:var(--muted-foreground);font-size:11px;line-height:1.5}.knowledge-empty strong{color:var(--foreground);font-size:13px}.knowledge-empty p{max-width:225px}.knowledge-composer{border-top:1px solid var(--border);padding:12px;background:color-mix(in srgb,var(--background) 94%,var(--foreground) 6%)}.knowledge-composer .ask-form{margin:0}.knowledge-composer .ask-form textarea{height:100px;min-height:80px}.conversation{display:flex;flex-direction:column;gap:18px;margin-top:18px}.conversation-turn{border-top:1px solid var(--border);padding-top:16px}.turn-question{padding:10px 12px;border-radius:10px;background:var(--accent);font-size:12px;line-height:1.5;white-space:pre-wrap}.turn-question small{display:block;margin-top:5px;color:var(--muted-foreground);font-size:10px}.conversation-turn .answer{border:0;margin-top:0;padding-top:16px}
-.document-head-actions{display:flex;align-items:center;gap:10px;flex:none}.pane-toggles{display:flex;align-items:center;gap:3px;padding:3px;border:1px solid var(--border);border-radius:9px;background:color-mix(in srgb,var(--background) 92%,var(--foreground) 8%)}.pane-toggles button{display:flex;align-items:center;gap:7px;padding:7px 10px;border-radius:6px;color:var(--muted-foreground);font-size:11px;transition:background .16s,color .16s}.pane-toggles button:hover{background:var(--accent);color:var(--foreground)}.pane-toggles button[aria-pressed='true']{background:var(--accent);color:var(--foreground);box-shadow:0 1px 4px #0002}.documents-layout.library-hidden{grid-template-columns:minmax(0,1fr) 335px}.documents-layout.assistant-hidden{grid-template-columns:250px minmax(0,1fr)}.documents-layout.library-hidden.assistant-hidden{grid-template-columns:minmax(0,1fr)}.citation-warning{color:#d6a76b!important;border-left:2px solid #d6a76b;padding-left:10px}@media(max-width:800px){.documents-head{flex-wrap:wrap}.document-head-actions{width:100%;justify-content:space-between}.pane-toggles button span{display:none}.pane-toggles button{padding:8px 10px}}@media(prefers-reduced-motion:reduce){.pane-toggles button{transition:none}}
-.documents{height:calc(100dvh - 86px);min-height:0;display:flex;flex-direction:column;margin:-16px -20px;color:var(--foreground);font-size:13px}.documents-head{display:flex;align-items:center;justify-content:space-between;padding:21px 28px;border-bottom:1px solid var(--border);gap:20px}.eyebrow{color:var(--muted-foreground);letter-spacing:.13em;font-size:10px;font-weight:650}h1{font-size:26px;letter-spacing:-.03em;font-weight:650;margin:5px 0}.documents-head p{color:var(--muted-foreground)}.upload{display:flex;align-items:center;gap:8px;background:var(--foreground);color:var(--background);border-radius:9px;padding:10px 15px;cursor:pointer}.upload input{position:absolute;width:1px;height:1px;opacity:0}.documents-layout{display:grid;grid-template-columns:250px minmax(0,1fr) 335px;flex:1;min-height:0}.library-list,.ask-pane{background:color-mix(in srgb,var(--background) 96%,var(--foreground) 4%);min-width:0}.library-list{display:flex;flex-direction:column;border-right:1px solid var(--border)}.section-title{display:flex;justify-content:space-between;padding:18px 16px;font-size:10px;letter-spacing:.1em;color:var(--muted-foreground)}.section-title span{background:var(--accent);border-radius:5px;padding:2px 7px;letter-spacing:0}.search-box{display:flex;gap:8px;align-items:center;margin:0 11px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;color:var(--muted-foreground)}.search-box input{min-width:0;width:100%;background:transparent;color:var(--foreground);outline:none;border:0;font:inherit}.scope{font-size:10px;color:var(--muted-foreground);padding:9px 14px}.files{flex:1;min-height:0;overflow:auto;padding:0 7px}.file-row{display:flex;align-items:center;gap:7px;padding:3px 7px;border-radius:8px}.file-row:hover,.file-row.active{background:var(--accent)}.file-row button{min-width:0;width:100%;display:flex;align-items:center;gap:9px;text-align:left;padding:9px 0}.file-row button span{min-width:0}.file-row strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;font-weight:550}.file-row small{display:block;margin-top:4px;font-size:10px;color:var(--muted-foreground)}.formats{padding:12px 16px;border-top:1px solid var(--border);font-size:10px;color:var(--muted-foreground)}.formats p{line-height:1.5;margin-top:8px}.empty-list{padding:18px;color:var(--muted-foreground)}.document-reader{min-width:0;min-height:0;display:flex;flex-direction:column}.reader-toolbar{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:16px 20px;border-bottom:1px solid var(--border);min-height:71px}.reader-toolbar>div:first-child{min-width:0}.reader-toolbar h2{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.reader-toolbar p{font-size:10px;color:var(--muted-foreground);margin-top:5px}.reader-toolbar>div:last-child{display:flex;gap:11px;white-space:nowrap;font-size:11px}.reader-toolbar a{display:flex;align-items:center;gap:5px}.reader-toolbar button{border:1px solid var(--border);border-radius:6px;padding:6px 8px}.reader-content{flex:1;min-height:0;overflow:auto;background:color-mix(in srgb,var(--background) 92%,var(--foreground) 8%)}.reader-content iframe{width:100%;height:100%;border:0;background:white}.paper{max-width:730px;min-height:100%;margin:auto;padding:48px 55px;background:var(--background);box-shadow:0 3px 25px #00000012}.paper pre{white-space:pre-wrap;overflow-wrap:anywhere;font:14px/1.8 system-ui,sans-serif;margin-top:22px}.reader-empty{height:100%;min-height:320px;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;gap:15px;color:var(--muted-foreground)}.reader-empty h3{font-size:20px;color:var(--foreground)}.reader-empty p{max-width:260px;line-height:1.5}.warnings{padding:12px;color:#c6a261}.ask-pane{border-left:1px solid var(--border);padding:26px 20px;overflow:auto}.ask-pane h2{font-size:19px;font-weight:600;margin:8px 0 5px}.ask-form{border:1px solid var(--border);border-radius:12px;background:var(--background);margin-top:24px}.ask-form textarea{width:100%;height:125px;resize:vertical;background:transparent;border:0;outline:0;color:var(--foreground);font:inherit;padding:14px}.ask-actions{display:flex;justify-content:space-between;align-items:center;padding:0 9px 9px}.mode-switch{display:flex;gap:2px;border-radius:7px;padding:3px;background:var(--accent)}.mode-switch button{font-size:10px;padding:7px 8px;border-radius:5px;color:var(--muted-foreground)}.mode-switch .chosen{background:var(--background);color:var(--foreground);box-shadow:0 1px 3px #0002}.send{background:var(--foreground);color:var(--background);border-radius:7px;padding:9px}.send:disabled{opacity:.4}.answer{border-top:1px solid var(--border);margin-top:20px;padding-top:18px}.answer>p{font-size:13px;white-space:pre-wrap;line-height:1.7;margin:16px 0}.answer h3{font-size:11px;font-weight:650;margin:24px 0 10px}.source{border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:8px;font-size:11px}.source summary{display:flex;gap:8px;cursor:pointer}.source summary span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.source b{background:var(--accent);padding:3px 5px;border-radius:4px}.source p{margin:12px 0;color:var(--muted-foreground);line-height:1.5}.source a{text-decoration:underline}.download{display:flex;align-items:center;gap:7px;width:fit-content;border:1px solid var(--border);border-radius:7px;padding:8px 10px;font-size:11px}.working,.notice{font-size:11px;color:var(--muted-foreground);margin-top:15px}.working{display:flex;align-items:center;gap:8px}.working i{width:7px;height:7px;border-radius:50%;background:#8baafa;animation:pulse 1.3s infinite}@keyframes pulse{50%{opacity:.3}}button,a{cursor:pointer}button:hover,a:hover{opacity:.8}.documents :is(button,a):focus-visible{outline:2px solid #8baafa;outline-offset:2px}@media(max-width:1150px){.documents-layout{grid-template-columns:205px minmax(0,1fr) 285px}.paper{padding:30px}}@media(max-width:800px){.documents{height:auto;margin:0}.documents-layout{display:flex;flex-direction:column}.library-list{height:220px}.document-reader{height:460px}.ask-pane{min-height:300px;border-left:0;border-top:1px solid var(--border)}.paper{padding:25px}.documents-head{padding:18px;align-items:flex-start}.documents-head p{font-size:11px;max-width:220px}.upload{white-space:nowrap;padding:9px 11px}}@media(prefers-reduced-motion:reduce){.working i{animation:none}}
-@media(max-width:800px){.library-list{height:min(42dvh,360px);min-height:290px}}
- .documents{position:relative}.documents-layout{position:relative;grid-template-columns:min(var(--library-width),32%) minmax(0,1fr) min(var(--doc-assistant-width),32%)}
- .documents-layout.library-hidden{grid-template-columns:minmax(0,1fr) min(var(--doc-assistant-width),42%)}.documents-layout.assistant-hidden{grid-template-columns:min(var(--library-width),42%) minmax(0,1fr)}.documents-layout.library-hidden.assistant-hidden{grid-template-columns:minmax(0,1fr)}
- .doc-resizer{position:absolute;top:0;bottom:0;width:10px;padding:0;border:0;background:transparent;cursor:col-resize;z-index:5;transform:translateX(-50%)}.doc-resizer:hover,.doc-resizer:focus-visible{background:color-mix(in srgb,#a994ff 25%,transparent);outline:0}.library-resizer{left:min(var(--library-width),32%)}.assistant-resizer{right:min(var(--doc-assistant-width),32%);transform:translateX(50%)}.documents-layout.assistant-hidden .library-resizer{left:min(var(--library-width),42%)}.documents-layout.library-hidden .assistant-resizer{right:min(var(--doc-assistant-width),42%)}
- .manage-button{border:1px solid var(--border);border-radius:9px;padding:9px 12px;display:flex;gap:8px;align-items:center;background:var(--background);white-space:nowrap}.manage-button span{color:var(--muted-foreground);font-size:11px}.library-actions{display:flex;gap:5px;padding:0 11px 12px}.library-actions button{border:1px solid var(--border);border-radius:7px;padding:7px 9px;font-size:11px}.library-actions button:first-child{flex:1}.file-row .remove-selected{width:auto;padding:6px;flex:none;color:var(--muted-foreground)}
- .manage-backdrop{position:absolute;inset:0;z-index:30;display:grid;place-items:center;padding:18px;background:#000b;backdrop-filter:blur(5px)}.manage-dialog{width:min(740px,100%);max-height:min(720px,90dvh);display:flex;flex-direction:column;overflow:hidden;background:var(--background);border:1px solid var(--border);border-radius:14px;box-shadow:0 26px 75px #0009}.manage-dialog header{display:flex;justify-content:space-between;align-items:flex-start;padding:22px 24px;border-bottom:1px solid var(--border)}.manage-dialog header h2{font-size:21px;margin:4px 0}.manage-dialog header p{color:var(--muted-foreground);font-size:12px}.manage-dialog header button{padding:6px;border-radius:6px}.manage-tools,.manage-import{display:flex;align-items:center;gap:8px;padding:12px 20px;border-bottom:1px solid var(--border)}.manage-tools .search-box{flex:1;margin:0}.manage-tools>button{padding:8px 10px;border:1px solid var(--border);border-radius:7px;white-space:nowrap;font-size:11px}.manage-import .upload{background:var(--foreground);color:var(--background);font-size:11px;padding:8px 11px}.manage-import .upload.secondary{background:transparent;color:var(--foreground);border:1px solid var(--border)}.manage-import>span{font-size:10px;color:var(--muted-foreground)}.manage-list{overflow:auto;min-height:120px;padding:8px 12px}.manage-row{display:flex;align-items:center;justify-content:space-between;gap:8px;border-radius:8px;padding:5px 9px}.manage-row:hover{background:var(--accent)}.manage-row label{display:flex;align-items:center;gap:11px;min-width:0;flex:1;cursor:pointer}.manage-row label span{min-width:0}.manage-row strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}.manage-row small{display:block;color:var(--muted-foreground);font-size:10px;margin-top:3px}.manage-row button{border:1px solid var(--border);border-radius:6px;padding:6px 9px;font-size:11px}.manage-dialog footer{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;border-top:1px solid var(--border);font-size:11px;color:var(--muted-foreground)}.manage-dialog footer button{background:var(--foreground);color:var(--background);padding:7px 14px;border-radius:7px}
- @media(max-width:800px){.documents-layout,.documents-layout.library-hidden,.documents-layout.assistant-hidden,.documents-layout.library-hidden.assistant-hidden{display:flex;flex-direction:column}.doc-resizer{display:none}.manage-tools,.manage-import{flex-wrap:wrap}.manage-tools .search-box{flex-basis:100%}.document-head-actions{flex-wrap:wrap}.manage-button{font-size:11px}}
- .manage-row-actions{display:flex;gap:5px;align-items:center}.manage-row-actions .danger{color:#ec9b9b}.document-action-backdrop{position:absolute;inset:0;z-index:40;display:grid;place-items:center;background:#000b;backdrop-filter:blur(5px)}.document-action-dialog{width:min(420px,calc(100% - 32px));padding:22px;background:var(--background);border:1px solid var(--border);border-radius:12px;box-shadow:0 25px 70px #0009}.document-action-dialog h2{font-size:18px}.document-action-dialog p{color:var(--muted-foreground);margin:12px 0;overflow-wrap:anywhere}.document-action-dialog input{width:100%;padding:9px;border:1px solid var(--border);border-radius:6px;background:var(--background);color:var(--foreground)}.document-action-dialog form>div{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}.document-action-dialog button{padding:8px 12px;border:1px solid var(--border);border-radius:6px}.document-action-dialog button[type=submit]{background:var(--foreground);color:var(--background)}
- @media(max-width:600px){.manage-row-actions{flex-wrap:wrap;justify-content:flex-end}.manage-row-actions button{font-size:10px}}
-.documents-layout{grid-template-rows:minmax(0,1fr);overflow:hidden}.documents .ask-pane{display:flex;flex-direction:column;min-height:0;padding:0;overflow:hidden}.documents .knowledge-feed{flex:1;min-height:0;overflow:auto}.documents .knowledge-composer{flex:none}@media(max-width:800px){.documents .ask-pane{height:540px;min-height:400px}}
-.documents .knowledge-heading{padding:10px 13px 8px}.knowledge-header-row{display:flex;align-items:center;justify-content:space-between;gap:8px}.knowledge-header-row h2{font-size:16px;margin:5px 0 0}.knowledge-header-row .local-badge{float:none;font-size:9px}.knowledge-chat-actions{display:flex;gap:7px;margin-top:10px}.knowledge-chat-actions button{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:32px;padding:6px 9px;border:1px solid var(--border);border-radius:8px;background:var(--background);color:var(--foreground);font-size:11px;font-weight:600}.knowledge-chat-actions button:hover,.knowledge-history .history-entry:hover{background:var(--accent)}.knowledge-chat-actions button:disabled{opacity:.5}.knowledge-chat-actions .new-conversation{background:var(--foreground);color:var(--background);border-color:var(--foreground)}.knowledge-chat-actions .history-button span{color:var(--muted-foreground);font-size:10px}.knowledge-history{max-height:190px;overflow:auto;margin-top:9px;padding:5px;border:1px solid var(--border);border-radius:9px;background:var(--background)}.knowledge-history>p{padding:10px;color:var(--muted-foreground);font-size:11px}.history-entry{display:flex;align-items:center;gap:3px;border-radius:6px}.history-entry.current{background:var(--accent)}.history-entry .history-open{min-width:0;flex:1;padding:7px;text-align:left}.history-entry strong,.history-entry small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.history-entry strong{font-size:11px}.history-entry small{margin-top:3px;color:var(--muted-foreground);font-size:9px}.history-entry .history-delete{flex:none;padding:6px;color:var(--muted-foreground)}.documents .knowledge-composer{padding:7px 9px}.documents .knowledge-composer .ask-form textarea{height:65px;min-height:55px;padding:10px 11px}.knowledge-composer .scope{padding:2px 10px 6px;font-size:9px}.knowledge-composer .ask-actions{padding:0 6px 6px;gap:6px}.composer-tools{display:flex;align-items:center;gap:5px;min-width:0}.composer-upload{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;font-size:10px;padding:6px;cursor:pointer}.composer-upload input{position:absolute;width:1px;height:1px;opacity:0}.knowledge-composer .mode-switch button{padding:6px;font-size:10px}.knowledge-composer .send{padding:7px}.documents .knowledge-feed{padding:0 13px 13px}.knowledge-feed .conversation{margin-top:10px}
-.documents .documents-head{padding:10px 18px;gap:12px;min-height:76px}
-.documents .documents-head h1{font-size:21px;margin:1px 0}
-.documents .documents-head p{font-size:11px;line-height:1.3}
-.documents .document-head-actions{gap:7px}
-.documents .document-head-actions .upload{padding:8px 10px;font-size:11px}
-.documents .document-head-actions .manage-button{padding:7px 9px;font-size:11px}
-.documents .knowledge-heading{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:7px;row-gap:5px;padding:8px 12px}
-.documents .knowledge-header-row:first-child{grid-column:1/-1}
-.documents .knowledge-header-row:nth-child(2){grid-column:1;grid-row:2;min-width:0}
-.documents .knowledge-header-row h2{font-size:15px;margin:0;white-space:nowrap}
-.documents .knowledge-chat-actions{grid-column:2;grid-row:2;gap:5px;margin:0}
-.documents .knowledge-chat-actions button{min-height:28px;padding:4px 6px;font-size:10px;gap:3px}
-.documents .knowledge-history{grid-column:1/-1;margin-top:3px}
-.documents .knowledge-composer{padding:5px 8px}
-.documents .knowledge-composer .ask-form textarea{height:48px;min-height:45px;padding:8px 10px}
-.documents .knowledge-composer .scope{padding:0 9px 3px}
-.documents .knowledge-composer .ask-actions{padding:0 5px 5px}
-.documents .knowledge-composer .mode-switch button{padding:5px}
-.documents .knowledge-composer .send{padding:6px}
-.documents .knowledge-composer .stop-request{margin-left:auto;border:1px solid var(--border);border-radius:7px;padding:6px 9px;color:var(--foreground);font-size:11px}
-.documents .knowledge-feed{padding:0 12px 10px}
-.documents{height:calc(100dvh - 92px)}
-.documents .reader-empty{min-height:0}
-.documents .reader-empty button{border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:11px;color:var(--foreground)}
-.documents .reader-empty button:hover{background:var(--accent)}
-.documents .knowledge-feed{scrollbar-color:#626a7a transparent;scrollbar-width:thin}
-.documents .files{scrollbar-color:#626a7a transparent;scrollbar-width:thin}
-@media(max-width:800px){.documents{height:auto}.documents .documents-head{padding:10px 12px}.documents .document-head-actions{width:100%}}
-</style>
+<Dialog.Root
+	open={!!action}
+	onOpenChange={(value) => {
+		if (!value) action = null;
+	}}
+	><Dialog.Content class="knowledge-management-dialog"
+		><Dialog.Header
+			><Dialog.Title
+				>{action === 'rename'
+					? 'Rename document'
+					: action === 'move'
+						? 'Move document'
+						: 'Delete from library?'}</Dialog.Title
+			><Dialog.Description
+				>{active?.display_name}. {action === 'remove'
+					? 'This removes all indexed versions and citations from the library. Original files and stored source snapshots remain on disk.'
+					: action === 'move'
+						? 'Organize within the Knowledge library; original files are not moved on your computer.'
+						: ''}</Dialog.Description
+			></Dialog.Header
+		>
+		<form
+			onsubmit={(event) => {
+				event.preventDefault();
+				void confirm();
+			}}
+		>
+			{#if action === 'rename'}<input
+					aria-label="New document name"
+					bind:value={name}
+					required
+					maxlength="255"
+				/>{:else if action === 'move'}<label
+					>Library folder<input
+						aria-label="Destination library folder"
+						bind:value={folder}
+						maxlength="240"
+						placeholder="e.g. Projects/Inspection"
+						list="library-folders"
+					/></label
+				><datalist id="library-folders"
+					>{#each libraryFolders as item}<option value={item}></option>{/each}</datalist
+				>
+				<p class="knowledge-dialog-hint">
+					Leave empty to return to All documents.
+				</p>{/if}{#if actionError}<p role="alert">{actionError}</p>{/if}<Dialog.Footer
+				><button type="button" class="context-secondary" onclick={() => (action = null)}
+					>Cancel</button
+				><button class="context-primary" type="submit" disabled={managing}
+					>{managing
+						? 'Saving…'
+						: action === 'rename'
+							? 'Rename'
+							: action === 'move'
+								? 'Move'
+								: 'Delete'}</button
+				></Dialog.Footer
+			>
+		</form></Dialog.Content
+	></Dialog.Root
+>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ContextGaugeDetailRow from './ContextGaugeDetailRow.svelte';
 	import { gaugePopup } from './gauge-popup.svelte';
-	import { ChevronDown } from '@lucide/svelte';
+	import ChevronDown from '@lucide/svelte/icons/chevron-down';
 	import * as Collapsible from '$lib/components/ui/collapsible';
 	import { STATS_UNITS } from '$lib/constants';
 

@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Plus, Trash2 } from '@lucide/svelte';
+	import Plus from '@lucide/svelte/icons/plus';
+import Trash2 from '@lucide/svelte/icons/trash-2';
 	import { Input } from '$lib/components/ui/input';
 	import { KEY_VALUE_PAIR_KEY_MAX_LENGTH, KEY_VALUE_PAIR_VALUE_MAX_LENGTH } from '$lib/constants';
 	import type { KeyValuePair } from '$lib/types';

@@ -1,5 +1,8 @@
 <script lang="ts">
-	import { Braces, FolderOpen, Loader2, Plus } from '@lucide/svelte';
+	import Braces from '@lucide/svelte/icons/braces';
+import FolderOpen from '@lucide/svelte/icons/folder-open';
+import Loader2 from '@lucide/svelte/icons/loader-2';
+import Plus from '@lucide/svelte/icons/plus';
 	import {
 		McpResourcePreview,
 		McpResourcesBrowser,

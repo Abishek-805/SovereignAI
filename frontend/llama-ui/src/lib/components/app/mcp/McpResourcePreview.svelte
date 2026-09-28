@@ -1,5 +1,8 @@
 <script lang="ts">
-	import { AlertCircle, Download, FileText, Loader2 } from '@lucide/svelte';
+	import AlertCircle from '@lucide/svelte/icons/alert-circle';
+import Download from '@lucide/svelte/icons/download';
+import FileText from '@lucide/svelte/icons/file-text';
+import Loader2 from '@lucide/svelte/icons/loader-2';
 	import { ActionIconCopyToClipboard } from '$lib/components/app';
 	import { Button } from '$lib/components/ui/button';
 	import { ICON_CLASS_DEFAULT } from '$lib/constants';

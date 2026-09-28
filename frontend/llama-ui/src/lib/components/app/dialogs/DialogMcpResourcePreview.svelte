@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Download } from '@lucide/svelte';
+	import Download from '@lucide/svelte/icons/download';
 	import { ActionIconCopyToClipboard, SyntaxHighlightedCode } from '$lib/components/app';
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';

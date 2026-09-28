@@ -1,6 +1,8 @@
 <script lang="ts">
 	import ModelLoadHighlight from './ModelLoadHighlight.svelte';
-	import { ChevronDown, Loader2, Package } from '@lucide/svelte';
+	import ChevronDown from '@lucide/svelte/icons/chevron-down';
+import Loader2 from '@lucide/svelte/icons/loader-2';
+import Package from '@lucide/svelte/icons/package';
 	import {
 		DialogModelInformation,
 		ModelId,

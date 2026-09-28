@@ -1,5 +1,10 @@
 <script lang="ts">
-	import { Check, ChevronDown, ChevronRight, Info, Loader2, PencilRuler } from '@lucide/svelte';
+	import Check from '@lucide/svelte/icons/check';
+import ChevronDown from '@lucide/svelte/icons/chevron-down';
+import ChevronRight from '@lucide/svelte/icons/chevron-right';
+import Info from '@lucide/svelte/icons/info';
+import Loader2 from '@lucide/svelte/icons/loader-2';
+import PencilRuler from '@lucide/svelte/icons/pencil-ruler';
 	import { Checkbox } from '$lib/components/ui/checkbox';
 	import * as Collapsible from '$lib/components/ui/collapsible';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';

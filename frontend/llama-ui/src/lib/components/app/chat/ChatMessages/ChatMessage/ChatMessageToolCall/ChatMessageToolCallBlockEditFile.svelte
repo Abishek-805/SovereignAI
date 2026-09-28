@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { parseEditFileMeta, parseEditFileTitleMeta } from './parsers/edit-file';
 	import ToolCallBlock from './ToolCallBlock.svelte';
-	import { XCircle } from '@lucide/svelte';
+	import XCircle from '@lucide/svelte/icons/x-circle';
 	import { MAX_HEIGHT_CODE_BLOCK, RESULT_STAT_SEPARATOR } from '$lib/constants';
 	import { toolsStore } from '$lib/stores';
 	import type { AgenticSection } from '$lib/types';

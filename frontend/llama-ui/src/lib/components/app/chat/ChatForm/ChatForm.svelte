@@ -63,6 +63,10 @@
 	} from '$lib/utils/browser-only';
 	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
+	import KnowledgeConnection from '$lib/components/sovereign/KnowledgeConnection.svelte';
+	import KnowledgeChips from '$lib/components/sovereign/KnowledgeChips.svelte';
+	import KnowledgePicker from '$lib/components/sovereign/KnowledgePicker.svelte';
+	import { knowledgeContext } from '$lib/stores/knowledge-context.svelte';
 
 	interface Props {
 		// Data
@@ -250,6 +254,9 @@
 	onMount(() => {
 		recordingSupported = isAudioRecordingSupported();
 		audioRecorder = new AudioRecorder();
+		const chooseImage = () => fileInputRef?.click('image/*');
+		window.addEventListener('sovereign-choose-chat-image', chooseImage);
+		return () => window.removeEventListener('sovereign-choose-chat-image', chooseImage);
 	});
 
 	export function focus() {
@@ -327,26 +334,61 @@
 	function submitOrSwitch() {
 		const request = value.trim();
 		if (!hasAttachments) {
-			if (/^(?:(?:can|could|would)\s+(?:you|u)\s+)?(?:please\s+)?(?:generate|create|draw|make)\s+(?:(?:me|a|an|the|some)\s+)?(?:\w+\s+){0,2}(?:image|picture|photo|artwork)\b/i.test(request)) {
-				toast.info('Image generation is not installed. The local vision model can analyze images, but it cannot create them.', { duration: 8000 });
+			if (
+				/^(?:(?:can|could|would)\s+(?:you|u)\s+)?(?:please\s+)?(?:generate|create|draw|make)\s+(?:(?:me|a|an|the|some)\s+)?(?:\w+\s+){0,2}(?:image|picture|photo|artwork)\b/i.test(
+					request
+				)
+			) {
+				toast.info(
+					'Image generation is not installed. The local vision model can analyze images, but it cannot create them.',
+					{ duration: 8000 }
+				);
 				return;
 			}
-			const navigation = request.match(/^(?:(?:can|could|would)\s+(?:you|u)\s+)?(?:please\s+)?(?:open|show|switch|change|move|go|navigate)(?:\s+me)?(?:\s+to)?(?:\s+the)?\s+(agent|code|documents|knowledge|downloads|control center|settings)\b[.!?\s]*$/i);
+			const navigation = request.match(
+				/^(?:(?:can|could|would)\s+(?:you|u)\s+)?(?:please\s+)?(?:open|show|switch|change|move|go|navigate)(?:\s+me)?(?:\s+to)?(?:\s+the)?\s+(agent|code|documents|knowledge|downloads|control center|settings)\b[.!?\s]*$/i
+			);
 			if (navigation || /^(?:agent|code|documents|knowledge|downloads)[.!?]?$/i.test(request)) {
 				const destination = (navigation?.[1] || request).toLowerCase();
-				const tab = destination === 'downloads' ? 'artifacts' : destination === 'control center' || destination === 'settings' ? 'runtime' : destination === 'documents' ? 'knowledge' : destination;
+				const tab =
+					destination === 'downloads'
+						? 'artifacts'
+						: destination === 'control center' || destination === 'settings'
+							? 'runtime'
+							: destination === 'documents'
+								? 'knowledge'
+								: destination;
 				value = '';
 				onValueChange?.('');
 				window.dispatchEvent(new CustomEvent('sovereign-open-workspace', { detail: { tab } }));
 				return;
 			}
-			const agentNavigation = request.match(/^(?:(?:can|could|would)\s+(?:you|u)\s+)?(?:please\s+)?(?:switch|change|move|go)(?:\s+me)?(?:\s+to)?(?:\s+the)?\s+agent\b[,.!?\s]*(.*)$/i);
-			if (agentNavigation) { openAgent(agentNavigation[1]?.replace(/^and\s+/i, '').trim() || ''); return; }
-			const projectAction = /^(?:(?:can|could|would)\s+(?:you|u)\s+)?(?:please\s+)?(?:create|write|add|edit|modify|delete|remove|fix|refactor|build)\b/i.test(request) && /\b(?:file|folder|project|codebase|workspace)\b/i.test(request);
-			if (projectAction) { openAgent(request, Boolean(localStorage.getItem('sovereign-active-workspace'))); return; }
-			if (/^calculate:\s*\S/i.test(request)) { openAgent(request, true); return; }
-			const arithmetic = request.match(/^(?:what(?:'s| is)|calculate|compute)\s+([0-9.\s()+*/-]+)\??$/i);
-			if (arithmetic && /[+*/-]/.test(arithmetic[1])) { openAgent('Calculate: '+arithmetic[1].trim(), true); return; }
+			const agentNavigation = request.match(
+				/^(?:(?:can|could|would)\s+(?:you|u)\s+)?(?:please\s+)?(?:switch|change|move|go)(?:\s+me)?(?:\s+to)?(?:\s+the)?\s+agent\b[,.!?\s]*(.*)$/i
+			);
+			if (agentNavigation) {
+				openAgent(agentNavigation[1]?.replace(/^and\s+/i, '').trim() || '');
+				return;
+			}
+			const projectAction =
+				/^(?:(?:can|could|would)\s+(?:you|u)\s+)?(?:please\s+)?(?:create|write|add|edit|modify|delete|remove|fix|refactor|build)\b/i.test(
+					request
+				) && /\b(?:file|folder|project|codebase|workspace)\b/i.test(request);
+			if (projectAction) {
+				openAgent(request, Boolean(localStorage.getItem('sovereign-active-workspace')));
+				return;
+			}
+			if (/^calculate:\s*\S/i.test(request)) {
+				openAgent(request, true);
+				return;
+			}
+			const arithmetic = request.match(
+				/^(?:what(?:'s| is)|calculate|compute)\s+([0-9.\s()+*/-]+)\??$/i
+			);
+			if (arithmetic && /[+*/-]/.test(arithmetic[1])) {
+				openAgent('Calculate: ' + arithmetic[1].trim(), true);
+				return;
+			}
 		}
 		onSubmit?.();
 	}
@@ -354,7 +396,9 @@
 	function openAgent(draft: string, autoSend = false) {
 		value = '';
 		onValueChange?.('');
-		window.dispatchEvent(new CustomEvent('sovereign-open-workspace', { detail: { tab: 'agent', draft, autoSend } }));
+		window.dispatchEvent(
+			new CustomEvent('sovereign-open-workspace', { detail: { tab: 'agent', draft, autoSend } })
+		);
 	}
 
 	function handlePaste(event: ClipboardEvent) {
@@ -570,9 +614,15 @@
 </script>
 
 <ChatFormInputFileInputInvisible bind:this={fileInputRef} onFileSelect={handleFileSelect} />
+<KnowledgePicker
+	bind:open={knowledgeContext.pickerOpen}
+	selected={knowledgeContext.documents}
+	scope={knowledgeContext.scope}
+	onconnect={(docs, scope) => void knowledgeContext.set(docs, scope)}
+/>
 
 <form
-	class="relative grid {className}"
+	class="sovereign-chat-form relative grid {className}"
 	onsubmit={(event) => {
 		event.preventDefault();
 
@@ -610,9 +660,16 @@
 	></div>
 
 	<div class="mb-2 flex items-center gap-1 px-2 text-xs" aria-label="Work mode">
-		<span class="rounded-full border border-border bg-accent px-3 py-1 font-medium" aria-current="page">Chat</span>
-		<button type="button" class="rounded-full border border-border px-3 py-1 text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:outline-2" title="Open the bounded Agent workspace with this draft" onclick={() => openAgent(value)}>Agent</button>
-		<span class="ml-auto hidden text-muted-foreground sm:inline">Chat: local model response · Agent: tools and checks</span>
+		<span
+			class="rounded-full border border-border bg-accent px-3 py-1 font-medium"
+			aria-current="page">Chat</span
+		>
+		<button
+			type="button"
+			class="rounded-full border border-border px-3 py-1 text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:outline-2"
+			title="Open the bounded Agent workspace with this draft"
+			onclick={() => openAgent(value)}>Agent</button
+		>
 	</div>
 
 	<div
@@ -621,6 +678,14 @@
 			: ''}"
 		data-slot="input-area"
 	>
+		<KnowledgeConnection disabled={isLoading || disabled} />
+		<KnowledgeChips
+			documents={knowledgeContext.connected && knowledgeContext.scope === 'selected'
+				? knowledgeContext.documents
+				: []}
+			onremove={(id) =>
+				void knowledgeContext.set(knowledgeContext.documents.filter((doc) => doc.id !== id))}
+		/>
 		<ChatAttachmentsList
 			bind:uploadedFiles
 			activeModelId={activeModelId ?? undefined}

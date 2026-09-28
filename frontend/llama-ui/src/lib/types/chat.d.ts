@@ -128,6 +128,7 @@ export interface ChatStreamCallbacks {
 	onToolCallsStreaming?: (toolCalls: ApiChatCompletionToolCall[]) => void;
 	onAttachments?: (messageId: string, extras: DatabaseMessageExtra[]) => void;
 	onModel?: (model: string) => void;
+	onRouting?: (routing: import('$lib/services/routing-telemetry').RoutingTelemetry) => void;
 	onCompletionId?: (id: string) => void;
 	onTimings?: (timings?: ChatMessageTimings, promptProgress?: ChatMessagePromptProgress) => void;
 	onAssistantTurnComplete?: (

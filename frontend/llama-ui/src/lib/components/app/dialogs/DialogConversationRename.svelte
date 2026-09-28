@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Pencil } from '@lucide/svelte';
+	import Pencil from '@lucide/svelte/icons/pencil';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';

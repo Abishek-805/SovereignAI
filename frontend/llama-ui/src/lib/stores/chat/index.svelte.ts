@@ -20,6 +20,8 @@ import {
 } from '$lib/enums';
 import { ChatService } from '$lib/services/chat.service';
 import { DatabaseService } from '$lib/services/database.service';
+import { knowledgeContext } from '../knowledge-context.svelte';
+import { knowledgeJson, type KnowledgeReference } from '$lib/services/knowledge.service';
 // direct imports between stores, not via the barrel, to avoid circular deps
 import { agenticStore } from '$lib/stores/agentic/index.svelte';
 import { chatActivityStore } from '$lib/stores/chat/activity.svelte';
@@ -51,6 +53,36 @@ import {
 import { SvelteMap } from 'svelte/reactivity';
 
 class ChatStore implements ChatStreamHost, ChatFlowsHost {
+	private knowledgeJobs = new Map<string,{id?:string;stop:boolean}>();
+	async completeKnowledgeMessage(convId:string, message:DatabaseMessage, question:string, documents:KnowledgeReference[]) {
+		const request=this.knowledgeJobs.get(convId) ?? {stop:false,id:undefined as string|undefined};
+		this.knowledgeJobs.set(convId,request);
+		const update=async (fields:Partial<DatabaseMessage>)=>{
+			await DatabaseService.updateMessage(message.id,fields);
+			const index=conversationsStore.findMessageIndex(message.id);
+			if(index>=0)conversationsStore.updateMessageAtIndex(index,fields);
+		};
+		try {
+			if(request.stop){await update({content:'Request cancelled.',knowledgeStatus:'Cancelled'});return;}
+			await update({knowledgeStatus:'Understanding request'});
+			const history=conversationsStore.activeMessages.filter(item=>item.id!==message.id).slice(-6).map(item=>`${item.role}: ${item.content.slice(0,1500)}`);
+			const started=await knowledgeJson(await fetch('/documents/jobs',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({kind:'ask',question,document_ids:documents.map(doc=>doc.id),history})}));
+			request.id=started.job_id;
+			if(request.stop)await fetch('/coding/jobs/'+request.id+'/stop',{method:'POST'});
+			let job=await knowledgeJson(await fetch('/coding/jobs/'+request.id));
+			while(job.state==='running'){
+				await update({knowledgeStatus:request.stop?'Stopping…':job.stage});
+				await new Promise(resolve=>setTimeout(resolve,650));
+				job=await knowledgeJson(await fetch('/coding/jobs/'+request.id));
+			}
+			if(job.state==='cancelled'){await update({content:'Request cancelled.',knowledgeStatus:'Cancelled'});return;}
+			if(job.error)throw Error(job.error);
+			const result=job.result;
+			await update({content:result.answer,knowledgeCoverage:result.coverage,knowledgeSources:result.sources||[],knowledgeDownloads:result.downloads||{},knowledgeStatus:result.status,model:result.routing?.model,routing:result.routing});
+			if(result.routing)window.dispatchEvent(new CustomEvent('sovereign-route',{detail:{task:'Chat with Knowledge',...result.routing}}));
+		}catch(error){await update({content:String(error),knowledgeStatus:'error'});}
+		finally{this.knowledgeJobs.delete(convId);this.setChatLoading(convId,false);}
+	}
 	chatReasoningStates = new SvelteMap<string, boolean>();
 	chatStreamingStates = new SvelteMap<
 		string,
@@ -606,10 +638,11 @@ class ChatStore implements ChatStreamHost, ChatFlowsHost {
 		this.pendingDraftMessage = message;
 		this.pendingDraftFiles = [...files];
 	}
-	async sendMessage(content: string, extras?: DatabaseMessageExtra[]): Promise<void> {
+	async sendMessage(content: string, extras?: DatabaseMessageExtra[], knowledgeDocuments?: KnowledgeReference[]): Promise<void> {
 		if (!content.trim() && (!extras || extras.length === 0)) return;
 
-		const activeConv = conversationsStore.activeConversation;
+		const knowledgeOptions={knowledgeConnected:knowledgeContext.connected,knowledgeScope:knowledgeContext.scope};
+        const activeConv = conversationsStore.activeConversation;
 
 		// If agentic loop is running, inject as a steering message instead of starting a new flow
 		if (activeConv && agenticStore.isRunning(activeConv.id)) {
@@ -659,12 +692,15 @@ class ChatStore implements ChatStreamHost, ChatFlowsHost {
 		if (!currentConv) return;
 
 		this.showErrorDialog(null);
+		// Register before persistence yields, so an immediate Stop cannot miss this request.
+		if(knowledgeDocuments?.length)this.knowledgeJobs.set(currentConv.id,{stop:false});
 		this.setChatLoading(currentConv.id, true);
 		this.clearChatStreaming(currentConv.id);
 		try {
 			let parentIdForUserMessage: string | undefined;
 
 			if (isNewConversation) {
+                await DatabaseService.updateConversation(currentConv.id,knowledgeOptions); conversationsStore.applyConversationUpdate(currentConv.id,knowledgeOptions);
 				const rootId = await DatabaseService.createRootMessage(currentConv.id);
 				const currentConfig = settingsStore.config;
 				const systemPrompt = currentConfig.systemMessage?.toString().trim();
@@ -716,6 +752,15 @@ class ChatStore implements ChatStreamHost, ChatFlowsHost {
 			const assistantMessage = await this.createAssistantMessage(userMessage.id);
 
 			conversationsStore.addMessageToActive(assistantMessage);
+			if(knowledgeDocuments?.length){
+
+				await DatabaseService.updateMessage(userMessage.id,{knowledgeDocuments});
+				conversationsStore.updateMessageAtIndex(conversationsStore.findMessageIndex(userMessage.id),{knowledgeDocuments});
+				await DatabaseService.updateConversation(currentConv.id,{knowledgeDocuments});
+				conversationsStore.applyConversationUpdate(currentConv.id,{knowledgeDocuments});
+				await this.completeKnowledgeMessage(currentConv.id,assistantMessage,content,knowledgeDocuments);
+				return;
+			}
 			await this.streamChatCompletion(
 				conversationsStore.activeMessages.slice(0, -1),
 				assistantMessage,
@@ -731,6 +776,7 @@ class ChatStore implements ChatStreamHost, ChatFlowsHost {
 				return;
 			}
 
+			if (knowledgeDocuments?.length) this.knowledgeJobs.delete(currentConv.id);
 			console.error('Failed to send message:', error);
 			this.setChatLoading(currentConv.id, false);
 			const dialogType =
@@ -794,6 +840,8 @@ class ChatStore implements ChatStreamHost, ChatFlowsHost {
 	}
 
 	async stopGenerationForChat(convId: string): Promise<void> {
+		const knowledgeJob=this.knowledgeJobs.get(convId);
+		if(knowledgeJob){knowledgeJob.stop=true;if(knowledgeJob.id)await fetch('/coding/jobs/'+knowledgeJob.id+'/stop',{method:'POST'});return;}
 		await this.savePartialResponseIfNeeded(convId);
 		// tell the server to stop the generation, not just drop the HTTP socket. without this the
 		// detached drain keeps producing tokens until eos or max_tokens. use the frozen identity
@@ -820,6 +868,11 @@ class ChatStore implements ChatStreamHost, ChatFlowsHost {
 		modelOverride?: string | null,
 		firstUserMessageContent?: string
 	): Promise<void> {
+		const lastUser=allMessages.findLast(message=>message.role===MessageRole.USER);
+		if(lastUser?.knowledgeDocuments?.length){
+			await this.completeKnowledgeMessage(assistantMessage.convId,assistantMessage,lastUser.content,lastUser.knowledgeDocuments);
+			return;
+		}
 		// the ::model suffix in the stream identity is only for router mode, where it routes to the
 		// owning child. in single-model mode the identity stays the bare conv id so that attach, stop
 		// and reattach all agree, regardless of fresh send vs regenerate passing a resolved model
@@ -1083,6 +1136,10 @@ class ChatStore implements ChatStreamHost, ChatFlowsHost {
 				}
 			},
 			onModel: (modelName: string) => recordModel(modelName),
+			onRouting: (routing) => {
+				conversationsStore.updateMessageAtIndex(conversationsStore.findMessageIndex(currentMessageId), { routing });
+				DatabaseService.updateMessage(currentMessageId, { routing }).catch(() => {});
+			},
 			onReasoningChunk: (chunk: string) => {
 				streamedReasoningContent += chunk;
 				// mark streaming state so a stop mid-thinking can persist the partial reasoning
@@ -1238,6 +1295,7 @@ class ChatStore implements ChatStreamHost, ChatFlowsHost {
 				},
 				onError: streamCallbacks.onError,
 				onModel: streamCallbacks.onModel,
+				onRouting: streamCallbacks.onRouting,
 				onReasoningChunk: streamCallbacks.onReasoningChunk,
 				onTimings: streamCallbacks.onTimings,
 				stream: true

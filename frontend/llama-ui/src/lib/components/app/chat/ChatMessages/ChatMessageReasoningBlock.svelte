@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Lightbulb } from '@lucide/svelte';
+	import Lightbulb from '@lucide/svelte/icons/lightbulb';
 	import { CollapsibleContentBlock, MarkdownContent } from '$lib/components/app';
 	import { REASONING_SCROLL_AT_BOTTOM_THRESHOLD_PX } from '$lib/constants';
 	import { AgenticSectionType } from '$lib/enums';

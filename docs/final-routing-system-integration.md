@@ -1,0 +1,73 @@
+# Routing and system integration — 28 September 2026
+
+The integration is implemented, but the full routing release gate is **not passed**. CPU classifier quality, independently reviewed task labels, competing eligible model measurements, reliable tail latency, and resource peaks at the production context remain unresolved. The application reports those limits rather than presenting an unmeasured optimizer as complete.
+
+## Architecture
+
+Workbench contains Chat, Knowledge, Agent and Code. Control Center manages runtime, models, resources and appearance. Knowledge is the reusable document library, with original preview, extracted text and document management; it has no duplicate assistant. Chat and Agent connect document IDs to existing retrieval and evidence workflows. Connected context does not force unrelated conversation through retrieval and does not authorize document mutation.
+
+Requests carry a bounded, request-owned decision through intent planning, model selection, a runtime lease, tools, validation and result publication. The decision records public facts, candidate rejections, selected runtime, observed resource admission, actual context requirements, switch/load observations, measured timing and failures. Unknown measurements remain null. The bounded cache supports `/routing/latest` and `/routing/decisions/{request_id}`; jobs and response history preserve their own decision. This exposes decisions, not private model reasoning.
+
+## Intent and safety
+
+The CPU classifier was evaluated before activation. None of word, character, hybrid TF-IDF ridge or BGE prototypes passed the frozen release gates. Production classification therefore abstains and the existing bounded generative planner chooses answer, evidence search, report, calculator, read-only inspection, explicit code edit or image analysis. No greeting-response dictionary was added. Availability of a workspace, image or connected library is context, not an instruction to act.
+
+See [the classifier evaluation](capability-classifier-evaluation-v2.md) and its frozen datasets/results. The independently authored held-out set contains 63 tasks plus 20 safety probes. Labels are engineer/agent-authored, not independently human-reviewed. The best top-label accuracy was 82.54%; safety and coverage gates were insufficient. No offline classifier prediction executed a tool or authorized a write.
+
+Live evaluation exposed practical failures and prompted fixes: the planner now receives workspace filenames without source contents; read-only inspection generates an answer from the subsequently read excerpts rather than returning another plan; the Decimal calculator supports only a bounded `sqrt` call in addition to its allowlisted arithmetic; report failures include their actual evidence explanation. Actual model cancellation and timing now also cover vision through the owned model client. Excerpts, documents and images remain untrusted data.
+
+## Registry, filtering and admission
+
+Model entries have an identity, runtime alias, supported capabilities/modalities, asset and projector paths, context/KV settings, measured metrics and license reference. Multiple entries can support one capability. Filtering rejects disabled or missing assets, unsupported adapters/capabilities/modalities, inadequate context and known resource-policy failures. A missing vision model never silently becomes a text model.
+
+Resource observations use actual available host RAM and GPU 0 free/total memory, with bounded sampling and a short cache. Configured emergency reserves are enforced. Covered measured model peaks can be compared against headroom; unknown peak, incremental resident allocation or context/KV coverage gives explicitly **conditional admission**. This is not a proven memory-capacity guarantee. Memory reclaimed by unloading is not guessed.
+
+Selection compares latency plus switch cost only where comparable quality/cost measurements exist. Otherwise it reports the sole admissible candidate, retains an admissible resident model or uses stable registry priority. The current eligible registry has one text/code/calculation candidate and one vision candidate. Unit fixtures exercise competing models; those fixture values are not hardware benchmark results. There is no demonstrated production optimizer, architectural mixture of experts or installed dedicated coding model.
+
+Text requests count the actual runtime chat template/tokenizer, including completion tool definitions, tool choice and template options, and reserve output plus safety tokens before generation. The installed b11132 runtime counted a fixture at 9 message-only tokens versus 139 full-request tokens. Warm leases verify owned process model/projector, context, slots and KV flags plus actual runtime context; a profile mismatch reloads the owned process instead of trusting its alias. Streaming timing values reject booleans, negative values and non-finite numbers. Ordinary Chat output is bounded to 4096 tokens. Multimodal patch-token expansion remains unknown; it is not approximated from image characters. Backend runtime observations supply UI readiness/loading/unloading/generation/error states.
+
+## Measurements
+
+[The controlled context/KV study](context-kv-study.md) tested 4096, 6144 and 8192 tokens with q8/q8 and f16/f16 KV. All 18 short outputs passed their format check. Two warm observations per profile do not establish p95, near-limit correctness, Docker-concurrent capacity or a production-default change. The production 24576-token context was not covered by that study, so its peak requirement is not inferred from a smaller context.
+
+The serialized API suite uses its own fictional document and isolated code project, with actual model output, evidence links, downloadable Word artifacts, Docker validation and mutation checks. The first 30-task run found a calculator failure, a report-evidence failure and a file-routing failure; its cleanup endpoint error was corrected. The subsequent 31-task run passed 29 tasks, including vision, but exposed an empty inspection response and the remaining report failure. Its median end-to-end latency was 9.243 seconds, range 3.246–20.364 seconds; median accumulated selection time was 0.254 seconds. These are heterogeneous single observations, not a latency SLA or a claim of low universal computation cost. A frontend check overlapped part of that second run, so timings are descriptive rather than an uncontaminated latency comparison.
+
+The [strategy harness](../benchmarks/routing-strategy-comparison.py) executes independent, matched always-text/current-mapping/proposed samples with rotating order and isolated fixtures. It does not reuse one run as three baselines. Legacy and proposed selection choose the same physical candidate when admitted; admission and observability differ. An oracle remains unavailable without competing eligible alternatives actually evaluated. Execution results and final regression/browser results are recorded below when verified.
+
+## UI and preserved mechanics
+
+Compact, expandable Route details appear with Chat and Code answers and actual model status. Agent retains diagnostic telemetry in its history/backend while omitting the answer-panel diagnostics requested removed by the user. An allowlist displays only public backend fields. Null timings are omitted; zero and false are preserved. Long reasons and rejection lists wrap within the panel. Failure request IDs allow inspection of actual errors.
+
+Knowledge snapshots live under `Documents/SovereignAI/Knowledge`; projects under `Documents/SovereignAI/Projects`. Original Knowledge files, context toggles, import/drop/copy/move, rename/delete, code persistence, Docker terminal input/cwd, explorer disclosure/drag/Ctrl-copy, tab reorder, inline review, Accept/Undo and external refresh remain part of regression acceptance. Existing user project files and the user's untracked logo are preserved.
+
+## Release limits
+
+Human review of open answers/reports/vision, a sufficiently representative untouched classifier evaluation, competing model quality/cost measurements, production-context resource peaks, near-limit context tests and repeated latency/Docker-pressure measurements are required before promoting an optimized router. Arbitrary application navigation, full embedded VS Code extensions/debugger/Git parity and persistent terminal groups are not implemented. Native VS Code project handoff remains the supported route to its full toolset.
+
+## Final regression and live UI checks
+
+After the final backend fixes, pytest passed **365 tests**, with six skipped and one dependency deprecation warning. Svelte check reported zero errors and zero warnings, and the production build passed. The frontend unit suite passed **699 tests in 55 files**; broad browser-backed Vitest runs encountered a missing bundled Playwright Chromium executable, so they are not claimed as passed. Installed Chrome ran the purpose-built production acceptance checks.
+
+All 20 page/theme/viewport checks and four synthetic route-details display checks passed with no page errors. These display fixtures are not model benchmarks. Knowledge passed ten actual toggle/import/drop/copy/move/management checks. The offline cached frontend shell passed with no preload warnings; this does not establish offline model operation.
+
+Actual Chat and Agent requests passed two routing/history checks using the installed model and real backend. The default tools-enabled Chat flow now forwards its routing callback into persisted message history. The Code acceptance suite passed 13 mechanics checks, including real interactive Docker stdin, scoped cwd, host file refresh/conflicts, drag move/Ctrl-copy, exact-file model editing, automatic inline review and Accept clearing the diff/badge. A Monaco cancellation message occurred during editor disposal; the harness records it separately from functional failures. The model edit preserved unrelated fixture files.
+
+The previously failing report now produces a sourced Word draft using the actual document evidence, while explicitly denying any operational approval. Targeted corrections passed file inspection, code explanation and actual image analysis. These separate correction runs do not retrospectively turn the earlier 29/31 batch into a fresh 31/31 result.
+
+## Independent strategy run and retained failures
+
+The frozen [93 execution run](../benchmarks/routing-strategy-artifacts/5391c1be056c46f7852ed582fae9c678/results.json) attempted 31 matched tasks under each policy. Its original lightweight validators reported 80 passes. A separate [post-run content audit](../benchmarks/routing-strategy-artifacts/5391c1be056c46f7852ed582fae9c678/audited-results.json), without changing samples or timings, reduced that to **74/93**: one evidence-routing miss, six missing-citation failures, nine isolated-fixture sandbox setup failures, two Windows report-publication failures, and one intended always-text refusal of an image task. The latter is a safe modality rejection, not successful image analysis.
+
+For the 22 tasks satisfying the applicable post-run checks under **all three** policies, median workflow times were 6.073 seconds (always-text), 6.329 seconds (current mapping), and 6.128 seconds (proposed). These are heterogeneous single observations, not p95, a repeated per-task benchmark, or evidence of an optimizer speedup. Current and proposed mapping used the same physical models. Model planning and output variation confound attribution to selection policy.
+
+A distinct [24 execution correction run](../benchmarks/routing-strategy-artifacts/38de6397e5d544d08f8ff31c15a1680e/audited-results.json) passed **23/24** stronger checks after resolving a conflicting arithmetic/planning instruction, adding bounded atomic Word-publication retries and supplying the actual verified pinned sandbox record to isolated fixtures. Nine independent code edits passed exact-content/unrelated-file checks; generated multiplication also passed actual Docker checks on normal, zero, negative, fractional and identity inputs under each strategy. The remaining request asked for a Word approval note, but one run only searched evidence. The planner now explicitly distinguishes retrieval from producing a requested Word note/letter/report artifact. Corrections remain separate; they do not replace failed original observations.
+
+The uncited-answer failures prompted bounded citation regeneration and fail-closed result handling. An invalid draft gets at most one additional model generation using the same evidence and the actual validation failures; the regenerated answer must pass validation. A still-invalid answer becomes a verification failure instead of exposing unsupported claims. Valid first answers do not incur this extra generation. Actual model identity and measured inference timings are retained.
+
+A separate [nine execution final correction run](../benchmarks/routing-strategy-artifacts/896c4079152c45e6be4bceb8327a1fbf/audited-results.json) passed **8/9** checks. All six evidence answers passed after one bounded regeneration, and two Word-note requests produced validated downloadable artifacts. The remaining proposed-policy request was rejected before inference: its recorded GPU observation was 244 MiB free, below the configured 256 MiB emergency reserve. This is a resource-admission refusal, not a successful artifact or an intent-routing failure. The reserve was not lowered to turn the benchmark green.
+
+The summary answers took 20.79–23.30 seconds including the additional generation. Citation repair improves the checked output but has a measurable latency cost. Source identity, citation and numeric checks do not establish full semantic support; human review remains pending. The original 93 samples, the 24 correction samples and these nine samples remain separate, with their failures and timing boundaries retained. There is no fresh all-pass release batch, universal low-latency claim or demonstrated production-context memory guarantee.
+
+## Subsequent import and conversation regressions
+
+The user's subsequent screenshots exposed text-only project imports, a reactive IndexedDB clone failure and unnecessary message metadata. These were fixed and tested against the actual production app. The [follow-up verification](import-toggle-chat-fixes.md) records mixed binary imports, both picker controls, populated-history Knowledge toggling, cleaner Agent output and a bounded JSON-only model planner. It also records the revised runtime fitting margin and warm-idle period. These corrections preserve the unresolved full routing release gates above.

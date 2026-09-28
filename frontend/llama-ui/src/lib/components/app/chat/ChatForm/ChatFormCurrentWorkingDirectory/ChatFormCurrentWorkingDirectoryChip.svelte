@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Folder, X } from '@lucide/svelte';
+	import Folder from '@lucide/svelte/icons/folder';
+import X from '@lucide/svelte/icons/x';
 	import { ActionIcon } from '$lib/components/app/actions';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { SET_WORKING_DIRECTORY_LABEL } from '$lib/constants';

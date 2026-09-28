@@ -1,29 +1,18 @@
 import logging
-import re
-from typing import Optional
 from backend.contracts import WorkbenchError
+from .model_selection import ModelSelector
 
 logger = logging.getLogger(__name__)
 
 class CapabilityRouter:
     def __init__(self, model_registry):
         self.model_registry = model_registry
+        self.selector = ModelSelector(model_registry)
 
-    @staticmethod
-    def is_greeting(goal: str) -> bool:
-        return bool(re.fullmatch(r"(?:hi|hello|hey|hay|hai|yo|yoy|hiya|good morning|good afternoon|good evening|what(?:\s+is|\u2019s|'s|s)?\s+up|how(?:\s+are|\u2019re|'re)\s+(?:you|u)|sup)[!.? ]*", goal.strip(), re.I))
-
-    @staticmethod
-    def instant_reply(goal: str) -> Optional[str]:
-        """Answer unambiguous social turns before loading files or models."""
-        if not isinstance(goal, str):
-            return None
-        if CapabilityRouter.is_greeting(goal):
-            return 'Hi! Ask me a question or describe a task, and I will route it to the right local tool.'
-        normalized = re.sub(r"[?.!]+$", "", goal.strip().lower()).replace('\u2019', "'")
-        if re.fullmatch(r"(?:what(?:'s| is|s) your name|what(?:'s| is|s) the name of (?:this |the )?(?:assistant|agent|ai)|who are you|tell me your name|your name)", normalized):
-            return "I'm SovereignAI, your local assistant."
-        return None
+    def select_model(self, capability: str, *, modality='text', required_context=None, resource_snapshot=None, current_residency=None):
+        """Pure admission/selection. Runtime acquisition remains a separate owned lease."""
+        return self.selector.select(capability,modality=modality,required_context=required_context,
+                                    resource_snapshot=resource_snapshot,current_residency=current_residency)
 
     def classify_agent_goal(self, goal: str, *, document_ids=None, workspace_id=None, image=False) -> str:
         """Classify explicit agent requests using bounded metadata, without chat history."""

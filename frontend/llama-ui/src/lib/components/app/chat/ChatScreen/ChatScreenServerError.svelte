@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { AlertTriangle, Loader2, RefreshCw } from '@lucide/svelte';
+	import AlertTriangle from '@lucide/svelte/icons/alert-triangle';
+import Loader2 from '@lucide/svelte/icons/loader-2';
+import RefreshCw from '@lucide/svelte/icons/refresh-cw';
 	import * as Alert from '$lib/components/ui/alert';
 	import { ICON_CLASS_DEFAULT } from '$lib/constants';
 	import { serverStore } from '$lib/stores';

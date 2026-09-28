@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { SkipForward, Square } from '@lucide/svelte';
+	import SkipForward from '@lucide/svelte/icons/skip-forward';
+import Square from '@lucide/svelte/icons/square';
 	import { page } from '$app/state';
 	import {
 		ChatFormActionModels,

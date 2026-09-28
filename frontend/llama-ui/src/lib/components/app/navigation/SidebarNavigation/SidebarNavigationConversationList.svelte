@@ -2,7 +2,7 @@
 	import SidebarNavigationConversationItem from './SidebarNavigationConversationItem.svelte';
 	import SidebarNavigationSearchResults from './SidebarNavigationSearchResults.svelte';
 	import SidebarNavigationSelectionBar from './SidebarNavigationSelectionBar.svelte';
-	import { Pin } from '@lucide/svelte';
+	import Pin from '@lucide/svelte/icons/pin';
 	import { buildConversationTree } from '$lib/utils';
 
 	interface Props {
@@ -74,6 +74,7 @@
 	const recentEmptyMessage = $derived(
 		searchQuery.length > 0 ? 'No results found' : 'No conversations yet'
 	);
+	function dateGroup(timestamp:number){const today=new Date();today.setHours(0,0,0,0);const yesterday=new Date(today);yesterday.setDate(today.getDate()-1);return timestamp>=today.getTime()?'Today':timestamp>=yesterday.getTime()?'Yesterday':'Earlier';}
 </script>
 
 <div class="flex min-h-0 flex-1 flex-col">
@@ -147,7 +148,8 @@
 
 			<div class="min-h-0 flex-1 md:overflow-y-auto">
 				<ul class="flex w-full min-w-0 flex-col gap-4 md:gap-0">
-					{#each unpinnedConversations as { conversation, depth } (conversation.id)}
+					{#each unpinnedConversations as { conversation, depth }, index (conversation.id)}
+						{#if index===0||dateGroup(conversation.lastModified)!==dateGroup(unpinnedConversations[index-1].conversation.lastModified)}<li class="px-2 pt-3 pb-1 text-[10px] font-medium text-muted-foreground">{dateGroup(conversation.lastModified)}</li>{/if}
 						<li class="group/item relative mb-1 p-0">
 							<SidebarNavigationConversationItem
 								conversation={{

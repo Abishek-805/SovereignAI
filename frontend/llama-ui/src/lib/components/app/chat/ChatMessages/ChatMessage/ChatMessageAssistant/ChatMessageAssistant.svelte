@@ -1,4 +1,6 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
+	import RouteDetails from '$lib/components/sovereign/RouteDetails.svelte';
 	import {
 		ChatMessageActionIcons,
 		ChatMessageAgenticContent,
@@ -23,6 +25,7 @@
 		onContinue?: () => void;
 		onRegenerate: (modelOverride?: string) => void;
 		textareaElement?: HTMLTextAreaElement;
+		footer?: Snippet;
 	}
 
 	let {
@@ -32,7 +35,8 @@
 		onContinue,
 		onRegenerate,
 		textareaElement = $bindable(),
-		toolMessages = []
+		toolMessages = [],
+		footer
 	}: Props = $props();
 
 	// Get edit context
@@ -159,6 +163,8 @@
 	{#if showProcessingInfoBottom}
 		<ChatMessageAssistantProcessingInfo {modelLoadingText} position="bottom" {processingState} />
 	{/if}
+	{@render footer?.()}
+	<RouteDetails routing={message.routing} />
 
 	{#if displayedModel}
 		<div class="info my-6 grid gap-4 tabular-nums">

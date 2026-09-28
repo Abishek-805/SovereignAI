@@ -2,8 +2,11 @@
 from __future__ import annotations
 
 import argparse
+from contextlib import closing
 import hashlib
 import json
+import os
+import re
 import shutil
 import sqlite3
 from pathlib import Path
@@ -17,7 +20,7 @@ def _digest(path: Path) -> str:
     return result.hexdigest()
 
 
-def backup(data_dir: Path, destination: Path, outputs_dir: Path | None = None) -> None:
+def backup(data_dir: Path, destination: Path, outputs_dir: Path | None = None, projects_dir: Path | None = None, knowledge_dir: Path | None = None) -> None:
     data_dir, destination = data_dir.resolve(), destination.resolve()
     if destination.exists() or destination.is_relative_to(data_dir):
         raise ValueError('Choose a new backup directory outside the live data directory')
@@ -26,12 +29,47 @@ def backup(data_dir: Path, destination: Path, outputs_dir: Path | None = None) -
         raise FileNotFoundError(db_file)
     destination.mkdir(parents=True)
     try:
-        with sqlite3.connect(db_file) as source, sqlite3.connect(destination / 'index.sqlite') as target:
+        with closing(sqlite3.connect(db_file)) as source, closing(sqlite3.connect(destination / 'index.sqlite')) as target:
             source.backup(target)
-        for name in ('sources', 'ocr', 'answers', 'tasks', 'code-tasks', 'coding-workspaces'):
+        for name in ('ocr', 'answers', 'tasks', 'code-tasks', 'coding-workspaces'):
             if (data_dir / name).exists():
                 _reject_links(data_dir / name)
                 shutil.copytree(data_dir / name, destination / name)
+        knowledge_dir = (knowledge_dir or (Path(os.environ['SOVEREIGN_KNOWLEDGE_DIR'])
+                         if os.environ.get('SOVEREIGN_KNOWLEDGE_DIR') else
+                         Path.home() / 'Documents/SovereignAI/Knowledge'
+                         if data_dir == Path(__file__).resolve().parents[1] / 'data' else data_dir / 'sources')).resolve()
+        if knowledge_dir.exists():
+            _reject_links(knowledge_dir)
+            shutil.copytree(knowledge_dir, destination / 'sources')
+        elif (data_dir / 'sources').exists():
+            raise ValueError('Live Knowledge folder missing; provide knowledge_dir or SOVEREIGN_KNOWLEDGE_DIR')
+        # Host-visible projects are the live source; the internal files directory is
+        # only the initial migration snapshot. Normalize the archive back to portable
+        # internal files so restore never points at another machine's live project.
+        if projects_dir is None and os.environ.get('SOVEREIGN_PROJECT_DIR'):
+            projects_dir=Path(os.environ['SOVEREIGN_PROJECT_DIR'])
+        projects_dir = (projects_dir or (Path.home() / 'Documents/SovereignAI/Projects'
+                        if data_dir == Path(__file__).resolve().parents[1] / 'data' else data_dir / 'projects')).resolve()
+        workspace_archive = destination / 'coding-workspaces'
+        if workspace_archive.is_dir():
+            for metadata_path in workspace_archive.glob('*/workspace.json'):
+                metadata = json.loads(metadata_path.read_text(encoding='utf-8'))
+                folder = metadata.get('project_folder')
+                if folder is None:continue
+                if not isinstance(folder,str) or not re.fullmatch(r'[A-Za-z0-9_-]+',folder):
+                    raise ValueError('Invalid host project folder in workspace metadata')
+                live = projects_dir / folder
+                if not live.is_dir() or not live.resolve().is_relative_to(projects_dir):
+                    raise ValueError('Live project missing; provide --projects-dir for the current project root')
+                _reject_links(live)
+                archived_files = metadata_path.parent / 'files'
+                if not archived_files.resolve().is_relative_to(destination):
+                    raise ValueError('Invalid archived project boundary')
+                if archived_files.exists():shutil.rmtree(archived_files)
+                shutil.copytree(live,archived_files)
+                metadata.pop('project_folder',None)
+                metadata_path.write_text(json.dumps(metadata),encoding='utf-8')
         if outputs_dir is not None:
             outputs_dir = outputs_dir.resolve()
             if not outputs_dir.is_dir() or destination.is_relative_to(outputs_dir):
@@ -78,7 +116,7 @@ def restore(archive: Path, destination: Path, outputs_dir: Path | None = None) -
         source = (archive / relative).resolve()
         if not source.is_relative_to(archive) or not source.is_file() or _digest(source) != item['sha256']:
             raise ValueError(f'Backup file failed validation: {relative}')
-    with sqlite3.connect(archive / 'index.sqlite') as db:
+    with closing(sqlite3.connect(archive / 'index.sqlite')) as db:
         if db.execute('PRAGMA integrity_check').fetchone()[0] != 'ok':
             raise ValueError('Backup database failed integrity check')
     destination.mkdir(parents=True)
@@ -104,5 +142,7 @@ if __name__ == '__main__':
     parser.add_argument('source', type=Path)
     parser.add_argument('destination', type=Path)
     parser.add_argument('--outputs-dir', type=Path, help='Existing outputs for backup; separate new outputs path for restore')
+    parser.add_argument('--projects-dir', type=Path, help='Live project root for backup when using a custom project location')
     options = parser.parse_args()
-    (backup if options.action == 'backup' else restore)(options.source, options.destination, options.outputs_dir)
+    if options.action == 'backup':backup(options.source,options.destination,options.outputs_dir,options.projects_dir)
+    else:restore(options.source,options.destination,options.outputs_dir)

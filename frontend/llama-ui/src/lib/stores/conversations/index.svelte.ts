@@ -607,6 +607,7 @@ class ConversationsStore implements ConversationsPreferencesHost {
 	 * chat layout opens a new-chat tab for it when Conversation tabs are on.
 	 */
 	async openNewChat(): Promise<void> {
+		if(browser)window.dispatchEvent(new Event('sovereign-new-chat'));
 		this.clearActiveConversation();
 		await goto(ROUTES.START);
 	}

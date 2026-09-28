@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ArrowDown } from '@lucide/svelte';
+	import ArrowDown from '@lucide/svelte/icons/arrow-down';
 	import ActionIcon from '$lib/components/app/actions/ActionIcon.svelte';
 	import { ICON_CLASS_DEFAULT } from '$lib/constants';
 

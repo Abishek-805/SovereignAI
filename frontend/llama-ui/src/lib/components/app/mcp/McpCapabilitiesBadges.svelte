@@ -1,13 +1,11 @@
 <script lang="ts">
-	import {
-		Database,
-		ExternalLink,
-		FileText,
-		ListChecks,
-		MessageSquare,
-		Sparkles,
-		Wrench
-	} from '@lucide/svelte';
+	import Database from '@lucide/svelte/icons/database';
+import ExternalLink from '@lucide/svelte/icons/external-link';
+import FileText from '@lucide/svelte/icons/file-text';
+import ListChecks from '@lucide/svelte/icons/list-checks';
+import MessageSquare from '@lucide/svelte/icons/message-square';
+import Sparkles from '@lucide/svelte/icons/sparkles';
+import Wrench from '@lucide/svelte/icons/wrench';
 	import { Badge } from '$lib/components/ui/badge';
 	import type { MCPCapabilitiesInfo } from '$lib/types';
 

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { parseGrepSearchMeta } from './parsers/grep-search';
 	import ToolCallBlock from './ToolCallBlock.svelte';
-	import { XCircle } from '@lucide/svelte';
+	import XCircle from '@lucide/svelte/icons/x-circle';
 	import { toolsStore } from '$lib/stores';
 	import type { AgenticSection } from '$lib/types';
 	import { abbreviateHome } from '$lib/utils';

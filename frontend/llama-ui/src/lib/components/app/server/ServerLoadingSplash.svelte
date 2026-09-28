@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Server } from '@lucide/svelte';
+	import Server from '@lucide/svelte/icons/server';
 	import { ServerStatus } from '$lib/components/app';
 	import { fade } from 'svelte/transition';
 

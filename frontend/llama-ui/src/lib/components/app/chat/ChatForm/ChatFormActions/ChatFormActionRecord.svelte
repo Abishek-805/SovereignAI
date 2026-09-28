@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Mic, Square } from '@lucide/svelte';
+	import Mic from '@lucide/svelte/icons/mic';
+import Square from '@lucide/svelte/icons/square';
 	import { Button } from '$lib/components/ui/button';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { ICON_CLASS_DEFAULT } from '$lib/constants';

@@ -53,3 +53,13 @@ def test_vision_rejects_empty_answer(monkeypatch):
     monkeypatch.setattr('rag.vision.httpx.post', lambda *args, **kwargs: Response())
     with pytest.raises(WorkbenchError, match='empty or incomplete'):
         ask_vision(Image.new('RGB', (10, 10)), 'read')
+
+def test_vision_uses_owned_model_client_and_preserves_cancellation():
+    calls=[]
+    def request(method,path,**kwargs):
+        calls.append((method,path))
+        raise WorkbenchError('cancelled','Task stopped')
+    with pytest.raises(WorkbenchError) as error:
+        ask_vision(Image.new('RGB',(10,10)),'read',request=request)
+    assert error.value.code=='cancelled'
+    assert calls==[('POST','/v1/chat/completions')]

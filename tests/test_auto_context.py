@@ -17,9 +17,8 @@ def test_unrelated_chat_does_not_attach_library_passages(store, one_chunk, one_v
     assert chat_evidence([]) is None
 
 
-def test_greeting_skips_document_catalog_and_embeddings():
+def test_empty_request_skips_document_catalog_and_embeddings():
     class UnreadableStore:
         def documents(self):
-            raise AssertionError('Greeting must not inspect document metadata')
-    for greeting in ('Hi!', 'hay', 'yoy'):
-        assert relevant_passages(UnreadableStore(), object(), greeting) == []
+            raise AssertionError('An empty request must not inspect document metadata')
+    assert relevant_passages(UnreadableStore(), object(), '  ') == []

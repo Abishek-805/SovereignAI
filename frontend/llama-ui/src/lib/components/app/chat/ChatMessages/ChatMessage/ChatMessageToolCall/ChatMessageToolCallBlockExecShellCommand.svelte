@@ -8,7 +8,10 @@
 
 	import { parseExecShellCommandMeta } from './parsers/exec-shell-command';
 	import ToolCallBlock from './ToolCallBlock.svelte';
-	import { AlertTriangle, Check, Loader2, XCircle } from '@lucide/svelte';
+	import AlertTriangle from '@lucide/svelte/icons/alert-triangle';
+import Check from '@lucide/svelte/icons/check';
+import Loader2 from '@lucide/svelte/icons/loader-2';
+import XCircle from '@lucide/svelte/icons/x-circle';
 	import { CollapsibleTerminalBlock } from '$lib/components/app';
 	import { SETTINGS_KEYS, TOOL_RUNTIME_SCROLL_AT_BOTTOM_THRESHOLD_PX } from '$lib/constants';
 	import { AttachmentType } from '$lib/enums';

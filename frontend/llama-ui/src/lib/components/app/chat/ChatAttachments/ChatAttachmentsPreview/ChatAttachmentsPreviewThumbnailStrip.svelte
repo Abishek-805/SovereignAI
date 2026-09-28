@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { FileText, Music, Video } from '@lucide/svelte';
+	import FileText from '@lucide/svelte/icons/file-text';
+import Music from '@lucide/svelte/icons/music';
+import Video from '@lucide/svelte/icons/video';
 	import { ScrollCarousel } from '$lib/components/app';
 	import { ICON_CLASS_DEFAULT, UI_DATA_ATTRS } from '$lib/constants';
 	import { ScrollCarouselVariant } from '$lib/enums';

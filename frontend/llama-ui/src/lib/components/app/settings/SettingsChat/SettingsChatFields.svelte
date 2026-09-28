@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { FlaskConical, RotateCcw } from '@lucide/svelte';
+	import FlaskConical from '@lucide/svelte/icons/flask-conical';
+import RotateCcw from '@lucide/svelte/icons/rotate-ccw';
 	import { SettingsChatParameterSourceIndicator } from '$lib/components/app/settings';
 	import { Checkbox } from '$lib/components/ui/checkbox';
 	import { Input } from '$lib/components/ui/input';

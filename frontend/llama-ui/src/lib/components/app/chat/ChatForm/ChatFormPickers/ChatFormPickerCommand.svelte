@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { FolderOpen, Sparkles } from '@lucide/svelte';
+	import FolderOpen from '@lucide/svelte/icons/folder-open';
+import Sparkles from '@lucide/svelte/icons/sparkles';
 	import {
 		ChatFormPickerList,
 		ChatFormPickerListItem,

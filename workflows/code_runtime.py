@@ -19,7 +19,9 @@ def runner(target, mode='check', tests=False):
 from pathlib import Path
 target, suffix, mode, tests = json.loads(''' + repr(json.dumps([target,suffix,mode,tests])) + ''')
 root = Path('/output/project')
-shutil.copytree('/input', root, ignore=shutil.ignore_patterns('program.py'))
+# Only the sandbox's root wrapper is reserved. A project dependency named
+# program.py inside a package is user data and must be copied with its package.
+shutil.copytree('/input', root, ignore=lambda source, names: {'program.py'} if Path(source) == Path('/input') else set())
 os.chdir(root)
 os.environ.update(HOME='/output', TMPDIR='/output', GOCACHE='/output/go-cache', GOTOOLCHAIN='local', GOPROXY='off', GOSUMDB='off')
 def command(args):

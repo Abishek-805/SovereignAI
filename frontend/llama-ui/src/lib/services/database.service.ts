@@ -12,6 +12,7 @@ import type { McpServerOverride } from '$lib/types/database';
 import type { ExportedConversation } from '$lib/types/database';
 import { filterByLeafNodeId, findDescendantMessages, uuid } from '$lib/utils';
 import Dexie, { type EntityTable } from 'dexie';
+import { persistenceSnapshot } from './persistence-snapshot.svelte';
 
 class LlamaUiDatabase extends Dexie {
 	[IDXDB_TABLES.conversations]!: EntityTable<DatabaseConversation, string>;
@@ -116,7 +117,7 @@ export class DatabaseService {
 
 			if (updates.length === 0) return;
 
-			await db[IDXDB_TABLES.conversations].bulkPut(updates);
+			await db[IDXDB_TABLES.conversations].bulkPut(persistenceSnapshot(updates));
 		});
 
 		return result;
@@ -141,7 +142,7 @@ export class DatabaseService {
 			...fields
 		};
 
-		await db[IDXDB_TABLES.conversations].add(conversation);
+		await db[IDXDB_TABLES.conversations].add(persistenceSnapshot(conversation));
 
 		return conversation;
 	}
@@ -179,7 +180,7 @@ export class DatabaseService {
 					toolCalls: message.toolCalls ?? ''
 				};
 
-				await db[IDXDB_TABLES.messages].add(newMessage);
+				await db[IDXDB_TABLES.messages].add(persistenceSnapshot(newMessage));
 
 				// Update parent's children array if parent exists
 				if (parentId !== null) {
@@ -215,7 +216,7 @@ export class DatabaseService {
 			type: 'root'
 		};
 
-		await db[IDXDB_TABLES.messages].add(rootMessage);
+		await db[IDXDB_TABLES.messages].add(persistenceSnapshot(rootMessage));
 
 		return rootMessage.id;
 	}
@@ -258,7 +259,7 @@ export class DatabaseService {
 				type: MessageRole.SYSTEM
 			};
 
-			await db[IDXDB_TABLES.messages].add(systemMessage);
+			await db[IDXDB_TABLES.messages].add(persistenceSnapshot(systemMessage));
 			await this.addChildToParent(parentId, systemMessage.id);
 
 			return systemMessage;
@@ -433,7 +434,7 @@ export class DatabaseService {
 					name: options.name
 				};
 
-				await db[IDXDB_TABLES.conversations].add(newConv);
+				await db[IDXDB_TABLES.conversations].add(persistenceSnapshot(newConv));
 				await db[IDXDB_TABLES.messages].bulkAdd(clonedMessages);
 
 				return newConv;
@@ -540,9 +541,9 @@ export class DatabaseService {
 						continue;
 					}
 
-					await db[IDXDB_TABLES.conversations].add(conv);
+					await db[IDXDB_TABLES.conversations].add(persistenceSnapshot(conv));
 					for (const msg of messages) {
-						await db[IDXDB_TABLES.messages].put(msg);
+						await db[IDXDB_TABLES.messages].put(persistenceSnapshot(msg));
 					}
 
 					imported.push(conv);
@@ -585,7 +586,7 @@ export class DatabaseService {
 		id: string,
 		updates: Partial<Omit<DatabaseConversation, 'id'>>
 	): Promise<void> {
-		await db[IDXDB_TABLES.conversations].update(id, updates);
+		await db[IDXDB_TABLES.conversations].update(id, persistenceSnapshot(updates));
 	}
 
 	/**
@@ -612,7 +613,7 @@ export class DatabaseService {
 		id: string,
 		updates: Partial<Omit<DatabaseMessage, 'id'>>
 	): Promise<void> {
-		await db[IDXDB_TABLES.messages].update(id, updates);
+		await db[IDXDB_TABLES.messages].update(id, persistenceSnapshot(updates));
 	}
 
 	/**
@@ -641,7 +642,7 @@ export class DatabaseService {
 		if (!parent) return;
 
 		parent.children = parent.children.filter((childId: string) => childId !== messageId);
-		await db[IDXDB_TABLES.messages].put(parent);
+		await db[IDXDB_TABLES.messages].put(persistenceSnapshot(parent));
 	}
 
 	/**
@@ -700,6 +701,6 @@ export class DatabaseService {
 
 		if (updates.length === 0) return;
 
-		await db[IDXDB_TABLES.conversations].bulkPut(updates);
+		await db[IDXDB_TABLES.conversations].bulkPut(persistenceSnapshot(updates));
 	}
 }

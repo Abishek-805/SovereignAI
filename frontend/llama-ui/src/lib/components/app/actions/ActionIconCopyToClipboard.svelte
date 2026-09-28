@@ -1,6 +1,6 @@
 <script lang="ts">
 	import ActionIcon from './ActionIcon.svelte';
-	import { Copy } from '@lucide/svelte';
+	import Copy from '@lucide/svelte/icons/copy';
 	import { ICON_CLASS_DEFAULT } from '$lib/constants';
 	import { copyToClipboard } from '$lib/utils';
 

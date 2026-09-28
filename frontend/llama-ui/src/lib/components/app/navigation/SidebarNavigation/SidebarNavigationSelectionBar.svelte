@@ -1,5 +1,9 @@
 <script lang="ts">
-	import { Download, Pin, PinOff, Trash2, X } from '@lucide/svelte';
+	import Download from '@lucide/svelte/icons/download';
+import Pin from '@lucide/svelte/icons/pin';
+import PinOff from '@lucide/svelte/icons/pin-off';
+import Trash2 from '@lucide/svelte/icons/trash-2';
+import X from '@lucide/svelte/icons/x';
 	import { ActionIcon, DialogConfirmation } from '$lib/components/app';
 	import { Checkbox } from '$lib/components/ui/checkbox';
 	import { TooltipSide } from '$lib/enums';

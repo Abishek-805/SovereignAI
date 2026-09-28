@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { Music, Video, X } from '@lucide/svelte';
+	import Music from '@lucide/svelte/icons/music';
+import Video from '@lucide/svelte/icons/video';
+import X from '@lucide/svelte/icons/x';
 	import { ActionIcon } from '$lib/components/app';
 	import { ICON_CLASS_DEFAULT } from '$lib/constants';
 	import { AttachmentType } from '$lib/enums';

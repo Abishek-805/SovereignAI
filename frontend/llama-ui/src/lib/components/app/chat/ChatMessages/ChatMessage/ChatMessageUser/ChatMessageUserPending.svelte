@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { ArrowUp, Edit, Trash2 } from '@lucide/svelte';
+	import ArrowUp from '@lucide/svelte/icons/arrow-up';
+import Edit from '@lucide/svelte/icons/edit';
+import Trash2 from '@lucide/svelte/icons/trash-2';
 	import { ActionIcon, ChatMessageEditForm, ChatMessageUserBubble } from '$lib/components/app';
 	import { useChatMessageEditContext } from '$lib/hooks/use-chat-message-edit-context.svelte';
 

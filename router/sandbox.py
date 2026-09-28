@@ -12,6 +12,7 @@ from uuid import uuid4
 
 from backend.contracts import WorkbenchError
 from backend.settings import ROOT
+from router.telemetry import measured_validation
 
 IMAGE_ID = re.compile(r'^sha256:[a-f0-9]{64}$')
 FILE_NAME = re.compile(r'^[A-Za-z0-9][A-Za-z0-9_.-]{0,79}$')
@@ -23,6 +24,12 @@ def safe_relative_name(name):
                part.split('.')[0].upper() not in {'CON','PRN','AUX','NUL',*[f'COM{i}' for i in range(10)],*[f'LPT{i}' for i in range(10)]}
                for part in parts)
 MAX_OUTPUT = 65536
+# Project imports and execution snapshots share the same finite byte limits.
+# Assets are mounted/copied as bytes; they do not consume the model context.
+MAX_INPUT_FILES = 256
+MAX_INPUT_FILE_BYTES = 20 * 1024 * 1024
+MAX_INPUT_BYTES = 256 * 1024 * 1024
+MAX_CONTAINER_FILE_BYTES = 32 * 1024 * 1024
 _READY_CACHE = {}
 _READY_LOCK = threading.Lock()
 LOCAL_ENGINE = 'npipe:////./pipe/dockerDesktopLinuxEngine'
@@ -91,6 +98,7 @@ class CodeSandbox:
             raise WorkbenchError('sandbox_unavailable', 'Docker Linux engine or pinned image is unavailable') from exc
         with _READY_LOCK:_READY_CACHE[key]=time.monotonic()
 
+    @measured_validation
     def execute(self, code: str, timeout: int = 30, input_files: dict[str, bytes] | None = None) -> SandboxResult:
         if self.backend_type == 'none':
             return SandboxResult(-1, '[Execution Disabled]',
@@ -99,13 +107,17 @@ class CodeSandbox:
             raise WorkbenchError('sandbox_error', f'Unsupported sandbox backend: {self.backend_type}')
         if not isinstance(code, str) or len(code.encode('utf-8')) > 100_000 or not 1 <= timeout <= 120:
             raise WorkbenchError('sandbox_input', 'Code or time budget is invalid')
-        input_files = input_files or {}
-        if not isinstance(input_files, dict) or len(input_files) > 256 or any(not safe_relative_name(name)
-                                        or not isinstance(data, bytes)
-                                        or len(data) > 1_000_000 for name, data in input_files.items()):
-            raise WorkbenchError('sandbox_input', 'Input files must be small and have simple names')
-        if sum(map(len, input_files.values())) > 8_000_000:
-            raise WorkbenchError('sandbox_input', 'Workspace exceeds the 8 MB execution budget')
+        if input_files is None:input_files={}
+        if not isinstance(input_files, dict) or len(input_files)>MAX_INPUT_FILES:
+            raise WorkbenchError('sandbox_input', 'Execution supports up to 256 project files')
+        if any(not safe_relative_name(name) or name=='program.py' for name in input_files):
+            raise WorkbenchError('sandbox_input', 'Input names must be safe relative project paths; program.py is reserved')
+        if any(not isinstance(data,bytes) for data in input_files.values()):
+            raise WorkbenchError('sandbox_input', 'Execution input files must contain bytes')
+        if any(len(data)>MAX_INPUT_FILE_BYTES for data in input_files.values()):
+            raise WorkbenchError('sandbox_input', 'Execution input files must be at most 20 MiB each')
+        if sum(map(len,input_files.values()))>MAX_INPUT_BYTES:
+            raise WorkbenchError('sandbox_input', 'Workspace exceeds the 256 MiB execution budget')
         self._ready()
         self.task_root.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(prefix='run-', dir=self.task_root) as directory:
@@ -114,8 +126,6 @@ class CodeSandbox:
             inputs.mkdir(); outputs.mkdir()
             (inputs / 'program.py').write_text(code, encoding='utf-8')
             for name, data in input_files.items():
-                if name == 'program.py':
-                    raise WorkbenchError('sandbox_input', 'program.py is reserved')
                 destination = inputs / name
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 destination.write_bytes(data)
@@ -123,7 +133,8 @@ class CodeSandbox:
             args = [*self.docker, 'run', '-i', '--rm', '--pull=never', '--name', container,
                     f"--network={SANDBOX_POLICY['network']}", '--read-only', '--cap-drop=ALL',
                     '--security-opt=no-new-privileges', '--pids-limit=64',
-                    f"--memory={SANDBOX_POLICY['memory_mb']}m", f"--cpus={SANDBOX_POLICY['cpus']}", '--ulimit=fsize=16777216:16777216',
+                    f"--memory={SANDBOX_POLICY['memory_mb']}m", f"--cpus={SANDBOX_POLICY['cpus']}",
+                    f'--ulimit=fsize={MAX_CONTAINER_FILE_BYTES}:{MAX_CONTAINER_FILE_BYTES}',
                     f"--user={SANDBOX_POLICY['user']}",
                     '--workdir=/output', '--env=PYTHONDONTWRITEBYTECODE=1', '--env=PYTHONUNBUFFERED=1',
                     '--mount', f'type=bind,src={inputs},dst=/input,readonly',

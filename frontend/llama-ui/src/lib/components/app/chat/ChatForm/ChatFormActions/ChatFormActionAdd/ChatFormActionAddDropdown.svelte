@@ -1,5 +1,10 @@
 <script lang="ts">
-	import { File, Image, MessageSquare, Mic, Plus, Video } from '@lucide/svelte';
+	import File from '@lucide/svelte/icons/file';
+import Image from '@lucide/svelte/icons/image';
+import MessageSquare from '@lucide/svelte/icons/message-square';
+import Mic from '@lucide/svelte/icons/mic';
+import Plus from '@lucide/svelte/icons/plus';
+import Video from '@lucide/svelte/icons/video';
 	import {
 		ChatFormActionAddReasoningSubmenu,
 		ChatFormActionAddToolsSubmenu,

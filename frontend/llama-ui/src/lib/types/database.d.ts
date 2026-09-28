@@ -12,6 +12,10 @@ export interface McpServerOverride {
 }
 
 export interface DatabaseConversation {
+	legacyKnowledgeChatId?: string;
+	knowledgeDocuments?: { id: string; name: string }[];
+	knowledgeConnected?: boolean;
+	knowledgeScope?: 'all' | 'selected';
 	currNode: string | null;
 	id: string;
 	lastModified: number;
@@ -111,6 +115,12 @@ export type DatabaseMessageExtra =
 	| DatabaseMessageExtraLegacyContext;
 
 export interface DatabaseMessage {
+	routing?: import('$lib/services/routing-telemetry').RoutingTelemetry;
+	knowledgeDocuments?: { id: string; name: string }[];
+	knowledgeCoverage?: import('$lib/services/knowledge.service').KnowledgeCoverage;
+	knowledgeSources?: import('$lib/services/knowledge.service').KnowledgeSource[];
+	knowledgeDownloads?: Record<string,string>;
+	knowledgeStatus?: string;
 	id: string;
 	convId: string;
 	type: ChatMessageType;

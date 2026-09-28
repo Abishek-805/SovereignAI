@@ -1,6 +1,6 @@
 <script lang="ts">
 	import ChatMessageActionCard from './ChatMessageActionCard.svelte';
-	import { RotateCw } from '@lucide/svelte';
+	import RotateCw from '@lucide/svelte/icons/rotate-cw';
 	import { Button } from '$lib/components/ui/button';
 
 	interface Props {

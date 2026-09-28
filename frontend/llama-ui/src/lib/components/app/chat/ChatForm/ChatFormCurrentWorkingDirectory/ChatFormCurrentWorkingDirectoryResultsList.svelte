@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Folder } from '@lucide/svelte';
+	import Folder from '@lucide/svelte/icons/folder';
 	import { cn } from '$lib/components/ui/utils';
 	import { UI_DATA_ATTRS } from '$lib/constants';
 	import { highlightMatch } from '$lib/utils';

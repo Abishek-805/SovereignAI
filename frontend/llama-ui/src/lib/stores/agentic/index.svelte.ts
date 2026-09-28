@@ -448,6 +448,7 @@ class AgenticStore {
 			onCompletionId,
 			onFlowComplete,
 			onModel,
+			onRouting,
 			onReasoningChunk,
 			onTimings,
 			onToolCallsStreaming,
@@ -535,6 +536,7 @@ class AgenticStore {
 							throw error;
 						},
 						onModel,
+						onRouting,
 						onReasoningChunk: (chunk: string) => {
 							turnReasoningContent += chunk;
 							onReasoningChunk?.(chunk);

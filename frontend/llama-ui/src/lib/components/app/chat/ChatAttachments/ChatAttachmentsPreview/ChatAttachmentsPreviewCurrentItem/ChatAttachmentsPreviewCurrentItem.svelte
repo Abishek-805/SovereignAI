@@ -5,7 +5,11 @@
 	import ChatAttachmentsPreviewCurrentItemText from './ChatAttachmentsPreviewCurrentItemText.svelte';
 	import ChatAttachmentsPreviewCurrentItemUnavailable from './ChatAttachmentsPreviewCurrentItemUnavailable.svelte';
 	import ChatAttachmentsPreviewCurrentItemVideo from './ChatAttachmentsPreviewCurrentItemVideo.svelte';
-	import { FileIcon, FileText, Image, Music, Video } from '@lucide/svelte';
+	import FileIcon from '@lucide/svelte/icons/file';
+import FileText from '@lucide/svelte/icons/file-text';
+import Image from '@lucide/svelte/icons/image';
+import Music from '@lucide/svelte/icons/music';
+import Video from '@lucide/svelte/icons/video';
 	import type { ChatAttachmentDisplayItem } from '$lib/types';
 
 	interface Props {

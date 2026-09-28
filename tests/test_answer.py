@@ -8,6 +8,8 @@ class FakeModel:
         self.output={'status':'answered','answer':'The limit is 7.1 mm/s [S1].'}
         self.calls=[]
     def count_messages(self,messages): return sum(len(m['content']) for m in messages)//4
+    def plan_task(self,goal,documents,files,history=None):
+        return {'action':'search_documents','target':'','expression':'','response':'Search selected documents'}
     def complete(self,messages,max_tokens=512):
         self.calls.append(messages)
         return {'result':self.output,'usage':{},'timings':{}}
@@ -71,3 +73,13 @@ def test_errors_not_abstention(one_chunk):
 def test_bad_structured_response(one_chunk):
     model=FakeModel(); model.output={'answer':'guess'}
     with pytest.raises(WorkbenchError): answer('limit?',[one_chunk],model)
+
+
+def test_report_generation_is_task_instruction_not_required_source_evidence():
+    from rag.answer import _messages
+    messages=_messages('Generate a Word report',[],report_generation=True)
+    assert 'application will export your answer to Word' in messages[0]['content']
+    assert 'do not need export or formatting instructions in the evidence' in messages[0]['content']
+    assert 'never operational authorization' in messages[0]['content']
+    normal=_messages('What is the threshold?',[])
+    assert 'REPORT DRAFT CONTRACT' not in normal[0]['content']

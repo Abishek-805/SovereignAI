@@ -1,76 +1,776 @@
 <script lang="ts">
- import { onMount } from 'svelte';
- import { Paperclip, ArrowUp, Sparkles, X, ChevronDown, FolderCode } from '@lucide/svelte';
- import { CodingWorkspaceService } from '$lib/services/coding-workspace.service';
- let { draft='', incomingImage=null, autoSend=false, requestId='' }: {draft?:string;incomingImage?:File|null;autoSend?:boolean;requestId?:string}=$props();
- type Turn={question:string;answer:string;status:string;attachments?:string[];details?:string;downloads?:Record<string,string>;workspace?:string;taskId?:string;diff?:string;added?:number;removed?:number;review?:boolean};
- let lastDraft='';$effect(()=>{const next=draft;if(next&&next!==lastDraft){lastDraft=next;prompt=next;}});
- let prompt=$state(''),turns=$state<Turn[]>([]),busy=$state(false),notice=$state('');
- let attached=$state<{id:string;name:string}[]>([]),image=$state<File|null>(null),workspace=$state('');
- let lastIncomingImage:File|null=null;
- $effect(()=>{const next=incomingImage;if(!next||next===lastIncomingImage||busy)return;lastIncomingImage=next;image=next;prompt=draft||'Describe this image.';if(autoSend)queueMicrotask(()=>void send());});
- let lastTextRequestId='';
- $effect(()=>{const id=requestId;if(!id||id===lastTextRequestId||!autoSend||incomingImage||busy||!projectsReady||!draft.trim())return;if(/\b(?:file|folder|project|codebase|workspace)\b/i.test(draft)&&!workspace){prompt=draft;notice='Choose a project before applying this change.';return;}lastTextRequestId=id;prompt=draft;queueMicrotask(()=>void send());});
- let agentJob=$state(''),agentStages=$state<string[]>([]),agentElapsed=$state(0),stopRequested=$state(false);
- let agentAbort:AbortController|null=null;
- let projects=$state<{workspace_id:string;name:string}[]>([]);
- let projectsReady=$state(false);
- let projectMenu=$state(false);
- let projectControl:HTMLDivElement;
- function dismissProjectMenu(event:MouseEvent){if(projectMenu&&projectControl&&!projectControl.contains(event.target as Node))projectMenu=false;}
- function projectMenuKeydown(event:KeyboardEvent){if(projectMenu&&event.key==='Escape'){event.preventDefault();projectMenu=false;}}
- function activity(running:boolean,stage:string){window.dispatchEvent(new CustomEvent('sovereign-activity',{detail:{view:'Agent',running,stage,jobId:agentJob}}));}
- async function stopAgent(){stopRequested=true;notice='Stopping after the current step…';if(agentJob)await fetch('/coding/jobs/'+agentJob+'/stop',{method:'POST'});else agentAbort?.abort();}
- function persist(){sessionStorage.setItem('sovereign-agent-turns',JSON.stringify(turns.slice(-20)));}
- function openCodeReview(turn:Turn){if(!turn.workspace||!turn.taskId)return;localStorage.setItem('sovereign-active-workspace',turn.workspace);window.dispatchEvent(new CustomEvent('sovereign-open-workspace',{detail:{tab:'code',taskId:turn.taskId}}));}
- async function json(response:Response){const data=await response.json();if(!response.ok)throw Error(data.message||'Task failed');return data;}
- onMount(()=>{if(!autoSend)prompt=draft;try{turns=JSON.parse(sessionStorage.getItem('sovereign-agent-turns')||'[]');}catch{}void CodingWorkspaceService.list().then(items=>{projects=items;const id=localStorage.getItem('sovereign-active-workspace');if(items.some(item=>item.workspace_id===id))workspace=id||'';}).catch(e=>notice=String(e)).finally(()=>projectsReady=true);const pending=sessionStorage.getItem('sovereign-agent-job');if(pending){const index=turns.findIndex(turn=>turn.status==='working');if(index>=0){busy=true;agentJob=pending;void poll(index,pending);}else sessionStorage.removeItem('sovereign-agent-job');}});
- async function attach(event:Event){const input=event.currentTarget as HTMLInputElement;busy=true;try{for(const file of Array.from(input.files||[])){if(/\.(png|jpe?g)$/i.test(file.name)){image=file;continue;}notice='Reading '+file.name+'…';const form=new FormData();form.append('file',file);const doc=await json(await fetch('/documents/import',{method:'POST',body:form}));attached=[...attached,{id:doc.document_id,name:file.name}];}notice='Files ready.';}catch(e){notice=String(e);}finally{busy=false;input.value='';}}
- function finish(index:number,result:any){const original=turns[index];const edit=result.plan?.action==='edit_code';const diff=edit?result.result?.diff||'':'';const lines=diff.split('\n');turns[index]={question:original.question,attachments:original.attachments,answer:result.answer||'Task finished. See details.',status:result.result?.state==='failed'?'failed':result.status||'completed',downloads:result.downloads||result.result?.downloads,workspace:edit?result.workspace_id:undefined,taskId:edit?result.result?.task_id:undefined,diff,added:lines.filter((line:string)=>line.startsWith('+')&&!line.startsWith('+++')).length,removed:lines.filter((line:string)=>line.startsWith('-')&&!line.startsWith('---')).length,details:JSON.stringify({plan:result.plan,steps:result.steps,checks:result.result?.checks,sources:result.result?.sources},null,2)};if(result.routing)window.dispatchEvent(new CustomEvent('sovereign-route',{detail:{task:result.plan?.action||'Agent',...result.routing}}));if(result.workspace_id){workspace=result.workspace_id;localStorage.setItem('sovereign-active-workspace',workspace);void CodingWorkspaceService.list().then(items=>projects=items);}persist();}
- async function undoTurn(index:number){const turn=turns[index];if(!turn.workspace||!turn.taskId)return;try{await CodingWorkspaceService.undo(turn.workspace,turn.taskId);turns[index]={...turn,status:'undone',answer:`Reverted ${turn.workspace ? 'the applied file change' : 'the change'}.`,review:false};persist();}catch(e){notice=String(e);}}
- async function poll(index:number,id:string){try{let result=await json(await fetch('/coding/jobs/'+id));while(result.state==='running'){notice=result.stage;agentElapsed=result.elapsed;agentStages=(result.events||[]).map((event:{stage:string})=>event.stage);activity(true,result.stage);await new Promise(resolve=>setTimeout(resolve,650));result=await json(await fetch('/coding/jobs/'+id));}if(result.error)throw Error(result.error);if(result.state==='cancelled')throw Error('Task stopped');finish(index,result.result);notice='';}catch(e){turns[index]={question:turns[index].question,answer:stopRequested?'Task stopped.':String(e),status:stopRequested?'stopped':'failed'};notice=stopRequested?'Task stopped.':'The task could not finish. Review the details and retry.';}finally{busy=false;agentJob='';sessionStorage.removeItem('sovereign-agent-job');persist();activity(false,'');}}
- async function send(){if(!prompt.trim()||busy)return;if(image&&attached.length){notice='Send the image and documents separately. Both attachments remain ready.';return;}stopRequested=false;const question=prompt.trim();const sentImage=image;const sentDocuments=[...attached];const history=turns.flatMap(t=>['User: '+t.question,'Assistant: '+t.answer]).slice(-8).map(t=>t.slice(0,1000));prompt='';image=null;attached=[];turns=[...turns,{question,answer:'',status:'working',attachments:[...sentDocuments.map(doc=>doc.name),...(sentImage?[sentImage.name]:[])]}];const index=turns.length-1;busy=true;notice='Preparing local task…';persist();activity(true,notice);try{if(sentImage){const form=new FormData();form.append('file',sentImage);form.append('question',question);agentAbort=new AbortController();const result=await json(await fetch('/agent/vision',{method:'POST',body:form,signal:agentAbort.signal}));agentAbort=null;finish(index,{...result,answer:result.result?.answer||''});busy=false;notice='';activity(false,'');return;}const result=await json(await fetch('/agent/jobs',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({goal:question,document_ids:sentDocuments.map(d=>d.id),workspace_id:workspace||null,history})}));agentJob=result.job_id;sessionStorage.setItem('sovereign-agent-job',agentJob);activity(true,notice);if(stopRequested)await fetch('/coding/jobs/'+agentJob+'/stop',{method:'POST'});agentStages=[];await poll(index,agentJob);}catch(e){agentAbort=null;turns[index]={question,answer:stopRequested?'Task stopped.':String(e),status:stopRequested?'stopped':'failed'};busy=false;notice=stopRequested?'Task stopped.':'The task could not start.';persist();activity(false,'');}}
+	import {
+		decodeAgentResponse,
+		agentGoalError,
+		agentConversationHistory
+	} from '$lib/services/agent-request.service';
+	import './agent-workspace.css';
+	import type { RoutingTelemetry } from '$lib/services/routing-telemetry';
+	import RouteDetails from './RouteDetails.svelte';
+	import MarkdownContent from '$lib/components/app/content/MarkdownContent/MarkdownContent.svelte';
+	import { onMount, tick, untrack } from 'svelte';
+	import Paperclip from '@lucide/svelte/icons/paperclip';
+	import ArrowUp from '@lucide/svelte/icons/arrow-up';
+	import Sparkles from '@lucide/svelte/icons/sparkles';
+	import X from '@lucide/svelte/icons/x';
+	import ChevronDown from '@lucide/svelte/icons/chevron-down';
+	import FolderCode from '@lucide/svelte/icons/folder-code';
+	import History from '@lucide/svelte/icons/history';
+	import Plus from '@lucide/svelte/icons/plus';
+	import { CodingWorkspaceService } from '$lib/services/coding-workspace.service';
+	import KnowledgePicker from './KnowledgePicker.svelte';
+	import KnowledgeConnection from './KnowledgeConnection.svelte';
+	import KnowledgeChips from './KnowledgeChips.svelte';
+	import KnowledgeSources from './KnowledgeSources.svelte';
+	import { knowledgeContext } from '$lib/stores/knowledge-context.svelte';
+	import type { KnowledgeSource } from '$lib/services/knowledge.service';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+	import FileText from '@lucide/svelte/icons/file-text';
+	import Image from '@lucide/svelte/icons/image';
+	let pickerOpen = $state(false);
+	let threadElement = $state<HTMLDivElement>();
+	let followLatest = true;
+	let visibleTurnCount = 0;
+	$effect(() => {
+		const count = turns.length;
+		const latest = turns.at(-1);
+		void latest?.answer;
+		void latest?.status;
+		void agentStages.length;
+		const element = threadElement;
+		const shouldFollow = followLatest || count !== visibleTurnCount;
+		visibleTurnCount = count;
+		// Keep new turns in view while leaving an older message readable when the user scrolls up.
+		void tick().then(() => {
+			if (element && shouldFollow) element.scrollTop = element.scrollHeight;
+		});
+	});
+	let attachmentInput: HTMLInputElement;
+	function chooseFiles(images = false) {
+		attachmentInput.accept = images
+			? '.png,.jpg,.jpeg'
+			: '.pdf,.docx,.txt,.md,.csv,.json,.log,.xlsx,.pptx';
+		attachmentInput.click();
+	}
+	let {
+		draft = '',
+		incomingImage = null,
+		autoSend = false,
+		requestId = ''
+	}: {
+		draft?: string;
+		incomingImage?: File | null;
+		autoSend?: boolean;
+		requestId?: string;
+	} = $props();
+	type Turn = {
+		routing?: RoutingTelemetry;
+		question: string;
+		answer: string;
+		status: string;
+		attachments?: string[];
+		coverage?: import('$lib/services/knowledge.service').KnowledgeCoverage;
+		sources?: KnowledgeSource[];
+		details?: string;
+		downloads?: Record<string, string>;
+		workspace?: string;
+		taskId?: string;
+		diff?: string;
+		added?: number;
+		removed?: number;
+		review?: boolean;
+	};
+	let lastDraft = '';
+	$effect(() => {
+		const next = draft;
+		if (next && next !== lastDraft) {
+			lastDraft = next;
+			prompt = next;
+		}
+	});
+	let prompt = $state(''),
+		turns = $state<Turn[]>([]),
+		busy = $state(false),
+		notice = $state('');
+	type AgentSession = {
+		id: string;
+		title: string;
+		updatedAt: number;
+		turns: Turn[];
+		documents?: { id: string; name: string }[];
+		knowledgeConnected?: boolean;
+		knowledgeScope?: 'all' | 'selected';
+	};
+	let sessions = $state<AgentSession[]>([]),
+		chatId = $state(''),
+		historyOpen = $state(false);
+	let attached = $state<{ id: string; name: string }[]>([]),
+		image = $state<File | null>(null),
+		workspace = $state('');
+	let lastIncomingImage: File | null = null;
+	$effect(() => {
+		const next = incomingImage;
+		if (!next || next === lastIncomingImage || busy) return;
+		lastIncomingImage = next;
+		image = next;
+		prompt = draft || 'Describe this image.';
+		if (autoSend) queueMicrotask(() => void send());
+	});
+	let lastTextRequestId = '';
+	$effect(() => {
+		const id = requestId;
+		if (
+			!id ||
+			id === lastTextRequestId ||
+			!autoSend ||
+			incomingImage ||
+			busy ||
+			!projectsReady ||
+			!draft.trim()
+		)
+			return;
+		lastTextRequestId = id;
+		prompt = draft;
+		queueMicrotask(() => void send());
+	});
+	let agentJob = $state(''),
+		agentStages = $state<string[]>([]),
+		agentElapsed = $state(0),
+		stopRequested = $state(false);
+	let agentAbort: AbortController | null = null;
+	let projects = $state<{ workspace_id: string; name: string }[]>([]);
+	let projectsReady = $state(false);
+	let projectMenu = $state(false);
+	let projectControl: HTMLDivElement;
+	function dismissProjectMenu(event: MouseEvent) {
+		if (projectMenu && projectControl && !projectControl.contains(event.target as Node))
+			projectMenu = false;
+	}
+	function projectMenuKeydown(event: KeyboardEvent) {
+		if (projectMenu && event.key === 'Escape') {
+			event.preventDefault();
+			projectMenu = false;
+		}
+	}
+	function activity(running: boolean, stage: string) {
+		window.dispatchEvent(
+			new CustomEvent('sovereign-activity', {
+				detail: { view: 'Agent', running, stage, jobId: agentJob }
+			})
+		);
+	}
+	async function stopAgent() {
+		stopRequested = true;
+		notice = 'Stopping after the current step…';
+		if (agentJob) await fetch('/coding/jobs/' + agentJob + '/stop', { method: 'POST' });
+		else agentAbort?.abort();
+	}
+	function persist() {
+		sessionStorage.setItem('sovereign-agent-turns', JSON.stringify(turns.slice(-20)));
+		sessionStorage.setItem('sovereign-agent-chat-id', chatId);
+		if (turns.length && chatId) {
+			sessions = [
+				{
+					id: chatId,
+					title: turns[0].question.slice(0, 60),
+					updatedAt: Date.now(),
+					turns: turns.slice(-30),
+					documents: $state.snapshot(knowledgeContext.agent),
+					knowledgeConnected: knowledgeContext.agentConnected,
+					knowledgeScope: knowledgeContext.agentScope
+				},
+				...sessions.filter((item) => item.id !== chatId)
+			].slice(0, 30);
+			localStorage.setItem('sovereign-agent-history', JSON.stringify(sessions));
+		}
+	}
+	function newAgentChat() {
+		if (busy) return;
+		chatId = crypto.randomUUID();
+		turns = [];
+		prompt = '';
+		image = null;
+		attached = [];
+		knowledgeContext.agent = [];
+		knowledgeContext.agentConnected = true;
+		knowledgeContext.agentScope = 'all';
+		notice = '';
+		historyOpen = false;
+		sessionStorage.removeItem('sovereign-agent-turns');
+		sessionStorage.setItem('sovereign-agent-chat-id', chatId);
+	}
+	function openAgentChat(session: AgentSession) {
+		if (busy) return;
+		chatId = session.id;
+		turns = session.turns;
+		knowledgeContext.agent = session.documents || [];
+		knowledgeContext.agentConnected = session.knowledgeConnected ?? true;
+		knowledgeContext.agentScope = session.knowledgeScope ?? 'all';
+		prompt = '';
+		historyOpen = false;
+		persist();
+	}
+	function deleteAgentChat(id: string) {
+		if (busy) return;
+		sessions = sessions.filter((item) => item.id !== id);
+		localStorage.setItem('sovereign-agent-history', JSON.stringify(sessions));
+		if (chatId === id) newAgentChat();
+	}
+	function openCodeReview(turn: Turn) {
+		if (!turn.workspace || !turn.taskId) return;
+		localStorage.setItem('sovereign-active-workspace', turn.workspace);
+		window.dispatchEvent(
+			new CustomEvent('sovereign-open-workspace', { detail: { tab: 'code', taskId: turn.taskId } })
+		);
+	}
+	async function json(response: Response) {
+		return decodeAgentResponse(response);
+	}
+	let contextReady = $state(false);
+	$effect(() => {
+		if (contextReady) {
+			sessionStorage.setItem('sovereign-agent-context', JSON.stringify(knowledgeContext.agent));
+			sessionStorage.setItem(
+				'sovereign-agent-knowledge-options',
+				JSON.stringify({
+					connected: knowledgeContext.agentConnected,
+					scope: knowledgeContext.agentScope
+				})
+			);
+		}
+	});
+	$effect(() => {
+		void knowledgeContext.agentConnected;
+		void knowledgeContext.agentScope;
+		void knowledgeContext.agent;
+		if (contextReady) untrack(persist);
+	});
+	onMount(() => {
+		if (!knowledgeContext.agent.length) {
+			try {
+				knowledgeContext.agent = JSON.parse(
+					sessionStorage.getItem('sovereign-agent-context') || '[]'
+				);
+			} catch {}
+		}
+		try {
+			const options = JSON.parse(
+				sessionStorage.getItem('sovereign-agent-knowledge-options') || '{}'
+			);
+			knowledgeContext.agentConnected = options.connected ?? true;
+			knowledgeContext.agentScope = options.scope ?? 'all';
+		} catch {}
+		contextReady = true;
+		if (!autoSend) prompt = draft;
+		try {
+			sessions = JSON.parse(localStorage.getItem('sovereign-agent-history') || '[]');
+			chatId = sessionStorage.getItem('sovereign-agent-chat-id') || crypto.randomUUID();
+			turns = JSON.parse(sessionStorage.getItem('sovereign-agent-turns') || '[]');
+			if (!sessionStorage.getItem('sovereign-agent-chat-id') && !turns.length && sessions.length) {
+				chatId = sessions[0].id;
+				turns = sessions[0].turns;
+			}
+		} catch {
+			chatId = crypto.randomUUID();
+		}
+		void CodingWorkspaceService.list()
+			.then((items) => {
+				projects = items;
+				const id = localStorage.getItem('sovereign-active-workspace');
+				if (items.some((item) => item.workspace_id === id)) workspace = id || '';
+			})
+			.catch((e) => (notice = String(e)))
+			.finally(() => (projectsReady = true));
+		const pending = sessionStorage.getItem('sovereign-agent-job');
+		if (pending) {
+			const index = turns.findIndex((turn) => turn.status === 'working');
+			if (index >= 0) {
+				busy = true;
+				agentJob = pending;
+				void poll(index, pending);
+			} else sessionStorage.removeItem('sovereign-agent-job');
+		}
+	});
+	async function attach(event: Event) {
+		const input = event.currentTarget as HTMLInputElement;
+		await attachFiles(Array.from(input.files || []));
+		input.value = '';
+	}
+	let dragOver = $state(false);
+	async function attachFiles(files: File[]) {
+		if (busy) {
+			notice = 'Wait for the current task before adding files.';
+			return;
+		}
+		if (files.filter((file) => /\.(png|jpe?g)$/i.test(file.name)).length > 1) {
+			notice = 'Add one image at a time. No attachments were changed.';
+			return;
+		}
+		busy = true;
+		try {
+			for (const file of files) {
+				if (/\.(png|jpe?g)$/i.test(file.name)) {
+					if (file.size > 5 * 1024 * 1024) throw new Error('Use an image up to 5 MB.');
+					image = file;
+					continue;
+				}
+				notice = 'Reading ' + file.name + '…';
+				const form = new FormData();
+				form.append('file', file, file.name.split(/[\\/]/).at(-1) || file.name);
+				const doc = await json(await fetch('/documents/import', { method: 'POST', body: form }));
+				attached = [...attached, { id: doc.document_id, name: file.name }];
+			}
+			notice = 'Files ready.';
+		} catch (e) {
+			notice = String(e);
+		} finally {
+			busy = false;
+		}
+	}
+	function finish(index: number, result: any) {
+		const original = turns[index];
+		const operations = Array.isArray(result.result?.operations) ? result.result.operations : [];
+		const edited = [...operations].reverse().find((operation: any) => operation.tool === 'file_edit' && operation.result?.state === 'completed')?.result;
+		const editResult = result.plan?.action === 'edit_code' ? result.result : edited;
+		const edit = !!editResult;
+		const diff = editResult?.diff || '';
+		if (operations.some((operation: any) => typeof operation.tool === 'string' && operation.tool.startsWith('document_'))) void knowledgeContext.refresh().catch((error) => { notice = 'Task finished, but the Knowledge list could not refresh: ' + String(error); });
+		const lines = diff.split('\n');
+		turns[index] = {
+			question: original.question,
+			attachments: original.attachments,
+			routing: result.routing || result.result?.routing || original.routing,
+			answer: result.answer || 'Task finished. See details.',
+			status: result.result?.state === 'failed' ? 'failed' : result.status || 'completed',
+			sources: result.result?.sources || result.sources || [],
+			coverage: result.result?.coverage || result.coverage,
+			downloads: result.downloads || result.result?.downloads,
+			workspace: edit ? result.workspace_id : undefined,
+			taskId: edit ? editResult?.task_id : undefined,
+			diff,
+			added: lines.filter((line: string) => line.startsWith('+') && !line.startsWith('+++')).length,
+			removed: lines.filter((line: string) => line.startsWith('-') && !line.startsWith('---'))
+				.length,
+			details: JSON.stringify(
+				{
+					plan: result.plan,
+					steps: result.steps,
+					checks: result.result?.checks,
+					sources: result.result?.sources
+				},
+				null,
+				2
+			)
+		};
+		if (result.routing)
+			window.dispatchEvent(
+				new CustomEvent('sovereign-route', {
+					detail: { task: result.plan?.action || 'Agent', ...result.routing }
+				})
+			);
+		if (result.workspace_id) {
+			workspace = result.workspace_id;
+			localStorage.setItem('sovereign-active-workspace', workspace);
+			void CodingWorkspaceService.list().then((items) => (projects = items));
+		}
+		persist();
+	}
+	async function undoTurn(index: number) {
+		const turn = turns[index];
+		if (!turn.workspace || !turn.taskId) return;
+		try {
+			await CodingWorkspaceService.undo(turn.workspace, turn.taskId);
+			turns[index] = {
+				...turn,
+				status: 'undone',
+				answer: `Reverted ${turn.workspace ? 'the applied file change' : 'the change'}.`,
+				review: false
+			};
+			persist();
+		} catch (e) {
+			notice = String(e);
+		}
+	}
+	async function poll(index: number, id: string) {
+		try {
+			let result = await json(await fetch('/coding/jobs/' + id));
+			while (result.state === 'running') {
+				notice = result.stage;
+				agentElapsed = result.elapsed;
+				agentStages = (result.events || []).map((event: { stage: string }) => event.stage);
+				activity(true, result.stage);
+				await new Promise((resolve) => setTimeout(resolve, 650));
+				result = await json(await fetch('/coding/jobs/' + id));
+			}
+			if (result.routing) { turns[index] = {...turns[index], routing: result.routing}; persist(); }
+			if (result.error) throw Error(result.error);
+			if (result.state === 'cancelled') throw Error('Task stopped');
+			finish(index, result.result);
+			notice = '';
+		} catch (e) {
+			turns[index] = {
+				...turns[index],
+				question: turns[index].question,
+				answer: stopRequested ? 'Task stopped.' : String(e),
+				status: stopRequested ? 'stopped' : 'failed'
+			};
+			notice = stopRequested
+				? 'Task stopped.'
+				: 'The task could not finish. Review the details and retry.';
+		} finally {
+			busy = false;
+			agentJob = '';
+			sessionStorage.removeItem('sovereign-agent-job');
+			persist();
+			activity(false, '');
+		}
+	}
+	async function send() {
+		if (!prompt.trim() || busy) return;
+		if (
+			image &&
+			(attached.length ||
+				(knowledgeContext.agentConnected &&
+					knowledgeContext.agentScope === 'selected' &&
+					knowledgeContext.agent.length))
+		) {
+			notice = 'Send the image and documents separately. Both attachments remain ready.';
+			return;
+		}
+		const goalError = agentGoalError(prompt.trim());
+		if (goalError) {
+			notice = goalError;
+			return;
+		}
+		stopRequested = false;
+		agentJob = '';
+		busy = true;
+		agentStages = [];
+		agentElapsed = 0;
+		notice = 'Preparing request…';
+		let connectedDocuments;
+		try {
+			connectedDocuments = image ? [] : await knowledgeContext.resolve('agent');
+		} catch (e) {
+			notice = 'Could not read connected Knowledge: ' + String(e);
+			busy = false;
+			activity(false, '');
+			return;
+		}
+		const question = prompt.trim();
+		const sentImage = image;
+		const sentDocuments = [
+			...new Map(
+				[...connectedDocuments, ...attached.map((doc) => ({ id: doc.id, name: doc.name }))].map(
+					(doc) => [doc.id, doc]
+				)
+			).values()
+		];
+		const history = agentConversationHistory(
+			turns.map((t) => ({ instruction: t.question, answer: t.answer, state: t.status }))
+		);
+		prompt = '';
+		image = null;
+		attached = [];
+		turns = [
+			...turns,
+			{
+				question,
+				answer: '',
+				status: 'working',
+				attachments: [
+					...sentDocuments.map((doc) => doc.name),
+					...(sentImage ? [sentImage.name] : [])
+				]
+			}
+		];
+		const index = turns.length - 1;
+		busy = true;
+		notice = 'Preparing local task…';
+		persist();
+		activity(true, notice);
+		try {
+			if (sentImage) {
+				const form = new FormData();
+				form.append('file', sentImage);
+				form.append('question', question);
+				// Do not abort submission before its job ID arrives: a queued Stop
+				// must cancel the owned backend job, not only the upload socket.
+				const result = await json(
+					await fetch('/agent/vision/jobs', { method: 'POST', body: form })
+				);
+				agentJob = result.job_id;
+				sessionStorage.setItem('sovereign-agent-job', agentJob);
+				activity(true, notice);
+				if (stopRequested) await fetch('/coding/jobs/' + agentJob + '/stop', { method: 'POST' });
+				agentStages = [];
+				await poll(index, agentJob);
+				return;
+			}
+			const result = await json(
+				await fetch('/agent/jobs', {
+					method: 'POST',
+					headers: { 'content-type': 'application/json' },
+					body: JSON.stringify({
+						goal: question,
+						document_ids: sentDocuments.map((d) => d.id),
+						workspace_id: workspace || null,
+						history
+					})
+				})
+			);
+			agentJob = result.job_id;
+			sessionStorage.setItem('sovereign-agent-job', agentJob);
+			activity(true, notice);
+			if (stopRequested) await fetch('/coding/jobs/' + agentJob + '/stop', { method: 'POST' });
+			agentStages = [];
+			await poll(index, agentJob);
+		} catch (e) {
+			agentAbort = null;
+			turns[index] = {
+				...turns[index],
+				question,
+				answer: stopRequested ? 'Task stopped.' : String(e),
+				status: stopRequested ? 'stopped' : 'failed'
+			};
+			busy = false;
+			notice = stopRequested ? 'Task stopped.' : 'The task could not start.';
+			persist();
+			activity(false, '');
+		}
+	}
 </script>
-<svelte:window onclick={dismissProjectMenu} onkeydown={projectMenuKeydown}/>
-<section class="agent-chat" aria-label="Local agent">
- <header class="agent-topbar"><div><Sparkles size={17}/><strong>Local agent</strong><span>{projects.find(project=>project.workspace_id===workspace)?.name||'Choose a project for code changes'}</span></div><button class="open-code" onclick={()=>{turns=[];prompt='';image=null;attached=[];notice='';sessionStorage.removeItem('sovereign-agent-turns');}} disabled={busy}>+ New chat</button></header>
- <div class="thread">{#if !turns.length}<div class="welcome"><Sparkles size={30}/><h2>Let’s get it done.</h2><p>Describe the outcome. I’ll choose the local tools and check the result.</p><div class="examples">{#each ['Summarize an attached PDF','Fix the errors in my project','Calculate 18.5 * 24','Write a Java hello-world program'] as example}<button onclick={()=>prompt=example}>{example}</button>{/each}</div></div>{/if}{#each turns as turn, index}<article><div class="user-message">{turn.question}{#if turn.attachments?.length}<span class="sent-files">{turn.attachments.join(' · ')}</span>{/if}</div><div class="assistant-message" class:failed={turn.status==='failed'}>{#if turn.status==='working'}<div class="working" role="status"><div class="working-head"><span class="working-dot"></span><strong>{notice||'Working locally'}</strong><span>{agentElapsed}s</span></div><div class="steps">{#each agentStages.slice(-6) as step,i}<div class:current={i===agentStages.slice(-6).length-1}><span>{i===agentStages.slice(-6).length-1?'◉':'✓'}</span>{step}</div>{/each}</div>{#if agentJob}<button class="stop-task" onclick={()=>fetch('/coding/jobs/'+agentJob+'/stop',{method:'POST'})}>Stop task</button>{/if}</div>{:else}<p>{turn.answer}</p>{#if turn.downloads}<div class="downloads">{#each Object.entries(turn.downloads) as [kind,url]}<a href={url}>Download {kind}</a>{/each}</div>{/if}{#if turn.workspace}<div class="agent-change-card"><strong>{turn.status==='completed'?'File edited':turn.status==='undone'?'Change undone':'Edit not applied'}</strong><span>{turn.diff?`+${turn.added||0} −${turn.removed||0}`:'No saved diff'}</span><div class="change-buttons"><button onclick={()=>openCodeReview(turn)} disabled={!turn.taskId}>Review changes</button>{#if turn.status==='completed'&&turn.taskId}<button onclick={()=>void undoTurn(index)}>Undo</button>{/if}<button onclick={()=>openCodeReview(turn)}>Open code workspace →</button></div>{#if turn.review}<pre class="agent-diff">{turn.diff||'No file changes were applied.'}</pre>{/if}</div>{/if}{#if turn.details}<details><summary>Work performed & evidence</summary><pre>{turn.details}</pre></details>{/if}{/if}</div></article>{/each}</div>
- <div class="composer-wrap">
-  <form class="composer" onsubmit={e=>{e.preventDefault();void send();}}>
-   {#if attached.length || image}<div class="attachments">{#each attached as doc}<span>{doc.name}<button type="button" aria-label={'Remove '+doc.name} onclick={()=>attached=attached.filter(d=>d.id!==doc.id)}><X size={12}/></button></span>{/each}{#if image}<span>{image.name}<button type="button" aria-label="Remove image" onclick={()=>image=null}><X size={12}/></button></span>{/if}</div>{/if}
-   <textarea aria-label="Task request" bind:value={prompt} placeholder="Ask anything or describe a task…" onkeydown={e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();void send();}}}></textarea>
-   <div class="composer-tools">
-    <label class="icon-button" title="Attach documents or an image" aria-label="Attach files"><Paperclip size={18}/><input type="file" multiple accept=".pdf,.docx,.txt,.md,.csv,.json,.log,.xlsx,.pptx,.png,.jpg,.jpeg" onchange={attach} disabled={busy}/></label>
-    <div class="project-control" bind:this={projectControl}><button type="button" class="project-trigger" aria-label="Project context" aria-expanded={projectMenu} onclick={()=>projectMenu=!projectMenu}><FolderCode size={15}/><span>{projects.find(project=>project.workspace_id===workspace)?.name||'No project'}</span><ChevronDown size={13}/></button>{#if projectMenu}<div class="project-options" role="group" aria-label="Select project"><button type="button" class:chosen={!workspace} onclick={()=>{workspace='';projectMenu=false;}}>No project</button>{#each projects as project}<button type="button" class:chosen={workspace===project.workspace_id} onclick={()=>{workspace=project.workspace_id;projectMenu=false;}}>{project.name}</button>{/each}</div>{/if}</div>
-    <span class="spacer"></span><span class="local-label">Automatic · Local</span>{#if busy}<button type="button" class="composer-stop" onclick={stopAgent}>Stop</button>{/if}<button class="send" aria-label="Send task" disabled={busy||!prompt.trim()}><ArrowUp size={18}/></button>
-   </div>
-  </form>
-  <p class="notice" role="status">{notice||'Enter to send · Shift+Enter for a new line'}</p>
- </div>
+
+<svelte:window onclick={dismissProjectMenu} onkeydown={projectMenuKeydown} />
+<KnowledgePicker
+	bind:open={pickerOpen}
+	selected={knowledgeContext.agentScope === 'all'
+		? knowledgeContext.catalog
+		: knowledgeContext.agent}
+	scope={knowledgeContext.agentScope}
+	onconnect={(docs, scope) => knowledgeContext.setAgent(docs, scope)}
+/>
+<section class="agent-chat" class:empty={!turns.length} aria-label="Local agent">
+	<header class="agent-topbar">
+		<div>
+			<Sparkles size={17} /><strong>Agent</strong><span
+				>{projects.find((project) => project.workspace_id === workspace)?.name ||
+					'No project selected'}</span
+			>
+		</div>
+		<div class="agent-top-actions">
+			<button
+				class="history-trigger"
+				aria-expanded={historyOpen}
+				onclick={() => (historyOpen = !historyOpen)}
+				><History size={14} /> History {sessions.length || ''}</button
+			><button class="open-code" onclick={newAgentChat} disabled={busy}
+				><Plus size={14} /> New chat</button
+			>
+		</div>
+	</header>
+	{#if historyOpen}<div class="agent-history" aria-label="Agent conversation history">
+			{#if sessions.length}{#each sessions as session}<div
+						class="agent-history-row"
+						class:current={session.id === chatId}
+					>
+						<button onclick={() => openAgentChat(session)}
+							><strong>{session.title}</strong><small
+								>{new Date(session.updatedAt).toLocaleString()} · {session.turns.length} turns</small
+							></button
+						><button
+							aria-label={'Delete ' + session.title}
+							onclick={() => deleteAgentChat(session.id)}><X size={14} /></button
+						>
+					</div>{/each}{:else}<p>No past conversations yet.</p>{/if}
+		</div>{/if}
+	<div
+		class="thread"
+		bind:this={threadElement}
+		onscroll={() => {
+			if (threadElement)
+				followLatest =
+					threadElement.scrollHeight - threadElement.scrollTop - threadElement.clientHeight < 48;
+		}}
+	>
+		{#if !turns.length}<div class="welcome">
+				<h2>What would you like to do?</h2>
+				<p>Ask a question or give me a task. Bring your files when you need them.</p>
+				<div class="examples">
+					{#each ['Summarize a document', 'Inspect my project', 'Create a report'] as example}<button
+							onclick={() => (prompt = example)}><span>{example}</span></button
+						>{/each}
+				</div>
+			</div>{/if}{#each turns as turn, index}<article>
+				<div class="user-message">
+					{turn.question}
+				</div>
+				<div class="assistant-message" class:failed={turn.status === 'failed'}>
+					{#if turn.status === 'working'}<div class="working" role="status">
+							<div class="working-head">
+								<span class="working-dot"></span><strong>{notice || 'Working locally'}</strong><span
+									>{agentElapsed}s</span
+								>
+							</div>
+							<div class="steps">
+								{#each agentStages.slice(-6) as step, i}<div
+										class:current={i === agentStages.slice(-6).length - 1}
+									>
+										<span>{i === agentStages.slice(-6).length - 1 ? '◉' : '·'}</span>{step}
+									</div>{/each}
+							</div>
+							{#if agentJob}<button class="stop-task" onclick={stopAgent}>Stop task</button>{/if}
+						</div>{:else}<div class="agent-answer">
+							<MarkdownContent content={turn.answer || ''} />
+						</div>
+						<RouteDetails routing={turn.routing} compact />
+						<KnowledgeSources
+							sources={turn.sources || []}
+							coverage={turn.coverage}
+						/>{#if turn.downloads}<div class="downloads">
+								{#each Object.entries(turn.downloads) as [kind, url]}<a href={url}
+										>Download {kind}</a
+									>{/each}
+							</div>{/if}{#if turn.workspace}<div class="agent-change-card">
+								<strong
+									>{turn.status === 'completed'
+										? 'File edited'
+										: turn.status === 'undone'
+											? 'Change undone'
+											: 'Edit not applied'}</strong
+								><span
+									>{turn.diff ? `+${turn.added || 0} −${turn.removed || 0}` : 'No saved diff'}</span
+								>
+								<div class="change-buttons">
+									<button onclick={() => openCodeReview(turn)} disabled={!turn.taskId}
+										>Review changes</button
+									>{#if turn.status === 'completed' && turn.taskId}<button
+											onclick={() => void undoTurn(index)}>Undo</button
+										>{/if}<button onclick={() => openCodeReview(turn)}>Open code workspace →</button
+									>
+								</div>
+								{#if turn.review}<pre class="agent-diff">{turn.diff ||
+											'No file changes were applied.'}</pre>{/if}
+							</div>{/if}{/if}
+				</div>
+			</article>{/each}
+	</div>
+	<div class="composer-wrap">
+		<form
+			class="composer"
+			class:agent-drop-active={dragOver}
+			ondragover={(event) => {
+				if (event.dataTransfer?.types.includes('Files')) {
+					event.preventDefault();
+					dragOver = true;
+				}
+			}}
+			ondragleave={(event) => {
+				if (!event.currentTarget.contains(event.relatedTarget as Node)) dragOver = false;
+			}}
+			ondrop={(event) => {
+				event.preventDefault();
+				dragOver = false;
+				if (event.dataTransfer) void attachFiles(Array.from(event.dataTransfer.files));
+			}}
+			onsubmit={(e) => {
+				e.preventDefault();
+				void send();
+			}}
+		>
+			{#if dragOver}<p class="agent-drop-hint">Drop documents or an image to add context</p>{/if}
+			<KnowledgeConnection target="agent" disabled={busy} onchoose={() => (pickerOpen = true)} />
+			<KnowledgeChips
+				documents={knowledgeContext.agentConnected && knowledgeContext.agentScope === 'selected'
+					? knowledgeContext.agent
+					: []}
+				onremove={(id) =>
+					(knowledgeContext.agent = knowledgeContext.agent.filter((doc) => doc.id !== id))}
+			/>
+			{#if attached.length || image}<div class="attachments">
+					{#each attached as doc}<span
+							>{doc.name}<button
+								type="button"
+								aria-label={'Remove ' + doc.name}
+								onclick={() => (attached = attached.filter((d) => d.id !== doc.id))}
+								><X size={12} /></button
+							></span
+						>{/each}{#if image}<span
+							>{image.name}<button
+								type="button"
+								aria-label="Remove image"
+								onclick={() => (image = null)}><X size={12} /></button
+							></span
+						>{/if}
+				</div>{/if}
+			<textarea
+				aria-label="Task request"
+				bind:value={prompt}
+				placeholder="Ask anything or describe a task…"
+				onkeydown={(e) => {
+					if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
+						e.preventDefault();
+						void send();
+					}
+				}}
+			></textarea>
+			<div class="composer-tools">
+				<input
+					class="hidden"
+					bind:this={attachmentInput}
+					type="file"
+					multiple
+					onchange={attach}
+					disabled={busy}
+				/><DropdownMenu.Root
+					><DropdownMenu.Trigger class="agent-add-context" disabled={busy}
+						><Plus size={15} /> Add context</DropdownMenu.Trigger
+					><DropdownMenu.Content
+						><DropdownMenu.Item onclick={() => (pickerOpen = true)}
+							><FileText size={15} /> From Knowledge</DropdownMenu.Item
+						><DropdownMenu.Item onclick={() => chooseFiles()}
+							><Paperclip size={15} /> Upload files</DropdownMenu.Item
+						><DropdownMenu.Item onclick={() => chooseFiles(true)}
+							><Image size={15} /> Add images</DropdownMenu.Item
+						></DropdownMenu.Content
+					></DropdownMenu.Root
+				>
+				<div class="project-control" bind:this={projectControl}>
+					<button
+						type="button"
+						class="project-trigger"
+						aria-label="Project context"
+						aria-expanded={projectMenu}
+						onclick={() => (projectMenu = !projectMenu)}
+						><FolderCode size={15} /><span
+							>{projects.find((project) => project.workspace_id === workspace)?.name ||
+								'No project'}</span
+						><ChevronDown size={13} /></button
+					>{#if projectMenu}<div class="project-options" role="group" aria-label="Select project">
+							<button
+								type="button"
+								class:chosen={!workspace}
+								onclick={() => {
+									workspace = '';
+									projectMenu = false;
+								}}>No project</button
+							>{#each projects as project}<button
+									type="button"
+									class:chosen={workspace === project.workspace_id}
+									onclick={() => {
+										workspace = project.workspace_id;
+										projectMenu = false;
+									}}>{project.name}</button
+								>{/each}
+						</div>{/if}
+				</div>
+				<span class="spacer"></span><span class="local-label">Automatic · Local</span
+				>{#if busy}<button type="button" class="composer-stop" onclick={stopAgent}>Stop</button
+					>{/if}<button class="send" aria-label="Send task" disabled={busy || !prompt.trim()}
+					><ArrowUp size={18} /></button
+				>
+			</div>
+		</form>
+		<p class="notice" role="status">{notice || 'Enter to send · Shift+Enter for a new line'}</p>
+	</div>
 </section>
-<style>
- .agent-chat{font:14px/1.55 system-ui,sans-serif;max-width:930px;margin:auto;min-height:calc(100dvh - 124px);display:flex;flex-direction:column;padding:0 24px;color:var(--foreground)}
- .thread{flex:1;min-height:0;padding:18px 0 30px}.welcome{min-height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:12px}.welcome :global(svg){color:#b9a5f8}.welcome h2{font-size:clamp(30px,3vw,40px);font-weight:650;letter-spacing:-.045em}.welcome p{color:var(--muted-foreground);font-size:15px}.examples{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;width:min(620px,100%);margin-top:20px}.examples button{border:1px solid color-mix(in srgb,var(--border) 80%,transparent);border-radius:14px;background:color-mix(in srgb,var(--background) 94%,var(--foreground) 6%);padding:15px;text-align:left;font-size:12px;transition:background .18s,transform .18s,border-color .18s}.examples button:hover{background:var(--accent);transform:translateY(-2px);border-color:color-mix(in srgb,var(--foreground) 22%,var(--border))}
- article{padding:15px 0}.user-message{margin-left:auto;max-width:80%;width:fit-content;padding:11px 17px;border-radius:18px;background:var(--muted);white-space:pre-wrap}.assistant-message{padding:22px 8px;line-height:1.75;animation:arrive .2s ease-out}.assistant-message>p{white-space:pre-wrap}.failed{color:var(--destructive)}details{margin-top:16px;font-size:12px;color:var(--muted-foreground)}summary{cursor:pointer}pre{max-height:280px;overflow:auto;margin-top:10px;padding:15px;border-radius:10px;background:var(--muted);white-space:pre-wrap}.downloads a,.open-code{display:inline-block;margin-top:14px;padding:8px 12px;border:1px solid var(--border);border-radius:9px}
- .composer-wrap{position:sticky;bottom:0;padding:8px 0 3px;background:linear-gradient(transparent,var(--background) 14px)}.composer{border:1px solid color-mix(in srgb,var(--foreground) 17%,var(--border));border-radius:24px;background:color-mix(in srgb,var(--background) 89%,var(--foreground) 11%);box-shadow:0 12px 34px #0002,0 1px 5px #0002;padding:8px 10px;transition:border-color .2s,box-shadow .2s}.composer:focus-within{border-color:color-mix(in srgb,var(--foreground) 38%,var(--border));box-shadow:0 14px 40px #0003,0 0 0 3px color-mix(in srgb,var(--foreground) 5%,transparent)}.composer textarea{display:block;width:100%;min-height:74px;max-height:210px;resize:vertical;border:0;outline:0;background:transparent;padding:14px 16px 4px;font:15px/1.5 system-ui,sans-serif;color:var(--foreground)}.composer textarea::placeholder{color:var(--muted-foreground)}.composer-tools{display:flex;align-items:center;gap:8px;padding:5px 6px}.icon-button,.project-trigger{display:inline-flex;align-items:center;justify-content:center;min-height:34px;border:0;border-radius:10px;color:var(--foreground);cursor:pointer}.icon-button{width:34px}.icon-button:hover,.project-trigger:hover{background:var(--accent)}.icon-button input{position:absolute;width:1px;height:1px;opacity:0}.project-control{position:relative;min-width:0}.project-trigger{gap:8px;padding:0 10px;max-width:190px;font-size:12px}.project-trigger span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.project-options{position:absolute;left:0;bottom:42px;z-index:5;min-width:230px;max-width:min(330px,calc(100vw - 50px));max-height:250px;overflow:auto;padding:5px;border:1px solid var(--border);border-radius:12px;background:var(--popover);box-shadow:0 16px 38px #0005}.project-options button{display:block;width:100%;padding:9px 12px;border-radius:8px;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}.project-options button:hover,.project-options button.chosen{background:var(--accent)}.spacer{flex:1}.local-label,.notice{font-size:11px;color:var(--muted-foreground)}.send{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--primary);color:var(--primary-foreground);transition:transform .18s,opacity .18s}.send:hover:not(:disabled){transform:translateY(-2px)}.send:disabled{opacity:.43}.attachments{display:flex;flex-wrap:wrap;gap:7px;padding:8px}.attachments>span{display:flex;align-items:center;gap:7px;padding:5px 8px;border:1px solid var(--border);border-radius:9px;font-size:11px}.notice{text-align:center;padding:8px 4px}.working{max-width:650px;padding:17px 20px;border:1px solid var(--border);border-radius:14px;background:var(--muted)}.working-head{display:flex;align-items:center;gap:10px;font-size:12px}.working-head strong{flex:1}.working-head>span:last-child{color:var(--muted-foreground);font-variant-numeric:tabular-nums}.working-dot{width:8px;height:8px;border-radius:50%;background:#9a86e8;animation:agent-pulse 1.3s infinite}.steps{display:flex;flex-direction:column;gap:8px;margin:15px 0 0 4px;padding-left:15px;border-left:1px solid var(--border);font-size:11px;color:var(--muted-foreground)}.steps div{display:flex;gap:8px}.steps .current{color:var(--foreground)}.stop-task{margin-top:16px;padding:7px 11px;border:1px solid var(--border);border-radius:8px;font-size:11px}
- @keyframes arrive{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}@keyframes agent-pulse{50%{opacity:.35}}@media(max-width:600px){.agent-chat{padding:0 14px}.welcome{min-height:300px}.examples{grid-template-columns:1fr}.local-label{display:none}.composer textarea{min-height:66px}.project-trigger{max-width:145px}}@media(prefers-reduced-motion:reduce){.assistant-message,.working-dot{animation:none}.composer,.examples button,.send{transition:none}}
- .agent-chat{max-width:940px;height:calc(100dvh - 120px);min-height:560px;overflow:hidden}
- .agent-chat .agent-topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:54px;border-bottom:1px solid var(--border);font-size:12px}
- .agent-chat .agent-topbar>div{display:flex;align-items:center;gap:9px;min-width:0}
- .agent-chat .agent-topbar>div>span{color:var(--muted-foreground);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
- .agent-chat .agent-topbar :global(svg){color:#a997ee}
- .agent-chat .agent-topbar .open-code{margin:0;white-space:nowrap;border:1px solid var(--border);border-radius:9px;padding:7px 10px}
- .agent-chat .thread{width:100%;overflow-y:auto;overscroll-behavior:contain;scrollbar-color:#626a7a transparent;scrollbar-width:thin}
- .agent-chat .sent-files{display:block;margin-top:7px;color:var(--muted-foreground);font-size:11px}
- .agent-chat article{border-bottom:1px solid color-mix(in srgb,var(--border) 55%,transparent)}
- .agent-chat .assistant-message{max-width:780px}
- .agent-chat .welcome{min-height:min(48vh,410px)}
- .agent-change-card{margin-top:14px;border:1px solid var(--border);border-radius:12px;padding:12px 14px;background:var(--muted);display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:12px}.agent-change-card>span{font-family:Consolas,monospace;color:#9bd7ad}.change-buttons{display:flex;gap:8px;flex-wrap:wrap;width:100%}.change-buttons button{border:1px solid var(--border);border-radius:8px;padding:6px 9px}.change-buttons button:hover{background:var(--accent)}.agent-diff{width:100%;max-height:360px;overflow:auto;white-space:pre;background:#15181d;color:#dfebe4}
- .examples{width:100%}
- .composer textarea{field-sizing:content;min-height:72px;max-height:190px;resize:none}
- .composer-tools{gap:10px;padding:5px 8px}
- .composer-tools .local-label{display:none}
- .composer-tools .send{flex:none}
- @media(max-width:600px){.agent-chat{max-width:100%;height:calc(100dvh - 100px);min-height:480px}.composer textarea{min-height:64px}}
- .composer-stop{border:1px solid var(--border);border-radius:9px;padding:6px 10px;font-size:12px;color:var(--foreground)}
-</style>

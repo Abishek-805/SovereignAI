@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.css';
+ import '$lib/components/sovereign/workbench-system.css';
 	import DocumentsPanel from '$lib/components/sovereign/DocumentsPanel.svelte';
 	import ModelRoutingBar from '$lib/components/sovereign/ModelRoutingBar.svelte';
 	import { browser } from '$app/environment';
@@ -339,7 +340,7 @@
 		<!-- min-w-0 lets the chat column shrink below its content width, so wide
 		     code blocks and tables scroll inside their own containers instead of
 		     stretching the page into a horizontal scrollbar -->
-		<div class="min-w-0 flex-1" inert={workbenchOpen}>
+		<div class="app-route-content min-w-0 flex-1" class:workbench-background={workbenchOpen} inert={workbenchOpen}>
 			{@render children?.()}
 		</div>
 	</div>
@@ -363,3 +364,10 @@
 		{updateServiceWorker}
 	/>
 </div>
+
+<style>
+ /* Workbench is a fixed destination. Its inert background conversation must
+    not retain the document height of a long transcript. Visible destinations
+    keep their own panel scroll containers; Chat resumes its normal page scroll. */
+ .app-route-content.workbench-background { height:100dvh;max-height:100dvh;min-height:0;overflow:clip; }
+</style>

@@ -8,7 +8,7 @@ from backend.contracts import WorkbenchError
 class Job:
     def __init__(self,kind):
         self.id=uuid4().hex;self.kind=kind;self.state='running';self.stage='Starting';self.output=''
-        self.result=None;self.error=None;self.created=time.time();self.events=[]
+        self.result=None;self.error=None;self.created=time.time();self.events=[];self.routing=None
         self.cancel=threading.Event();self.input=Queue(maxsize=32);self.lock=threading.Lock()
     def progress(self,stage):
         with self.lock:
@@ -19,7 +19,7 @@ class Job:
             if self.kind in {'run','terminal'} and channel=='stdout' and self.output.rstrip().endswith((':','?')):
                 self.stage='Waiting for program input'
     def snapshot(self):
-        with self.lock:return {'job_id':self.id,'kind':self.kind,'state':self.state,'stage':self.stage,'output':self.output,'result':self.result,'error':self.error,'events':list(self.events),'elapsed':round(time.time()-self.created,1)}
+        with self.lock:return {'job_id':self.id,'kind':self.kind,'state':self.state,'stage':self.stage,'output':self.output,'result':self.result,'error':self.error,'routing':self.routing,'events':list(self.events),'elapsed':round(time.time()-self.created,1)}
 
 class Jobs:
     def __init__(self):self.jobs={};self.lock=threading.Lock()

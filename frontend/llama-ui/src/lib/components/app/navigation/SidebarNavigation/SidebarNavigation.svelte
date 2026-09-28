@@ -1,6 +1,8 @@
 <script lang="ts">
 	import WorkbenchNavigation from '$lib/components/sovereign/WorkbenchNavigation.svelte';
-	import { PanelLeftClose, PanelLeftOpen, X } from '@lucide/svelte';
+	import PanelLeftClose from '@lucide/svelte/icons/panel-left-close';
+import PanelLeftOpen from '@lucide/svelte/icons/panel-left-open';
+import X from '@lucide/svelte/icons/x';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import {
@@ -48,6 +50,7 @@
 
 	function toggleExpandedMode() {
 		uiStore.isSidebarExpanded = !uiStore.isSidebarExpanded;
+		if (window.innerWidth >= 768) localStorage.setItem('sovereign-navigation-expanded', String(uiStore.isSidebarExpanded));
 
 		if (!uiStore.isSidebarExpanded) {
 			hoveredTooltip = null;
@@ -325,7 +328,7 @@
 			'rounded-3xl md:rounded-2xl',
 			'flex flex-col justify-between',
 			'md:transition-[width,padding] duration-200 ease-out',
-			isStripExpanded && 'md:w-72 md:bg-muted/60 md:backdrop-blur-xl shadow-md',
+			isStripExpanded && 'md:w-[216px] md:bg-muted/60 md:backdrop-blur-xl shadow-md',
 			!isStripExpanded && 'md:w-12',
 			uiStore.isSidebarExpanded && 'is-expanded'
 		]}

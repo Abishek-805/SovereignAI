@@ -1,16 +1,14 @@
 <script lang="ts">
-	import {
-		Download,
-		GitBranch,
-		ListChecks,
-		Loader2,
-		MoreHorizontal,
-		Pencil,
-		Pin,
-		PinOff,
-		Square,
-		Trash2
-	} from '@lucide/svelte';
+	import Download from '@lucide/svelte/icons/download';
+import GitBranch from '@lucide/svelte/icons/git-branch';
+import ListChecks from '@lucide/svelte/icons/list-checks';
+import Loader2 from '@lucide/svelte/icons/loader-2';
+import MoreHorizontal from '@lucide/svelte/icons/more-horizontal';
+import Pencil from '@lucide/svelte/icons/pencil';
+import Pin from '@lucide/svelte/icons/pin';
+import PinOff from '@lucide/svelte/icons/pin-off';
+import Square from '@lucide/svelte/icons/square';
+import Trash2 from '@lucide/svelte/icons/trash-2';
 	import { DropdownMenuActions } from '$lib/components/app';
 	import { TruncatedText } from '$lib/components/app';
 	import { Checkbox } from '$lib/components/ui/checkbox';

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Settings } from '@lucide/svelte';
+	import Settings from '@lucide/svelte/icons/settings';
 	import { SettingsChat } from '$lib/components/app/settings';
 	import * as Dialog from '$lib/components/ui/dialog';
 

@@ -22,3 +22,13 @@ def test_calculator_invalid_operation():
 def test_calculator_malicious():
     with pytest.raises(WorkbenchError):
         evaluate_expression("__import__('os').system('ls')")
+
+def test_square_root_uses_decimal_and_records_validation_steps():
+    result = evaluate_expression('sqrt(196) + 1')
+    assert result.result == 15
+    assert result.steps[0] == 'sqrt(196) = 14'
+
+@pytest.mark.parametrize('expression', ['sqrt(-1)', 'sqrt(1, 2)', 'sqrt(x=4)', 'abs(-4)', 'True', "__import__('os')"])
+def test_extended_calculator_keeps_calls_and_constants_bounded(expression):
+    with pytest.raises(WorkbenchError):
+        evaluate_expression(expression)

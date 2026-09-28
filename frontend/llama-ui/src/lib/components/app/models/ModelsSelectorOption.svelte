@@ -1,15 +1,13 @@
 <script lang="ts">
 	import ModelLoadHighlight from './ModelLoadHighlight.svelte';
-	import {
-		CircleAlert,
-		Heart,
-		HeartOff,
-		Info,
-		Loader2,
-		Power,
-		PowerOff,
-		RotateCw
-	} from '@lucide/svelte';
+	import CircleAlert from '@lucide/svelte/icons/circle-alert';
+import Heart from '@lucide/svelte/icons/heart';
+import HeartOff from '@lucide/svelte/icons/heart-off';
+import Info from '@lucide/svelte/icons/info';
+import Loader2 from '@lucide/svelte/icons/loader-2';
+import Power from '@lucide/svelte/icons/power';
+import PowerOff from '@lucide/svelte/icons/power-off';
+import RotateCw from '@lucide/svelte/icons/rotate-cw';
 	import { ActionIcon, ModelId } from '$lib/components/app';
 	import { ICON_CLASS_DEFAULT } from '$lib/constants';
 	import { ServerModelStatus } from '$lib/enums';

@@ -1,7 +1,9 @@
 <script lang="ts">
 	import ModelLoadHighlight from './ModelLoadHighlight.svelte';
 	import type { ModelItem } from './utils';
-	import { ChevronDown, Lightbulb, Loader2 } from '@lucide/svelte';
+	import ChevronDown from '@lucide/svelte/icons/chevron-down';
+import Lightbulb from '@lucide/svelte/icons/lightbulb';
+import Loader2 from '@lucide/svelte/icons/loader-2';
 	import {
 		ChatFormActionAddReasoningSubmenu,
 		DialogModelInformation,

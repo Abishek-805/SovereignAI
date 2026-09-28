@@ -1,0 +1,27 @@
+{
+  "method": "word",
+  "development_sha256": "0b4642529a1a43509678f3a6941d5b7d2128ac20d28e1ddec2f5fe065ed6a68e",
+  "module_sha256": "27a3efa2eef602e0f47d4736a47107717c657a55c999b67068f2613a35281444",
+  "hyperparameters": {
+    "ridge_alpha": 0.5,
+    "hierarchical": true,
+    "word_ngrams": [
+      1,
+      2
+    ],
+    "char_ngrams": [
+      3,
+      4,
+      5
+    ]
+  },
+  "policy": {
+    "minimum_score": 0.4,
+    "minimum_margin": 0.5,
+    "selection": "maximum calibration coverage with zero accepted calibration mistakes; stricter score/margin tie break",
+    "calibration_accepted": 20,
+    "minimum_parent_score": 0.4,
+    "minimum_parent_margin": 0.5
+  },
+  "frozen_at": "2026-09-28T23:08:03+0530"
+}

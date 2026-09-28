@@ -1057,6 +1057,7 @@ export class ChatService {
 			onError,
 			onModel,
 			onReasoningChunk,
+			onRouting,
 			onTimings,
 			onToolCallChunk,
 			presence_penalty,
@@ -1244,7 +1245,16 @@ export class ChatService {
 				signal
 			});
 
+			const requestId = response.headers.get('x-sovereign-request-id');
+			const publishRouting = async () => {
+				if (!requestId || !onRouting) return;
+				try {
+					const detail = await fetch('/routing/decisions/' + encodeURIComponent(requestId));
+					if (detail.ok) onRouting({ decision: await detail.json() });
+				} catch { /* Missing telemetry never invalidates an answer or error. */ }
+			};
 			if (!response.ok) {
+				await publishRouting();
 				// a rejected request (including one cancelled by a stop during the model load)
 				// leaves nothing to resume
 				if (conversationId) {
@@ -1277,15 +1287,18 @@ export class ChatService {
 					options.model
 				);
 
+				await publishRouting();
 				return;
 			} else {
-				return ChatService.handleNonStreamResponse(
+				const completed = await ChatService.handleNonStreamResponse(
 					response,
 					onComplete,
 					onError,
 					onToolCallChunk,
 					onModel
 				);
+				await publishRouting();
+				return completed;
 			}
 		} catch (error) {
 			if (isAbortError(error)) {

@@ -48,7 +48,7 @@ def test_docker_runner_security_arguments(tmp_path,monkeypatch):
     assert result.executed and result.stdout=='ok\n'
     args=calls[0]
     for flag in ('--network=none','--read-only','--cap-drop=ALL','--security-opt=no-new-privileges',
-                 '--pids-limit=64','--memory=512m','--cpus=1','--ulimit=fsize=16777216:16777216',
+                 '--pids-limit=64','--memory=512m','--cpus=1','--ulimit=fsize=33554432:33554432',
                  '--user=65534:65534','--pull=never'):
         assert flag in args
     assert image in args
@@ -254,7 +254,7 @@ def test_registry_accepts_reviewed_entry_without_orchestrator_change(tmp_path):
     model.write_bytes(b'test')
     registry=ModelRegistry()
     spec=ModelSpec('code-specialist','sovereign-code','small/code.gguf',
-                   revision='reviewed-revision',license_reference='docs/license.md')
+                   revision='reviewed-revision',license_reference='docs/license.md',license_id='fixture-license',license_reviewed=True)
     with patch('router.model_registry.ROOT',tmp_path):
         registry.register(spec)
         args=registry.launch_args('code-specialist')

@@ -1,0 +1,27 @@
+{
+  "method": "character",
+  "development_sha256": "9c884f6860d967cb15c7350aa34714a53396ce1d77991865cd48a2d502e5e2b5",
+  "module_sha256": "9ef87252b932660d69f9fc99ce93a122c50e0e7e9b5f7861fb94898edf734639",
+  "hyperparameters": {
+    "ridge_alpha": 0.5,
+    "word_ngrams": [
+      1,
+      2
+    ],
+    "character_ngrams": [
+      3,
+      4,
+      5
+    ],
+    "max_features_per_encoder": 20000,
+    "normalization": "L2",
+    "hybrid_weight": "equal normalized feature blocks"
+  },
+  "policy": {
+    "minimum_score": 0,
+    "minimum_margin": 0.3,
+    "selection": "maximum calibration coverage with zero accepted calibration mistakes; stricter score/margin tie break",
+    "calibration_accepted": 14
+  },
+  "frozen_at": "2026-09-28T14:31:01+0530"
+}

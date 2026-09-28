@@ -1,5 +1,9 @@
 <script lang="ts">
-	import { AlertTriangle, CheckCircle, Key, RefreshCw, XCircle } from '@lucide/svelte';
+	import AlertTriangle from '@lucide/svelte/icons/alert-triangle';
+import CheckCircle from '@lucide/svelte/icons/check-circle';
+import Key from '@lucide/svelte/icons/key';
+import RefreshCw from '@lucide/svelte/icons/refresh-cw';
+import XCircle from '@lucide/svelte/icons/x-circle';
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
 	import { Button } from '$lib/components/ui/button';

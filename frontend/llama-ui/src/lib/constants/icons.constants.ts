@@ -3,15 +3,13 @@
  * Centralized configuration to ensure consistent icon usage across the app
  */
 
-import {
-	Eye as VisionIcon,
-	File as FileIcon,
-	FileText as FileTextIcon,
-	Image as ImageIcon,
-	Lightbulb as ReasoningIcon,
-	Mic as AudioIcon,
-	Video as VideoIcon
-} from '@lucide/svelte';
+import VisionIcon from '@lucide/svelte/icons/eye';
+import FileIcon from '@lucide/svelte/icons/file';
+import FileTextIcon from '@lucide/svelte/icons/file-text';
+import ImageIcon from '@lucide/svelte/icons/image';
+import ReasoningIcon from '@lucide/svelte/icons/lightbulb';
+import AudioIcon from '@lucide/svelte/icons/mic';
+import VideoIcon from '@lucide/svelte/icons/video';
 import { FileTypeCategory, ModelCapability, ModelModality } from '$lib/enums';
 import type { ModelCapabilities, ModelModalities } from '$lib/types/models';
 import type { Component } from 'svelte';

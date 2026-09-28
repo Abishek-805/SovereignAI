@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { Eye, FileText, Info } from '@lucide/svelte';
+	import Eye from '@lucide/svelte/icons/eye';
+import FileText from '@lucide/svelte/icons/file-text';
+import Info from '@lucide/svelte/icons/info';
 	import { SyntaxHighlightedCode } from '$lib/components/app';
 	import * as Alert from '$lib/components/ui/alert';
 	import { Button } from '$lib/components/ui/button';

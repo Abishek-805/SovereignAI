@@ -399,6 +399,7 @@ export class ChatMessageFlows {
 						content: newContent,
 						convId: msg.convId,
 						extra: extrasToUse,
+						knowledgeDocuments: msg.knowledgeDocuments,
 						model: msg.model,
 						role: msg.role,
 						timestamp: Date.now(),

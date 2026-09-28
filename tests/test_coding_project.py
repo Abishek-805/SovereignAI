@@ -99,6 +99,74 @@ def test_create_only_request_does_not_edit_open_file_even_if_model_plans_it(tmp_
     assert work.read(workspace_id,'open.py')['content']=='print("keep")\n'
 
 
+def test_model_new_files_scope_blocks_collateral_edits_before_generation(tmp_path):
+    work=CodingWorkspace(tmp_path)
+    ident=work.create('Scoped project')['workspace_id']
+    work.write(ident,'notes.md','Original notes')
+    model=ProjectModel({'scope':'new_files','operations':[
+        {'action':'create','path':'new.md','reason':'requested'},
+        {'action':'edit','path':'notes.md','reason':'unrequested'}]})
+    with pytest.raises(WorkbenchError,match='cannot modify existing'):
+        work.run_project(ident,'notes.md','Create a standalone document',model,Sandbox(),TaskLedger(tmp_path))
+    assert work.read(ident,'notes.md')['content']=='Original notes'
+    assert [item['name'] for item in work.get(ident)['files']]==['notes.md']
+
+
+def test_model_new_files_scope_does_not_send_unrelated_contents_to_generator(tmp_path):
+    import json
+    work=CodingWorkspace(tmp_path)
+    ident=work.create('Scoped project')['workspace_id']
+    work.write(ident,'notes.md','Unrelated existing content')
+    class CapturingModel(ProjectModel):
+        def complete_code(self,messages,max_tokens=3072):
+            self.generated_context=json.loads(messages[-1]['content'])['file_contents']
+            return {'code':'# Requested new document\n'}
+    model=CapturingModel({'scope':'new_files','operations':[
+        {'action':'create','path':'new.md','reason':'requested'}]})
+    result=work.run_project(ident,'notes.md','Create a standalone document',model,Sandbox(),TaskLedger(tmp_path))
+    assert result['state']=='completed'
+    assert model.generated_context=={}
+    assert work.read(ident,'notes.md')['content']=='Unrelated existing content'
+
+
+def test_named_existing_target_rejects_changes_to_duplicate_file(tmp_path):
+    work=CodingWorkspace(tmp_path)
+    ident=work.create('Precise project')['workspace_id']
+    for path in ('docs/notes.md','copies/notes.md'):work.write(ident,path,'# Notes\nOld item.\n')
+    model=ProjectModel({'scope':'existing_files','operations':[
+        {'action':'edit','path':path,'reason':'change copied text'} for path in ('docs/notes.md','copies/notes.md')]})
+    with pytest.raises(WorkbenchError,match='outside the explicitly named'):
+        work.run_project(ident,'docs/notes.md','Replace the old item in docs/notes.md',model,Sandbox(),TaskLedger(tmp_path))
+    assert work.read(ident,'docs/notes.md')['content']=='# Notes\nOld item.\n'
+    assert work.read(ident,'copies/notes.md')['content']=='# Notes\nOld item.\n'
+
+
+def test_literal_replacement_preserves_heading_and_skips_full_file_generation(tmp_path):
+    work=CodingWorkspace(tmp_path)
+    ident=work.create('Precise project')['workspace_id']
+    work.write(ident,'docs/notes.md','# Heading\n\nOld item.\n\nOther content.\n')
+    model=ProjectModel({'scope':'existing_files','operations':[
+        {'action':'edit','path':'docs/notes.md','reason':'requested replacement',
+         'replacements':[{'old_text':'Old item.','new_text':'Reviewed item.'}]}]})
+    result=work.run_project(ident,'docs/notes.md','Replace Old item. with Reviewed item. in docs/notes.md',model,Sandbox(),TaskLedger(tmp_path))
+    assert result['state']=='completed'
+    assert work.read(ident,'docs/notes.md')['content']=='# Heading\n\nReviewed item.\n\nOther content.\n'
+    work.undo(ident,result['task_id'])
+    assert work.read(ident,'docs/notes.md')['content']=='# Heading\n\nOld item.\n\nOther content.\n'
+
+
+def test_ambiguous_literal_replacement_never_publishes_any_file(tmp_path):
+    work=CodingWorkspace(tmp_path)
+    ident=work.create('Precise project')['workspace_id']
+    work.write(ident,'notes.md','Old item.\nOld item.\n')
+    model=ProjectModel({'scope':'existing_files','operations':[
+        {'action':'edit','path':'notes.md','reason':'ambiguous',
+         'replacements':[{'old_text':'Old item.','new_text':'Reviewed item.'}]}]})
+    with pytest.raises(WorkbenchError,match='exactly one original'):
+        work.run_project(ident,'notes.md','Change the old item in notes.md',model,Sandbox(),TaskLedger(tmp_path))
+    assert work.read(ident,'notes.md')['content']=='Old item.\nOld item.\n'
+
+
 def test_project_task_deletes_requested_file_and_can_restore_it(tmp_path):
     work=CodingWorkspace(tmp_path)
     workspace_id=work.create('Project')['workspace_id']

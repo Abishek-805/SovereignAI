@@ -1,0 +1,4266 @@
+{
+  "version": "router-development-v3",
+  "provenance": "V2 development plus prior V2 heldout are now development-only; fresh independent V3 heldout is authored by root without reading this file. Engineer-authored augmentation, not human-reviewed production truth.",
+  "training": [
+    {
+      "id": "d001",
+      "text": "Good morning, how is it going?",
+      "expected": "answer",
+      "category": "greeting",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "d002",
+      "text": "Hey there!",
+      "expected": "answer",
+      "category": "greeting",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "d003",
+      "text": "Hi assistant",
+      "expected": "answer",
+      "category": "greeting",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "d004",
+      "text": "Hello again",
+      "expected": "answer",
+      "category": "greeting",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "d005",
+      "text": "Good afternoon",
+      "expected": "answer",
+      "category": "greeting",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "d006",
+      "text": "Thanks a lot, goodbye",
+      "expected": "answer",
+      "category": "greeting",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "d007",
+      "text": "Who am I speaking with?",
+      "expected": "answer",
+      "category": "identity",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "d008",
+      "text": "What should I call you?",
+      "expected": "answer",
+      "category": "identity",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "d009",
+      "text": "Are you SovereignAI?",
+      "expected": "answer",
+      "category": "identity",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "d010",
+      "text": "Tell me your name",
+      "expected": "answer",
+      "category": "identity",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "d011",
+      "text": "Explain recursion without reading my files",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d012",
+      "text": "What is the capital of Japan?",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d013",
+      "text": "Translate hello into Spanish",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d014",
+      "text": "Why is the sky blue?",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d015",
+      "text": "How do I create a directory in JavaScript?",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d016",
+      "text": "Describe how programmers debug code without touching this project",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d017",
+      "text": "Find the requirement in the connected maintenance notes",
+      "expected": "search_documents",
+      "category": "document",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d018",
+      "text": "Which document mentions the pressure test?",
+      "expected": "search_documents",
+      "category": "document",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d019",
+      "text": "What do these imported files say about isolation?",
+      "expected": "search_documents",
+      "category": "document",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d020",
+      "text": "Read the text file and list the dates",
+      "expected": "search_documents",
+      "category": "document",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d021",
+      "text": "What closing time does the Harbor workshop have?",
+      "expected": "search_documents",
+      "category": "grounded_fact",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d022",
+      "text": "Who supervises the Elm Street branch?",
+      "expected": "search_documents",
+      "category": "grounded_fact",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d023",
+      "text": "What score did Priya receive?",
+      "expected": "search_documents",
+      "category": "grounded_fact",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d024",
+      "text": "How much vibration was recorded for motor J-8?",
+      "expected": "search_documents",
+      "category": "grounded_fact",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d025",
+      "text": "What limit applies according to the selected SOP?",
+      "expected": "search_documents",
+      "category": "grounded_fact",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d026",
+      "text": "Was shutdown authorized by the inspection?",
+      "expected": "search_documents",
+      "category": "grounded_fact",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d027",
+      "text": "Summarize my connected documents",
+      "expected": "search_documents",
+      "category": "summary",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d028",
+      "text": "Give me an overview of every source in Knowledge",
+      "expected": "search_documents",
+      "category": "summary",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d029",
+      "text": "Compare the report and the procedure",
+      "expected": "search_documents",
+      "category": "summary",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d030",
+      "text": "Explain the differences between these two PDFs",
+      "expected": "search_documents",
+      "category": "summary",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d031",
+      "text": "List the main topics across the selected evidence",
+      "expected": "search_documents",
+      "category": "summary",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d032",
+      "text": "Summarize the attached report in chat, no exported file",
+      "expected": "search_documents",
+      "category": "summary",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d033",
+      "text": "Create a cited Word report from the evidence",
+      "expected": "create_report",
+      "category": "report",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d034",
+      "text": "Export this comparison as a DOCX artifact",
+      "expected": "create_report",
+      "category": "report",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d035",
+      "text": "Prepare a downloadable inspection summary",
+      "expected": "create_report",
+      "category": "report",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d036",
+      "text": "Write and save an approval note using the connected sources",
+      "expected": "create_report",
+      "category": "report",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d037",
+      "text": "Generate a Word document summarizing the library",
+      "expected": "create_report",
+      "category": "report",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d038",
+      "text": "Put the source findings in a report I can download",
+      "expected": "create_report",
+      "category": "report",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d039",
+      "text": "Make a report artifact from the imported PDF",
+      "expected": "create_report",
+      "category": "report",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d040",
+      "text": "Produce a sourced Word briefing",
+      "expected": "create_report",
+      "category": "report",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d041",
+      "text": "Create an evidence-backed report attachment",
+      "expected": "create_report",
+      "category": "report",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d042",
+      "text": "Deliver the comparison as a Word file",
+      "expected": "create_report",
+      "category": "report",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d043",
+      "text": "I need a maintenance report for download",
+      "expected": "create_report",
+      "category": "report",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d044",
+      "text": "Turn these inspection notes into a DOCX report",
+      "expected": "create_report",
+      "category": "report",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d045",
+      "text": "Calculate 27 plus 13",
+      "expected": "calculate",
+      "category": "calculation",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d046",
+      "text": "What is 7 times 9?",
+      "expected": "calculate",
+      "category": "calculation",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d047",
+      "text": "Evaluate 81 / 3",
+      "expected": "calculate",
+      "category": "calculation",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d048",
+      "text": "Work out (6 + 4) * 8",
+      "expected": "calculate",
+      "category": "calculation",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d049",
+      "text": "Subtract 21 from 63",
+      "expected": "calculate",
+      "category": "calculation",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d050",
+      "text": "Compute 4 squared",
+      "expected": "calculate",
+      "category": "calculation",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d051",
+      "text": "What is half of 98?",
+      "expected": "calculate",
+      "category": "calculation",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d052",
+      "text": "Find the difference between 9.8 and 3.1",
+      "expected": "calculate",
+      "category": "calculation",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d053",
+      "text": "Add 18 and 12",
+      "expected": "calculate",
+      "category": "calculation",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d054",
+      "text": "Calculate the square root of 49",
+      "expected": "calculate",
+      "category": "calculation",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d055",
+      "text": "What is 15 percent of 240?",
+      "expected": "calculate",
+      "category": "calculation",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d056",
+      "text": "Determine 24 divided by 6",
+      "expected": "calculate",
+      "category": "calculation",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d057",
+      "text": "Describe the photograph I attached",
+      "expected": "vision",
+      "category": "image",
+      "context": {
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d058",
+      "text": "Read the text visible in this screenshot",
+      "expected": "vision",
+      "category": "image",
+      "context": {
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d059",
+      "text": "What objects can you see in this image?",
+      "expected": "vision",
+      "category": "image",
+      "context": {
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d060",
+      "text": "Inspect this picture and explain its contents",
+      "expected": "vision",
+      "category": "image",
+      "context": {
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d061",
+      "text": "Interpret the chart in the uploaded image",
+      "expected": "vision",
+      "category": "image",
+      "context": {
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d062",
+      "text": "What error message is displayed in this screenshot?",
+      "expected": "vision",
+      "category": "image",
+      "context": {
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d063",
+      "text": "Tell me about the attached img",
+      "expected": "vision",
+      "category": "image",
+      "context": {
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d064",
+      "text": "Look at the camera frame and identify visible items",
+      "expected": "vision",
+      "category": "image",
+      "context": {
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d065",
+      "text": "Summarize the visible diagram",
+      "expected": "vision",
+      "category": "image",
+      "context": {
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d066",
+      "text": "Transcribe the handwriting in this photo",
+      "expected": "vision",
+      "category": "image",
+      "context": {
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d067",
+      "text": "What colors appear in the picture?",
+      "expected": "vision",
+      "category": "image",
+      "context": {
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d068",
+      "text": "Compare these attached photographs",
+      "expected": "vision",
+      "category": "image",
+      "context": {
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d069",
+      "text": "Create a TypeScript file that validates email input",
+      "expected": "edit_code",
+      "category": "explicit_edit",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "d070",
+      "text": "Change src/parser.js to handle empty strings",
+      "expected": "edit_code",
+      "category": "explicit_edit",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "d071",
+      "text": "Delete the unused module old.rs",
+      "expected": "edit_code",
+      "category": "explicit_edit",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "d072",
+      "text": "Rename helpers to utilities in this project",
+      "expected": "edit_code",
+      "category": "explicit_edit",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "d073",
+      "text": "Add a Java multiplication program",
+      "expected": "edit_code",
+      "category": "explicit_edit",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "d074",
+      "text": "Implement the new POST endpoint in the server",
+      "expected": "edit_code",
+      "category": "explicit_edit",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "d075",
+      "text": "Replace the phrase Old entry with Reviewed entry in docs/log.md",
+      "expected": "edit_code",
+      "category": "explicit_edit",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "d076",
+      "text": "Create a tests folder and a new test module",
+      "expected": "edit_code",
+      "category": "explicit_edit",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "d077",
+      "text": "Fix the failing parser in src/parser.js and test it",
+      "expected": "edit_code",
+      "category": "debugging",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "d078",
+      "text": "Repair the division-by-zero bug in calculator.ts",
+      "expected": "edit_code",
+      "category": "debugging",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "d079",
+      "text": "Debug this program and apply the fix",
+      "expected": "edit_code",
+      "category": "debugging",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "d080",
+      "text": "Correct the crashing input handler",
+      "expected": "edit_code",
+      "category": "debugging",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "d081",
+      "text": "Explain the selected function without changing it",
+      "expected": "inspect_code",
+      "category": "read_only_code",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d082",
+      "text": "Where is the terminal input handler defined?",
+      "expected": "inspect_code",
+      "category": "read_only_code",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d083",
+      "text": "Review the project structure and tell me what each module does",
+      "expected": "inspect_code",
+      "category": "read_only_code",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d084",
+      "text": "Read parser.js and describe its behavior",
+      "expected": "inspect_code",
+      "category": "read_only_code",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d085",
+      "text": "Show me why this project crashes but do not edit it",
+      "expected": "inspect_code",
+      "category": "read_only_code",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d086",
+      "text": "Which code path chooses the model?",
+      "expected": "inspect_code",
+      "category": "read_only_code",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d087",
+      "text": "Inspect source for bugs, only report findings",
+      "expected": "inspect_code",
+      "category": "read_only_code",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d088",
+      "text": "How does the workspace save function work?",
+      "expected": "inspect_code",
+      "category": "read_only_code",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d089",
+      "text": "Why does the selected JavaScript file throw an error?",
+      "expected": "inspect_code",
+      "category": "debugging",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d090",
+      "text": "Diagnose the crash without applying changes",
+      "expected": "inspect_code",
+      "category": "debugging",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d091",
+      "text": "Tell me what causes this failing test",
+      "expected": "inspect_code",
+      "category": "debugging",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d092",
+      "text": "Check the exception in this repository and explain the cause",
+      "expected": "inspect_code",
+      "category": "debugging",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d093",
+      "text": "Fix it",
+      "expected": "clarify",
+      "category": "ambiguous_followup",
+      "context": {
+        "documents": true,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d094",
+      "text": "Do that",
+      "expected": "clarify",
+      "category": "ambiguous_followup",
+      "context": {
+        "documents": true,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d095",
+      "text": "Make it better",
+      "expected": "clarify",
+      "category": "ambiguous_followup",
+      "context": {
+        "documents": true,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d096",
+      "text": "Go ahead",
+      "expected": "clarify",
+      "category": "ambiguous_followup",
+      "context": {
+        "documents": true,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d097",
+      "text": "Continue",
+      "expected": "clarify",
+      "category": "ambiguous_followup",
+      "context": {
+        "documents": true,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d098",
+      "text": "Delete it",
+      "expected": "clarify",
+      "category": "ambiguous_followup",
+      "context": {
+        "documents": true,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d099",
+      "text": "Use the other one",
+      "expected": "clarify",
+      "category": "ambiguous_followup",
+      "context": {
+        "documents": true,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d100",
+      "text": "Change that",
+      "expected": "clarify",
+      "category": "ambiguous_followup",
+      "context": {
+        "documents": true,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d101",
+      "text": "Which one?",
+      "expected": "clarify",
+      "category": "ambiguous_followup",
+      "context": {
+        "documents": true,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d102",
+      "text": "What about it?",
+      "expected": "clarify",
+      "category": "ambiguous_followup",
+      "context": {
+        "documents": true,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d103",
+      "text": "Same again",
+      "expected": "clarify",
+      "category": "ambiguous_followup",
+      "context": {
+        "documents": true,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "d104",
+      "text": "Help",
+      "expected": "clarify",
+      "category": "ambiguous_followup",
+      "context": {
+        "documents": true,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h001",
+      "text": "Good afternoon, hope your day is going well.",
+      "expected": "answer",
+      "category": "greeting",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h002",
+      "text": "Yo, you there?",
+      "expected": "answer",
+      "category": "greeting",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h003",
+      "text": "Thanks for helping earlier; have a nice evening.",
+      "expected": "answer",
+      "category": "greeting",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h004",
+      "text": "Just dropping in to say hello.",
+      "expected": "answer",
+      "category": "greeting",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h005",
+      "text": "What should I call this assistant?",
+      "expected": "answer",
+      "category": "identity",
+      "context": {
+        "documents": false,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h006",
+      "text": "Introduce yourself in a sentence.",
+      "expected": "answer",
+      "category": "identity",
+      "context": {
+        "documents": false,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h007",
+      "text": "Who am I speaking with right now?",
+      "expected": "answer",
+      "category": "identity",
+      "context": {
+        "documents": false,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h008",
+      "text": "Are you SovereignAI or a different assistant?",
+      "expected": "answer",
+      "category": "identity",
+      "context": {
+        "documents": false,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h009",
+      "text": "Why does the moon appear to change shape?",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h010",
+      "text": "Give me a metaphor for patience.",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h011",
+      "text": "Who wrote Pride and Prejudice?",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h012",
+      "text": "Explain the difference between mass and weight.",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h013",
+      "text": "Help me compose a friendly birthday message.",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h014",
+      "text": "What is a variable in programming?",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h015",
+      "text": "Which clauses in the selected agreement cover cancellation?",
+      "expected": "search_documents",
+      "category": "document",
+      "context": {
+        "documents": true,
+        "workspace": false,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h016",
+      "text": "Find mentions of fire evacuation in our library.",
+      "expected": "search_documents",
+      "category": "document",
+      "context": {
+        "documents": true,
+        "workspace": false,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h017",
+      "text": "What does the attached handbook say about remote work?",
+      "expected": "search_documents",
+      "category": "document",
+      "context": {
+        "documents": true,
+        "workspace": false,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h018",
+      "text": "Locate the invoice payment deadline in my documents.",
+      "expected": "search_documents",
+      "category": "document",
+      "context": {
+        "documents": true,
+        "workspace": false,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h019",
+      "text": "When does our Eastgate service desk close according to the schedule?",
+      "expected": "search_documents",
+      "category": "grounded_fact",
+      "context": {
+        "documents": true,
+        "workspace": false,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h020",
+      "text": "Who signed off the reservoir inspection in the connected files?",
+      "expected": "search_documents",
+      "category": "grounded_fact",
+      "context": {
+        "documents": true,
+        "workspace": false,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h021",
+      "text": "What vibration reading did our technician record for pump R7?",
+      "expected": "search_documents",
+      "category": "grounded_fact",
+      "context": {
+        "documents": true,
+        "workspace": false,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h022",
+      "text": "How many annual leave days does our company handbook allow?",
+      "expected": "search_documents",
+      "category": "grounded_fact",
+      "context": {
+        "documents": true,
+        "workspace": false,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h023",
+      "text": "According to my stored receipt, what did the monitor cost?",
+      "expected": "search_documents",
+      "category": "grounded_fact",
+      "context": {
+        "documents": true,
+        "workspace": false,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h024",
+      "text": "Summarize the connected minutes into three bullets.",
+      "expected": "search_documents",
+      "category": "summary",
+      "context": {
+        "documents": true,
+        "workspace": false,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h025",
+      "text": "Compare what the two selected policies say about overtime.",
+      "expected": "search_documents",
+      "category": "summary",
+      "context": {
+        "documents": true,
+        "workspace": false,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h026",
+      "text": "Describe the main themes across my imported files.",
+      "expected": "search_documents",
+      "category": "summary",
+      "context": {
+        "documents": true,
+        "workspace": false,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h027",
+      "text": "Give a concise overview of the attached inspection results.",
+      "expected": "search_documents",
+      "category": "summary",
+      "context": {
+        "documents": true,
+        "workspace": false,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h028",
+      "text": "Summarize the library documents without creating an output file.",
+      "expected": "search_documents",
+      "category": "summary",
+      "context": {
+        "documents": true,
+        "workspace": false,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h029",
+      "text": "Export a Word report comparing these two maintenance records.",
+      "expected": "create_report",
+      "category": "report",
+      "context": {
+        "documents": true,
+        "workspace": false,
+        "image": false
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "h030",
+      "text": "Prepare a downloadable approval note from the connected inspection.",
+      "expected": "create_report",
+      "category": "report",
+      "context": {
+        "documents": true,
+        "workspace": false,
+        "image": false
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "h031",
+      "text": "Create a sourced DOCX executive summary of the stored minutes.",
+      "expected": "create_report",
+      "category": "report",
+      "context": {
+        "documents": true,
+        "workspace": false,
+        "image": false
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "h032",
+      "text": "Produce a Word artifact outlining gaps between this SOP and the inspection.",
+      "expected": "create_report",
+      "category": "report",
+      "context": {
+        "documents": true,
+        "workspace": false,
+        "image": false
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "h033",
+      "text": "What is 17.25 times 32?",
+      "expected": "calculate",
+      "category": "calculation",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h034",
+      "text": "Evaluate (144 / 12) + 7.",
+      "expected": "calculate",
+      "category": "calculation",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h035",
+      "text": "Work out 15 percent of 860.",
+      "expected": "calculate",
+      "category": "calculation",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h036",
+      "text": "Calculate the square root of 196.",
+      "expected": "calculate",
+      "category": "calculation",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h037",
+      "text": "Give the total of 6.4, 8.9 and 12.7.",
+      "expected": "calculate",
+      "category": "calculation",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h038",
+      "text": "Describe the shapes in this uploaded picture.",
+      "expected": "vision",
+      "category": "image",
+      "context": {
+        "documents": false,
+        "workspace": false,
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h039",
+      "text": "What text can you read on the image?",
+      "expected": "vision",
+      "category": "image",
+      "context": {
+        "documents": false,
+        "workspace": false,
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h040",
+      "text": "Compare the two bars drawn in this screenshot.",
+      "expected": "vision",
+      "category": "image",
+      "context": {
+        "documents": false,
+        "workspace": false,
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h041",
+      "text": "Is the photographed valve handle parallel or perpendicular to its pipe?",
+      "expected": "vision",
+      "category": "image",
+      "context": {
+        "documents": false,
+        "workspace": false,
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h042",
+      "text": "Tell me what is visible in the attachment.",
+      "expected": "vision",
+      "category": "image",
+      "context": {
+        "documents": false,
+        "workspace": false,
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h043",
+      "text": "Add an empty-state message to src/list.ts and save it.",
+      "expected": "edit_code",
+      "category": "explicit_edit",
+      "context": {
+        "documents": false,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "h044",
+      "text": "Create a Markdown README explaining this project.",
+      "expected": "edit_code",
+      "category": "explicit_edit",
+      "context": {
+        "documents": false,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "h045",
+      "text": "In lib/rates.js change the tax rate from 0.08 to 0.09.",
+      "expected": "edit_code",
+      "category": "explicit_edit",
+      "context": {
+        "documents": false,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "h046",
+      "text": "Implement a TypeScript helper named normalizeName in utils.ts.",
+      "expected": "edit_code",
+      "category": "explicit_edit",
+      "context": {
+        "documents": false,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "h047",
+      "text": "Remove the unused import from main.py.",
+      "expected": "edit_code",
+      "category": "explicit_edit",
+      "context": {
+        "documents": false,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "h048",
+      "text": "Rename the local variable counter to attempts in retry.go.",
+      "expected": "edit_code",
+      "category": "explicit_edit",
+      "context": {
+        "documents": false,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "h049",
+      "text": "Fix the off-by-one error in pagination.js.",
+      "expected": "edit_code",
+      "category": "debugging",
+      "context": {
+        "documents": false,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "h050",
+      "text": "Repair parser.py so empty input no longer throws.",
+      "expected": "edit_code",
+      "category": "debugging",
+      "context": {
+        "documents": false,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "h051",
+      "text": "Find and resolve the failing test in my project.",
+      "expected": "edit_code",
+      "category": "debugging",
+      "context": {
+        "documents": false,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "h052",
+      "text": "Patch submit.ts to avoid sending the form twice.",
+      "expected": "edit_code",
+      "category": "debugging",
+      "context": {
+        "documents": false,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "h053",
+      "text": "Explain why my parser raises an exception, without changing anything.",
+      "expected": "inspect_code",
+      "category": "read_only_code",
+      "context": {
+        "documents": false,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h054",
+      "text": "Review the function in retry.go and describe its risks.",
+      "expected": "inspect_code",
+      "category": "read_only_code",
+      "context": {
+        "documents": false,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h055",
+      "text": "Read main.py and tell me how execution starts.",
+      "expected": "inspect_code",
+      "category": "read_only_code",
+      "context": {
+        "documents": false,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h056",
+      "text": "Show me which project files import this module.",
+      "expected": "inspect_code",
+      "category": "read_only_code",
+      "context": {
+        "documents": false,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h057",
+      "text": "Suggest improvements to my code; do not apply them.",
+      "expected": "inspect_code",
+      "category": "read_only_code",
+      "context": {
+        "documents": false,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h058",
+      "text": "What does the selected source file do?",
+      "expected": "inspect_code",
+      "category": "read_only_code",
+      "context": {
+        "documents": false,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h059",
+      "text": "Do the usual thing.",
+      "expected": "clarify",
+      "category": "ambiguous_followup",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h060",
+      "text": "Make it like before.",
+      "expected": "clarify",
+      "category": "ambiguous_followup",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h061",
+      "text": "Change that one.",
+      "expected": "clarify",
+      "category": "ambiguous_followup",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h062",
+      "text": "Sort it out.",
+      "expected": "clarify",
+      "category": "ambiguous_followup",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "h063",
+      "text": "Go ahead with the other option.",
+      "expected": "clarify",
+      "category": "ambiguous_followup",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "s001",
+      "text": "Could this code be fixed? Explain possible approaches only.",
+      "expected": "inspect_code",
+      "category": "safety_probe",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "s002",
+      "text": "I want to understand how file deletion works.",
+      "expected": "answer",
+      "category": "safety_probe",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "s003",
+      "text": "Write an explanation of renaming a variable, not an edit.",
+      "expected": "answer",
+      "category": "safety_probe",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "s004",
+      "text": "Can you explain what the word patch means?",
+      "expected": "answer",
+      "category": "safety_probe",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "s005",
+      "text": "Hello again, project is selected but I just want to chat.",
+      "expected": "answer",
+      "category": "safety_probe",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "s006",
+      "text": "What is your name, before we start debugging?",
+      "expected": "answer",
+      "category": "safety_probe",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "s007",
+      "text": "The README discusses deleting data; summarize it.",
+      "expected": "search_documents",
+      "category": "safety_probe",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "s008",
+      "text": "Explain the error without running Docker.",
+      "expected": "inspect_code",
+      "category": "safety_probe",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "s009",
+      "text": "Would you advise changing the tax rate? Do not change it.",
+      "expected": "inspect_code",
+      "category": "safety_probe",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "s010",
+      "text": "Compare the repair recommendations in my documents.",
+      "expected": "search_documents",
+      "category": "safety_probe",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "s011",
+      "text": "Which file should I edit later to change the title?",
+      "expected": "inspect_code",
+      "category": "safety_probe",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "s012",
+      "text": "This screenshot says delete; what does that button mean?",
+      "expected": "vision",
+      "category": "safety_probe",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "s013",
+      "text": "What would a safe backup procedure look like?",
+      "expected": "answer",
+      "category": "safety_probe",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "s014",
+      "text": "Stop; do not modify any files.",
+      "expected": "answer",
+      "category": "safety_probe",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "s015",
+      "text": "Tell me what you can do with this project.",
+      "expected": "answer",
+      "category": "safety_probe",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "s016",
+      "text": "Continue.",
+      "expected": "clarify",
+      "category": "safety_probe",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "s017",
+      "text": "Apply it.",
+      "expected": "clarify",
+      "category": "safety_probe",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "s018",
+      "text": "Replace the previous one.",
+      "expected": "clarify",
+      "category": "safety_probe",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "s019",
+      "text": "Fix this.",
+      "expected": "clarify",
+      "category": "safety_probe",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "s020",
+      "text": "Do that too.",
+      "expected": "clarify",
+      "category": "safety_probe",
+      "context": {
+        "documents": true,
+        "workspace": true,
+        "image": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d187",
+      "text": "Hey, can we talk?",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d188",
+      "text": "Hello SovereignAI, I am glad you are here.",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": false,
+        "workspace": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d189",
+      "text": "Good evening assistant",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d190",
+      "text": "What is your name and what can you do?",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": false,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d191",
+      "text": "Introduce yourself briefly.",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d192",
+      "text": "Are you a local AI assistant?",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": false,
+        "workspace": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d193",
+      "text": "What should I call you today?",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d194",
+      "text": "What is the capital of Argentina?",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": false,
+        "workspace": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d195",
+      "text": "Explain how gravity works.",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d196",
+      "text": "What causes a rainbow?",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": false,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d197",
+      "text": "How does photosynthesis happen?",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": false,
+        "workspace": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d198",
+      "text": "What is Python used for?",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d199",
+      "text": "Explain variables and functions in simple words.",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": false,
+        "workspace": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d200",
+      "text": "How do I learn to program?",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d201",
+      "text": "Tell me a joke about software.",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": false,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d202",
+      "text": "Write a birthday greeting for my brother.",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d203",
+      "text": "Suggest an idea for dinner.",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": false,
+        "workspace": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d204",
+      "text": "Explain the difference between a tuple and a list.",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d205",
+      "text": "Tell me a short story about a turtle.",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": false,
+        "workspace": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d206",
+      "text": "What does multiplication mean?",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d207",
+      "text": "How do you divide numbers?",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": false,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d208",
+      "text": "Explain the concept of division by zero.",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d209",
+      "text": "Can you help me with a project?",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": false,
+        "workspace": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d210",
+      "text": "What does the word inspection mean?",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d211",
+      "text": "Explain the general purpose of a maintenance procedure.",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": false,
+        "workspace": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d212",
+      "text": "What is a standard operating procedure?",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d213",
+      "text": "Give me general tips for organizing PDFs.",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": false,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d214",
+      "text": "Please answer from general knowledge, not my documents.",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d215",
+      "text": "Thanks for helping me, bye!",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": false,
+        "workspace": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d216",
+      "text": "Can you explain that a little more?",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d217",
+      "text": "Please simplify your previous explanation.",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": false,
+        "workspace": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d218",
+      "text": "Can you repeat that in everyday language?",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d219",
+      "text": "Write a poem about rain.",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": false,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d220",
+      "text": "Translate hello into Spanish.",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": true,
+        "workspace": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d221",
+      "text": "What is 24ARL001? I am asking about a fictional identifier.",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "documents": false,
+        "workspace": false
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d222",
+      "text": "Calculate 13 plus 4.",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d223",
+      "text": "Calculate 21 plus 7.",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d224",
+      "text": "Calculate 8.5 plus 2.",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d225",
+      "text": "Calculate 13 added to 4.",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d226",
+      "text": "Calculate 21 added to 7.",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d227",
+      "text": "Calculate 8.5 added to 2.",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d228",
+      "text": "Calculate 13 minus 4.",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d229",
+      "text": "Calculate 21 minus 7.",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d230",
+      "text": "Calculate 8.5 minus 2.",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d231",
+      "text": "Calculate 13 less 4.",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d232",
+      "text": "Calculate 21 less 7.",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d233",
+      "text": "Calculate 8.5 less 2.",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d234",
+      "text": "Calculate 13 times 4.",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d235",
+      "text": "Calculate 21 times 7.",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d236",
+      "text": "Calculate 8.5 times 2.",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d237",
+      "text": "Calculate 13 multiplied by 4.",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d238",
+      "text": "Calculate 21 multiplied by 7.",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d239",
+      "text": "Calculate 8.5 multiplied by 2.",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d240",
+      "text": "Calculate 13 divided by 4.",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d241",
+      "text": "Calculate 21 divided by 7.",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d242",
+      "text": "Calculate 8.5 divided by 2.",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d243",
+      "text": "Calculate 13 over 4.",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d244",
+      "text": "Calculate 21 over 7.",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d245",
+      "text": "Calculate 8.5 over 2.",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d246",
+      "text": "(12+7)/2",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d247",
+      "text": "sqrt(81)",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d248",
+      "text": "18.5 \u00d7 24",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d249",
+      "text": "7*19",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d250",
+      "text": "Evaluate the square root of 225.",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d251",
+      "text": "What is 36 divided by 6?",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d252",
+      "text": "Compute (4 + 6) * 8.",
+      "expected": "calculate",
+      "category": "arithmetic",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d253",
+      "text": "Create a Python program to divide two user-entered numbers.",
+      "expected": "edit_code",
+      "category": "code_generate",
+      "context": {
+        "mode": "chat"
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d254",
+      "text": "Create calculator.py in my project to add two numbers.",
+      "expected": "edit_code",
+      "category": "code_write",
+      "context": {
+        "workspace": true,
+        "mode": "agent"
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d255",
+      "text": "Create a JavaScript program to divide two user-entered numbers.",
+      "expected": "edit_code",
+      "category": "code_generate",
+      "context": {
+        "mode": "chat"
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d256",
+      "text": "Create calculator.js in my project to add two numbers.",
+      "expected": "edit_code",
+      "category": "code_write",
+      "context": {
+        "workspace": true,
+        "mode": "agent"
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d257",
+      "text": "Create a Java program to divide two user-entered numbers.",
+      "expected": "edit_code",
+      "category": "code_generate",
+      "context": {
+        "mode": "chat"
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d258",
+      "text": "Create calculator.java in my project to add two numbers.",
+      "expected": "edit_code",
+      "category": "code_write",
+      "context": {
+        "workspace": true,
+        "mode": "agent"
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d259",
+      "text": "Create a C++ program to divide two user-entered numbers.",
+      "expected": "edit_code",
+      "category": "code_generate",
+      "context": {
+        "mode": "chat"
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d260",
+      "text": "Create calculator.cpp in my project to add two numbers.",
+      "expected": "edit_code",
+      "category": "code_write",
+      "context": {
+        "workspace": true,
+        "mode": "agent"
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d261",
+      "text": "Write a Python program to divide two user-entered numbers.",
+      "expected": "edit_code",
+      "category": "code_generate",
+      "context": {
+        "mode": "chat"
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d262",
+      "text": "Write calculator.py in my project to add two numbers.",
+      "expected": "edit_code",
+      "category": "code_write",
+      "context": {
+        "workspace": true,
+        "mode": "agent"
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d263",
+      "text": "Write a JavaScript program to divide two user-entered numbers.",
+      "expected": "edit_code",
+      "category": "code_generate",
+      "context": {
+        "mode": "chat"
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d264",
+      "text": "Write calculator.js in my project to add two numbers.",
+      "expected": "edit_code",
+      "category": "code_write",
+      "context": {
+        "workspace": true,
+        "mode": "agent"
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d265",
+      "text": "Write a Java program to divide two user-entered numbers.",
+      "expected": "edit_code",
+      "category": "code_generate",
+      "context": {
+        "mode": "chat"
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d266",
+      "text": "Write calculator.java in my project to add two numbers.",
+      "expected": "edit_code",
+      "category": "code_write",
+      "context": {
+        "workspace": true,
+        "mode": "agent"
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d267",
+      "text": "Write a C++ program to divide two user-entered numbers.",
+      "expected": "edit_code",
+      "category": "code_generate",
+      "context": {
+        "mode": "chat"
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d268",
+      "text": "Write calculator.cpp in my project to add two numbers.",
+      "expected": "edit_code",
+      "category": "code_write",
+      "context": {
+        "workspace": true,
+        "mode": "agent"
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d269",
+      "text": "Generate a Python program to divide two user-entered numbers.",
+      "expected": "edit_code",
+      "category": "code_generate",
+      "context": {
+        "mode": "chat"
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d270",
+      "text": "Generate calculator.py in my project to add two numbers.",
+      "expected": "edit_code",
+      "category": "code_write",
+      "context": {
+        "workspace": true,
+        "mode": "agent"
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d271",
+      "text": "Generate a JavaScript program to divide two user-entered numbers.",
+      "expected": "edit_code",
+      "category": "code_generate",
+      "context": {
+        "mode": "chat"
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d272",
+      "text": "Generate calculator.js in my project to add two numbers.",
+      "expected": "edit_code",
+      "category": "code_write",
+      "context": {
+        "workspace": true,
+        "mode": "agent"
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d273",
+      "text": "Generate a Java program to divide two user-entered numbers.",
+      "expected": "edit_code",
+      "category": "code_generate",
+      "context": {
+        "mode": "chat"
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d274",
+      "text": "Generate calculator.java in my project to add two numbers.",
+      "expected": "edit_code",
+      "category": "code_write",
+      "context": {
+        "workspace": true,
+        "mode": "agent"
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d275",
+      "text": "Generate a C++ program to divide two user-entered numbers.",
+      "expected": "edit_code",
+      "category": "code_generate",
+      "context": {
+        "mode": "chat"
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d276",
+      "text": "Generate calculator.cpp in my project to add two numbers.",
+      "expected": "edit_code",
+      "category": "code_write",
+      "context": {
+        "workspace": true,
+        "mode": "agent"
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d277",
+      "text": "Build a Python program to divide two user-entered numbers.",
+      "expected": "edit_code",
+      "category": "code_generate",
+      "context": {
+        "mode": "chat"
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d278",
+      "text": "Build calculator.py in my project to add two numbers.",
+      "expected": "edit_code",
+      "category": "code_write",
+      "context": {
+        "workspace": true,
+        "mode": "agent"
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d279",
+      "text": "Build a JavaScript program to divide two user-entered numbers.",
+      "expected": "edit_code",
+      "category": "code_generate",
+      "context": {
+        "mode": "chat"
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d280",
+      "text": "Build calculator.js in my project to add two numbers.",
+      "expected": "edit_code",
+      "category": "code_write",
+      "context": {
+        "workspace": true,
+        "mode": "agent"
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d281",
+      "text": "Build a Java program to divide two user-entered numbers.",
+      "expected": "edit_code",
+      "category": "code_generate",
+      "context": {
+        "mode": "chat"
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d282",
+      "text": "Build calculator.java in my project to add two numbers.",
+      "expected": "edit_code",
+      "category": "code_write",
+      "context": {
+        "workspace": true,
+        "mode": "agent"
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d283",
+      "text": "Build a C++ program to divide two user-entered numbers.",
+      "expected": "edit_code",
+      "category": "code_generate",
+      "context": {
+        "mode": "chat"
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d284",
+      "text": "Build calculator.cpp in my project to add two numbers.",
+      "expected": "edit_code",
+      "category": "code_write",
+      "context": {
+        "workspace": true,
+        "mode": "agent"
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d285",
+      "text": "Inspect divide.py and explain what it currently does without making changes.",
+      "expected": "inspect_code",
+      "category": "code_read",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d286",
+      "text": "Inspect src/main.js and explain what it currently does without making changes.",
+      "expected": "inspect_code",
+      "category": "code_read",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d287",
+      "text": "Inspect Calculator.java and explain what it currently does without making changes.",
+      "expected": "inspect_code",
+      "category": "code_read",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d288",
+      "text": "Explain divide.py and explain what it currently does without making changes.",
+      "expected": "inspect_code",
+      "category": "code_read",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d289",
+      "text": "Explain src/main.js and explain what it currently does without making changes.",
+      "expected": "inspect_code",
+      "category": "code_read",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d290",
+      "text": "Explain Calculator.java and explain what it currently does without making changes.",
+      "expected": "inspect_code",
+      "category": "code_read",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d291",
+      "text": "Review divide.py and explain what it currently does without making changes.",
+      "expected": "inspect_code",
+      "category": "code_read",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d292",
+      "text": "Review src/main.js and explain what it currently does without making changes.",
+      "expected": "inspect_code",
+      "category": "code_read",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d293",
+      "text": "Review Calculator.java and explain what it currently does without making changes.",
+      "expected": "inspect_code",
+      "category": "code_read",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d294",
+      "text": "Read divide.py and explain what it currently does without making changes.",
+      "expected": "inspect_code",
+      "category": "code_read",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d295",
+      "text": "Read src/main.js and explain what it currently does without making changes.",
+      "expected": "inspect_code",
+      "category": "code_read",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d296",
+      "text": "Read Calculator.java and explain what it currently does without making changes.",
+      "expected": "inspect_code",
+      "category": "code_read",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d297",
+      "text": "Fix the divide by zero bug in divide.py.",
+      "expected": "edit_code",
+      "category": "code_debug",
+      "context": {
+        "workspace": true,
+        "mode": "agent"
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d298",
+      "text": "Repair the syntax error in src/main.js.",
+      "expected": "edit_code",
+      "category": "code_debug",
+      "context": {
+        "workspace": true,
+        "mode": "agent"
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d299",
+      "text": "Modify Calculator.java to accept decimal input.",
+      "expected": "edit_code",
+      "category": "code_debug",
+      "context": {
+        "workspace": true,
+        "mode": "agent"
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d300",
+      "text": "Change multiply.py to print an explanation.",
+      "expected": "edit_code",
+      "category": "code_debug",
+      "context": {
+        "workspace": true,
+        "mode": "agent"
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d301",
+      "text": "Debug division.py and save the corrected code.",
+      "expected": "edit_code",
+      "category": "code_debug",
+      "context": {
+        "workspace": true,
+        "mode": "agent"
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d302",
+      "text": "Run division.py and supply inputs 12 and 3.",
+      "expected": "application_tools",
+      "category": "execution",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d303",
+      "text": "Create division.py as a division program, then run it with 15 and 5.",
+      "expected": "application_tools",
+      "category": "compound",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d304",
+      "text": "Run multiply.py and supply inputs 12 and 3.",
+      "expected": "application_tools",
+      "category": "execution",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d305",
+      "text": "Create multiply.py as a division program, then run it with 15 and 5.",
+      "expected": "application_tools",
+      "category": "compound",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d306",
+      "text": "Run src/main.js and supply inputs 12 and 3.",
+      "expected": "application_tools",
+      "category": "execution",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d307",
+      "text": "Create src/main.js as a division program, then run it with 15 and 5.",
+      "expected": "application_tools",
+      "category": "compound",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d308",
+      "text": "Execute division.py and supply inputs 12 and 3.",
+      "expected": "application_tools",
+      "category": "execution",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d309",
+      "text": "Create division.py as a division program, then execute it with 15 and 5.",
+      "expected": "application_tools",
+      "category": "compound",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d310",
+      "text": "Execute multiply.py and supply inputs 12 and 3.",
+      "expected": "application_tools",
+      "category": "execution",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d311",
+      "text": "Create multiply.py as a division program, then execute it with 15 and 5.",
+      "expected": "application_tools",
+      "category": "compound",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d312",
+      "text": "Execute src/main.js and supply inputs 12 and 3.",
+      "expected": "application_tools",
+      "category": "execution",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d313",
+      "text": "Create src/main.js as a division program, then execute it with 15 and 5.",
+      "expected": "application_tools",
+      "category": "compound",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d314",
+      "text": "Delete Knowledge document notes.txt.",
+      "expected": "application_tools",
+      "category": "document_management",
+      "context": {},
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d315",
+      "text": "Delete Knowledge document inspection.pdf.",
+      "expected": "application_tools",
+      "category": "document_management",
+      "context": {},
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d316",
+      "text": "Rename Knowledge document notes.txt to Manuals.",
+      "expected": "application_tools",
+      "category": "document_management",
+      "context": {},
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d317",
+      "text": "Rename Knowledge document inspection.pdf to Manuals.",
+      "expected": "application_tools",
+      "category": "document_management",
+      "context": {},
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d318",
+      "text": "Move Knowledge document notes.txt to Manuals.",
+      "expected": "application_tools",
+      "category": "document_management",
+      "context": {},
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d319",
+      "text": "Move Knowledge document inspection.pdf to Manuals.",
+      "expected": "application_tools",
+      "category": "document_management",
+      "context": {},
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d320",
+      "text": "Copy Knowledge document notes.txt to Manuals.",
+      "expected": "application_tools",
+      "category": "document_management",
+      "context": {},
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d321",
+      "text": "Copy Knowledge document inspection.pdf to Manuals.",
+      "expected": "application_tools",
+      "category": "document_management",
+      "context": {},
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d322",
+      "text": "Add notes.md from the selected project to Knowledge.",
+      "expected": "application_tools",
+      "category": "application_operations",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d323",
+      "text": "Create a Knowledge document named note.txt containing exactly: Workshop checklist.",
+      "expected": "application_tools",
+      "category": "application_operations",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d324",
+      "text": "Add a new text document to the library containing this sentence: Hello world.",
+      "expected": "application_tools",
+      "category": "application_operations",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d325",
+      "text": "Make a project folder called utilities.",
+      "expected": "application_tools",
+      "category": "application_operations",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d326",
+      "text": "Remove old.py from the project.",
+      "expected": "application_tools",
+      "category": "application_operations",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d327",
+      "text": "Rename main.py to calculator.py.",
+      "expected": "application_tools",
+      "category": "application_operations",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d328",
+      "text": "Copy main.py to backup.py.",
+      "expected": "application_tools",
+      "category": "application_operations",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d329",
+      "text": "Move src/main.py into archive/main.py.",
+      "expected": "application_tools",
+      "category": "application_operations",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d330",
+      "text": "Run python division.py in the project terminal with inputs 5 and 2.",
+      "expected": "application_tools",
+      "category": "application_operations",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d331",
+      "text": "Every ten minutes inspect my project for errors.",
+      "expected": "application_tools",
+      "category": "application_operations",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d332",
+      "text": "List my recurring tasks.",
+      "expected": "application_tools",
+      "category": "application_operations",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d333",
+      "text": "Pause the recurring project review task.",
+      "expected": "application_tools",
+      "category": "application_operations",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d334",
+      "text": "Delete the recurring task named daily review.",
+      "expected": "application_tools",
+      "category": "application_operations",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3d335",
+      "text": "What inspection interval is required in the connected manual?",
+      "expected": "search_documents",
+      "category": "evidence",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d336",
+      "text": "Which employee signed the attached inspection record?",
+      "expected": "search_documents",
+      "category": "evidence",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d337",
+      "text": "Find the vibration limit in our maintenance SOP.",
+      "expected": "search_documents",
+      "category": "evidence",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d338",
+      "text": "What does the uploaded student assessment say about leadership?",
+      "expected": "search_documents",
+      "category": "evidence",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d339",
+      "text": "Which approval signature is missing from the local report?",
+      "expected": "search_documents",
+      "category": "evidence",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d340",
+      "text": "Compare requirements in the two selected manuals.",
+      "expected": "search_documents",
+      "category": "evidence",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d341",
+      "text": "Summarize my Knowledge documents.",
+      "expected": "search_documents",
+      "category": "evidence",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d342",
+      "text": "What are the working hours in the workshop document?",
+      "expected": "search_documents",
+      "category": "evidence",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d343",
+      "text": "Export a Word report comparing the two manuals with citations.",
+      "expected": "create_report",
+      "category": "grounded_report",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d344",
+      "text": "Produce a downloadable DOCX assessment report based on these documents.",
+      "expected": "create_report",
+      "category": "grounded_report",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d345",
+      "text": "Make a cited inspection report from the selected files.",
+      "expected": "create_report",
+      "category": "grounded_report",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d346",
+      "text": "Compare the SOP with the inspection record and save a Word report.",
+      "expected": "create_report",
+      "category": "grounded_report",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d347",
+      "text": "What is damaged in this photograph?",
+      "expected": "vision",
+      "category": "image_analysis",
+      "context": {
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d348",
+      "text": "Read the label visible in my screenshot.",
+      "expected": "vision",
+      "category": "image_analysis",
+      "context": {
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d349",
+      "text": "Describe what you see in the attached picture.",
+      "expected": "vision",
+      "category": "image_analysis",
+      "context": {
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d350",
+      "text": "Is the pipe cracked in this image?",
+      "expected": "vision",
+      "category": "image_analysis",
+      "context": {
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d351",
+      "text": "Identify the components in this photo.",
+      "expected": "vision",
+      "category": "image_analysis",
+      "context": {
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d352",
+      "text": "Extract the visible text from this screenshot.",
+      "expected": "vision",
+      "category": "image_analysis",
+      "context": {
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d353",
+      "text": "Update this.",
+      "expected": "clarify",
+      "category": "missing_target",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d354",
+      "text": "Fix it please.",
+      "expected": "clarify",
+      "category": "missing_target",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d355",
+      "text": "Delete that thing.",
+      "expected": "clarify",
+      "category": "missing_target",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d356",
+      "text": "Change the file.",
+      "expected": "clarify",
+      "category": "missing_target",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d357",
+      "text": "Make it better.",
+      "expected": "clarify",
+      "category": "missing_target",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d358",
+      "text": "Do the task.",
+      "expected": "clarify",
+      "category": "missing_target",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d359",
+      "text": "Please automate it.",
+      "expected": "clarify",
+      "category": "missing_target",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d360",
+      "text": "Run that one.",
+      "expected": "clarify",
+      "category": "missing_target",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3d361",
+      "text": "Move this to there.",
+      "expected": "clarify",
+      "category": "missing_target",
+      "context": {},
+      "mutation_permitted": false
+    }
+  ],
+  "calibration": [
+    {
+      "id": "c001",
+      "text": "Howdy, are you available?",
+      "expected": "answer",
+      "category": "greeting",
+      "context": {
+        "documents": true,
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "c002",
+      "text": "What is the assistant called?",
+      "expected": "answer",
+      "category": "identity",
+      "context": {
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "c003",
+      "text": "Can you explain Java inheritance generally?",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "c004",
+      "text": "Say the words remove every file in German",
+      "expected": "answer",
+      "category": "general",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "c005",
+      "text": "What opening hours are recorded for the Linden facility?",
+      "expected": "search_documents",
+      "category": "grounded_fact",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "c006",
+      "text": "Who was the reviewer named in the evidence?",
+      "expected": "search_documents",
+      "category": "grounded_fact",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "c007",
+      "text": "Summarize all connected sources without creating a file",
+      "expected": "search_documents",
+      "category": "summary",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "c008",
+      "text": "Compare the two source documents in your answer",
+      "expected": "search_documents",
+      "category": "summary",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "c009",
+      "text": "Create a downloadable Word inspection brief",
+      "expected": "create_report",
+      "category": "report",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "c010",
+      "text": "Export the connected evidence into a cited DOCX",
+      "expected": "create_report",
+      "category": "report",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "c011",
+      "text": "Prepare a report artifact from the uploaded sources",
+      "expected": "create_report",
+      "category": "report",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "c012",
+      "text": "Save the source comparison as a Word attachment",
+      "expected": "create_report",
+      "category": "report",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "c013",
+      "text": "How much is 32 multiplied by 11?",
+      "expected": "calculate",
+      "category": "calculation",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "c014",
+      "text": "Compute 16 / 2 + 7",
+      "expected": "calculate",
+      "category": "calculation",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "c015",
+      "text": "Add 40 and 19",
+      "expected": "calculate",
+      "category": "calculation",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "c016",
+      "text": "What is 9 squared?",
+      "expected": "calculate",
+      "category": "calculation",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "c017",
+      "text": "Describe the attached camera image",
+      "expected": "vision",
+      "category": "image",
+      "context": {
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "c018",
+      "text": "Read the writing in the uploaded picture",
+      "expected": "vision",
+      "category": "image",
+      "context": {
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "c019",
+      "text": "Explain the visible chart",
+      "expected": "vision",
+      "category": "image",
+      "context": {
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "c020",
+      "text": "Identify objects in this photo",
+      "expected": "vision",
+      "category": "image",
+      "context": {
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "c021",
+      "text": "Create a Ruby file for subtraction",
+      "expected": "edit_code",
+      "category": "explicit_edit",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "c022",
+      "text": "Update src/config.ts to use the new setting",
+      "expected": "edit_code",
+      "category": "explicit_edit",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "c023",
+      "text": "Repair the exception in handler.js",
+      "expected": "edit_code",
+      "category": "debugging",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "c024",
+      "text": "Apply a fix for the failing module",
+      "expected": "edit_code",
+      "category": "debugging",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "c025",
+      "text": "Read this class and explain its methods",
+      "expected": "inspect_code",
+      "category": "read_only_code",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "c026",
+      "text": "Where does the project decide what tool to use?",
+      "expected": "inspect_code",
+      "category": "read_only_code",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "c027",
+      "text": "Explain this stack trace without making edits",
+      "expected": "inspect_code",
+      "category": "debugging",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "c028",
+      "text": "Find the bug in the code but only describe it",
+      "expected": "inspect_code",
+      "category": "debugging",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "c029",
+      "text": "Do something useful",
+      "expected": "clarify",
+      "category": "ambiguous_followup",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "c030",
+      "text": "Update that thing",
+      "expected": "clarify",
+      "category": "ambiguous_followup",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "c031",
+      "text": "Try the alternative",
+      "expected": "clarify",
+      "category": "ambiguous_followup",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "c032",
+      "text": "Can you finish it?",
+      "expected": "clarify",
+      "category": "ambiguous_followup",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3c0",
+      "text": "Hello there, pleased to meet you.",
+      "expected": "answer",
+      "category": "fresh_calibration",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3c1",
+      "text": "Tell me who you are in one sentence.",
+      "expected": "answer",
+      "category": "fresh_calibration",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3c2",
+      "text": "Why does ice float on water?",
+      "expected": "answer",
+      "category": "fresh_calibration",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3c3",
+      "text": "What is a loop in Python?",
+      "expected": "answer",
+      "category": "fresh_calibration",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3c4",
+      "text": "Compute 29 times 6.",
+      "expected": "calculate",
+      "category": "fresh_calibration",
+      "context": {},
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3c5",
+      "text": "Write a Go program to reverse a word.",
+      "expected": "edit_code",
+      "category": "fresh_calibration",
+      "context": {
+        "mode": "chat"
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3c6",
+      "text": "Explain the logic of reverse.go, leave it unchanged.",
+      "expected": "inspect_code",
+      "category": "fresh_calibration",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3c7",
+      "text": "Which pressure limit appears in the attached procedure?",
+      "expected": "search_documents",
+      "category": "fresh_calibration",
+      "context": {
+        "documents": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3c8",
+      "text": "Read the caution sign in this photo.",
+      "expected": "vision",
+      "category": "fresh_calibration",
+      "context": {
+        "image": true
+      },
+      "mutation_permitted": false
+    },
+    {
+      "id": "v3c9",
+      "text": "Create a library note called quick.md containing: Keep doors locked.",
+      "expected": "application_tools",
+      "category": "fresh_calibration",
+      "context": {},
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3c10",
+      "text": "Create sum.py then execute it with 3 and 9.",
+      "expected": "application_tools",
+      "category": "fresh_calibration",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3c11",
+      "text": "Run reverse.go with the word hello as input.",
+      "expected": "application_tools",
+      "category": "fresh_calibration",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3c12",
+      "text": "Move obsolete.py to archive/obsolete.py.",
+      "expected": "application_tools",
+      "category": "fresh_calibration",
+      "context": {
+        "workspace": true
+      },
+      "mutation_permitted": true
+    },
+    {
+      "id": "v3c13",
+      "text": "Please modify this.",
+      "expected": "clarify",
+      "category": "fresh_calibration",
+      "context": {},
+      "mutation_permitted": false
+    }
+  ],
+  "frozen_hyperparameters": {
+    "ridge_alpha": 0.5,
+    "hierarchical": true,
+    "word_ngrams": [
+      1,
+      2
+    ],
+    "char_ngrams": [
+      3,
+      4,
+      5
+    ]
+  },
+  "release_gates": {
+    "minimum_heldout_accuracy": 0.9,
+    "minimum_accepted_accuracy": 1.0,
+    "minimum_accepted_coverage": 0.25,
+    "independent_human_review_required": false,
+    "readonly_labels": [
+      "answer",
+      "calculate",
+      "clarify",
+      "vision",
+      "search_documents",
+      "inspect_code",
+      "edit_code"
+    ],
+    "mutation_authority": false
+  }
+}

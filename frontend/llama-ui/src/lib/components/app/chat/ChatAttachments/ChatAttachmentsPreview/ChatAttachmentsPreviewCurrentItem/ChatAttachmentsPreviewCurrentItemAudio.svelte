@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Music } from '@lucide/svelte';
+	import Music from '@lucide/svelte/icons/music';
 
 	interface Props {
 		currentItem: { name?: string } | null;

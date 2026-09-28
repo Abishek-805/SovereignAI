@@ -5,6 +5,43 @@ import pytest
 from scripts.backup_restore import backup, restore
 
 
+def test_host_visible_project_backup_uses_live_files_and_restores_portably(tmp_path):
+    from workflows.coding_workspace import CodingWorkspace
+    data=tmp_path/'data'
+    data.mkdir()
+    with sqlite3.connect(data/'index.sqlite') as db:db.execute('CREATE TABLE example (value TEXT)')
+    old=CodingWorkspace(data)
+    ident=old.create('Live project')['workspace_id']
+    old.write(ident,'notes.md','Initial snapshot')
+    hosted=CodingWorkspace(data,tmp_path/'Documents/Projects')
+    hosted.get(ident)
+    hosted.write(ident,'notes.md','Latest live changes')
+    hosted.write(ident,'new.md','New live file')
+    archive=tmp_path/'backup'
+    backup(data,archive,projects_dir=tmp_path/'Documents/Projects')
+    restored=tmp_path/'restored'
+    restore(archive,restored)
+    portable=CodingWorkspace(restored)
+    assert portable.read(ident,'notes.md')['content']=='Latest live changes'
+    assert portable.read(ident,'new.md')['content']=='New live file'
+    remigrated=CodingWorkspace(restored,tmp_path/'NewDocuments/Projects')
+    assert remigrated.read(ident,'notes.md')['content']=='Latest live changes'
+    assert hosted.read(ident,'notes.md')['content']=='Latest live changes'
+
+
+def test_host_project_backup_missing_live_root_does_not_archive_stale_files(tmp_path):
+    from workflows.coding_workspace import CodingWorkspace
+    data=tmp_path/'data'
+    data.mkdir()
+    with sqlite3.connect(data/'index.sqlite') as db:db.execute('CREATE TABLE example (value TEXT)')
+    work=CodingWorkspace(data,tmp_path/'Documents/Projects')
+    work.create('Live project')
+    archive=tmp_path/'backup'
+    with pytest.raises(ValueError,match='Live project missing'):
+        backup(data,archive,projects_dir=tmp_path/'WrongLocation')
+    assert not archive.exists()
+
+
 def test_backup_restore_retains_database_and_source_bytes(tmp_path):
     data = tmp_path / 'data'
     data.mkdir()

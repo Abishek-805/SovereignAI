@@ -43,7 +43,7 @@ def test_workspace_file_boundary_and_roundtrip(tmp_path):
         with pytest.raises(WorkbenchError):
             work.write(workspace_id, name, 'x')
     with pytest.raises(WorkbenchError):
-        work.write(workspace_id, 'large.py', 'x' * 128001)
+        work.write(workspace_id, 'large.py', 'x' * (2*1024*1024+1))
 
 
 def test_workspace_file_context_actions(tmp_path):

@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { File, Folder } from '@lucide/svelte';
+	import File from '@lucide/svelte/icons/file';
+import Folder from '@lucide/svelte/icons/folder';
 	import { ChatFormPickerList, ChatFormPickerListItem } from '$lib/components/app/chat';
 	import HighlightedMatch from '$lib/components/app/forms/HighlightedMatch.svelte';
 	import * as Popover from '$lib/components/ui/popover';

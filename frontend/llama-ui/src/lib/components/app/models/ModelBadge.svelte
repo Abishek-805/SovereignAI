@@ -1,6 +1,6 @@
 <script lang="ts">
 	import ModelId from './ModelId.svelte';
-	import { Package } from '@lucide/svelte';
+	import Package from '@lucide/svelte/icons/package';
 	import { ActionIconCopyToClipboard, BadgeInfo } from '$lib/components/app';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { modelsStore, serverStore } from '$lib/stores';

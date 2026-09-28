@@ -3,17 +3,15 @@ import { DEFAULT_MCP_CONFIG } from './mcp.constants';
 import { SETTINGS_KEYS } from './settings-keys.constants';
 import { TITLE_GENERATION } from './title-generation.constants';
 import { FILE_GLOB_SEARCH_PICKERS } from './working-directory.constants';
-import {
-	Code,
-	Database,
-	Funnel,
-	ListRestart,
-	Monitor,
-	Moon,
-	PencilRuler,
-	SlidersVertical,
-	Sun
-} from '@lucide/svelte';
+import Code from '@lucide/svelte/icons/code';
+import Database from '@lucide/svelte/icons/database';
+import Funnel from '@lucide/svelte/icons/funnel';
+import ListRestart from '@lucide/svelte/icons/list-restart';
+import Monitor from '@lucide/svelte/icons/monitor';
+import Moon from '@lucide/svelte/icons/moon';
+import PencilRuler from '@lucide/svelte/icons/pencil-ruler';
+import SlidersVertical from '@lucide/svelte/icons/sliders-vertical';
+import Sun from '@lucide/svelte/icons/sun';
 import { SyncableParameterType } from '$lib/enums';
 import { SettingsFieldType } from '$lib/enums/settings.enums';
 import { ColorMode } from '$lib/enums/ui.enums';

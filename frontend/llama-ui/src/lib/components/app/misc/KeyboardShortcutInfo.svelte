@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ArrowBigUp } from '@lucide/svelte';
+	import ArrowBigUp from '@lucide/svelte/icons/arrow-big-up';
 
 	interface Props {
 		keys: string[];

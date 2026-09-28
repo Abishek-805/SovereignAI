@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { FileX } from '@lucide/svelte';
+	import FileX from '@lucide/svelte/icons/file-x';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 
 	interface Props {

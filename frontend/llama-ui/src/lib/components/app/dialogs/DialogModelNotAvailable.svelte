@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { AlertTriangle, ArrowRight } from '@lucide/svelte';
+	import AlertTriangle from '@lucide/svelte/icons/alert-triangle';
+import ArrowRight from '@lucide/svelte/icons/arrow-right';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';

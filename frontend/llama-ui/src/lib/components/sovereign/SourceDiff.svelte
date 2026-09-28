@@ -5,13 +5,15 @@
  let { original, modified, filename }: { original: string; modified: string; filename: string } = $props();
  let container: HTMLDivElement;
  let failure = $state('');
+ let ready=$state(false);
+ let editor: Monaco.editor.IStandaloneDiffEditor | undefined;
+ let before: Monaco.editor.ITextModel | undefined;
+ let after: Monaco.editor.ITextModel | undefined;
  const languages: Record<string, string> = {py:'python',js:'javascript',mjs:'javascript',ts:'typescript',tsx:'typescript',jsx:'javascript',java:'java',c:'c',h:'c',cpp:'cpp',cc:'cpp',go:'go',rs:'rust',php:'php',rb:'ruby',html:'html',css:'css',json:'json',md:'markdown',sh:'shell',sql:'sql',yaml:'yaml',yml:'yaml'};
 
  onMount(() => {
   let disposed = false;
-  let editor: Monaco.editor.IStandaloneDiffEditor | undefined;
-  let before: Monaco.editor.ITextModel | undefined;
-  let after: Monaco.editor.ITextModel | undefined;
+  let themeObserver: MutationObserver | undefined;
   void (async () => {
    try {
     const [{ default: Worker }, { default: TsWorker }, { default: JsonWorker }, { default: HtmlWorker }, { default: CssWorker }, monaco] = await Promise.all([
@@ -34,14 +36,31 @@
      readOnly: true, originalEditable: false, renderSideBySide: false,
      automaticLayout: true, minimap: { enabled: false }, fontSize: 13,
      scrollBeyondLastLine: false, diffWordWrap: 'on', padding: { top: 12 },
-     diffAlgorithm: 'advanced', ignoreTrimWhitespace: true,
+     diffAlgorithm: 'advanced', ignoreTrimWhitespace: false,
      hideUnchangedRegions: { enabled: true, contextLineCount: 2, minimumLineCount: 4, revealLineCount: 5 }
     });
     editor.setModel({ original: before, modified: after });
+    ready=true;
+    themeObserver = new MutationObserver(() => monaco.editor.setTheme(document.documentElement.classList.contains('dark') ? 'vs-dark' : 'vs'));
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
    } catch (error) { failure = String(error); }
   })();
-  return () => { disposed = true; editor?.dispose(); before?.dispose(); after?.dispose(); };
+  return () => {
+   disposed = true;
+   ready = false;
+   themeObserver?.disconnect();
+   // Detach the diff view model while both text models are still alive so its
+   // outstanding worker calculation is canceled before their disposal.
+   editor?.setModel(null);
+   editor?.dispose();
+   before?.dispose();
+   after?.dispose();
+   editor = undefined;
+   before = undefined;
+   after = undefined;
+  };
  });
+ $effect(()=>{const oldText=original,newText=modified;if(ready&&before&&after){if(before.getValue()!==oldText)before.setValue(oldText);if(after.getValue()!==newText)after.setValue(newText);}});
 </script>
 
 <div class="source-diff" bind:this={container} aria-label="Inline code changes"></div>

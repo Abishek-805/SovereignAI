@@ -1,0 +1,313 @@
+{
+  "matched_tasks": 31,
+  "selected_tasks": 31,
+  "selected_case_ids": [
+    "e01",
+    "e02",
+    "e03",
+    "e04",
+    "e05",
+    "e06",
+    "e07",
+    "e08",
+    "e09",
+    "e10",
+    "e11",
+    "e12",
+    "e13",
+    "e14",
+    "e15",
+    "e16",
+    "e17",
+    "e18",
+    "e19",
+    "e20",
+    "e21",
+    "e22",
+    "e23",
+    "e24",
+    "e25",
+    "e26",
+    "e27",
+    "e28",
+    "e29",
+    "e30",
+    "e31"
+  ],
+  "strategies": [
+    "always_text",
+    "current_mapping",
+    "proposed"
+  ],
+  "tasks": [
+    {
+      "case_id": "e01",
+      "question": "Hello, how is your afternoon?",
+      "action": "answer",
+      "category": "greeting",
+      "needle": null
+    },
+    {
+      "case_id": "e02",
+      "question": "Thanks for the help; goodbye for now.",
+      "action": "answer",
+      "category": "greeting",
+      "needle": null
+    },
+    {
+      "case_id": "e03",
+      "question": "What should I call you?",
+      "action": "answer",
+      "category": "identity",
+      "needle": "Sovereign"
+    },
+    {
+      "case_id": "e04",
+      "question": "Introduce yourself in one sentence.",
+      "action": "answer",
+      "category": "identity",
+      "needle": null
+    },
+    {
+      "case_id": "e05",
+      "question": "What is the capital of France?",
+      "action": "answer",
+      "category": "general",
+      "needle": "Paris"
+    },
+    {
+      "case_id": "e06",
+      "question": "Explain why the moon changes shape in two sentences.",
+      "action": "answer",
+      "category": "general",
+      "needle": null
+    },
+    {
+      "case_id": "e07",
+      "question": "Who wrote Pride and Prejudice?",
+      "action": "answer",
+      "category": "general",
+      "needle": "Austen"
+    },
+    {
+      "case_id": "e08",
+      "question": "What is a variable in programming?",
+      "action": "answer",
+      "category": "read_only_code",
+      "needle": null
+    },
+    {
+      "case_id": "e09",
+      "question": "Give a friendly birthday greeting.",
+      "action": "answer",
+      "category": "general",
+      "needle": null
+    },
+    {
+      "case_id": "e10",
+      "question": "What is the difference between mass and weight?",
+      "action": "answer",
+      "category": "general",
+      "needle": null
+    },
+    {
+      "case_id": "e11",
+      "question": "According to the connected schedule, when does Eastgate close?",
+      "action": "search_documents",
+      "category": "grounded_fact",
+      "needle": "17:20"
+    },
+    {
+      "case_id": "e12",
+      "question": "Who signed the connected reservoir inspection?",
+      "action": "search_documents",
+      "category": "grounded_fact",
+      "needle": "Lee"
+    },
+    {
+      "case_id": "e13",
+      "question": "What vibration reading is recorded for pump R7?",
+      "action": "search_documents",
+      "category": "grounded_fact",
+      "needle": "3.6"
+    },
+    {
+      "case_id": "e14",
+      "question": "How many annual leave days does our connected handbook allow?",
+      "action": "search_documents",
+      "category": "grounded_fact",
+      "needle": "12"
+    },
+    {
+      "case_id": "e15",
+      "question": "What did the monitor cost according to the imported receipt?",
+      "action": "search_documents",
+      "category": "grounded_fact",
+      "needle": "120"
+    },
+    {
+      "case_id": "e16",
+      "question": "Which agreement clause covers cancellation?",
+      "action": "search_documents",
+      "category": "document",
+      "needle": "14"
+    },
+    {
+      "case_id": "e17",
+      "question": "What does our handbook say about remote work?",
+      "action": "search_documents",
+      "category": "document",
+      "needle": "two"
+    },
+    {
+      "case_id": "e18",
+      "question": "Summarize the connected fictional document in three bullets.",
+      "action": "search_documents",
+      "category": "summary",
+      "needle": null
+    },
+    {
+      "case_id": "e19",
+      "question": "Compare the R7 reading with the review limit in the connected source.",
+      "action": "search_documents",
+      "category": "comparison",
+      "needle": "4.0"
+    },
+    {
+      "case_id": "e20",
+      "question": "Calculate 17.25 times 32.",
+      "action": "calculate",
+      "category": "calculation",
+      "needle": "552"
+    },
+    {
+      "case_id": "e21",
+      "question": "Calculate (144 / 12) + 7.",
+      "action": "calculate",
+      "category": "calculation",
+      "needle": "19"
+    },
+    {
+      "case_id": "e22",
+      "question": "Calculate 15 percent of 860.",
+      "action": "calculate",
+      "category": "calculation",
+      "needle": "129"
+    },
+    {
+      "case_id": "e23",
+      "question": "Calculate the square root of 196.",
+      "action": "calculate",
+      "category": "calculation",
+      "needle": "14"
+    },
+    {
+      "case_id": "e24",
+      "question": "Create a Word report summarizing the connected fictional inspection.",
+      "action": "create_report",
+      "category": "report",
+      "needle": null
+    },
+    {
+      "case_id": "e25",
+      "question": "Prepare a downloadable Word approval note comparing the R7 reading and review limit.",
+      "action": "create_report",
+      "category": "report",
+      "needle": null
+    },
+    {
+      "case_id": "e26",
+      "question": "Explain what notes.md says, without changing it.",
+      "action": "inspect_code",
+      "category": "read_only_code",
+      "needle": "Old"
+    },
+    {
+      "case_id": "e27",
+      "question": "Read divide.js and explain its bug; do not modify any file.",
+      "action": "inspect_code",
+      "category": "debugging",
+      "needle": "multipli"
+    },
+    {
+      "case_id": "e28",
+      "question": "In notes.md replace Old item. with Verified item. Keep the heading unchanged.",
+      "action": "edit_code",
+      "category": "explicit_edit",
+      "needle": null
+    },
+    {
+      "case_id": "e29",
+      "question": "Fix divide.js by replacing return a * b with return a / b. Make no other changes.",
+      "action": "edit_code",
+      "category": "debugging",
+      "needle": null
+    },
+    {
+      "case_id": "e30",
+      "question": "Create multiply.js as a CommonJS module exporting function multiply(a,b) returning a*b.",
+      "action": "edit_code",
+      "category": "explicit_edit",
+      "needle": null
+    },
+    {
+      "case_id": "e31",
+      "question": "Describe the two colored shapes and their left/right positions.",
+      "action": "analyze_image",
+      "category": "vision",
+      "needle": null
+    }
+  ],
+  "primary_manifest_sha256": "a89a9abbb127a26b4dd9e2156c294741175815144b28558682e9a360781da647",
+  "inference_performed": false,
+  "category_counts": {
+    "greeting": 2,
+    "identity": 2,
+    "general": 5,
+    "read_only_code": 2,
+    "grounded_fact": 5,
+    "document": 2,
+    "summary": 1,
+    "comparison": 1,
+    "calculation": 4,
+    "report": 2,
+    "debugging": 2,
+    "explicit_edit": 2,
+    "vision": 1
+  },
+  "expected_action_counts": {
+    "answer": 10,
+    "search_documents": 9,
+    "calculate": 4,
+    "create_report": 2,
+    "inspect_code": 2,
+    "edit_code": 3,
+    "analyze_image": 1
+  },
+  "classifier": {
+    "production_enabled": false,
+    "policy": "evaluated_cpu_abstains_then_bounded_model_planner",
+    "promotion_status": "blocked",
+    "reason": "Independent CPU classifier safety/quality release gates have not passed"
+  },
+  "comparison_scope": "Candidate mapping/admission policies using the same disabled CPU classifier and model fallback; not an enabled CPU-routing A/B experiment",
+  "strategy_definitions": {
+    "always_text": "Fixed text model with production hard admission; refuse unsupported image modality",
+    "current_mapping": "Fixed legacy text/code\u2192text, image\u2192vision mapping with identical production hard admission; no candidate optimizer",
+    "proposed": "Current hard candidate/resource admission and measured selection; learned CPU routing remains disabled"
+  },
+  "mapping_equivalence": "Only one admissible text/code model and one vision model; current/proposed may select the same physical model",
+  "always_text_image": "Unsupported modality; recorded refusal, not invented image timing or quality",
+  "oracle": {
+    "status": "unavailable",
+    "latency_seconds": null,
+    "reason": "No competing eligible installed model actually executed for the same capability"
+  },
+  "remaining_gates": [
+    "Execute full matched manifest in an exclusive window",
+    "Human review open answers, reports, and image",
+    "Repeat/counterbalance before tail-latency or speedup claims",
+    "Independent classifier promotion requires separate frozen held-out safety/quality evidence",
+    "Execute competing eligible models before oracle or optimizer claims"
+  ]
+}

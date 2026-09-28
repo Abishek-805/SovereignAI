@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { AlertCircle, Loader2 } from '@lucide/svelte';
-	import { X } from '@lucide/svelte';
+	import AlertCircle from '@lucide/svelte/icons/alert-circle';
+import Loader2 from '@lucide/svelte/icons/loader-2';
+	import X from '@lucide/svelte/icons/x';
 	import { ActionIcon } from '$lib/components/app';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { mcpStore } from '$lib/stores';

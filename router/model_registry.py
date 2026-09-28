@@ -33,17 +33,44 @@ class ModelSpec:
     observed_gpu_mib: int | None = None
     measured_metrics: tuple[tuple[str, float], ...] = ()
     enabled: bool = True
+    model_id: str = ''
+    display_name: str = ''
+    capabilities: tuple[str, ...] = ()
+    observed_memory_mib: int | None = None
+    resource_context: int | None = None
+    kv_configuration: str | None = None
+    memory_reserve_mib: int = 256
+    gpu_reserve_mib: int = 256
+    license_id: str | None = None
+    license_reviewed: bool = False
+    resource_kv_configuration: str | None = None
+    license_source: str | None = None
+    license_reviewed_at: str | None = None
+
+    @property
+    def identifier(self):
+        return self.model_id or self.alias
+
+    @property
+    def supported_capabilities(self):
+        return self.capabilities or (self.capability,)
 
 
 def default_specs():
     return {
         'text': ModelSpec('text','sovereign-text','Qwen3-4B-Instruct-2507-Q4_K_M.gguf',
                           revision='4edb920b6f14e3b9284d4502a6485103d72cde05',license_reference='docs/model-and-runtime-notices.md',
-                          provider_repository='lmstudio-community/Qwen3-4B-Instruct-2507-GGUF',modalities=('text',)),
+                          provider_repository='lmstudio-community/Qwen3-4B-Instruct-2507-GGUF',modalities=('text',),
+                          display_name='Qwen3 4B Instruct 2507',capabilities=('text','code','calculation'),kv_configuration='q8_0/q8_0',
+                          license_id='Apache-2.0',license_reviewed=True,
+                          license_source='https://huggingface.co/Qwen/Qwen3-4B-Instruct-2507',license_reviewed_at='2026-09-28'),
         'vision': ModelSpec('vision','sovereign-vision','vision-qwen3.5-2b/Qwen3.5-2B-Q4_K_M.gguf',
                             'vision-qwen3.5-2b/mmproj-F16.gguf',context=16384,revision='f6d5376be1edb4d416d56da11e5397a961aca8ae',
                             license_reference='docs/model-and-runtime-notices.md',
-                            provider_repository='unsloth/Qwen3.5-2B-GGUF',modalities=('text','image'))
+                            provider_repository='unsloth/Qwen3.5-2B-GGUF',modalities=('text','image'),
+                            display_name='Qwen3.5 2B Vision',capabilities=('vision',),kv_configuration='f16/f16',
+                            license_id='Apache-2.0',license_reviewed=True,
+                            license_source='https://huggingface.co/Qwen/Qwen3.5-2B',license_reviewed_at='2026-09-28')
     }
 
 class ModelRegistry:
@@ -51,13 +78,42 @@ class ModelRegistry:
         self.port = port
         self._lock = Lock()
         self.current_alias = "sovereign-text"
-        self.specs = dict(specs or default_specs())
+        self.runtime_state = None
+        self.specs = dict(default_specs() if specs is None else specs)
 
     def register(self, spec: ModelSpec):
-        if spec.capability in self.specs or any(existing.alias == spec.alias for existing in self.specs.values()):
-            raise WorkbenchError('model_registry','Model capability or alias already registered')
+        if any(existing.alias == spec.alias or existing.identifier == spec.identifier for existing in self.specs.values()):
+            raise WorkbenchError('model_registry','Model identity or alias already registered')
         self._model_paths(spec)
-        self.specs[spec.capability] = spec
+        if not spec.license_reviewed or not spec.license_id or not spec.license_reference:
+            raise WorkbenchError('model_registry','Review and record this model license before production registration')
+        key=spec.capability if spec.capability not in self.specs else spec.identifier
+        self.specs[key] = spec
+
+    @property
+    def models(self):
+        """Model-centric identities; legacy registry keys remain launch handles only."""
+        return {spec.identifier:spec for spec in self.specs.values()}
+
+    def installed(self, spec):
+        return all(path.is_file() for path in self._model_paths(spec))
+
+    def runtime_available(self, spec):
+        return spec.runtime_adapter=='llama.cpp' and RUNTIME.is_file()
+
+    def records(self):
+        return [{'model_id':spec.identifier,'registry_key':key,'display_name':spec.display_name or spec.alias,
+                 'capabilities':list(spec.supported_capabilities),'modalities':list(spec.modalities),
+                 'runtime':spec.runtime_adapter,'installed':self.installed(spec),'enabled':spec.enabled,
+                 'context_limit':spec.context,'observed_gpu_mib':spec.observed_gpu_mib,
+                 'quantization':spec.quantization,'runtime_alias':spec.alias,
+                 'observed_memory_mib':spec.observed_memory_mib,'resource_context':spec.resource_context,
+                 'kv_configuration':spec.kv_configuration,'resource_kv_configuration':spec.resource_kv_configuration,
+                 'benchmark_metrics':dict(spec.measured_metrics),
+                 'license_id':spec.license_id,'license_reviewed':spec.license_reviewed,
+                 'license_source':spec.license_source,'license_reviewed_at':spec.license_reviewed_at,
+                 'license_reference':spec.license_reference,'revision':spec.revision,'provider_repository':spec.provider_repository}
+                for key,spec in self.specs.items()]
 
     def _model_paths(self, spec):
         base=(ROOT/'models').resolve()
@@ -76,16 +132,29 @@ class ModelRegistry:
             raise WorkbenchError('routing_error',f'Unknown model capability {capability}')
         if not spec.enabled or spec.runtime_adapter!='llama.cpp':
             raise WorkbenchError('model_unavailable','Model entry is disabled or unsupported')
+        if not spec.license_reviewed or not spec.license_id or not spec.license_reference:
+            raise WorkbenchError('model_registry','Review and record this model license before loading it')
         paths=self._model_paths(spec)
         if not all(path.is_file() for path in paths):
             raise WorkbenchError('model_unavailable',f'{capability.capitalize()} model files missing')
         args=[str(RUNTIME),'-m',str(paths[0])]
         if len(paths)>1: args.extend(['--mmproj',str(paths[1])])
         args.extend(['--alias',spec.alias,'-c',str(spec.context),'-np','1','--n-predict','4096','-b','256','-ub','128','-t','6'])
-        if capability=='text':
-            args.extend(['-fa','on','-ctk','q8_0','-ctv','q8_0','--fit','on','--fit-target','512'])
+        if spec.projector_file is None and 'text' in spec.modalities:
+            kv=(spec.kv_configuration or 'q8_0/q8_0').split('/')
+            if len(kv)!=2 or any(value not in {'f16','q8_0','q4_0'} for value in kv):
+                raise WorkbenchError('model_registry','Unsupported bounded KV configuration')
+            # Keep the runtime's documented 1 GiB margin for the desktop and
+            # transient allocations. A 512 MiB fit can leave a warm model below
+            # the admission reserve once the rest of the application is active.
+            args.extend(['-fa','on','-ctk',kv[0],'-ctv',kv[1],'--fit','on','--fit-target','1024'])
+        else:
+            kv=(spec.kv_configuration or 'f16/f16').split('/')
+            if len(kv)!=2 or any(value not in {'f16','q8_0','q4_0'} for value in kv):
+                raise WorkbenchError('model_registry','Unsupported bounded KV configuration')
+            args.extend(['-ctk',kv[0],'-ctv',kv[1],'--fit','on','--fit-target','1024'])
         args.extend(['--host','127.0.0.1','--port',str(self.port),'--cors-origins','localhost',
-                     '--offline','--sleep-idle-seconds','60','-lv','4'])
+                     '--offline','--sleep-idle-seconds','600','-lv','4'])
         return args
         
     def _is_running(self):
@@ -119,6 +188,41 @@ class ModelRegistry:
         except (OSError,ValueError,psutil.Error):
             return False
 
+    def _runtime_profile_matches(self, args):
+        """An alias is not proof of the actual model, context or KV profile."""
+        names={'-m':'model','--model':'model','--mmproj':'projector','--alias':'alias',
+               '-c':'context','--ctx-size':'context','-np':'slots','--parallel':'slots',
+               '-ctk':'key_cache','--cache-type-k':'key_cache',
+               '-ctv':'value_cache','--cache-type-v':'value_cache',
+               '--fit':'fit','-fit':'fit','--fit-target':'fit_target','-fitt':'fit_target',
+               '--sleep-idle-seconds':'sleep_idle'}
+        def profile(command):
+            values={};index=1
+            while index<len(command):
+                argument=command[index];flag,separator,inline=argument.partition('=')
+                name=names.get(flag)
+                if name:
+                    if name in values:return None # Repeated aliases/options are ambiguous.
+                    if separator:value=inline
+                    else:
+                        index+=1
+                        if index>=len(command):return None
+                        value=command[index]
+                    values[name]=os.path.normcase(os.path.abspath(value)) if name in {'model','projector'} else value
+                index+=1
+            if not all(name in values for name in ('key_cache','value_cache')):return None
+            return values
+        try:
+            process=psutil.Process(int(PID_FILE.read_text().strip()))
+            expected=profile(args);actual=profile(process.cmdline())
+            if expected is None or actual!=expected:return False
+            response=httpx.get(f'http://127.0.0.1:{self.port}/props',timeout=2,trust_env=False,follow_redirects=False)
+            if response.status_code!=200:return False
+            context=response.json().get('default_generation_settings',{}).get('n_ctx')
+            return not isinstance(context,bool) and isinstance(context,int) and context==int(expected['context'])
+        except (OSError,ValueError,KeyError,TypeError,AttributeError,psutil.Error,httpx.HTTPError):
+            return False
+
     def kill_server(self):
         if PID_FILE.exists():
             try:
@@ -148,43 +252,52 @@ class ModelRegistry:
             if current == target_alias:
                 if not self._owns_server():
                     raise WorkbenchError('model_ownership','The active model is not owned by this workbench')
-                self.current_alias = target_alias
-                return
+                if self._runtime_profile_matches(args):
+                    self.current_alias = target_alias
+                    self.runtime_state = 'Ready'
+                    return {'model_load_time':None,'switch_required':False,'current_residency':current,'selected_model':target_alias,'state':'Ready','available_context':self.specs[model_type].context}
 
             if (current is not None or self._is_running()) and not self._owns_server():
                 raise WorkbenchError('model_ownership','Model port is occupied by a process this workbench does not own')
             
             # Not running or wrong model running
             logger.info(f"Switching model to {target_alias}")
+            self.runtime_state = 'Unloading'
             self.kill_server()
+            self.runtime_state = 'Loading'
+            load_started=time.perf_counter()
             
             # Start server
             log_dir = ROOT / 'benchmarks'
             try:
-                stdout_file = open(log_dir / 'server.stdout.log', 'w')
-                stderr_file = open(log_dir / 'server.stderr.log', 'w')
-                p = subprocess.Popen(
-                    args,
-                    cwd=str(RUNTIME.parent),
-                    stdout=stdout_file,
-                    stderr=stderr_file,
-                    creationflags=subprocess.CREATE_NO_WINDOW
-                )
+                log_dir.mkdir(parents=True,exist_ok=True)
+                with open(log_dir / 'server.stdout.log', 'w') as stdout_file, open(log_dir / 'server.stderr.log', 'w') as stderr_file:
+                    p = subprocess.Popen(
+                        args,
+                        cwd=str(RUNTIME.parent),
+                        stdout=stdout_file,
+                        stderr=stderr_file,
+                        creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0)
+                    )
                 PID_FILE.write_text(str(p.pid))
             except Exception as e:
+                self.runtime_state = 'Error'
                 raise WorkbenchError("model_unavailable", f"Failed to start model server: {e}")
                 
             # Wait for readiness
             started = time.time()
             ready = False
             while time.time() - started < 30:
-                if self._get_current_alias()==target_alias:
+                if self._get_current_alias()==target_alias and self._owns_server() and self._runtime_profile_matches(args):
                     ready = True
                     break
                 time.sleep(0.5)
                 
             if not ready:
+                self.runtime_state = 'Error'
                 self.kill_server()
                 raise WorkbenchError("model_unavailable", f"Server failed to start in 30 seconds")
                 
             self.current_alias = target_alias
+            self.runtime_state = 'Ready'
+            return {'model_load_time':time.perf_counter()-load_started,'switch_required':True,'current_residency':current,'selected_model':target_alias,'state':'Ready','available_context':self.specs[model_type].context}

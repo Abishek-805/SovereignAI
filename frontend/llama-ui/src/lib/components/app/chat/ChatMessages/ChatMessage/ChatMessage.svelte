@@ -18,12 +18,14 @@
 	import { DatabaseService } from '$lib/services/database.service';
 	import { chatStore, conversationsStore, deviceStore } from '$lib/stores';
 	import type {
+		DatabaseMessage,
 		ChatMessageActions,
 		ChatMessageDeletionInfo,
 		DatabaseMessageExtraMcpPrompt
 	} from '$lib/types';
 	import { deriveAgenticSections } from '$lib/utils';
 	import { parseFilesToMessageExtras } from '$lib/utils/browser-only';
+	import KnowledgeSources from '$lib/components/sovereign/KnowledgeSources.svelte';
 
 	interface Props {
 		class?: string;
@@ -422,6 +424,13 @@
 			onContinue={handleContinue}
 			onRegenerate={handleRegenerate}
 			{toolMessages}
-		/>
+		>
+		{#snippet footer()}
+		{#if message.knowledgeStatus && !message.content}<p class="knowledge-message-status" role="status">{message.knowledgeStatus}</p>{/if}
+		{#if message.knowledgeStatus==='citation_failure'}<p role="alert">Citation validation failed. Inspect the sources before using this answer.</p>{/if}
+		<KnowledgeSources sources={message.knowledgeSources||[]} coverage={message.knowledgeCoverage}/>
+		{#each Object.entries(message.knowledgeDownloads||{}) as [kind,url]}<a class="knowledge-artifact" href={url}>Download {kind==='word'?'Word report':kind}</a>{/each}
+		{/snippet}
+		</ChatMessageAssistant>
 	{/if}
 </div>

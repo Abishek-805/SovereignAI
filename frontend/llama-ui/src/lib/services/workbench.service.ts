@@ -4,7 +4,7 @@ export type WorkbenchInfo = {
 	runtime: {
 		busy: boolean;
 		documents: number;
-		generator: { available?: boolean; alias?: string; is_sleeping?: boolean; message?: string };
+		generator: { available?: boolean; alias?: string; is_sleeping?: boolean; state?: string; message?: string };
 	};
 	models: Array<{
 		capability: string; alias: string; model_id: string; quantization: string;

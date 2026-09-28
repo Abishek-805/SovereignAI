@@ -4,7 +4,7 @@
 	// shared chrome shell.
 
 	import ToolCallBlock from './ToolCallBlock.svelte';
-	import { Loader2 } from '@lucide/svelte';
+	import Loader2 from '@lucide/svelte/icons/loader-2';
 	import { MarkdownContent, SyntaxHighlightedCode } from '$lib/components/app';
 	import { MAX_HEIGHT_CODE_BLOCK } from '$lib/constants';
 	import { AttachmentType, FileTypeText, MimeTypeAudio, ToolResultKind } from '$lib/enums';

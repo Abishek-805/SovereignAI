@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Clock, Loader2 } from '@lucide/svelte';
+	import Clock from '@lucide/svelte/icons/clock';
+import Loader2 from '@lucide/svelte/icons/loader-2';
 	import { AgenticSectionType } from '$lib/enums';
 	import type { AgenticSection } from '$lib/types';
 

@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { AlertTriangle, X } from '@lucide/svelte';
+	import AlertTriangle from '@lucide/svelte/icons/alert-triangle';
+import X from '@lucide/svelte/icons/x';
 	import { ChatForm, DialogConfirmation } from '$lib/components/app';
 	import { Button } from '$lib/components/ui/button';
 	import { Switch } from '$lib/components/ui/switch';

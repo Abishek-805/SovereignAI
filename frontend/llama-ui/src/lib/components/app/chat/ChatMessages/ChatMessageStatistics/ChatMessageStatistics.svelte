@@ -1,5 +1,11 @@
 <script lang="ts">
-	import { BookOpenText, Clock, Gauge, Layers, Sparkles, WholeWord, Wrench } from '@lucide/svelte';
+	import BookOpenText from '@lucide/svelte/icons/book-open-text';
+import Clock from '@lucide/svelte/icons/clock';
+import Gauge from '@lucide/svelte/icons/gauge';
+import Layers from '@lucide/svelte/icons/layers';
+import Sparkles from '@lucide/svelte/icons/sparkles';
+import WholeWord from '@lucide/svelte/icons/whole-word';
+import Wrench from '@lucide/svelte/icons/wrench';
 	import { ChatMessageStatisticsBadge } from '$lib/components/app';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { DEFAULT_PERFORMANCE_TIME, MS_PER_SECOND } from '$lib/constants';

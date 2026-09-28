@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Video } from '@lucide/svelte';
+	import Video from '@lucide/svelte/icons/video';
 
 	interface Props {
 		currentItem: { name?: string } | null;

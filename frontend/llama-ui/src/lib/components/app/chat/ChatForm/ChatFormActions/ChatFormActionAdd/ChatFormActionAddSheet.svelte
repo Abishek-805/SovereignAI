@@ -1,14 +1,12 @@
 <script lang="ts">
-	import {
-		Check,
-		ChevronDown,
-		ChevronRight,
-		File,
-		Lightbulb,
-		LightbulbOff,
-		MessageSquare,
-		PencilRuler
-	} from '@lucide/svelte';
+	import Check from '@lucide/svelte/icons/check';
+import ChevronDown from '@lucide/svelte/icons/chevron-down';
+import ChevronRight from '@lucide/svelte/icons/chevron-right';
+import File from '@lucide/svelte/icons/file';
+import Lightbulb from '@lucide/svelte/icons/lightbulb';
+import LightbulbOff from '@lucide/svelte/icons/lightbulb-off';
+import MessageSquare from '@lucide/svelte/icons/message-square';
+import PencilRuler from '@lucide/svelte/icons/pencil-ruler';
 	import { McpLogo } from '$lib/components/app';
 	import { Checkbox } from '$lib/components/ui/checkbox';
 	import * as Collapsible from '$lib/components/ui/collapsible';

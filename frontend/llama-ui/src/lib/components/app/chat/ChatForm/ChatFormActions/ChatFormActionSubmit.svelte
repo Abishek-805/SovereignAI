@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ArrowUp } from '@lucide/svelte';
+	import ArrowUp from '@lucide/svelte/icons/arrow-up';
 	import { Button } from '$lib/components/ui/button';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 

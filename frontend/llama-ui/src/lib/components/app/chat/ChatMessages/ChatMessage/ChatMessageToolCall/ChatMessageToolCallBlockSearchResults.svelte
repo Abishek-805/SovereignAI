@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Globe, Loader2 } from '@lucide/svelte';
+	import Globe from '@lucide/svelte/icons/globe';
+import Loader2 from '@lucide/svelte/icons/loader-2';
 	import { CollapsibleContentBlock } from '$lib/components/app';
 	import * as HoverCard from '$lib/components/ui/hover-card';
 	import { ICON_CLASS_DEFAULT, ICON_CLASS_SPIN } from '$lib/constants';

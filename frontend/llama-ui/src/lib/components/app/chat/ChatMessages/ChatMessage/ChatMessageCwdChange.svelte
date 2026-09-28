@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { Folder, FolderX } from '@lucide/svelte';
+	import Folder from '@lucide/svelte/icons/folder';
+import FolderX from '@lucide/svelte/icons/folder-x';
 	import type { DatabaseMessage } from '$lib/types';
 	import { parseCwdMessage } from '$lib/utils';
 

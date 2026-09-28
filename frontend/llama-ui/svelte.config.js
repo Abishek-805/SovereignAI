@@ -18,7 +18,7 @@ const config = {
 			strict: true
 		}),
 		output: {
-			bundleStrategy: 'single'
+			bundleStrategy: 'split'
 		},
 		paths: {
 			relative: true

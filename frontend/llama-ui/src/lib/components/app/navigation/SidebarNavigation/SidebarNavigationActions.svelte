@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Search } from '@lucide/svelte';
+	import Search from '@lucide/svelte/icons/search';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import { ActionIcon, KeyboardShortcutInfo, SearchInput } from '$lib/components/app';

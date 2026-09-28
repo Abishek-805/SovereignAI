@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { X } from '@lucide/svelte';
+	import X from '@lucide/svelte/icons/x';
 	import { ActionIcon, ChatMessageMcpPromptContent } from '$lib/components/app';
 	import { McpPromptVariant } from '$lib/enums';
 	import type { DatabaseMessageExtraMcpPrompt } from '$lib/types';

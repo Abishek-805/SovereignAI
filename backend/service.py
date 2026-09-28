@@ -1,3 +1,4 @@
+from backend.cancellation import cancellable_model_job
 from pathlib import Path
 from uuid import uuid4
 from dataclasses import asdict
@@ -6,7 +7,11 @@ import json
 import os
 import re
 import threading
+import shutil
 import time
+from collections import OrderedDict
+from router.telemetry import CURRENT_ROUTE
+from router.capability_classifier import ConservativeCapabilityClassifier
 from backend.contracts import WorkbenchError
 from backend.settings import Settings
 from backend.model import LocalModel
@@ -14,8 +19,8 @@ from rag.embedding import Embedder
 from rag.ingest import extract, chunk_pages, SUPPORTED
 from rag.store import Store
 from rag.retrieve import retrieve, document_scope_for_question
-from rag.context import relevant_passages, chat_evidence
 from rag.answer import answer
+from rag.overview import overview_passages, overview_documents
 from rag.pdf_visuals import enrich_pdf_chunks
 from rag.vision import ask_vision
 from router.model_registry import ModelRegistry
@@ -30,16 +35,104 @@ from workflows.coding_workspace import CodingWorkspace
 class Workbench:
     def __init__(self, settings=None, store=None, embedder=None, model=None, registry=None):
         self.settings=settings or Settings()
+        self.sources_dir = self.settings.sources_dir
+        if self.sources_dir.is_symlink() or (hasattr(self.sources_dir, 'is_junction') and self.sources_dir.is_junction()):
+            raise WorkbenchError('source_conflict', 'Knowledge folder links are not supported')
+        self.sources_dir.mkdir(parents=True, exist_ok=True)
+        legacy_sources = self.settings.data_dir / 'sources'
+        if legacy_sources != self.sources_dir and legacy_sources.is_dir():
+            for source in legacy_sources.iterdir():
+                if source.is_symlink() or (hasattr(source, 'is_junction') and source.is_junction()):
+                    raise WorkbenchError('source_conflict', 'Knowledge source links are not supported')
+                if not source.is_file() or source.suffix.lower() not in SUPPORTED:
+                    continue
+                destination = self.sources_dir / source.name
+                if destination.is_symlink() or (hasattr(destination, 'is_junction') and destination.is_junction()):
+                    raise WorkbenchError('source_conflict', 'Knowledge source links are not supported')
+                if destination.exists():
+                    if hashlib.sha256(destination.read_bytes()).digest() != hashlib.sha256(source.read_bytes()).digest():
+                        raise WorkbenchError('source_conflict', 'Knowledge source already exists with different content')
+                else:
+                    shutil.copy2(source, destination)
         self.store=store or Store(self.settings.data_dir/'index.sqlite',self.settings.max_chunks)
         self._embedder=embedder
         self.model=model or LocalModel(self.settings.model_url)
         self.registry=registry or ModelRegistry(8087)
         self.router=CapabilityRouter(self.registry)
+        self.classifier=ConservativeCapabilityClassifier()
         self.tasks=TaskLedger(self.settings.data_dir)
-        self.coding=CodingWorkspace(self.settings.data_dir)
+        project_root = self.settings.project_dir or (Path.home() / 'Documents' / 'SovereignAI' / 'Projects'
+                       if self.settings.data_dir == self.settings.root / 'data' else self.settings.data_dir / 'projects')
+        self.coding=CodingWorkspace(self.settings.data_dir, project_root)
         self.ask_lock=threading.Lock()
         self.import_lock=threading.Lock()
         self.embedding_lock=threading.Lock()
+        self.routing_decisions=OrderedDict()
+        self.routing_lock=threading.Lock()
+        from backend.automations import Automations
+        self.automations=Automations(self)
+
+    def remember_route(self,decision):
+        with self.routing_lock:
+            self.routing_decisions[decision['request_id']]=decision
+            while len(self.routing_decisions)>128:self.routing_decisions.popitem(last=False)
+
+    def routing_decision(self,request_id=None):
+        with self.routing_lock:
+            result=(self.routing_decisions.get(request_id) if request_id else
+                    next(reversed(self.routing_decisions.values()),None))
+        if result is None:raise WorkbenchError('unknown_route','Routing decision is no longer available')
+        return result
+
+    def _cpu_readonly_plan(self,request,history=None,mode='chat'):
+        """Use only an explicitly released classifier; never authorize writes."""
+        trace=CURRENT_ROUTE.get()
+        prediction=trace.classification if trace else None
+        if not isinstance(prediction,dict) or not prediction.get('production_enabled'):
+            return None
+        action=prediction.get('decision')
+        if action not in {'answer','search_documents','edit_code'} or (action=='edit_code' and mode!='chat'):
+            return None
+        if trace:
+            trace.stages.append({'stage':'intent','action':action,'source':'released_cpu_classifier'})
+            trace.intent=action
+        response=self.model.conversation_answer(request,history) if action=='answer' else ''
+        return {'action':action,'response':response,'target':'','document_scope':'focused'}
+
+    def _lease(self,capability,required_context=None):
+        trace=CURRENT_ROUTE.get()
+        select=getattr(self.router,'select_model',None)
+        if callable(select) and callable(getattr(self.registry,'installed',None)):
+            route_start=time.perf_counter()
+            current=self.registry._get_current_alias()
+            selection=select(capability,modality='image' if capability=='vision' else 'text',required_context=required_context,current_residency=current)
+            data=selection.to_dict()
+            data['routing_time']=time.perf_counter()-route_start
+            if trace:trace.selection(data)
+            route=selection.registry_key
+            if route is None:
+                if trace:trace.failure_layer='resource_admission' if data.get('failure_category')=='RESOURCE_FAILURE' else 'candidate_filter'
+                raise WorkbenchError('model_unavailable',data['route_reason'])
+        else:
+            route=self.router.route_request(capability)
+        if trace:
+            trace.runtime_alias=getattr(getattr(self.registry,'specs',{}).get(route),'alias',None)
+            trace._context_admit=lambda required:self._lease(capability,required)
+        started=time.perf_counter()
+        lease=self.registry.acquire_lease(route)
+        if trace:
+            trace.event('MODEL_READY')
+            trace.add_time('lease_time',time.perf_counter()-started)
+            if isinstance(lease,dict):
+                trace.add_time('model_load_time',lease.get('model_load_time'))
+                if isinstance(lease.get('switch_required'),bool):
+                    trace.switch_required=trace.switch_required is True or lease['switch_required']
+                if isinstance(lease.get('available_context'),int):trace.available_context=lease['available_context']
+                trace.stages.append({'stage':'runtime_lease',**lease})
+            if trace.selected_model is None:
+                trace.capability=capability
+                trace.selected_model=getattr(getattr(self.registry,'specs',{}).get(route),'alias',None)
+        return route
 
     @property
     def embedder(self):
@@ -51,15 +144,23 @@ class Workbench:
     def documents(self):
         return self.store.documents()
 
-    def rename_document(self, document_id, display_name):
+    def rename_document(self, document_id, display_name, expected_hash=None):
         with self.import_lock:
-            return self.store.rename_document(document_id, display_name)
+            return self.store.rename_document(document_id, display_name, expected_hash)
 
-    def remove_document(self, document_id):
+    def remove_document(self, document_id, expected_hash=None):
         with self.import_lock:
-            return self.store.remove_document(document_id)
+            return self.store.remove_document(document_id, expected_hash)
 
-    def import_file(self,path,document_id=None,display_name=None):
+    def move_document(self,document_id,folder,expected_hash=None):
+        with self.import_lock:
+            return self.store.move_document(document_id,folder,expected_hash)
+
+    def copy_document(self,document_id,folder=None,expected_hash=None):
+        with self.import_lock:
+            return self.store.copy_document(document_id,folder,expected_hash)
+
+    def import_file(self,path,document_id=None,display_name=None,expected_hash=None):
         path=Path(path).resolve()
         name=display_name or path.name
         if path.suffix.lower() not in SUPPORTED:
@@ -80,9 +181,13 @@ class Workbench:
             identity=('upload:'+name+':'+digest) if display_name is not None else os.path.normcase(str(path))
             document_id=document_id or hashlib.sha256(identity.encode()).hexdigest()
             current=self.store.current(document_id)
+            if expected_hash is not None and (not current or current['active_hash']!=expected_hash):
+                raise WorkbenchError('document_conflict','Document changed. Refresh before replacing the file.')
+            if current:
+                name=current['display_name']
             if current and current['active_hash']==digest:
                 return {'status':'unchanged',**current}
-            sources=self.settings.data_dir/'sources'
+            sources=self.sources_dir
             sources.mkdir(parents=True,exist_ok=True)
             snapshot=sources/(digest+path.suffix.lower())
             if not snapshot.exists():
@@ -115,11 +220,29 @@ class Workbench:
         finally:
             self.import_lock.release()
 
-    def ask(self,question,document_ids=None,history=None,job=None):
+    @cancellable_model_job
+    def ask(self,question,document_ids=None,history=None,job=None,force_documents=False,document_scope='focused',report_generation=False):
         if not isinstance(question,str) or not question.strip():
             raise WorkbenchError('invalid_question','Enter a question')
         if len(question)>8000:
             raise WorkbenchError('question_too_long','Question exceeds 8000 characters')
+        from rag.calculator import literal_expression
+        expression=literal_expression(question) if not force_documents else None
+        if expression is not None:
+            if job and job.cancel.is_set():raise WorkbenchError('cancelled','Task stopped')
+            if job:job.progress('Calculating locally')
+            result=self.calculate(expression)
+            trace=CURRENT_ROUTE.get()
+            if trace:
+                trace.intent='calculate'
+                trace.capability='calculation'
+                trace.evidence_required=False
+                trace.evidence_used=False
+                trace.retrieval={'required':False,'status':'not_required','document_count':0,'passage_count':0,'candidate_count':0}
+                trace.tool_candidates=[{'name':'calculator','status':'executed','reason':'Validated arithmetic syntax'}]
+                trace.event('TOOL_COMPLETED')
+            return {'status':'conversation','answer':f"{result['expression']} = {result['result']}", 'sources':[], 'task_id':result['task_id'], 'result':result,
+                    'routing':{'capability':'calculation','model':'No model used'}}
         history=[item[:500] for item in (history or [])[-6:] if isinstance(item,str)]
         if not self.ask_lock.acquire(blocking=False):
             raise WorkbenchError('busy','Another answer is being generated')
@@ -127,33 +250,84 @@ class Workbench:
             started=time.perf_counter()
             if job and job.cancel.is_set():
                 raise WorkbenchError('cancelled', 'Task stopped')
-            instant=self.router.instant_reply(question)
-            if instant:
-                return {'status':'greeting','answer':'Hi! Ask me about your selected files, or add a file and ask me to compare it with the others.' if self.router.is_greeting(question) else instant,
-                        'sources':[],'task_id':uuid4().hex,'timings':{'total_seconds':time.perf_counter()-started},'model':None}
+            lease_start=time.perf_counter()
+            route=self._lease('text')
+            lease_seconds=time.perf_counter()-lease_start
+            if job:job.progress('Preparing document answer' if force_documents else 'Understanding the request')
+            report_requested=False
+            if not force_documents:
+                selected_metadata=[{'document_id':doc['document_id'],'name':doc['display_name']} for doc in self.documents() if doc['document_id'] in document_ids] if document_ids else []
+                intent=self._cpu_readonly_plan(question,history) or self.model.plan_task(question,selected_metadata,[],[*history,f'{len(document_ids or [])} indexed documents selected; search them only if the request needs their contents'])
+                trace=CURRENT_ROUTE.get()
+                if trace is not None:
+                    trace.intent=intent['action']
+                    trace.evidence_required=intent['action'] in {'search_documents','create_report'}
+                    trace.retrieval={'required':trace.evidence_required,'status':'not_required' if not trace.evidence_required else 'started','document_count':0,'passage_count':0,'candidate_count':0}
+                    trace.required_context_scope={'documents':intent['action'] in {'search_documents','create_report'},'project':False}
+                    trace.available_context_scope={'document_ids':list(document_ids or [])}
+                if job and job.cancel.is_set():
+                    raise WorkbenchError('cancelled', 'Task stopped during request interpretation')
+                if intent['action']=='answer':
+                    return {'status':'conversation','answer':intent['response'],'sources':[],
+                            'task_id':uuid4().hex,'timings':{'total_seconds':time.perf_counter()-started},
+                            'routing':{'capability':route,'model':getattr(getattr(self.registry,'specs',{}).get(route),'alias','sovereign-text')}}
+                if intent['action']=='edit_code':
+                    if job:job.progress('Writing code')
+                    generated=self.model.inline_code_answer(question,history,intent.get('target',''))
+                    if job and job.cancel.is_set():raise WorkbenchError('cancelled','Task stopped during code generation')
+                    return {'status':'conversation','answer':generated['answer'],'sources':[],
+                            'usage':generated.get('usage',{}),'task_id':uuid4().hex,
+                            'timings':{'total_seconds':time.perf_counter()-started},
+                            'routing':{'capability':route,'model':getattr(getattr(self.registry,'specs',{}).get(route),'alias','sovereign-text')}}
+                if intent['action'] not in {'search_documents','create_report'}:
+                    raise WorkbenchError('needs_input','This request needs a different tool. Use Agent for code changes or calculations.')
+                document_scope=intent.get('document_scope','focused')
+                report_requested=intent['action']=='create_report'
+            if document_ids == []:
+                raise WorkbenchError('needs_input','Connect Knowledge to answer questions about your documents')
             # Validate filters even for an empty collection, without loading embeddings.
+            retrieval_start=time.perf_counter()
+            if job:job.progress('Retrieving selected document passages')
             active=self.store.active_chunks(document_ids)
-            retrieval_query=' '.join([*history[-2:],question])[:4000]
-            passages=retrieve(self.store,self.embedder,retrieval_query,document_ids) if active else []
-            passages=enrich_pdf_chunks(passages,self.settings.data_dir/'sources')
-            retrieval_seconds=time.perf_counter()-started
+            retrieval_query=question
+            overview=overview_documents(active) if document_scope=='overview' else None
+            passages=(overview_passages(active) if overview is not None else
+                      retrieve(self.store,self.embedder,retrieval_query,document_ids) if active else [])
+            passages=enrich_pdf_chunks(passages,self.sources_dir)
+            retrieval_seconds=time.perf_counter()-retrieval_start
+            trace=CURRENT_ROUTE.get()
+            if trace is not None:
+                trace.evidence_required=True
+                trace.add_time('retrieval_time',retrieval_seconds)
+                trace.retrieval={'required':True,'status':'completed','document_count':len({p.document_id for p in passages}),'passage_count':len(passages),'candidate_count':len(active)}
+                trace.event('RETRIEVAL_COMPLETED')
             
-            # Switch to text model if needed
-            switch_start = time.perf_counter()
-            route=self.router.route_request('text')
-            self.registry.acquire_lease(route)
-            switch_latency = time.perf_counter() - switch_start
-            
-            result=answer(question,passages,self.model,self.settings.context,self.settings.output_tokens,self.settings.safety_tokens,history=history)
+            if job:job.progress('Generating sourced answer')
+            result=answer(question,passages,self.model,self.settings.context,self.settings.output_tokens,self.settings.safety_tokens,
+                          history=history,**({'overview_documents':overview} if overview is not None else {}),
+                          **({'report_generation':True} if report_generation or report_requested else {}))
             if job and job.cancel.is_set():
                 raise WorkbenchError('cancelled', 'Task stopped')
             result['task_id']=uuid4().hex
             result['routing']={'capability':route,'model':self.registry.specs[route].alias if hasattr(self.registry,'specs') else 'sovereign-text'}
             result['timings'].update(
                 retrieval_seconds=retrieval_seconds,
-                switch_latency=switch_latency,
+                switch_latency=None,
+                lease_seconds=lease_seconds,
                 total_seconds=time.perf_counter()-started
             )
+            if report_requested:
+                from workflows.document_report import publish_report
+                task=self.tasks.create('document_report',document_ids or [])
+                try:
+                    if job:job.progress('Exporting Word report')
+                    self.tasks.step(task,'export_word',{'sources':len(result.get('sources',[]))})
+                    result['downloads']=publish_report(self.settings,task['task_id'],question,result)
+                    result['task_id']=task['task_id']
+                    self.tasks.complete(task,{'grounded_answer':True,'word_readback':True})
+                except Exception:
+                    self.tasks.fail(task,'report_failed')
+                    raise
             answers=self.settings.data_dir/'answers'
             answers.mkdir(parents=True,exist_ok=True)
             (answers/(result['task_id']+'.json')).write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
@@ -161,12 +335,15 @@ class Workbench:
         finally:
             self.ask_lock.release()
 
-    def ask_vision(self, image_path, question):
+    @cancellable_model_job
+    def ask_vision(self, image_path, question, job=None):
         if not isinstance(question,str) or not question.strip():
             raise WorkbenchError('invalid_question','Enter a question')
         if not self.ask_lock.acquire(blocking=False):
             raise WorkbenchError('busy','Another answer is being generated')
         try:
+            if job and job.cancel.is_set():raise WorkbenchError('cancelled','Image request stopped')
+            if job:job.progress('Reading attached image')
             started=time.perf_counter()
             from PIL import Image, UnidentifiedImageError
             try:
@@ -177,12 +354,15 @@ class Workbench:
             except (UnidentifiedImageError,OSError) as exc:
                 raise WorkbenchError('invalid_upload','Image could not be decoded') from exc
             
+            if job and job.cancel.is_set():raise WorkbenchError('cancelled','Image request stopped before loading the model')
             switch_start = time.perf_counter()
-            route=self.router.route_request('vision')
-            self.registry.acquire_lease(route)
+            route=self._lease('vision')
             switch_latency = time.perf_counter() - switch_start
             
-            result = ask_vision(img, question)
+            if job and job.cancel.is_set():raise WorkbenchError('cancelled','Image request stopped before inference')
+            if job:job.progress('Analyzing attached image')
+            result = ask_vision(img, question, request=self.model._request) if isinstance(self.model,LocalModel) else ask_vision(img, question)
+            if job and job.cancel.is_set():raise WorkbenchError('cancelled','Image request stopped after inference')
             result['task_id']=uuid4().hex
             result['routing']={'capability':route,'model':self.registry.specs[route].alias if hasattr(self.registry,'specs') else 'sovereign-vision'}
             if 'timings' not in result:
@@ -194,6 +374,43 @@ class Workbench:
             return result
         finally:
             self.ask_lock.release()
+
+    @cancellable_model_job
+    def run_image_agent(self, goal, image_path, job=None):
+        """An attachment permits visual context; intent decides whether to read it."""
+        if not isinstance(goal,str) or not goal.strip() or len(goal)>2000:
+            raise WorkbenchError('invalid_goal','Describe an image request under 2,000 characters')
+        task=self.tasks.create('image_agent',[])
+        try:
+            if job and job.cancel.is_set():raise WorkbenchError('cancelled','Image task stopped')
+            if not self.ask_lock.acquire(blocking=False):raise WorkbenchError('busy','Another model task is running')
+            try:
+                if job:job.progress('Understanding the image request')
+                if job and job.cancel.is_set():raise WorkbenchError('cancelled','Image task stopped before loading the model')
+                self._lease('text')
+                plan=self.model.plan_task(goal,[],[],[],images=[{'name':'Attached image'}])
+            finally:self.ask_lock.release()
+            if job and job.cancel.is_set():raise WorkbenchError('cancelled','Image task stopped after planning')
+            self.tasks.step(task,'plan',{'action':plan['action']})
+            if plan['action']=='answer':
+                spec=getattr(self.registry,'specs',{}).get('text')
+                result={'status':'answered','answer':plan['response'],
+                        'routing':{'capability':'text','model':spec.alias if spec else 'sovereign-text',
+                                   'reason':'Answered without inspecting the attached image'}}
+            elif plan['action']=='analyze_image':
+                self.tasks.step(task,'analyze_image',{})
+                result=self.ask_vision(image_path,goal,job=job)
+            else:
+                raise WorkbenchError('needs_input','This attachment supports image questions; use document or project context for that task')
+            if job and job.cancel.is_set():raise WorkbenchError('cancelled','Image task stopped before completing')
+            self.tasks.complete(task,{'workflow_returned':True,'workflow_succeeded':True})
+            return {'task_id':task['task_id'],'status':'completed','answer':result['answer'],'plan':plan,
+                    'result':result,'downloads':{},'workspace_id':None,'steps':task['steps'],
+                    'routing':result['routing']}
+        except Exception as exc:
+            self.tasks.fail(task,getattr(exc,'code','image_task_failed'))
+            if isinstance(exc,WorkbenchError):exc.task_id=task['task_id']
+            raise
 
     def create_maintenance_draft(self,document_ids):
         from workflows.maintenance import create_maintenance_draft
@@ -242,7 +459,7 @@ class Workbench:
             raise WorkbenchError('busy','Another task is running')
         try:
             sandbox=self._verified_coding_sandbox()
-            self.registry.acquire_lease(self.router.route_request('code'))
+            self._lease('code')
             return run_csv_demo(self.model,sandbox,self.tasks,self.settings)
         finally:
             self.ask_lock.release()
@@ -252,9 +469,8 @@ class Workbench:
             raise WorkbenchError('busy','Another task is running')
         try:
             sandbox=self._verified_coding_sandbox()
-            capability=self.router.route_request('code')
             if job:job.progress('Loading local model');sandbox.on_output=job.append;sandbox.cancel_event=job.cancel
-            self.registry.acquire_lease(capability)
+            capability=self._lease('code')
             specs=getattr(self.registry,'specs',{})
             alias=specs[capability].alias if capability in specs else 'sovereign-text'
             return self.coding.run(workspace_id,target,instruction,self.model,sandbox,self.tasks,
@@ -262,20 +478,44 @@ class Workbench:
         finally:
             self.ask_lock.release()
 
-    def run_coding_project_task(self, workspace_id, target, instruction, job=None):
-        instant=self.router.instant_reply(instruction)
-        if instant:
-            return {'state':'answered','answer':instant,
-                    'routing':{'capability':'instant','model':None,'reason':'Social question answered before scanning the project'}}
+    @cancellable_model_job
+    def run_coding_project_task(self, workspace_id, target, instruction, job=None, routed=False):
         if not self.ask_lock.acquire(blocking=False):
             raise WorkbenchError('busy','Another task is running')
         try:
-            sandbox=self._verified_coding_sandbox()
-            capability=self.router.route_request('code')
-            if job:job.progress('Reading project structure');sandbox.on_output=job.append;sandbox.cancel_event=job.cancel
-            self.registry.acquire_lease(capability)
+            if job:job.progress('Understanding the request')
+            capability=self._lease('code')
             specs=getattr(self.registry,'specs',{})
             alias=specs[capability].alias if capability in specs else 'sovereign-text'
+            if not routed:
+                intent=self.model.plan_task(instruction,[],[],[])
+                if job and job.cancel.is_set():
+                    raise WorkbenchError('cancelled', 'Task stopped during request interpretation')
+                if intent['action']=='answer':
+                    return {'state':'answered','answer':intent['response'],
+                            'routing':{'capability':capability,'model':alias,'reason':'Answered before reading project files'}}
+                if intent['action']=='inspect_code':
+                    if not workspace_id:raise WorkbenchError('needs_input','Choose a project to inspect')
+                    files=self.coding.get(workspace_id)['files']
+                    excerpts=[]
+                    remaining=10000
+                    for item in files:
+                        source=self.coding.read(workspace_id,item['name'])
+                        if not source['editable']:continue
+                        snippet=source['content'][:min(5000,remaining)]
+                        excerpts.append({'name':item['name'],'source_excerpt':snippet,'excerpt_complete':len(snippet)==len(source['content'])})
+                        remaining-=len(snippet)
+                        if len(excerpts)>=8 or remaining<=0:break
+                    generator=getattr(self.model,'conversation_answer',None)
+                    response=generator(instruction,files=excerpts) if callable(generator) else self.model.plan_task(instruction,[],excerpts,[])['response']
+                    return {'state':'answered','answer':response,
+                            'routing':{'capability':capability,'model':alias,'reason':'Read project excerpts for the requested explanation'}}
+                if intent['action']!='edit_code':raise WorkbenchError('needs_input','Use Agent for document questions and calculations')
+            from router.tool_registry import explicit_operation_requested
+            if not explicit_operation_requested(instruction,'file_edit'):
+                raise WorkbenchError('needs_input','Specify the requested code change; classification alone cannot authorize an edit')
+            sandbox=self._verified_coding_sandbox()
+            if job:job.progress('Reading project structure');sandbox.on_output=job.append;sandbox.cancel_event=job.cancel
             return self.coding.run_project(workspace_id,target,instruction,self.model,sandbox,self.tasks,
                                            model_alias=alias,progress=job.progress if job else None,cancel=job.cancel if job else None)
         finally:
@@ -289,8 +529,7 @@ class Workbench:
         try:
             sandbox = self._verified_coding_sandbox()
             self.coding.read(workspace_id, target)
-            files = {item['name']: self.coding.read(workspace_id,item['name'])['content'].encode('utf-8')
-                     for item in self.coding.get(workspace_id)['files']}
+            files = self.coding.raw_files(workspace_id)
             if job:
                 job.progress('Starting isolated program');sandbox.on_output=job.append;sandbox.cancel_event=job.cancel;sandbox.stdin_queue=job.input
             script = runner(target, mode='run')
@@ -308,21 +547,48 @@ class Workbench:
         finally:
             self.ask_lock.release()
 
-    def execute_terminal(self, workspace_id, command, job):
+    def execute_terminal(self, workspace_id, command, job, cwd=''):
         if not self.ask_lock.acquire(blocking=False):raise WorkbenchError('busy','Another task is running')
         try:
+            if cwd:
+                folder=self.coding._file(workspace_id,cwd)
+                if not folder.is_dir():raise WorkbenchError('invalid_file','Terminal working directory does not exist')
+            job.append('stdin','$ /project'+('/'+cwd if cwd else '')+'> '+command+'\n')
             sandbox=self._verified_coding_sandbox()
-            files={item['name']:self.coding.read(workspace_id,item['name'])['content'].encode('utf-8') for item in self.coding.get(workspace_id)['files']}
+            files=self.coding.raw_files(workspace_id)
             sandbox.on_output=job.append;sandbox.cancel_event=job.cancel;sandbox.stdin_queue=job.input
             job.progress('Terminal running in Docker')
-            script="import os,shutil,subprocess,sys\nshutil.copytree('/input','/output/project',ignore=shutil.ignore_patterns('program.py'))\nos.chdir('/output/project')\nsys.exit(subprocess.call(['bash','--noprofile','--norc','-c',"+repr(command)+"]))"
+            script="""import os,shutil,subprocess,sys,json,base64
+from pathlib import Path
+source=Path('/input'); project=Path('/output/project')
+shutil.copytree(source,project,ignore=lambda directory,names: ['program.py'] if Path(directory)==source and 'program.py' in names else [])
+os.chdir("""+repr('/output/project'+('/'+cwd if cwd else ''))+""")
+code=subprocess.call(['bash','--noprofile','--norc','-c',"""+repr(command)+"""])
+if code: sys.exit(code)
+before={p.relative_to(source).as_posix():p.read_bytes() for p in source.rglob('*') if p.is_file() and p != source/'program.py'}
+after={}
+for path in project.rglob('*'):
+    if path.is_symlink(): raise RuntimeError('Terminal outputs cannot contain symbolic links')
+    if path.is_file(): after[path.relative_to(project).as_posix()]=path.read_bytes()
+delta={'changed':{name:base64.b64encode(data).decode('ascii') for name,data in after.items() if before.get(name)!=data},'deleted':sorted(set(before)-set(after))}
+payload=json.dumps(delta).encode('utf-8')
+if len(payload)>999000: raise RuntimeError('Terminal changes exceed the 999 KB transfer budget; no project changes were saved')
+Path('/output/project-sync.json').write_bytes(payload)
+"""
             result=sandbox.execute(script,timeout=120,input_files=files)
-            return {'state':'completed' if result.exit_code==0 else 'failed','exit_code':result.exit_code,'stdout':result.stdout,'stderr':result.stderr}
+            changes={}
+            if result.exit_code==0:
+                payload=result.output_files.get('project-sync.json')
+                if not payload:raise WorkbenchError('sandbox_output','Terminal did not return its project changes; no changes were saved')
+                try:manifest=json.loads(payload)
+                except (ValueError,TypeError):raise WorkbenchError('sandbox_output','Invalid terminal project changes')
+                changes=self.coding.apply_terminal_changes(workspace_id,files,manifest)
+            return {'state':'completed' if result.exit_code==0 else 'failed','exit_code':result.exit_code,'stdout':result.stdout,'stderr':result.stderr,'cwd':cwd,'workspace_id':workspace_id,**changes}
         finally:self.ask_lock.release()
 
     def calculate(self,expression):
         from rag.calculator import evaluate_expression
-        if not isinstance(expression,str) or len(expression)>100 or not re.fullmatch(r'[0-9.\s()+\-*/]+',expression):
+        if not isinstance(expression,str) or len(expression)>100:
             raise WorkbenchError('invalid_calculation','Use an arithmetic expression under 100 characters')
         if not self.ask_lock.acquire(blocking=False):
             raise WorkbenchError('busy','Another task is running')
@@ -342,18 +608,23 @@ class Workbench:
         finally:
             self.ask_lock.release()
 
-    def create_document_report(self, question, document_ids, history=None,job=None):
+    @cancellable_model_job
+    def create_document_report(self, question, document_ids, history=None,job=None,document_scope=None):
         from workflows.document_report import is_overview_request, publish_report, selected_document_overview
         task=self.tasks.create('document_report',document_ids or [])
         try:
             self.tasks.step(task,'read_documents',{})
             if job and job.cancel.is_set():
                 raise WorkbenchError('cancelled', 'Task stopped')
+            if job:job.progress('Reading selected documents')
             result=(selected_document_overview(self.store.active_chunks(document_ids),question)
-                    if is_overview_request(question) else self.ask(question,document_ids,history,job=job))
+                    if document_scope is None and is_overview_request(question) else
+                    self.ask(question,document_ids,history,job=job,force_documents=True,report_generation=True,
+                             **({'document_scope':document_scope} if document_scope is not None else {})))
             if job and job.cancel.is_set():
                 raise WorkbenchError('cancelled', 'Task stopped')
             self.tasks.step(task,'export_word',{'sources':len(result.get('sources',[]))})
+            if job:job.progress('Exporting Word report')
             downloads=publish_report(self.settings,task['task_id'],question,result)
             self.tasks.complete(task,{'grounded_answer':True,'word_readback':True})
             return {**result,'task_id':task['task_id'],'downloads':downloads}
@@ -361,96 +632,152 @@ class Workbench:
             self.tasks.fail(task,'report_failed')
             raise
 
+    @cancellable_model_job
     def run_auto_agent(self, goal, document_ids=None, workspace_id=None, history=None, job=None):
         """Infer the workflow and source target; callers need only a request and optional context."""
-        if isinstance(goal,str) and not document_ids and not workspace_id and re.match(r'^\s*calculate\s*:',goal,re.I):
-            expression=re.split(r'^\s*calculate\s*:\s*',goal,maxsplit=1,flags=re.I)[1]
+        from rag.calculator import literal_expression
+        expression=literal_expression(goal)
+        if expression is not None:
+            if job and job.cancel.is_set():raise WorkbenchError('cancelled','Task stopped')
             if job:job.progress('Calculating locally')
             result=self.calculate(expression)
+            trace=CURRENT_ROUTE.get()
+            if trace:
+                trace.intent='calculate'
+                trace.capability='calculation'
+                trace.evidence_required=False
+                trace.evidence_used=False
+                trace.retrieval={'required':False,'status':'not_required','document_count':0,'passage_count':0,'candidate_count':0}
+                trace.tool_candidates=[{'name':'calculator','status':'executed','reason':'Validated arithmetic syntax'}]
+                trace.event('TOOL_COMPLETED')
             return {'task_id':result['task_id'],'status':'completed',
                     'answer':f"{result['expression']} = {result['result']}",
                     'plan':{'action':'calculate','target':'','response':'Arithmetic evaluated locally'},
                     'result':result,'downloads':{},'workspace_id':None,'steps':result['steps'],
                     'routing':{'capability':'calculation','model':'No model used',
                                'reason':'Arithmetic expression evaluated without loading a model'}}
-        instant=self.router.instant_reply(goal)
-        if instant:
-            return {'task_id':uuid4().hex,'status':'completed',
-                    'answer':instant,
-                    'plan':{'action':'answer','target':'','response':'Instant social reply'},
-                    'result':{'status':'answered'},'downloads':{},'workspace_id':workspace_id,
-                    'steps':[],'routing':{'capability':'instant','model':'No model used',
-                                          'reason':'Social question answered without scanning files or loading a model'}}
-        project_context=bool(workspace_id and re.search(r'\b(?:code|coding|project|workspace|source|file|files|folder|directory|function|class|module|script|program|app|build|test|tests|bug|error|fix|debug|refactor|implement|create|modify|delete|rename|run)\b|\.[a-z0-9]{1,6}\b',goal,re.I))
-        document_context=bool(document_ids or re.search(r'\b(?:document|documents|pdf|uploaded|attachment|attachments|library|knowledge|report|cite|citation)\b',goal,re.I) or (not workspace_id and re.search(r'\b(?:files?|sources?)\b',goal,re.I)))
         if job:job.progress('Understanding the request')
         task=self.tasks.create('automatic_task',document_ids or [])
         try:
-            docs=self.documents() if document_context else []
-            if document_ids:
-                self.store.active_chunks(document_ids)  # validate IDs before model planning
-                docs=[doc for doc in docs if doc['document_id'] in document_ids]
-            rag_passages = relevant_passages(self.store,self.embedder,goal,document_ids,limit=2) if docs else []
-            rag_notes = chat_evidence(rag_passages)
-            files=self.coding.get(workspace_id)['files'] if project_context else []
-            planning_files=[]
-            remaining=10000
-            for file in files:
-                content=self.coding.read(workspace_id,file['name'])['content'] if remaining else ''
-                snippet=content[:remaining]
-                planning_files.append({'name':file['name'],'source_excerpt':snippet,'excerpt_complete':len(snippet)==len(content) if remaining else False})
-                remaining-=len(snippet)
-            self.tasks.step(task,'plan',{'workspace':workspace_id,'documents':len(docs)})
             if not self.ask_lock.acquire(blocking=False): raise WorkbenchError('busy','Another model task is running')
             try:
-                self.registry.acquire_lease(self.router.route_request('code' if workspace_id else 'text'))
-                if job:job.progress('Choosing the next action')
-                planning_history=[str(item)[:1000] for item in (history or [])[-7:]]
-                if rag_notes: planning_history.append(rag_notes[:1000])
-                plan=self.model.plan_task(goal,[doc['display_name'] for doc in docs[:50]], planning_files,
-                                          planning_history)
-            finally:
-                self.ask_lock.release()
-            if plan['action']=='edit_code' and not project_context:
-                raise WorkbenchError('needs_input','Ask for a project or file change explicitly before the agent edits workspace files')
-            code_repair=bool(re.search(r'\b(fix|solve|repair|debug)\b.*\b(error|errors|bug|bugs|code|codes|program|project)\b',goal,re.I))
-            if code_repair:
-                if not workspace_id or not files:
-                    raise WorkbenchError('needs_input','Choose a code project with source files before asking the agent to fix errors')
-                plan['action']='edit_code'
+                self._lease('text')
+                selected_metadata=[{'document_id':doc['document_id'],'name':doc['display_name']} for doc in self.documents() if doc['document_id'] in document_ids] if document_ids else []
+                try:
+                    workspace_metadata=[{'name':item['name']} for item in self.coding.get(workspace_id)['files']] if workspace_id else []
+                except WorkbenchError as error:
+                    if error.code!='invalid_workspace':raise
+                    workspace_metadata=[]
+                plan=self._cpu_readonly_plan(goal,history,mode='agent') or self.model.plan_task(goal,selected_metadata,workspace_metadata,[item[:1000] for item in (history or [])[-8:] if isinstance(item,str)]+
+                                          [f'{len(document_ids or [])} indexed documents selected; workspace selected: {bool(workspace_id)}'])
+            finally:self.ask_lock.release()
+            if job and job.cancel.is_set():raise WorkbenchError('cancelled','Task stopped after request planning')
+            trace=CURRENT_ROUTE.get()
+            if trace is not None:
+                trace.intent=plan['action']
+                trace.evidence_required=plan['action'] in {'search_documents','create_report'}
+                trace.retrieval={'required':trace.evidence_required,'status':'not_required' if not trace.evidence_required else 'started','document_count':0,'passage_count':0,'candidate_count':0}
+                trace.required_context_scope={'documents':plan['action'] in {'search_documents','create_report'},'project':plan['action'] in {'inspect_code','edit_code'}}
+                trace.available_context_scope={'document_ids':list(document_ids or []),'workspace_id':workspace_id,'workspace_file_count':len(workspace_metadata)}
+                trace.stages.append({'stage':'intent','action':plan['action'],'source':'bounded_model_planner'})
+            self.tasks.step(task,'plan',{'workspace':workspace_id,'action':plan['action']})
+            if plan['action']=='application_tools':
+                from backend.application_tools import ApplicationTools
+                if job:job.progress('Planning application operations')
+                if not self.ask_lock.acquire(blocking=False):raise WorkbenchError('busy','Another model task is running')
+                try:
+                    self._lease('text')
+                    # Explicit management commands resolve library names separately
+                    # from the optional read/reference selection. No contents are read.
+                    catalog=[{'name':doc['display_name'],'document_id':doc['document_id']} for doc in self.documents()]
+                    schedules=[{'id':item['id'],'name':item['name'],'paused':item['paused']} for item in self.automations.list()]
+                    operations=self.model.plan_application_tools(goal,catalog,workspace_metadata,history,automations=schedules)
+                finally:self.ask_lock.release()
+                result=ApplicationTools(self,workspace_id,job,document_ids,goal=goal).execute(operations,task)
+                checks={'workflow_returned':True,'workflow_succeeded':result['state']=='completed'}
+                if checks['workflow_succeeded']:self.tasks.complete(task,checks)
+                else:self.tasks.fail(task,'workflow_failed')
+                return {'task_id':task['task_id'],'status':task['state'],'answer':result['answer'],
+                        'plan':plan,'result':result,'downloads':{},'workspace_id':workspace_id,'steps':task['steps']}
+            if plan['action']=='answer':
+                result={'answer':plan['response'],'status':'answered'}
+                if job and job.cancel.is_set():raise WorkbenchError('cancelled','Task stopped before completing the answer')
+                self.tasks.complete(task,{'workflow_returned':True,'workflow_succeeded':True})
+                spec=getattr(self.registry,'specs',{}).get('text')
+                return {'task_id':task['task_id'],'status':'completed','answer':plan['response'],'plan':plan,
+                        'result':result,'downloads':{},'workspace_id':workspace_id,'steps':task['steps'],
+                        'routing':{'capability':'text','model':spec.alias if spec else 'sovereign-text',
+                                   'reason':'The text model answered without opening project or document files'}}
+            if plan['action']=='analyze_image':raise WorkbenchError('needs_input','Attach an image to analyze')
+            project_context=plan['action'] in {'edit_code','inspect_code'}
+            if plan['action']=='edit_code':
+                from router.tool_registry import explicit_operation_requested
+                if not explicit_operation_requested(goal,'file_edit'):
+                    raise WorkbenchError('needs_input','Specify the code change and its target; classification alone cannot authorize an edit')
+            document_context=plan['action'] in {'search_documents','create_report'}
+            if document_context and document_ids == []:
+                raise WorkbenchError('needs_input','Connect Knowledge to answer questions about your documents')
+            docs=self.documents() if document_context else []
+            if document_ids is not None and document_context:
+                docs=[doc for doc in docs if doc['document_id'] in document_ids]
+            # The selected document workflow validates IDs and retrieves once.
+            # Do not prefetch evidence that would be discarded before that workflow.
+            files=self.coding.get(workspace_id)['files'] if project_context and workspace_id else []
+            planning_files=[]
+            if plan['action']=='inspect_code':
+                if not workspace_id:raise WorkbenchError('needs_input','Choose a project to inspect')
+                remaining=10000
+                for file in files:
+                    if file.get('editable') is False:continue
+                    content=self.coding.read(workspace_id,file['name'])['content'] if remaining else ''
+                    snippet=content[:remaining]
+                    planning_files.append({'name':file['name'],'source_excerpt':snippet,'excerpt_complete':len(snippet)==len(content) if remaining else False})
+                    remaining-=len(snippet)
+                if not self.ask_lock.acquire(blocking=False):raise WorkbenchError('busy','Another model task is running')
+                try:
+                    self._lease('text')
+                    explanation={'response':self.model.conversation_answer(goal,history,files=planning_files)}
+                finally:self.ask_lock.release()
+                result={'answer':explanation['response'],'status':'answered'}
+                self.tasks.step(task,'inspect_code',{'files':len(planning_files)})
+                if job and job.cancel.is_set():raise WorkbenchError('cancelled','Task stopped before completing the answer')
+                self.tasks.complete(task,{'workflow_returned':True,'workflow_succeeded':True})
+                spec=getattr(self.registry,'specs',{}).get('text')
+                return {'task_id':task['task_id'],'status':'completed','answer':explanation['response'],'plan':plan,
+                        'result':result,'downloads':{},'workspace_id':workspace_id,'steps':task['steps'],
+                        'routing':{'capability':'text','model':spec.alias if spec else 'sovereign-text',
+                                   'reason':'The text model inspected requested project excerpts without editing'}}
+            # A planner proposes the workflow; current-request permission and
+            # target/scope guards remain independent of classification.
+            if plan['action']=='edit_code' and workspace_id:
                 available={entry['name'] for entry in files}
-                if plan['target'] not in available:
+                if not plan['target'].strip():
                     mentioned=[name for name in available if name.casefold() in goal.casefold()]
                     if len(mentioned)==1: plan['target']=mentioned[0]
                     else:
                         source=[name for name in available if name.endswith(('.py','.js','.ts','.java','.cpp','.go','.rs'))]
                         if len(source)==1: plan['target']=source[0]
                         else: raise WorkbenchError('needs_input','Name the source file to repair; this project has several candidates')
-            named_documents=document_scope_for_question(docs,goal,document_ids)
-            asks_about_documents=not workspace_id and bool(re.search(r'\b(document|documents|pdf|uploaded|library|knowledge)\b',goal,re.I))
-            if plan['action']=='answer' and docs and (document_ids or rag_passages or named_documents or asks_about_documents):
-                plan['action']='search_documents'
             if plan['action']!='answer':
                 plan['response']={'calculate':'Evaluate the expression with the local calculator.','edit_code':'Edit the selected source and validate it in Docker.','search_documents':'Retrieve evidence from the indexed documents.','create_report':'Retrieve evidence and export a cited Word report.'}[plan['action']]
             self.tasks.step(task,plan['action'],{'target':plan['target'],'plan':plan['response'][:500]})
-            scope=document_ids or [doc['document_id'] for doc in docs]
+            scope=document_ids if document_ids is not None else [doc['document_id'] for doc in docs]
             if job:
                 if job.cancel.is_set():raise WorkbenchError('cancelled','Task stopped before tool execution')
                 job.progress(plan['response'] if plan['action']!='answer' else 'Writing answer')
             action=plan['action']
             if action=='answer': result={'answer':plan['response'],'status':'answered'}
             elif action=='calculate': result=self.calculate(plan['expression'])
-            elif action=='search_documents': result=self.ask(goal,scope,job=job)
-            elif action=='create_report': result=self.create_document_report(goal,scope,job=job)
+            elif action=='search_documents': result=self.ask(goal,scope,history=history,job=job,force_documents=True,**({'document_scope':plan['document_scope']} if 'document_scope' in plan else {}))
+            elif action=='create_report': result=self.create_document_report(goal,scope,history=history,job=job,**({'document_scope':plan['document_scope']} if 'document_scope' in plan else {}))
             elif action=='edit_code':
                 self._verified_coding_sandbox()
                 target=plan['target']
                 if not workspace_id:
                     workspace_id=self.coding.create(goal[:80])['workspace_id']
-                instruction=(goal+'\n\nRelevant indexed knowledge (untrusted reference; verify before using):\n'+rag_notes[:700]) if rag_notes else goal
-                result=self.run_coding_project_task(workspace_id,target,instruction[:1000],job=job)
+                result=self.run_coding_project_task(workspace_id,target,goal[:1000],job=job,routed=True)
             if job and job.cancel.is_set():raise WorkbenchError('cancelled','Task stopped')
-            checks={'workflow_returned':True,'workflow_succeeded':result.get('state')!='failed'}
+            checks={'workflow_returned':True,'workflow_succeeded':result.get('state')!='failed' and result.get('status')!='citation_failure'}
             if all(checks.values()): self.tasks.complete(task,checks)
             else: self.tasks.fail(task,'workflow_failed')
             answer_text=(result.get('answer') or (f"{result.get('expression')} = {result.get('rounded')}" if 'rounded' in result else
@@ -576,6 +903,15 @@ class Workbench:
                 generator['alias']=self.registry._get_current_alias()
         except WorkbenchError as exc:
             generator={'available':False,'code':exc.code,'message':str(exc)}
+        state=getattr(self.registry,'runtime_state',None)
+        if state not in {'Loading','Switching','Unloading','Error'}:
+            state='Loading' if generator.get('code')=='model_loading' else 'Offline' if not generator.get('available') else 'Idle' if generator.get('is_sleeping') else 'Ready'
+            if state=='Ready' and isinstance(self.model,LocalModel):
+                try:
+                    slots=self.model._request('GET','/slots')
+                    if isinstance(slots,list) and any(slot.get('is_processing') for slot in slots if isinstance(slot,dict)):state='Generating'
+                except WorkbenchError:pass
+        generator['state']=state
         docs=self.documents()
         return {'documents':len(docs),'chunks':sum(d['chunk_count'] for d in docs),
                 'embedding':{'loaded':self._embedder is not None,'files_present':all((self.settings.model_dir/p).is_file() for p in ['tokenizer.json','onnx/model.onnx']),'device':'CPU'},
@@ -600,11 +936,15 @@ class Workbench:
                  'assets_present':all(path.is_file() for path in self.registry._model_paths(spec))
                     if hasattr(self.registry,'_model_paths') else False}
                 for key,spec in specs.items()]
-        routes={'greeting':{'capability':'instant','model':'No model used'}}
+        routes={}
         for task_type in ('text','code','vision'):
             try:
-                capability=self.router.route_request(task_type)
-                routes[task_type]={'capability':capability,'model':specs[capability].alias}
+                if callable(getattr(self.registry,'installed',None)):
+                    choice=self.router.select_model(task_type,modality='image' if task_type=='vision' else 'text',current_residency=runtime['generator'].get('alias'))
+                    routes[task_type]={'capability':task_type,'model':choice.selected_model,'decision':choice.to_dict()}
+                else:
+                    capability=self.router.route_request(task_type)
+                    routes[task_type]={'capability':capability,'model':specs[capability].alias}
             except (WorkbenchError,KeyError):
                 routes[task_type]={'capability':None,'model':None}
         vision_spec=specs.get('vision')
@@ -616,7 +956,9 @@ class Workbench:
                {'name':'Coding workspace / Docker','available':sandbox['ready']},
                {'name':'Vision','available':vision_assets_ready}]
         return {'runtime':runtime,'models':models,'routing':{'mode':'automatic','routes':routes},'sandbox':sandbox,'tools':tools,
-                'host':'127.0.0.1','network_proof':'not assessed by this status endpoint'}
+                'host':'127.0.0.1','network_proof':'not assessed by this status endpoint',
+                'model_registry':self.registry.records() if hasattr(self.registry,'records') else [],
+                'classification':{'production_enabled':False,'method':'disabled_evaluated_cpu','release_report':'docs/capability-classifier-evaluation-v2.md'}}
 
     def artifact_catalog(self):
         """List only manifest-backed outputs, validating each file before offering a link."""

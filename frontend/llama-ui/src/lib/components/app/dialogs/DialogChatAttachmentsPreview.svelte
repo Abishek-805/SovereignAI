@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { X } from '@lucide/svelte';
+	import X from '@lucide/svelte/icons/x';
 	import { ChatAttachmentsPreview } from '$lib/components/app';
 	import * as DialogUI from '$lib/components/ui/dialog';
 	import { KeyboardKey } from '$lib/enums';

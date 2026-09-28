@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Wrench } from '@lucide/svelte';
+	import Wrench from '@lucide/svelte/icons/wrench';
 	import { Badge } from '$lib/components/ui/badge';
 
 	interface Props {

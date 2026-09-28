@@ -1,5 +1,8 @@
 <script lang="ts">
-	import { Check, Info, Lightbulb, LightbulbOff } from '@lucide/svelte';
+	import Check from '@lucide/svelte/icons/check';
+import Info from '@lucide/svelte/icons/info';
+import Lightbulb from '@lucide/svelte/icons/lightbulb';
+import LightbulbOff from '@lucide/svelte/icons/lightbulb-off';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { ICON_CLASS_DEFAULT } from '$lib/constants';

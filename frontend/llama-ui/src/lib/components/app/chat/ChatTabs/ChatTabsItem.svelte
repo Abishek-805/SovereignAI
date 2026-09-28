@@ -1,5 +1,8 @@
 <script lang="ts">
-	import { Loader2, Square, SquarePen, X } from '@lucide/svelte';
+	import Loader2 from '@lucide/svelte/icons/loader-2';
+import Square from '@lucide/svelte/icons/square';
+import SquarePen from '@lucide/svelte/icons/square-pen';
+import X from '@lucide/svelte/icons/x';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { cn } from '$lib/components/ui/utils';
 	import { ICON_CLASS_SM, ICON_CLASS_XS, ROUTES, UI_DATA_ATTRS } from '$lib/constants';

@@ -66,16 +66,17 @@ def test_workbench_info_exposes_actual_capability_routes_and_model_files(service
     assert {model['capability']:model['assets_present'] for model in info['models']}=={'text':True,'vision':False}
 
 
-def test_coding_greeting_does_not_load_model_or_sandbox(service, monkeypatch):
+def test_coding_conversation_uses_model_without_sandbox(service, monkeypatch):
     def unexpected(*args, **kwargs):
         raise AssertionError('Greeting must not read project files or load a runtime')
     monkeypatch.setattr(service, '_verified_coding_sandbox', unexpected)
-    monkeypatch.setattr(service.registry, 'acquire_lease', unexpected)
+    service.model.plan_task=lambda goal,documents,files,history:{'action':'answer','target':'','expression':'','response':'Hello from the local model.'}
     monkeypatch.setattr(service.coding, 'run_project', unexpected)
     for greeting in ('Hi!', 'hay', 'yoy', 'whats your name?', "what's your name?", 'who are you?'):
         result=service.run_coding_project_task('unused', '', greeting)
         assert result['state']=='answered'
-        assert result['routing']['model'] is None
+        assert result['answer']=='Hello from the local model.'
+        assert result['routing']['capability']=='text'
 
 
 def test_artifact_catalog_withholds_download_when_hash_fails(service):
@@ -151,14 +152,31 @@ def test_ask_and_upload(service,tmp_path):
         assert client.get('/documents').json()[0]['chunk_count']==1
 
 
-def test_document_greeting_does_not_search_unrelated_files(service, monkeypatch):
+def test_document_conversation_uses_model_without_retrieval(service, monkeypatch):
     monkeypatch.setattr(service.embedder, 'encode', lambda *_: (_ for _ in ()).throw(AssertionError('greeting searched documents')))
+    service.model.plan_task=lambda goal,documents,files,history:{'action':'answer','target':'','expression':'','response':'Model reply: '+goal}
     with client_for(service) as client:
         for greeting in ('hi', 'hay', 'yoy', 'whats your name?', 'who are you?'):
             result=client.post('/ask',json={'question':greeting}).json()
-            assert result['status']=='greeting'
+            assert result['status']=='conversation'
             assert result['sources']==[]
-            assert ("I'm SovereignAI" if 'name' in greeting or 'who' in greeting else 'Ask me about your selected files') in result['answer']
+            assert result['answer']=='Model reply: '+greeting
+
+
+def test_connected_document_metadata_reaches_intent_planner_without_retrieval(service, monkeypatch):
+    with client_for(service) as client:
+        first=client.post('/documents/import',files={'file':('Abishek assessment.txt',b'Overall rating Excellent.')}).json()
+        client.post('/documents/import',files={'file':('Unrelated.txt',b'Unrelated information.')})
+        seen=[]
+        def plan(goal,documents,files,history):
+            seen.append(documents)
+            return {'action':'answer','target':'','expression':'','response':'Natural model answer'}
+        service.model.plan_task=plan
+        monkeypatch.setattr(service.embedder,'encode',lambda *_: (_ for _ in ()).throw(AssertionError('Conversation retrieved files')))
+        for endpoint,payload in [('/ask',{'question':'hello','document_ids':[first['document_id']]}),('/agent/auto',{'goal':'What is your name?','document_ids':[first['document_id']]})]:
+            result=client.post(endpoint,json=payload)
+            assert result.status_code==200,result.text
+        assert seen==[[{'document_id':first['document_id'],'name':'Abishek assessment.txt'}]]*2
 
 
 def test_document_manager_rename_and_remove(service):
@@ -552,6 +570,9 @@ def test_document_content_and_generic_report(service):
         content=client.get('/documents/'+doc['document_id']+'/content')
         assert content.status_code==200
         assert '7.1' in content.json()['text'] and content.json()['methods']==['utf8_text']
+        passage=content.json()['passages'][0]
+        assert passage['page'] is None and '7.1' in passage['text']
+        assert client.get('/sources/'+passage['chunk_id']+'/original').status_code==200
         report=client.post('/documents/report',json={'question':'What is the limit?','document_ids':[doc['document_id']]})
         assert report.status_code==200,report.text
         assert client.get(report.json()['downloads']['word']).status_code==200
@@ -572,6 +593,9 @@ def test_generic_word_report_covers_selected_files_without_model_refusal(service
         assert {source['display_name'] for source in report['sources']}=={'inspection.txt','sop.txt'}
         assert '[S1]' in report['answer'] and '[S2]' in report['answer']
         assert client.get(report['downloads']['word']).status_code==200
+        variant=client.post('/documents/report',json={'question':'Generate a Word report from these selected documents.','document_ids':[first['document_id'],second['document_id']]})
+        assert variant.status_code==200,variant.text
+        assert len(variant.json()['sources'])==2
 
 
 def test_stopped_document_report_does_not_publish_download(service, monkeypatch):
@@ -579,7 +603,8 @@ def test_stopped_document_report_does_not_publish_download(service, monkeypatch)
     import time
     entered=threading.Event()
     release=threading.Event()
-    def delayed_answer(question, document_ids, history=None, job=None):
+    def delayed_answer(question, document_ids, history=None, job=None, force_documents=False, report_generation=False):
+        assert report_generation is True
         entered.set()
         assert release.wait(3)
         return {'status':'answered','answer':'Value [S1]','sources':[{'label':'S1','display_name':'note.txt','page':None,'text':'Value'}]}
@@ -597,23 +622,25 @@ def test_stopped_document_report_does_not_publish_download(service, monkeypatch)
     assert state['result'] is None
 
 
-def test_auto_agent_greeting_skips_project_and_model(service, monkeypatch):
+def test_auto_agent_conversation_skips_project_files(service, monkeypatch):
     def unexpected(*_args, **_kwargs):
         raise AssertionError('Greeting must not inspect files or load a model')
     monkeypatch.setattr(service, 'documents', unexpected)
-    monkeypatch.setattr(service.model, 'plan_task', unexpected, raising=False)
+    service.model.plan_task=lambda goal,docs,files,history:{'action':'answer','target':'','expression':'','response':'Model reply: '+goal}
     for question in ('yoy', 'whats your name?', 'who are you?'):
         result=service.run_auto_agent(question,workspace_id='unused')
         assert result['status']=='completed'
-        assert result['routing']['capability']=='instant'
-        assert result['steps']==[]
+        assert result['routing']['capability']=='text'
+        assert result['answer']=='Model reply: '+question
+        assert result['steps']
 
 
 def test_auto_agent_general_question_does_not_read_selected_project(service, monkeypatch):
     def unexpected(*_args, **_kwargs):
         raise AssertionError('A general question must not scan local files or documents')
     monkeypatch.setattr(service, 'documents', unexpected)
-    monkeypatch.setattr(service.coding, 'get', unexpected)
+    monkeypatch.setattr(service.coding, 'get', lambda *_: {'files':[{'name':'notes.md'}]})
+    monkeypatch.setattr(service.coding, 'read', unexpected)
     service.model.plan_task=lambda goal,docs,files,history: {
         'action':'answer','target':'','expression':'','response':'SovereignAI is a local assistant.'}
     result=service.run_auto_agent('What can you do?',workspace_id='selected-but-not-needed')
@@ -631,7 +658,7 @@ def test_auto_agent_dispatches_calculation_without_manual_fields(service):
 
 
 def test_auto_agent_reads_selected_documents_even_if_planner_tries_to_guess(service):
-    service.model.plan_task=lambda *args: {'action':'answer','target':'','expression':'','response':'Invented answer'}
+    service.model.plan_task=lambda *args: {'action':'search_documents','target':'','expression':'','response':'Retrieve evidence'}
     with client_for(service) as client:
         doc=client.post('/documents/import',files={'file':('manual.txt',b'P-101 limit is 7.1 mm/s.','text/plain')}).json()
         result=client.post('/agent/auto',json={'goal':'What is the limit?','document_ids':[doc['document_id']]}).json()
@@ -640,7 +667,7 @@ def test_auto_agent_reads_selected_documents_even_if_planner_tries_to_guess(serv
 
 
 def test_auto_agent_reads_named_document_without_explicit_selection(service):
-    service.model.plan_task=lambda *args: {'action':'answer','target':'','expression':'','response':'I cannot access that PDF'}
+    service.model.plan_task=lambda *args: {'action':'search_documents','target':'','expression':'','response':'Retrieve evidence'}
     with client_for(service) as client:
         doc=client.post('/documents/import',files={'file':('24ALR001_notes.txt',b'The report describes database architecture and machine learning.','text/plain')}).json()
         result=client.post('/agent/auto',json={'goal':'Tell me about the 24alr001 file'}).json()
@@ -653,9 +680,13 @@ def test_auto_agent_explanation_receives_source_and_does_not_edit(service):
     wid=service.coding.create('Explain source')['workspace_id']
     service.coding.write(wid,'src/main.js','console.log(42)')
     def plan(goal,docs,files,history):
-        assert files[0]['source_excerpt']=='console.log(42)'
-        return {'action':'answer','target':'','expression':'','response':'Prints 42.'}
+        assert files==[{'name':'src/main.js'}]
+        return {'action':'inspect_code','target':'','expression':'','response':'Inspect project'}
     service.model.plan_task=plan
+    def explain(goal,history,files):
+        assert files[0]['source_excerpt']=='console.log(42)'
+        return 'Prints 42.'
+    service.model.conversation_answer=explain
     result=service.run_auto_agent('Explain this source',workspace_id=wid)
     assert result['answer']=='Prints 42.'
     assert service.coding.read(wid,'src/main.js')['content']=='console.log(42)'
@@ -664,16 +695,30 @@ def test_auto_agent_explanation_receives_source_and_does_not_edit(service):
 def test_auto_agent_routes_explicit_error_repair_to_code_tool(service):
     wid=service.coding.create('Broken code')['workspace_id']
     service.coding.write(wid,'broken.py','print(sales)\n')
-    service.model.plan_task=lambda *args: {'action':'answer','target':'','expression':'','response':'I fixed it'}
+    service.model.plan_task=lambda *args: {'action':'edit_code','target':'broken.py','expression':'','response':'Repair code'}
     service._verified_coding_sandbox=lambda: object()
     calls=[]
-    def repair(workspace_id,target,instruction,job=None):
+    def repair(workspace_id,target,instruction,job=None,routed=False):
         calls.append((workspace_id,target,instruction))
         return {'state':'completed','target':target,'validation':'runtime_check','checks':{'runtime_passed':True}}
     service.run_coding_project_task=repair
     result=service.run_auto_agent('Solve the errors in the code',workspace_id=wid)
     assert result['plan']['action']=='edit_code'
     assert calls and calls[0][:2]==(wid,'broken.py')
+
+
+def test_auto_agent_can_create_project_without_selected_workspace(service):
+    service.model.plan_task=lambda *args: {'action':'edit_code','target':'main.js','expression':'','response':'Create the requested program'}
+    service._verified_coding_sandbox=lambda: object()
+    calls=[]
+    def create(workspace_id,target,instruction,job=None,routed=False):
+        assert service.coding.get(workspace_id)['files']==[]
+        calls.append((workspace_id,target,routed))
+        return {'state':'completed','target':target,'validation':'syntax_check','checks':{'syntax_passed':True}}
+    service.run_coding_project_task=create
+    result=service.run_auto_agent('Create a JavaScript program in a new project')
+    assert result['status']=='completed'
+    assert calls==[(result['workspace_id'],'main.js',True)]
 
 
 def test_spreadsheet_original_is_retrievable(service):
@@ -702,3 +747,29 @@ def test_pdf_original_displays_inline(service):
         preview=client.get('/documents/'+doc['document_id']+'/content').json()
         response=client.get(preview['original_url'])
         assert response.status_code==200 and response.headers['content-disposition'].startswith('inline')
+
+
+def test_document_conversation_cancel_after_planning_does_not_return_answer(service):
+    from backend.jobs import Job
+    from backend.contracts import WorkbenchError
+    import pytest
+    job=Job('ask')
+    def plan(*args):
+        job.cancel.set()
+        return {'action':'answer','target':'','expression':'','response':'Should not publish'}
+    service.model.plan_task=plan
+    with pytest.raises(WorkbenchError) as error:
+        service.ask('How are you?',job=job)
+    assert error.value.code=='cancelled'
+
+
+def test_chat_model_selected_report_publishes_word(service):
+    service.model.plan_task=lambda *args: {'action':'create_report','target':'','expression':'','response':'Prepare report','document_scope':'overview'}
+    with client_for(service) as client:
+        doc=client.post('/documents/import',files={'file':('manual.txt',b'P-101 threshold is 7.1 mm/s.','text/plain')}).json()
+        response=client.post('/ask',json={'question':'Prepare a Word report','document_ids':[doc['document_id']]})
+        assert response.status_code==200,response.text
+        result=response.json()
+        assert result['coverage']['covered_documents']==1
+        artifact=client.get(result['downloads']['word'])
+        assert artifact.status_code==200 and artifact.content.startswith(b'PK')

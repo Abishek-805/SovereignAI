@@ -12,7 +12,7 @@ class ProjectModel:
         self.codes=iter(codes)
         self.tree=None
 
-    def plan_workspace_edit(self, instruction, files, folders, current_file):
+    def plan_workspace_edit(self, instruction, files, folders, current_file, history=None):
         self.tree=(files,folders,current_file)
         return self.operations
 
@@ -58,18 +58,21 @@ def test_project_task_creates_folder_and_file_without_editing_current_tab(tmp_pa
 def test_new_html_css_project_saves_files_without_docker(tmp_path):
     work=CodingWorkspace(tmp_path)
     workspace_id=work.create('Web project')['workspace_id']
-    model=ProjectModel([], 'project_folder\\index.html\n\n<!doctype html><html><head></head><body><h1>Hello</h1></body></html>\n',
-                       'project_folder\\style.css\n\nh1 { color: teal; }\n')
+    model=ProjectModel({'scope':'new_files','operations':[
+        {'action':'create','path':'site/index.html','reason':'HTML page'},
+        {'action':'create','path':'site/style.css','reason':'Linked stylesheet'}]},
+        '<!doctype html><html><head><link rel="stylesheet" href="style.css"></head><body><h1>Hello</h1></body></html>\n',
+        'h1 { color: teal; }\n')
     result=work.run_project(workspace_id,'',
         'Create a project folder with a simple HTML page and CSS in it',
         model,None,TaskLedger(tmp_path))
     assert result['state']=='completed'
     assert result['validation']=='not run; Docker unavailable'
     assert result['checks']['container_executed'] is False
-    assert {item['name'] for item in work.get(workspace_id)['files']}=={'index.html','style.css'}
-    assert 'style.css' in work.read(workspace_id,'index.html')['content']
-    assert work.read(workspace_id,'index.html')['content'].startswith('<!doctype html>')
-    assert work.read(workspace_id,'style.css')['content'].startswith('h1 {')
+    assert {item['name'] for item in work.get(workspace_id)['files']}=={'site/index.html','site/style.css'}
+    assert 'style.css' in work.read(workspace_id,'site/index.html')['content']
+    assert work.read(workspace_id,'site/index.html')['content'].startswith('<!doctype html>')
+    assert work.read(workspace_id,'site/style.css')['content'].startswith('h1 {')
     work.undo(workspace_id,result['task_id'])
     assert work.get(workspace_id)['files']==[]
 
@@ -79,7 +82,11 @@ def test_new_web_pair_uses_unused_names_in_selected_project(tmp_path):
     workspace_id=work.create('Existing project')['workspace_id']
     work.write(workspace_id,'index.html','<html>Old</html>')
     work.write(workspace_id,'style.css','body { color: red; }')
-    model=ProjectModel([], '<html><head></head><body>New</body></html>', 'body { color: blue; }')
+    model=ProjectModel({'scope':'new_files','operations':[
+        {'action':'create','path':'page2.html','reason':'New HTML page'},
+        {'action':'create','path':'page2.css','reason':'New stylesheet'}]},
+        '<html><head><link rel="stylesheet" href="page2.css"></head><body>New</body></html>',
+        'body { color: blue; }')
     result=work.run_project(workspace_id,'',
         'generate html and css file for simple html web page',model,None,TaskLedger(tmp_path))
     assert result['state']=='completed'
@@ -93,7 +100,9 @@ def test_arithmetic_folder_creates_nested_program_without_touching_existing_file
     work=CodingWorkspace(tmp_path)
     workspace_id=work.create('Math project')['workspace_id']
     work.write(workspace_id,'old.py','print("unchanged")')
-    model=ProjectModel([], 'def add(a, b):\n    return a + b\n')
+    model=ProjectModel({'scope':'new_files','operations':[
+        {'action':'create','path':'arithmetic/operations.py','reason':'Arithmetic program'}]},
+        'def calculate(first, second, operation):\n    return first / second if operation == "/" else first + second\n')
     result=work.run_project(workspace_id,'',
         'generate folder containing code that does simple arithmetic operations',
         model,None,TaskLedger(tmp_path))
@@ -107,7 +116,9 @@ def test_search_algorithms_generated_in_existing_folder(tmp_path):
     work=CodingWorkspace(tmp_path)
     workspace_id=work.create('Search project')['workspace_id']
     work.file_operation(workspace_id,'mkdir','array_search_types')
-    model=ProjectModel([])
+    model=ProjectModel({'scope':'new_files','operations':[
+        {'action':'create','path':'array_search_types/SearchAlgorithms.java','reason':'Array search algorithms'}]},
+        'public class SearchAlgorithms { static int linearSearch(int[] a, int x) { return -1; } static int binarySearch(int[] a, int x) { return -1; } }')
     result=work.run_project(workspace_id,'array_search_types/SearchAlgorithms.java',
         'Create Java array search code in folder array_search_types',model,None,TaskLedger(tmp_path))
     assert result['state']=='completed'

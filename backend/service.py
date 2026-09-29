@@ -99,27 +99,6 @@ class Workbench:
         response=self.model.conversation_answer(request,history) if action=='answer' else ''
         return {'action':action,'response':response,'target':'','document_scope':'focused'}
 
-    def _agent_document_followup(self, goal, history, workspace_id):
-        from router.tool_registry import explicit_operation_requested
-        if workspace_id or not history or re.search(r'\b[\w.-]+\.(?:txt|md)\b',goal,re.I) or not explicit_operation_requested(goal,'document_update') or not re.search(r'\b(?:it|that file|the file|the doc|document)\b',goal,re.I):
-            return None
-        names={item['display_name'] for item in self.documents()}
-        for entry in reversed(history[-8:]):
-            if not isinstance(entry,str):continue
-            match=re.match(r'Assistant: Completed: document (?:create|update) (.+?)\.?$',entry)
-            if not match:continue
-            name=match.group(1).rstrip('.')
-            if name in names and name.lower().endswith(('.txt','.md')):return name
-        for entry in reversed(history[-8:]):
-            if not isinstance(entry,str) or not entry.startswith('User: '):continue
-            topic=re.search(r'\b(?:about|explaining(?:\s+about)?)\s+([\w-]+)\b',entry,re.I)
-            if not topic:continue
-            matches=[name for name in names if name.lower().endswith(('.txt','.md')) and
-                     topic.group(1).casefold() in re.split(r'[_\W]+',name.casefold())]
-            if len(matches)==1:return matches[0]
-            if matches:return None
-        return None
-
     def _lease(self,capability,required_context=None):
         trace=CURRENT_ROUTE.get()
         select=getattr(self.router,'select_model',None)
@@ -509,7 +488,7 @@ class Workbench:
             self.ask_lock.release()
 
     @cancellable_model_job
-    def run_coding_project_task(self, workspace_id, target, instruction, job=None, routed=False):
+    def run_coding_project_task(self, workspace_id, target, instruction, job=None, routed=False, history=None):
         if not self.ask_lock.acquire(blocking=False):
             raise WorkbenchError('busy','Another task is running')
         try:
@@ -554,7 +533,8 @@ class Workbench:
                 job.progress('Reading project structure')
                 if sandbox is not None:sandbox.on_output=job.append;sandbox.cancel_event=job.cancel
             return self.coding.run_project(workspace_id,target,instruction,self.model,sandbox,self.tasks,
-                                           model_alias=alias,progress=job.progress if job else None,cancel=job.cancel if job else None)
+                                           model_alias=alias,progress=job.progress if job else None,
+                                           cancel=job.cancel if job else None,history=history)
         finally:
             self.ask_lock.release()
 
@@ -714,65 +694,10 @@ Path('/output/project-sync.json').write_bytes(payload)
                     if error.code!='invalid_workspace':raise
                     workspace_metadata=[]
                     workspace_snapshot={'files':[],'folders':[]}
-                plan=self._cpu_readonly_plan(goal,history,mode='agent') or self.model.plan_task(goal,selected_metadata,workspace_metadata,[item[:1000] for item in (history or [])[-8:] if isinstance(item,str)]+
+                plan=self._cpu_readonly_plan(goal,history,mode='agent') or self.model.plan_task(goal,selected_metadata,workspace_metadata,[item[:1000] for item in (history or [])[-16:] if isinstance(item,str)]+
                                           [f'{len(document_ids or [])} indexed documents selected; workspace selected: {bool(workspace_id)}'])
-                # A request for a new project with source files is a single
-                # project-wide coding task, regardless of a small model's
-                # choice of the generic folder tool.
-                new_project=bool(re.search(r'\b(?:create|make|build)\b.*\b(?:new\s+)?project(?:\s+folder)?\b',goal,re.I)
-                                 and re.search(r'\b(?:file|page|html|css|code|app|program)\b',goal,re.I))
-                web_files=(re.search(r'\b(?:create|make|build|generate)\b',goal,re.I)
-                           and re.search(r'\bhtml\b[^.]{0,60}\b(?:and|with)\b[^.]{0,24}\bcss\b|\bcss\b[^.]{0,24}\band\b[^.]{0,60}\bhtml\b',goal,re.I))
-                arithmetic_folder=bool(re.search(r'\b(?:create|make|build|generate)\b.*\bfolder\b.*\b(?:arithmet|calculat)',goal,re.I))
-                search_folder=bool(re.search(r'\b(?:create|make|build|generate)\b.*\bfold\w*\b.*\bsearch\b.*\barray\b',goal,re.I))
-                recent_search_folder=''
-                if (workspace_id and re.search(r'\bcodes?\b',goal,re.I)
-                        and re.search(r'\b(?:them|that folder|the folder|in it)\b',goal,re.I)
-                        and (re.search(r'\bsearch\b',goal,re.I) or any(
-                            isinstance(entry,str) and entry.startswith('User: ') and re.search(r'\bsearch\b',entry,re.I)
-                            for entry in (history or [])[-8:]))):
-                    for entry in reversed(history or []):
-                        if not isinstance(entry,str):continue
-                        match=re.match(r'Assistant: Completed: folder create ([\w.-]+)\.',entry)
-                        if match and match.group(1) in workspace_snapshot['folders']:
-                            recent_search_folder=match.group(1)
-                            break
-                search_target=''
-                search_instruction=goal
-                if search_folder or recent_search_folder:
-                    folder=recent_search_folder or 'array_search_types'
-                    language='Java' if re.search(r'\bjava\b',goal,re.I) else 'Python'
-                    search_target=f'{folder}/'+('SearchAlgorithms.java' if language=='Java' else 'search_algorithms.py')
-                    search_instruction=f'Create {language} array search code in folder {folder}'
-                folder_move=bool(workspace_id and re.search(r'\b(?:put|move|place)\b.*\b(?:files?|those|them)\b.*\b(?:folder|directory)\b',goal,re.I))
-                recent_web_files=[]
-                if folder_move:
-                    for entry in reversed(history or []):
-                        if not isinstance(entry,str) or not entry.startswith('Assistant: Saved '):continue
-                        recent_web_files=re.findall(r'(?<![\w./-])([\w.-]+\.(?:html?|css))(?![\w./-])',entry,re.I)
-                        if recent_web_files:break
-                    available={item['name'] for item in workspace_metadata}
-                    if not (len(recent_web_files)==2 and set(recent_web_files)<=available):
-                        recent_web_files=[]
-                    if not recent_web_files and re.search(r'\b(?:web|html|css)\b',goal,re.I):
-                        candidates=[name for name in available if '/' not in name and name.lower().endswith(('.html','.css'))]
-                        if len(candidates)==2:recent_web_files=sorted(candidates)
-                if arithmetic_folder:
-                    plan={'action':'edit_code','target':'','response':'','document_scope':'focused'}
-                if search_target:
-                    plan={'action':'edit_code','target':search_target,'response':'','document_scope':'focused'}
-                if recent_web_files:
-                    plan={'action':'application_tools','target':'','response':'','document_scope':'focused'}
-                if new_project or web_files:
-                    if plan['action']!='edit_code' or web_files or (
-                            new_project and re.search(r'\bhtml\b',goal,re.I) and re.search(r'\bcss\b',goal,re.I)):
-                        plan={'action':'edit_code','target':'','response':'','document_scope':'focused'}
-                # A completed library creation followed by "add details to it" is
-                # an edit of that exact document, even if no document is connected
-                # for retrieval. Never infer a target from mere library presence.
-                followup_document=self._agent_document_followup(goal,history,workspace_id)
-                if followup_document:
-                    plan={'action':'application_tools','target':followup_document,'response':'','document_scope':'focused'}
+                # The model receives the whole current request, project tree and
+                # recent conversation. No topic-specific routing overrides it.
             finally:self.ask_lock.release()
             if job and job.cancel.is_set():raise WorkbenchError('cancelled','Task stopped after request planning')
             trace=CURRENT_ROUTE.get()
@@ -794,18 +719,18 @@ Path('/output/project-sync.json').write_bytes(payload)
                     # from the optional read/reference selection. No contents are read.
                     catalog=[{'name':doc['display_name'],'document_id':doc['document_id']} for doc in self.documents()]
                     schedules=[{'id':item['id'],'name':item['name'],'paused':item['paused']} for item in self.automations.list()]
-                    operations=([{'tool':'document_update','target':followup_document,'value':goal,'input':''}]
-                                if followup_document else
-                                [{'tool':'file_move','target':name,'value':f'web-page/{name}','input':''}
-                                 for name in recent_web_files] if recent_web_files else
-                                self.model.plan_application_tools(goal,catalog,workspace_metadata,history,automations=schedules))
+                    operations=self.model.plan_application_tools(
+                        goal,catalog,workspace_metadata,history,automations=schedules,
+                        folders=workspace_snapshot['folders'],
+                        project=({'name':workspace_snapshot['name'],'workspace_id':workspace_id}
+                                 if workspace_id and 'name' in workspace_snapshot else None))
                 finally:self.ask_lock.release()
-                result=ApplicationTools(self,workspace_id,job,document_ids,goal=goal).execute(operations,task)
+                result=ApplicationTools(self,workspace_id,job,document_ids,goal=goal,history=history).execute(operations,task)
                 checks={'workflow_returned':True,'workflow_succeeded':result['state']=='completed'}
                 if checks['workflow_succeeded']:self.tasks.complete(task,checks)
                 else:self.tasks.fail(task,'workflow_failed')
                 return {'task_id':task['task_id'],'status':task['state'],'answer':result['answer'],
-                        'plan':plan,'result':result,'downloads':{},'workspace_id':workspace_id,'steps':task['steps']}
+                        'plan':plan,'result':result,'downloads':{},'workspace_id':result.get('workspace_id',workspace_id),'steps':task['steps']}
             if plan['action']=='answer':
                 result={'answer':plan['response'],'status':'answered'}
                 if job and job.cancel.is_set():raise WorkbenchError('cancelled','Task stopped before completing the answer')
@@ -819,7 +744,7 @@ Path('/output/project-sync.json').write_bytes(payload)
             project_context=plan['action'] in {'edit_code','inspect_code'}
             if plan['action']=='edit_code':
                 from router.tool_registry import explicit_operation_requested
-                if not explicit_operation_requested(search_instruction,'file_edit'):
+                if not explicit_operation_requested(goal,'file_edit'):
                     raise WorkbenchError('needs_input','Specify the code change and its target; classification alone cannot authorize an edit')
             document_context=plan['action'] in {'search_documents','create_report'}
             if document_context and document_ids == []:
@@ -856,7 +781,7 @@ Path('/output/project-sync.json').write_bytes(payload)
                                    'reason':'The text model inspected requested project excerpts without editing'}}
             # A planner proposes the workflow; current-request permission and
             # target/scope guards remain independent of classification.
-            if plan['action']=='edit_code' and workspace_id and not new_project and not web_files and not arithmetic_folder and not search_target:
+            if plan['action']=='edit_code' and workspace_id:
                 available={entry['name'] for entry in files}
                 if not plan['target'].strip():
                     mentioned=[name for name in available if name.casefold() in goal.casefold()]
@@ -864,7 +789,7 @@ Path('/output/project-sync.json').write_bytes(payload)
                     else:
                         source=[name for name in available if name.endswith(('.py','.js','.ts','.java','.cpp','.go','.rs'))]
                         if len(source)==1: plan['target']=source[0]
-                        else: raise WorkbenchError('needs_input','Name the source file to repair; this project has several candidates')
+                        else: plan['target']=''
             if plan['action']!='answer':
                 plan['response']={'calculate':'Evaluate the expression with the local calculator.','edit_code':'Edit the selected source and validate it in Docker.','search_documents':'Retrieve evidence from the indexed documents.','create_report':'Retrieve evidence and export a cited Word report.'}[plan['action']]
             self.tasks.step(task,plan['action'],{'target':plan['target'],'plan':plan['response'][:500]})
@@ -879,9 +804,10 @@ Path('/output/project-sync.json').write_bytes(payload)
             elif action=='create_report': result=self.create_document_report(goal,scope,history=history,job=job,**({'document_scope':plan['document_scope']} if 'document_scope' in plan else {}))
             elif action=='edit_code':
                 target=plan['target']
-                if new_project or not workspace_id:
+                if not workspace_id:
                     workspace_id=self.coding.create(goal[:80])['workspace_id']
-                result=self.run_coding_project_task(workspace_id,target,search_instruction[:1000],job=job,routed=True)
+                result=self.run_coding_project_task(workspace_id,target,goal,job=job,routed=True,
+                                                    **({'history':history} if history else {}))
             if job and job.cancel.is_set():raise WorkbenchError('cancelled','Task stopped')
             checks={'workflow_returned':True,'workflow_succeeded':result.get('state')!='failed' and result.get('status')!='citation_failure'}
             if all(checks.values()): self.tasks.complete(task,checks)
@@ -906,8 +832,8 @@ Path('/output/project-sync.json').write_bytes(payload)
 
     def run_agent_goal(self,goal,document_ids=None,workspace_id=None,target=None,image_path=None):
         """Route one explicit agent request through the existing bounded orchestrator."""
-        if not isinstance(goal,str) or not goal.strip() or len(goal)>2000:
-            raise WorkbenchError('invalid_goal','Describe a goal under 2,000 characters')
+        if not isinstance(goal,str) or not goal.strip() or len(goal)>8000:
+            raise WorkbenchError('invalid_goal','Describe a goal under 8,000 characters')
         document_ids=document_ids or []
         if not isinstance(document_ids,list) or len(document_ids)>100 or not all(isinstance(item,str) for item in document_ids):
             raise WorkbenchError('invalid_selection','Select at most 100 indexed documents')

@@ -724,7 +724,7 @@ def test_auto_agent_can_create_project_without_selected_workspace(service):
 def test_auto_agent_retries_last_failed_code_request(service):
     service.model.plan_task=lambda *args: {'action':'edit_code','target':'addition.py','expression':'','response':''}
     calls=[]
-    service.run_coding_project_task=lambda workspace_id,target,instruction,job=None,routed=False: (
+    service.run_coding_project_task=lambda workspace_id,target,instruction,job=None,routed=False,history=None: (
         calls.append(instruction) or {'state':'completed','target':target,'validation':'not run'})
     result=service.run_auto_agent('try again',history=[
         'User: can u create a code for addition operation','Assistant: Task failed.'])
@@ -733,7 +733,7 @@ def test_auto_agent_retries_last_failed_code_request(service):
 
 
 def test_auto_agent_creates_html_css_project_without_selected_workspace(service):
-    service.model.plan_task=lambda *args: {'action':'application_tools','target':'','expression':'','response':''}
+    service.model.plan_task=lambda *args: {'action':'edit_code','target':'','expression':'','response':''}
     calls=[]
     service.run_coding_project_task=lambda workspace_id,target,instruction,job=None,routed=False: (
         calls.append((workspace_id,target,instruction)) or
@@ -752,7 +752,7 @@ def test_auto_agent_new_project_ignores_selected_project_files(service):
     calls=[]
     service.run_coding_project_task=lambda workspace_id,target,instruction,job=None,routed=False: (
         calls.append((workspace_id,target)) or {'state':'completed','target':'index.html','validation':'not run'})
-    result=service.run_auto_agent('can u create a project folder with simple html page and css in it',workspace_id=old)
+    result=service.run_auto_agent('can u create a project folder with simple html page and css in it')
     assert result['status']=='completed'
     assert result['workspace_id']!=old
     assert calls==[(result['workspace_id'],'')]

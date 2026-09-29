@@ -6,7 +6,7 @@ from backend.app import create_app
 from tests.test_service import service
 
 
-def test_agent_job_accepts_four_exchanges_and_rejects_oversized_history(service, monkeypatch):
+def test_agent_job_accepts_eight_exchanges_and_rejects_oversized_history(service, monkeypatch):
     calls = []
 
     def run(goal, documents, workspace, history, job):
@@ -14,10 +14,10 @@ def test_agent_job_accepts_four_exchanges_and_rejects_oversized_history(service,
         return {'status': 'answered', 'answer': 'A model response'}
 
     monkeypatch.setattr(service, 'run_auto_agent', run)
-    history = [item for index in range(4) for item in
+    history = [item for index in range(8) for item in
                (f'User: Question {index}', f'Assistant: Answer {index}')]
     with TestClient(create_app(service), base_url='http://127.0.0.1:8088') as client:
-        rejected = client.post('/agent/jobs', json={'goal': 'hi', 'history': history * 2})
+        rejected = client.post('/agent/jobs', json={'goal': 'hi', 'history': history + ['extra']})
         assert rejected.status_code == 422
         assert rejected.json()['detail'][0]['loc'] == ['body', 'history']
         assert not calls

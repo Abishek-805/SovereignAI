@@ -11,7 +11,7 @@ it('explains agent failures without a raw Error prefix', () => {
 afterEach(() => vi.unstubAllGlobals());
 
 describe('Code assistant request contract', () => {
-	it('keeps the newest four successful exchanges within the eight-entry API limit', () => {
+	it('keeps the newest eight successful exchanges within the sixteen-entry API limit', () => {
 		const turns = Array.from({ length: 30 }, (_, index) => ({
 			instruction: `Question ${index}`,
 			answer: `Reply ${index}`,
@@ -19,7 +19,7 @@ describe('Code assistant request contract', () => {
 		}));
 		const snapshot = structuredClone(turns);
 		expect(agentConversationHistory(turns)).toEqual(
-			[26, 27, 28, 29].flatMap((index) => [`User: Question ${index}`, `Assistant: Reply ${index}`])
+			[22, 23, 24, 25, 26, 27, 28, 29].flatMap((index) => [`User: Question ${index}`, `Assistant: Reply ${index}`])
 		);
 		expect(turns).toEqual(snapshot);
 	});
@@ -42,7 +42,7 @@ describe('Code assistant request contract', () => {
 		expect(await agentRequest('/agent/jobs', { goal: 'how are you?', document_ids: [], history }))
 			.toEqual({ job_id: 'job-1' });
 		const payload = JSON.parse(fetchMock.mock.calls[0][1].body);
-		expect(payload.history).toHaveLength(8);
+		expect(payload.history).toHaveLength(12);
 		expect(payload.goal).toBe('how are you?');
 	});
 	it('bounds prior evidence narratives without changing the next task or mutating history', () => {
@@ -67,8 +67,8 @@ describe('Code assistant request contract', () => {
 	});
 
 	it('allows the maximum goal and rejects overlong instructions before admission', () => {
-		expect(agentGoalError('x'.repeat(2000))).toBeNull();
-		expect(agentGoalError('x'.repeat(2001))).toContain('2,000');
+		expect(agentGoalError('x'.repeat(8000))).toBeNull();
+		expect(agentGoalError('x'.repeat(8001))).toContain('8,000');
 		expect(agentGoalError('   ')).toContain('Enter');
 	});
 

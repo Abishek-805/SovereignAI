@@ -10,6 +10,8 @@ from backend.jobs import Job
 from router.tool_registry import ToolRegistry, ToolContract
 
 OPERATIONS = {
+    'project_create': 'Create a new managed coding project; target is its name. Subsequent file edits in this plan use the new project.',
+    'project_delete': 'Delete the selected managed coding project only when the current request explicitly asks to delete that project.',
     'document_create': 'Create a new text/Markdown document; target is its name, value its text.',
     'document_update': 'Update the text of one existing Knowledge TXT/Markdown document; target is its exact name, value is complete replacement text. Never create it again.',
     'document_import': 'Index a file already in the selected project; target is its relative path.',
@@ -34,12 +36,14 @@ OPERATIONS = {
 
 
 class ApplicationTools:
-    def __init__(self, service, workspace_id=None, job=None, document_ids=None, goal=None):
+    def __init__(self, service, workspace_id=None, job=None, document_ids=None, goal=None, history=None):
         self.service = service
         self.workspace_id = workspace_id
         self.job = job or Job('agent')
         self.document_ids = document_ids
         self.goal = goal
+        self.history = history
+        self.created_project_id = None
         self.registry = ToolRegistry()
         for name in OPERATIONS:
             self.registry.register(name, lambda target, value='', input='', operation=name:
@@ -64,6 +68,19 @@ class ApplicationTools:
     def _execute(self, operation, target, value, input):
         if self.job.cancel.is_set():
             raise WorkbenchError('cancelled', 'Task stopped before application operation')
+        if operation == 'project_create':
+            result=self.service.coding.create(target)
+            self.workspace_id=result['workspace_id']
+            self.created_project_id=self.workspace_id
+            return result
+        if operation == 'project_delete':
+            workspace=self._workspace()
+            selected=self.service.coding.get(workspace)
+            if target not in {workspace,selected['name']}:
+                raise WorkbenchError('needs_input','Name the selected project to delete')
+            result=self.service.coding.delete(workspace)
+            self.workspace_id=None
+            return result
         if operation.startswith('automation_'):
             if operation == 'automation_list':return {'automations':self.service.automations.list()}
             if operation == 'automation_create':
@@ -162,10 +179,15 @@ class ApplicationTools:
                 raise WorkbenchError('tool_input', 'Code edits require the original current user request')
             # A tool plan describes operations, never authors their implementation.
             # Its value may contain hallucinated or escaped source; ignore it.
-            # Preserve the complete user request within the public 1,000-character
+            # Preserve the complete user request within the public 8,000-character
             # budget. Target is a separate argument; application operations run
             # separately after this code-authoring workflow returns.
-            return self.service.run_coding_project_task(workspace, target, self.goal, job=self.job, routed=True)
+            # A newly created project is its own root. Let the project planner
+            # choose relative paths from the full request instead of treating
+            # a tool-planned prefix as a directory inside that project.
+            if workspace==self.created_project_id:target=''
+            return self.service.run_coding_project_task(workspace, target, self.goal, job=self.job, routed=True,
+                **({'history':self.history} if self.history else {}))
         if operation in {'file_delete', 'file_move', 'file_copy', 'folder_create'}:
             # Folder deletion is deliberately not inferred from a vague "clean up".
             if operation == 'file_delete' and not self.service.coding._file(workspace, target).is_file():
@@ -245,4 +267,4 @@ class ApplicationTools:
                 label+='; exit '+str(result['result'].get('exit_code'))+'\n'+result['result'].get('stdout','')[-4000:]
             return label
         return {'state':'completed', 'answer':'Completed: ' + '; '.join(summary(result) for result in results) + '.',
-            'operations':results}
+            'workspace_id':self.workspace_id,'operations':results}

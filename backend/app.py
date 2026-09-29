@@ -59,11 +59,11 @@ class MaintenanceRequest(BaseModel):
 
 
 class AgentRequest(BaseModel):
-    goal: str=Field(min_length=1,max_length=2000)
+    goal: str=Field(min_length=1,max_length=8000)
     document_ids: list[str] | None=Field(default=None,max_length=256)
     workspace_id: str | None = None
     target: str | None = None
-    history: list[str] = Field(default_factory=list,max_length=8)
+    history: list[str] = Field(default_factory=list,max_length=16)
 
 
 class CalculationRequest(BaseModel):

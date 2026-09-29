@@ -56,7 +56,10 @@ def test_agent_moves_recent_generated_web_files_into_folder(service):
     workspace=service.coding.create('Web files')['workspace_id']
     service.coding.write(workspace,'index.html','<html>Existing</html>')
     service.coding.write(workspace,'style.css','body { color: teal; }')
-    service.model.plan_task=lambda *_:{'action':'answer','response':'Cannot move files','target':''}
+    service.model.plan_task=lambda *_:{'action':'application_tools','response':'','target':''}
+    service.model.plan_application_tools=lambda *args,**kwargs:[
+        {'tool':'file_move','target':name,'value':'web-page/'+name,'input':''}
+        for name in ('index.html','style.css')]
     result=service.run_auto_agent('put those files in a folder',[],workspace,
         history=['User: generate html and css files',
                  'Assistant: Saved index.html, style.css in the project. Docker validation was not run.'])
@@ -70,7 +73,10 @@ def test_agent_moves_only_unambiguous_web_files_from_ide(service):
     service.coding.write(workspace,'index.html','<html>Existing</html>')
     service.coding.write(workspace,'style.css','body { color: teal; }')
     service.coding.write(workspace,'notes.py','print("keep")')
-    service.model.plan_task=lambda *_:{'action':'answer','response':'No','target':''}
+    service.model.plan_task=lambda *_:{'action':'application_tools','response':'','target':''}
+    service.model.plan_application_tools=lambda *args,**kwargs:[
+        {'tool':'file_move','target':name,'value':'web-page/'+name,'input':''}
+        for name in ('index.html','style.css')]
     result=service.run_auto_agent('put the files related to web in a single folder',[],workspace)
     assert result['status']=='completed'
     assert {item['name'] for item in service.coding.get(workspace)['files']}=={
@@ -81,7 +87,7 @@ def test_agent_can_create_arithmetic_folder_without_filename_clarification(servi
     workspace=service.coding.create('Math files')['workspace_id']
     service.coding.write(workspace,'first.py','pass')
     service.coding.write(workspace,'second.py','pass')
-    service.model.plan_task=lambda *_:{'action':'answer','response':'No','target':''}
+    service.model.plan_task=lambda *_:{'action':'edit_code','response':'','target':''}
     calls=[]
     monkeypatch.setattr(service,'run_coding_project_task',lambda *args,**kwargs:
         calls.append(args) or {'state':'completed','changes':[{'action':'create','path':'arithmetic/operations.py'}],
@@ -93,7 +99,7 @@ def test_agent_can_create_arithmetic_folder_without_filename_clarification(servi
 
 def test_agent_search_folder_request_creates_code_not_just_empty_folder(service,monkeypatch):
     workspace=service.coding.create('Search project')['workspace_id']
-    service.model.plan_task=lambda *_:{'action':'application_tools','response':'','target':''}
+    service.model.plan_task=lambda *_:{'action':'edit_code','response':'','target':'array_search_types/search_algorithms.py'}
     calls=[]
     monkeypatch.setattr(service,'run_coding_project_task',lambda *args,**kwargs:
         calls.append(args) or {'state':'completed','changes':[{'action':'create','path':'array_search_types/search_algorithms.py'}],
@@ -108,7 +114,8 @@ def test_agent_search_folder_request_creates_code_not_just_empty_folder(service,
 def test_agent_uses_recent_created_folder_for_code_followup(service,monkeypatch,goal):
     workspace=service.coding.create('Search followup')['workspace_id']
     service.coding.file_operation(workspace,'mkdir','array_search_types')
-    service.model.plan_task=lambda *_:{'action':'edit_code','response':'','target':''}
+    service.model.plan_task=lambda *_:{'action':'edit_code','response':'','target':
+        'array_search_types/'+('SearchAlgorithms.java' if 'java' in goal else 'search_algorithms.py')}
     calls=[]
     monkeypatch.setattr(service,'run_coding_project_task',lambda *args,**kwargs:
         calls.append(args) or {'state':'completed','changes':[{'action':'create','path':args[1]}],

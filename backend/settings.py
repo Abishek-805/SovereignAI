@@ -14,7 +14,7 @@ class Settings:
     model_dir: Path = ROOT / 'models' / 'bge-small-en-v1.5'
     model_url: str = 'http://127.0.0.1:8087'
     context: int = 24576
-    output_tokens: int = 2048
+    output_tokens: int = 4096
     safety_tokens: int = 64
     max_file_bytes: int = 20 * 1024 * 1024
     max_pages: int = 200

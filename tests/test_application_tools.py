@@ -33,6 +33,13 @@ def test_negated_edit_intent_cannot_become_project_write(service):
     assert service.coding.read(workspace,'notes.txt')['content']=='Original'
 
 
+def test_code_followup_is_an_edit_request_but_explanation_is_not():
+    from router.tool_registry import explicit_operation_requested
+    assert explicit_operation_requested('I want code in that folder too','file_edit')
+    assert explicit_operation_requested('Put the search operation codes in Java in that folder','file_edit')
+    assert not explicit_operation_requested('I want you to explain the code in that folder','file_edit')
+
+
 def test_document_commands_work_disconnected_without_using_evidence(service,monkeypatch):
     source=service.sources_dir/'reference.txt';source.write_text('Reference only.',encoding='utf-8')
     service.import_file(source)
@@ -83,6 +90,50 @@ def test_related_file_edits_run_one_project_workflow(service,monkeypatch):
     assert calls==[(workspace,'index.html',goal)]
     assert len(result['operations'])==1
     assert 'index.html, style.css' in result['answer']
+
+
+def test_new_project_then_edit_uses_new_workspace(service,monkeypatch):
+    old=service.coding.create('Existing')['workspace_id']
+    calls=[]
+    monkeypatch.setattr(service,'run_coding_project_task',lambda workspace,target,instruction,**kwargs:
+        calls.append((workspace,target,instruction)) or
+        {'state':'completed','changes':[{'action':'create','path':'index.html'}]})
+    goal='Create a new project named Demo with an HTML page and CSS'
+    result=ApplicationTools(service,old,goal=goal).execute([
+        op('project_create','Demo'),op('file_edit','','Create page and styles')],
+        service.tasks.create('test',[]))
+    assert result['state']=='completed'
+    assert result['workspace_id']!=old
+    assert calls==[(result['workspace_id'],'',goal)]
+    assert service.coding.get(old)['name']=='Existing'
+
+
+def test_project_delete_requires_selected_project_name(service):
+    workspace=service.coding.create('Delete me')['workspace_id']
+    with pytest.raises(WorkbenchError,match='Name the selected project'):
+        ApplicationTools(service,workspace,goal='Delete the project Old').execute([
+            op('project_delete','Old')],service.tasks.create('test',[]))
+    assert service.coding.get(workspace)['name']=='Delete me'
+    result=ApplicationTools(service,workspace,goal='Delete the project Delete me').execute([
+        op('project_delete','Delete me')],service.tasks.create('test',[]))
+    assert result['workspace_id'] is None
+    with pytest.raises(WorkbenchError):service.coding.get(workspace)
+
+
+def test_agent_returns_new_project_after_ordered_create_and_edit(service,monkeypatch):
+    old=service.coding.create('Prior project')['workspace_id']
+    service.model.plan_task=lambda *args:{'action':'application_tools','response':'','target':''}
+    service.model.plan_application_tools=lambda *args,**kwargs:[
+        op('project_create','Demo'),op('file_edit','Demo/index.html')]
+    calls=[]
+    monkeypatch.setattr(service,'run_coding_project_task',lambda workspace,target,instruction,**kwargs:
+        calls.append((workspace,target)) or {'state':'completed','changes':[
+            {'action':'create','path':'index.html'}]})
+    result=service.run_auto_agent('Create a new project named Demo with an HTML page',[],old)
+    assert result['status']=='completed'
+    assert result['workspace_id']!=old
+    assert service.coding.get(result['workspace_id'])['name']=='Demo'
+    assert calls==[(result['workspace_id'],'')]
 
 
 def test_unknown_plan_validated_before_first_write(service):
@@ -158,7 +209,7 @@ def test_application_plan_grammar_preserves_json_string_quotes(monkeypatch):
     result=model.plan_application_tools('Run main.py with 2 and 3',[],[{'name':'main.py'}])
     assert result==[op('file_run','main.py',input='2\n3')]
     assert json.dumps(json.dumps('file_run')) in generated[0]['grammar']
-    assert generated[0]['max_tokens']==512
+    assert generated[0]['max_tokens']==1024
     assert generated[0]['chat_template_kwargs']=={'enable_thinking':False}
 
 
@@ -292,19 +343,22 @@ def test_document_update_accepts_details_followup(service):
     assert result['state']=='completed'
 
 
-def test_agent_followup_resolves_only_explicit_prior_document(service):
+def test_agent_followup_passes_history_to_document_planner(service):
     source=service.sources_dir/'nature_explanation.txt'
     source.write_text('Nature includes life.',encoding='utf-8')
     service.import_file(source)
-    history=['User: can u add a txt file explaining nature',
-             'Assistant: Completed: document create nature_explanation.txt.',
-             'User: can u add more details for the file that is about nature',
-             'Assistant: The source is brief.']
-    assert service._agent_document_followup('so can u add details to it',history,None)=='nature_explanation.txt'
-    assert service._agent_document_followup('add details to it',['Assistant: Completed: document update nature_explanation.txt.'],None)=='nature_explanation.txt'
-    assert service._agent_document_followup('describe nature',history,None) is None
-    assert service._agent_document_followup('add details to it in another.txt',history,None) is None
-    assert service._agent_document_followup('so can u add details to it',history,'selected-project') is None
+    history=['User: create nature_explanation.txt in Knowledge',
+             'Assistant: Completed: document create nature_explanation.txt.']
+    seen=[]
+    service.model.plan_task=lambda *args:{'action':'application_tools','response':'','target':''}
+    service.model.plan_application_tools=lambda goal,documents,files,recent,**kwargs: (
+        seen.append((goal,documents,recent)) or [op('document_update','nature_explanation.txt')])
+    service.model.document_text=lambda instruction,current,filename:current+' More detail.'
+    result=service.run_auto_agent('add more details to it',history=history)
+    assert result['status']=='completed'
+    assert seen[0][0]=='add more details to it'
+    assert seen[0][2]==history
+    assert seen[0][1][0]['name']=='nature_explanation.txt'
 
 
 def test_typo_create_intent_and_duplicate_generated_knowledge_name(service):
@@ -320,14 +374,6 @@ def test_typo_create_intent_and_duplicate_generated_knowledge_name(service):
     names={doc['display_name'] for doc in service.documents()}
     assert names=={'nature_explanation.txt','nature_explanation_2.txt'}
     assert source.read_text()=='Old nature text.'
-
-
-def test_agent_followup_resolves_unique_named_topic_after_failed_create(service):
-    source=service.sources_dir/'nature_explanation.txt';source.write_text('Nature.',encoding='utf-8')
-    service.import_file(source)
-    history=['User: can u create a file in knowledge explaining about nature',
-             'User: so can u add more details to it']
-    assert service._agent_document_followup('so can u add more details to it',history,None)=='nature_explanation.txt'
 
 
 def test_explicit_knowledge_filename_collision_asks_for_new_name(service):

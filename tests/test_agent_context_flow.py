@@ -36,7 +36,7 @@ def test_document_action_retrieves_only_in_dispatched_workflow(service, monkeypa
                       {'force_documents': True} if action == 'search_documents' else {})]
 
 
-def test_planner_keeps_four_complete_recent_conversation_pairs(service):
+def test_planner_keeps_up_to_eight_complete_recent_conversation_pairs(service):
     history = [entry for index in range(5)
                for entry in (f'User: Question {index}', f'Assistant: Answer {index}')]
     seen = []
@@ -48,8 +48,8 @@ def test_planner_keeps_four_complete_recent_conversation_pairs(service):
     service.model.plan_task = plan
     result = service.run_auto_agent('Continue explaining', history=history)
     assert result['answer'] == 'A natural model answer'
-    assert seen[0][:-1] == history[-8:]
-    assert seen[0][0] == 'User: Question 1'
+    assert seen[0][:-1] == history[-16:]
+    assert seen[0][0] == 'User: Question 0'
 
 
 def test_stop_during_intent_generation_does_not_complete_answer(service, monkeypatch):

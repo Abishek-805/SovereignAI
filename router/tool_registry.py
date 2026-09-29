@@ -20,6 +20,7 @@ def explicit_operation_requested(goal, operation):
     text=re.sub(r"(?<!\w)'[^'\n]+'(?!\w)",'',text)
     text=re.sub(r"\b(?:do\s+not|don't|don’t|without|never|no)\b[^.;,\n]*",'',text,flags=re.I)
     verbs={
+        'project_create':r'create|make|build|start', 'project_delete':r'delete|remove',
         'file_edit':r'create|write|generate|modify|edit|change|fix|repair|solve|update|replace|implement|add|make',
         'document_create':r'create|crate|write|add|make', 'document_update':r'update|modify|edit|change|rewrite|expand|details?|add|make', 'document_import':r'import|upload|add',
         'document_rename':r'rename', 'document_move':r'move', 'document_copy':r'copy|duplicate',
@@ -34,6 +35,10 @@ def explicit_operation_requested(goal, operation):
             re.search(r'\b(?:duplicate|duplicates|deduplicate)\b',text,re.I) and
             re.search(r'\b(?:knowledge|library)\b',text,re.I)):
         return False
+    if operation in {'project_create','project_delete'} and not re.search(r'\b(?:project|workspace)\b',text,re.I):
+        return False
+    if operation=='file_edit' and re.search(r'\b(?:want|need|put)\b.{0,80}\b(?:codes?|programs?|scripts?)\b',text,re.I):
+        return re.search(r'\b(?:explain|describe|review|read)\b',text,re.I) is None
     if operation not in {'automation_list','document_duplicates'} and re.match(r'\s*(?:read|explain|describe|tell|show)\b',text,re.I):
         # An explanatory question mentioning an operation is not its invocation.
         if not re.search(r'\b(?:and|then)\s+(?:please\s+)?(?:'+verbs.get(operation,r'(?!)')+r')\b',text,re.I):return False

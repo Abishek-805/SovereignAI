@@ -1,12 +1,12 @@
-/** The agent endpoint accepts eight history entries: four user/assistant pairs. */
+/** The agent sends up to eight recent user/assistant pairs as reference context. */
 export function agentConversationHistory(
 	turns: ReadonlyArray<{ instruction: string; answer?: string; state: string }>
 ): string[] {
 	return turns
 		.filter((turn) => ['answered', 'completed', 'failed'].includes(turn.state))
-		.slice(-4)
+		.slice(-8)
 		.flatMap((turn) => [
-			`User: ${turn.instruction.slice(0, 1000)}`,
+			`User: ${turn.instruction.slice(0, 2000)}`,
 			// Keep conversational context without replaying a whole evidence report
 			// or artifact body as the instruction for the next task.
 			...(turn.state === 'failed' ? ['Assistant: Task failed.'] : turn.answer ? [`Assistant: ${turn.answer.slice(0, 500)}`] : [])
@@ -62,7 +62,7 @@ export async function decodeAgentResponse(response: Response) {
 
 export function agentGoalError(goal: string): string | null {
 	if (!goal.trim()) return 'Enter a question or task.';
-	if (goal.length > 2000) return 'Keep the question or task under 2,000 characters.';
+	if (goal.length > 8000) return 'Keep the question or task under 8,000 characters.';
 	return null;
 }
 

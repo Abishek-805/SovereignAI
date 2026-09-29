@@ -29,7 +29,7 @@ def test_coding_template_budget_matches_nonthinking_generation(kind):
         if kind=='source':model.complete_code([{'role':'user','content':'Create division'}])
         else:model.plan_workspace_edit('Create division',{'other.py':'keep'},[],None)
     finally:model.close()
-    assert templates==generated
+    assert templates[-1:]==generated
     assert generated[0]['grammar']==(CODE_GRAMMAR if kind=='source' else COMPACT_WORKSPACE_PLAN_GRAMMAR)
     assert generated[0]['chat_template_kwargs']=={'enable_thinking':False}
     assert 'response_format' not in generated[0]

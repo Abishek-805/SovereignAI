@@ -79,11 +79,26 @@ def test_code_context_overflow_rejected_before_generation():
         if request.url.path == '/apply-template':
             return httpx.Response(200,json={'prompt':'formatted'})
         if request.url.path == '/tokenize':
-            return httpx.Response(200,json={'tokens':[1] * 3500})
+            return httpx.Response(200,json={'tokens':[1] * 3600})
         pytest.fail('Overflow must not reach generation')
     with pytest.raises(WorkbenchError) as error:
         LocalModel(transport=httpx.MockTransport(handler)).complete_code([],max_tokens=1024)
     assert error.value.code == 'context_budget'
+
+
+def test_code_output_uses_remaining_context_when_request_is_larger():
+    generated=[]
+    def handler(request):
+        if request.url.path=='/props':
+            return httpx.Response(200,json={'default_generation_settings':{'n_ctx':4096}})
+        if request.url.path=='/apply-template':return httpx.Response(200,json={'prompt':'formatted'})
+        if request.url.path=='/tokenize':return httpx.Response(200,json={'tokens':[1]*3500})
+        generated.append(json.loads(request.content))
+        return httpx.Response(200,json={'choices':[{'finish_reason':'stop',
+            'message':{'content':json.dumps({'code':'print(1)'})}}]})
+    model=LocalModel(transport=httpx.MockTransport(handler))
+    assert model.complete_code([],max_tokens=6144)['code']=='print(1)'
+    assert generated[0]['max_tokens']==532
 
 
 def test_structured_plan_rejects_unlisted_workflow():
@@ -111,7 +126,7 @@ def test_task_plan_short_answer_or_budgeted_conversation(short_answer):
     assert result['response']==(short_answer or 'A detailed model-generated explanation.')
     assert len(generated)==(1 if short_answer else 2)
     if not short_answer:
-        assert generated[-1]['max_tokens']==2048
+        assert generated[-1]['max_tokens']==3832
         assert 'response_format' not in generated[-1]
         assert 'Earlier question' in generated[-1]['messages'][-1]['content']
 

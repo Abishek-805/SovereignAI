@@ -139,7 +139,7 @@ class ModelRegistry:
             raise WorkbenchError('model_unavailable',f'{capability.capitalize()} model files missing')
         args=[str(RUNTIME),'-m',str(paths[0])]
         if len(paths)>1: args.extend(['--mmproj',str(paths[1])])
-        args.extend(['--alias',spec.alias,'-c',str(spec.context),'-np','1','--n-predict','4096','-b','256','-ub','128','-t','6'])
+        args.extend(['--alias',spec.alias,'-c',str(spec.context),'-np','1','--n-predict','8192','-b','256','-ub','128','-t','6'])
         if spec.projector_file is None and 'text' in spec.modalities:
             kv=(spec.kv_configuration or 'q8_0/q8_0').split('/')
             if len(kv)!=2 or any(value not in {'f16','q8_0','q4_0'} for value in kv):

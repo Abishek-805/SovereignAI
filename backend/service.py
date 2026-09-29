@@ -279,6 +279,9 @@ class Workbench:
             if not force_documents:
                 selected_metadata=[{'document_id':doc['document_id'],'name':doc['display_name']} for doc in self.documents() if doc['document_id'] in document_ids] if document_ids else []
                 intent=self._cpu_readonly_plan(question,history) or self.model.plan_task(question,selected_metadata,[],[*history,f'{len(document_ids or [])} indexed documents selected; search them only if the request needs their contents'])
+                if (re.search(r'\b(?:create|make|build|generate)\b',question,re.I) and
+                        re.search(r'\bhtml\b[^.]{0,60}\b(?:and|with)\b[^.]{0,24}\bcss\b|\bcss\b[^.]{0,24}\band\b[^.]{0,60}\bhtml\b',question,re.I)):
+                    intent={'action':'edit_code','target':'','response':''}
                 trace=CURRENT_ROUTE.get()
                 if trace is not None:
                     trace.intent=intent['action']
@@ -716,10 +719,12 @@ Path('/output/project-sync.json').write_bytes(payload)
                 # choice of the generic folder tool.
                 new_project=bool(re.search(r'\b(?:create|make|build)\b.*\b(?:new\s+)?project(?:\s+folder)?\b',goal,re.I)
                                  and re.search(r'\b(?:file|page|html|css|code|app|program)\b',goal,re.I))
-                web_files=(not workspace_id and re.search(r'\b(?:create|make|build)\b',goal,re.I)
-                           and re.search(r'\bhtml\b',goal,re.I) and re.search(r'\bcss\b',goal,re.I))
-                if (new_project and plan['action']=='application_tools') or web_files:
-                    plan={'action':'edit_code','target':'','response':'','document_scope':'focused'}
+                web_files=(re.search(r'\b(?:create|make|build|generate)\b',goal,re.I)
+                           and re.search(r'\bhtml\b[^.]{0,60}\b(?:and|with)\b[^.]{0,24}\bcss\b|\bcss\b[^.]{0,24}\band\b[^.]{0,60}\bhtml\b',goal,re.I))
+                if new_project or web_files:
+                    if plan['action']!='edit_code' or web_files or (
+                            new_project and re.search(r'\bhtml\b',goal,re.I) and re.search(r'\bcss\b',goal,re.I)):
+                        plan={'action':'edit_code','target':'','response':'','document_scope':'focused'}
                 # A completed library creation followed by "add details to it" is
                 # an edit of that exact document, even if no document is connected
                 # for retrieval. Never infer a target from mere library presence.
@@ -806,7 +811,7 @@ Path('/output/project-sync.json').write_bytes(payload)
                                    'reason':'The text model inspected requested project excerpts without editing'}}
             # A planner proposes the workflow; current-request permission and
             # target/scope guards remain independent of classification.
-            if plan['action']=='edit_code' and workspace_id:
+            if plan['action']=='edit_code' and workspace_id and not new_project and not web_files:
                 available={entry['name'] for entry in files}
                 if not plan['target'].strip():
                     mentioned=[name for name in available if name.casefold() in goal.casefold()]

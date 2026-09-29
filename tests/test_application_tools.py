@@ -66,6 +66,25 @@ def test_ordered_code_create_then_run_with_input(service,monkeypatch):
     assert 'hello' in result['answer']
 
 
+def test_related_file_edits_run_one_project_workflow(service,monkeypatch):
+    workspace=service.coding.create('Two-file edit')['workspace_id']
+    service.coding.write(workspace,'index.html','<html><body>Hello</body></html>')
+    service.coding.write(workspace,'style.css','body { color: black; }')
+    calls=[]
+    def edit(identifier,target,instruction,**kwargs):
+        calls.append((identifier,target,instruction))
+        return {'state':'completed','changes':[{'action':'edit','path':'index.html'},
+                                               {'action':'edit','path':'style.css'}]}
+    monkeypatch.setattr(service,'run_coding_project_task',edit)
+    goal='Add an About section to index.html and matching styling in style.css'
+    result=ApplicationTools(service,workspace,goal=goal).execute([
+        op('file_edit','index.html'),op('file_edit','style.css')],service.tasks.create('test',[]))
+    assert result['state']=='completed'
+    assert calls==[(workspace,'index.html',goal)]
+    assert len(result['operations'])==1
+    assert 'index.html, style.css' in result['answer']
+
+
 def test_unknown_plan_validated_before_first_write(service):
     workspace=service.coding.create('Owned validation test')['workspace_id']
     with pytest.raises(WorkbenchError):

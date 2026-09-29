@@ -200,6 +200,14 @@ class ApplicationTools:
                     trace.tool_candidates=[{'name':operation['tool'],'status':'rejected','reason':'Not requested in the current user instruction'}]
                     trace.event('TOOL_POLICY_REJECTED')
                 raise WorkbenchError('needs_input','The current request does not authorize '+operation['tool'].replace('_',' ')+'. Specify the operation and its target.')
+        # One coding workflow already sees the whole current request and can
+        # edit several related files atomically. Repeating file_edit for each
+        # planned path regenerates the entire project and may undo the first
+        # edit or overwrite it with a second model answer.
+        if sum(operation['tool']=='file_edit' for operation in operations)>1:
+            first=next(i for i,operation in enumerate(operations) if operation['tool']=='file_edit')
+            operations=[operation for i,operation in enumerate(operations)
+                        if operation['tool']!='file_edit' or i==first]
         if trace:
             trace.tool_candidates=[{'name':operation['tool'],'status':'eligible','reason':'Current operation wording checked; target and scope validated by tool'} for operation in operations]
         results = []
@@ -226,6 +234,13 @@ class ApplicationTools:
                 return 'Recurring tasks: ' + '; '.join(item['name']+' ('+item['id']+')'+(' paused' if item['paused'] else ' active')
                     for item in result['result']['automations'])
             if result['tool'] == 'automation_create':label+=' ('+result['result']['id']+')'
+            if result['tool']=='file_edit' and result['result'].get('changes'):
+                paths=[change['path'] for change in result['result']['changes']
+                       if change['action'] in {'create','edit'}]
+                if paths:
+                    label='project files '+', '.join(paths)
+                    if not result['result'].get('checks',{}).get('container_executed'):
+                        label+=' (saved; Docker validation not run)'
             if result['tool'] in {'file_run','terminal'}:
                 label+='; exit '+str(result['result'].get('exit_code'))+'\n'+result['result'].get('stdout','')[-4000:]
             return label

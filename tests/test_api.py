@@ -744,6 +744,21 @@ def test_auto_agent_creates_html_css_project_without_selected_workspace(service)
     assert calls==[(result['workspace_id'],'','create a project folder with simple html page and css in it')]
 
 
+def test_auto_agent_new_project_ignores_selected_project_files(service):
+    old=service.coding.create('Old project')['workspace_id']
+    service.coding.write(old,'first.py','print(1)')
+    service.coding.write(old,'second.py','print(2)')
+    service.model.plan_task=lambda *args: {'action':'edit_code','target':'','expression':'','response':''}
+    calls=[]
+    service.run_coding_project_task=lambda workspace_id,target,instruction,job=None,routed=False: (
+        calls.append((workspace_id,target)) or {'state':'completed','target':'index.html','validation':'not run'})
+    result=service.run_auto_agent('can u create a project folder with simple html page and css in it',workspace_id=old)
+    assert result['status']=='completed'
+    assert result['workspace_id']!=old
+    assert calls==[(result['workspace_id'],'')]
+    assert {item['name'] for item in service.coding.get(old)['files']}=={'first.py','second.py'}
+
+
 def test_spreadsheet_original_is_retrievable(service):
     from openpyxl import Workbook
     from io import BytesIO

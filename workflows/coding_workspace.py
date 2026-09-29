@@ -437,12 +437,25 @@ class CodingWorkspace:
         named_for_delete=[name for name in files if re.search(r'(?<![\w./-])'+re.escape(name)+r'(?![\w./-])',deletion_clause,re.I)]
         simple_delete=(explicit_delete and len(named_for_delete)==1 and
                        not re.search(r'\b(create|add|edit|modify|update|rename|move|copy|fix)\b',instruction,re.I))
-        web_starter=(not files and re.search(r'\b(?:create|make|build)\b',instruction,re.I)
-                     and re.search(r'\bhtml\b',instruction,re.I) and re.search(r'\bcss\b',instruction,re.I))
+        web_starter=(re.search(r'\b(?:create|make|build|generate)\b',instruction,re.I)
+                     and re.search(r'\bhtml\b[^.]{0,60}\b(?:and|with)\b[^.]{0,24}\bcss\b|\bcss\b[^.]{0,24}\band\b[^.]{0,60}\bhtml\b',instruction,re.I))
+        if web_starter:
+            named_html=re.findall(r'\b([A-Za-z0-9_.-]+\.html?)\b',instruction,re.I)
+            named_css=re.findall(r'\b([A-Za-z0-9_.-]+\.css)\b',instruction,re.I)
+            if named_html or named_css:
+                html_name=named_html[0] if named_html else 'index.html'
+                css_name=named_css[0] if named_css else 'style.css'
+            else:
+                html_name,css_name='index.html','style.css'
+                if html_name in raw_files or css_name in raw_files:
+                    for number in range(2,100):
+                        html_name,css_name=f'page{number}.html',f'page{number}.css'
+                        if html_name not in raw_files and css_name not in raw_files:break
+                    else:raise WorkbenchError('workspace_conflict','No unused HTML/CSS filename pair is available')
         plan=([{'action':'delete','path':named_for_delete[0],'reason':'Explicit single-file deletion'}]
                     if simple_delete else {'scope':'new_files','operations':[
-                        {'action':'create','path':'index.html','reason':'Requested HTML page'},
-                        {'action':'create','path':'style.css','reason':'Requested stylesheet'}]}
+                        {'action':'create','path':html_name,'reason':'Requested HTML page'},
+                        {'action':'create','path':css_name,'reason':'Requested stylesheet'}]}
                     if web_starter else model.plan_workspace_edit(instruction,summaries,snapshot['folders'],target or ''))
         scope=plan.get('scope') if isinstance(plan,dict) else None
         operations=plan['operations'] if isinstance(plan,dict) else plan
@@ -538,12 +551,12 @@ class CodingWorkspace:
             label=re.match(r'^([^\r\n]+)\r?\n\s*\r?\n',after)
             if label and label.group(1).strip().replace('\\','/').split('/')[-1]==Path(path).name:
                 after=after[label.end():]
-            if web_starter and path=='index.html':
+            if web_starter and path==html_name:
                 if not re.search(r'<html\b',after,re.I) or not re.search(r'</head\s*>',after,re.I):
                     raise WorkbenchError('generation_format','The model did not return a complete HTML page; no project changes were saved')
-                if not re.search(r'href\s*=\s*["\']style\.css["\']',after,re.I):
-                    after=re.sub(r'</head\s*>','    <link rel="stylesheet" href="style.css">\n</head>',after,count=1,flags=re.I)
-            if web_starter and path=='style.css' and not re.search(r'\{[^}]*\}',after,re.S):
+                if not re.search(r'href\s*=\s*["\']'+re.escape(css_name)+r'["\']',after,re.I):
+                    after=re.sub(r'</head\s*>',f'    <link rel="stylesheet" href="{css_name}">\n</head>',after,count=1,flags=re.I)
+            if web_starter and path==css_name and not re.search(r'\{[^}]*\}',after,re.S):
                 raise WorkbenchError('generation_format','The model did not return a CSS rule; no project changes were saved')
             if action=='create' and not after.strip():
                 raise WorkbenchError('generation_format','The model returned an empty new file; no project changes were saved')

@@ -74,6 +74,21 @@ def test_new_html_css_project_saves_files_without_docker(tmp_path):
     assert work.get(workspace_id)['files']==[]
 
 
+def test_new_web_pair_uses_unused_names_in_selected_project(tmp_path):
+    work=CodingWorkspace(tmp_path)
+    workspace_id=work.create('Existing project')['workspace_id']
+    work.write(workspace_id,'index.html','<html>Old</html>')
+    work.write(workspace_id,'style.css','body { color: red; }')
+    model=ProjectModel([], '<html><head></head><body>New</body></html>', 'body { color: blue; }')
+    result=work.run_project(workspace_id,'',
+        'generate html and css file for simple html web page',model,None,TaskLedger(tmp_path))
+    assert result['state']=='completed'
+    assert {item['name'] for item in work.get(workspace_id)['files']}=={
+        'index.html','style.css','page2.html','page2.css'}
+    assert 'href="page2.css"' in work.read(workspace_id,'page2.html')['content']
+    assert work.read(workspace_id,'index.html')['content']=='<html>Old</html>'
+
+
 def test_project_task_validates_all_edits_before_commit_and_supports_undo(tmp_path):
     work=CodingWorkspace(tmp_path)
     workspace_id=work.create('Project')['workspace_id']

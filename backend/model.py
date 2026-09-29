@@ -418,6 +418,19 @@ tool ::= ''' + names + '\n' + JSON_STRING_GRAMMAR
 
     def inline_code_answer(self, question, history=None, target=''):
         """Chat generates code as text; it has no authority to mutate a project."""
+        if (re.search(r'\b(?:create|make|build|generate)\b',question,re.I) and
+                re.search(r'\bhtml\b[^.]{0,60}\b(?:and|with)\b[^.]{0,24}\bcss\b|\bcss\b[^.]{0,24}\band\b[^.]{0,60}\bhtml\b',question,re.I)):
+            html=self.complete_code([
+                {'role':'system','content':'Return only complete index.html contents in the code field. Include a head, body, and <link rel="stylesheet" href="style.css">. Do not output CSS, filenames, path labels, or Markdown fences.'},
+                {'role':'user','content':json.dumps({'request':question,'recent_conversation':history or []},ensure_ascii=False)}],max_tokens=2048)['code'].strip()
+            css=self.complete_code([
+                {'role':'system','content':'Return only complete style.css contents in the code field for the supplied HTML. Do not output HTML, filenames, path labels, or Markdown fences.'},
+                {'role':'user','content':json.dumps({'request':question,'html':html[:4000]},ensure_ascii=False)}],max_tokens=2048)['code'].strip()
+            if not re.search(r'<html\b',html,re.I) or not re.search(r'\{[^}]*\}',css,re.S):
+                raise WorkbenchError('generation_format','The local model did not return both an HTML page and a CSS stylesheet')
+            if not re.search(r'href\s*=\s*["\']style\.css["\']',html,re.I):
+                html=re.sub(r'</head\s*>','    <link rel="stylesheet" href="style.css">\n</head>',html,count=1,flags=re.I)
+            return {'answer':f'**index.html**\n```html\n{html}\n```\n\n**style.css**\n```css\n{css}\n```'}
         messages=[{'role':'system','content':
             'Write the code requested in the CURRENT message. Past conversation only resolves explicit references; do not continue an unrelated previous task. Return complete, concise code in the code field. Use the language indicated by the filename, otherwise Python. For TXT/Markdown return the requested prose/file contents rather than Python code. Include appropriate input checks. This is a Chat answer: never claim files were created or code was executed.'},
             {'role':'user','content':json.dumps({'request':question,'filename':target,

@@ -2,6 +2,7 @@
 import pytest
 from backend.contracts import WorkbenchError
 from tests.test_service import service
+from backend.model import LocalModel
 
 
 @pytest.mark.parametrize('action', ['search_documents', 'create_report'])
@@ -25,6 +26,30 @@ def test_chat_code_is_inline_without_any_project_or_document_reads(service, monk
     assert result['status']=='conversation' and result['sources']==[]
     assert result['answer'].startswith('```python')
     assert calls[0][2]=='division.py'
+
+
+def test_chat_web_pair_returns_two_inline_files_without_project_writes(service, monkeypatch):
+    service.model.plan_task=lambda *_: {'action':'application_tools','response':'','target':'','expression':''}
+    calls=[]
+    service.model.inline_code_answer=lambda *args: calls.append(args) or {
+        'answer':'**index.html**\n```html\n<html></html>\n```\n\n**style.css**\n```css\nbody{}\n```'}
+    monkeypatch.setattr(service.coding,'get',lambda *_:pytest.fail('Chat cannot open a project'))
+    result=service.ask('generate html and css file for simple html web page',[])
+    assert result['status']=='conversation'
+    assert '**index.html**' in result['answer'] and '**style.css**' in result['answer']
+    assert len(calls)==1
+
+
+def test_inline_web_pair_calls_model_for_each_file(monkeypatch):
+    model=LocalModel('http://127.0.0.1:8087')
+    replies=iter(['<html><head></head><body>Hello</body></html>', 'body { color: teal; }'])
+    prompts=[]
+    monkeypatch.setattr(model,'complete_code',lambda messages,max_tokens=2048: (
+        prompts.append(messages) or {'code':next(replies)}))
+    result=model.inline_code_answer('generate html and css file for simple html web page')
+    assert len(prompts)==2
+    assert 'href="style.css"' in result['answer']
+    assert '```html' in result['answer'] and '```css' in result['answer']
 
 
 def test_agent_creates_code_in_empty_project_and_does_not_prefetch_sources(service, monkeypatch):

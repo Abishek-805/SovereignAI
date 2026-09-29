@@ -89,6 +89,20 @@ def test_new_web_pair_uses_unused_names_in_selected_project(tmp_path):
     assert work.read(workspace_id,'index.html')['content']=='<html>Old</html>'
 
 
+def test_arithmetic_folder_creates_nested_program_without_touching_existing_files(tmp_path):
+    work=CodingWorkspace(tmp_path)
+    workspace_id=work.create('Math project')['workspace_id']
+    work.write(workspace_id,'old.py','print("unchanged")')
+    model=ProjectModel([], 'def add(a, b):\n    return a + b\n')
+    result=work.run_project(workspace_id,'',
+        'generate folder containing code that does simple arithmetic operations',
+        model,None,TaskLedger(tmp_path))
+    assert result['state']=='completed'
+    generated=work.read(workspace_id,'arithmetic/operations.py')['content']
+    assert 'def calculate(' in generated and 'first / second' in generated
+    assert work.read(workspace_id,'old.py')['content']=='print("unchanged")'
+
+
 def test_project_task_validates_all_edits_before_commit_and_supports_undo(tmp_path):
     work=CodingWorkspace(tmp_path)
     workspace_id=work.create('Project')['workspace_id']

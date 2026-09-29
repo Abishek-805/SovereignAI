@@ -721,6 +721,24 @@ Path('/output/project-sync.json').write_bytes(payload)
                                  and re.search(r'\b(?:file|page|html|css|code|app|program)\b',goal,re.I))
                 web_files=(re.search(r'\b(?:create|make|build|generate)\b',goal,re.I)
                            and re.search(r'\bhtml\b[^.]{0,60}\b(?:and|with)\b[^.]{0,24}\bcss\b|\bcss\b[^.]{0,24}\band\b[^.]{0,60}\bhtml\b',goal,re.I))
+                arithmetic_folder=bool(re.search(r'\b(?:create|make|build|generate)\b.*\bfolder\b.*\b(?:arithmet|calculat)',goal,re.I))
+                folder_move=bool(workspace_id and re.search(r'\b(?:put|move|place)\b.*\b(?:files?|those|them)\b.*\b(?:folder|directory)\b',goal,re.I))
+                recent_web_files=[]
+                if folder_move:
+                    for entry in reversed(history or []):
+                        if not isinstance(entry,str) or not entry.startswith('Assistant: Saved '):continue
+                        recent_web_files=re.findall(r'(?<![\w./-])([\w.-]+\.(?:html?|css))(?![\w./-])',entry,re.I)
+                        if recent_web_files:break
+                    available={item['name'] for item in workspace_metadata}
+                    if not (len(recent_web_files)==2 and set(recent_web_files)<=available):
+                        recent_web_files=[]
+                    if not recent_web_files and re.search(r'\b(?:web|html|css)\b',goal,re.I):
+                        candidates=[name for name in available if '/' not in name and name.lower().endswith(('.html','.css'))]
+                        if len(candidates)==2:recent_web_files=sorted(candidates)
+                if arithmetic_folder:
+                    plan={'action':'edit_code','target':'','response':'','document_scope':'focused'}
+                if recent_web_files:
+                    plan={'action':'application_tools','target':'','response':'','document_scope':'focused'}
                 if new_project or web_files:
                     if plan['action']!='edit_code' or web_files or (
                             new_project and re.search(r'\bhtml\b',goal,re.I) and re.search(r'\bcss\b',goal,re.I)):
@@ -753,7 +771,10 @@ Path('/output/project-sync.json').write_bytes(payload)
                     catalog=[{'name':doc['display_name'],'document_id':doc['document_id']} for doc in self.documents()]
                     schedules=[{'id':item['id'],'name':item['name'],'paused':item['paused']} for item in self.automations.list()]
                     operations=([{'tool':'document_update','target':followup_document,'value':goal,'input':''}]
-                                if followup_document else self.model.plan_application_tools(goal,catalog,workspace_metadata,history,automations=schedules))
+                                if followup_document else
+                                [{'tool':'file_move','target':name,'value':f'web-page/{name}','input':''}
+                                 for name in recent_web_files] if recent_web_files else
+                                self.model.plan_application_tools(goal,catalog,workspace_metadata,history,automations=schedules))
                 finally:self.ask_lock.release()
                 result=ApplicationTools(self,workspace_id,job,document_ids,goal=goal).execute(operations,task)
                 checks={'workflow_returned':True,'workflow_succeeded':result['state']=='completed'}
@@ -811,7 +832,7 @@ Path('/output/project-sync.json').write_bytes(payload)
                                    'reason':'The text model inspected requested project excerpts without editing'}}
             # A planner proposes the workflow; current-request permission and
             # target/scope guards remain independent of classification.
-            if plan['action']=='edit_code' and workspace_id and not new_project and not web_files:
+            if plan['action']=='edit_code' and workspace_id and not new_project and not web_files and not arithmetic_folder:
                 available={entry['name'] for entry in files}
                 if not plan['target'].strip():
                     mentioned=[name for name in available if name.casefold() in goal.casefold()]

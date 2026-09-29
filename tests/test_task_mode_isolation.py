@@ -52,6 +52,45 @@ def test_inline_web_pair_calls_model_for_each_file(monkeypatch):
     assert '```html' in result['answer'] and '```css' in result['answer']
 
 
+def test_agent_moves_recent_generated_web_files_into_folder(service):
+    workspace=service.coding.create('Web files')['workspace_id']
+    service.coding.write(workspace,'index.html','<html>Existing</html>')
+    service.coding.write(workspace,'style.css','body { color: teal; }')
+    service.model.plan_task=lambda *_:{'action':'answer','response':'Cannot move files','target':''}
+    result=service.run_auto_agent('put those files in a folder',[],workspace,
+        history=['User: generate html and css files',
+                 'Assistant: Saved index.html, style.css in the project. Docker validation was not run.'])
+    assert result['status']=='completed'
+    assert {item['name'] for item in service.coding.get(workspace)['files']}=={
+        'web-page/index.html','web-page/style.css'}
+
+
+def test_agent_moves_only_unambiguous_web_files_from_ide(service):
+    workspace=service.coding.create('IDE web files')['workspace_id']
+    service.coding.write(workspace,'index.html','<html>Existing</html>')
+    service.coding.write(workspace,'style.css','body { color: teal; }')
+    service.coding.write(workspace,'notes.py','print("keep")')
+    service.model.plan_task=lambda *_:{'action':'answer','response':'No','target':''}
+    result=service.run_auto_agent('put the files related to web in a single folder',[],workspace)
+    assert result['status']=='completed'
+    assert {item['name'] for item in service.coding.get(workspace)['files']}=={
+        'web-page/index.html','web-page/style.css','notes.py'}
+
+
+def test_agent_can_create_arithmetic_folder_without_filename_clarification(service,monkeypatch):
+    workspace=service.coding.create('Math files')['workspace_id']
+    service.coding.write(workspace,'first.py','pass')
+    service.coding.write(workspace,'second.py','pass')
+    service.model.plan_task=lambda *_:{'action':'answer','response':'No','target':''}
+    calls=[]
+    monkeypatch.setattr(service,'run_coding_project_task',lambda *args,**kwargs:
+        calls.append(args) or {'state':'completed','changes':[{'action':'create','path':'arithmetic/operations.py'}],
+            'checks':{'container_executed':False}})
+    result=service.run_auto_agent('can u generate folder containg a code that does simple arithmetic operations',[],workspace)
+    assert result['status']=='completed'
+    assert calls[0][:2]==(workspace,'')
+
+
 def test_agent_creates_code_in_empty_project_and_does_not_prefetch_sources(service, monkeypatch):
     service.model.plan_task=lambda *_: {'action':'edit_code','response':'','target':'division.py','expression':''}
     monkeypatch.setattr(service.coding,'get',lambda *_: {'files':[]})

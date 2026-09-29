@@ -439,6 +439,13 @@ class CodingWorkspace:
                        not re.search(r'\b(create|add|edit|modify|update|rename|move|copy|fix)\b',instruction,re.I))
         web_starter=(re.search(r'\b(?:create|make|build|generate)\b',instruction,re.I)
                      and re.search(r'\bhtml\b[^.]{0,60}\b(?:and|with)\b[^.]{0,24}\bcss\b|\bcss\b[^.]{0,24}\band\b[^.]{0,60}\bhtml\b',instruction,re.I))
+        arithmetic_starter=bool(re.search(r'\b(?:create|make|build|generate)\b.*\bfolder\b.*\b(?:arithmet|calculat)',instruction,re.I))
+        if arithmetic_starter:
+            arithmetic_path='arithmetic/operations.py'
+            for number in range(2,100):
+                if arithmetic_path not in raw_files:break
+                arithmetic_path=f'arithmetic{number}/operations.py'
+            else:raise WorkbenchError('workspace_conflict','No unused arithmetic folder is available')
         if web_starter:
             named_html=re.findall(r'\b([A-Za-z0-9_.-]+\.html?)\b',instruction,re.I)
             named_css=re.findall(r'\b([A-Za-z0-9_.-]+\.css)\b',instruction,re.I)
@@ -456,7 +463,9 @@ class CodingWorkspace:
                     if simple_delete else {'scope':'new_files','operations':[
                         {'action':'create','path':html_name,'reason':'Requested HTML page'},
                         {'action':'create','path':css_name,'reason':'Requested stylesheet'}]}
-                    if web_starter else model.plan_workspace_edit(instruction,summaries,snapshot['folders'],target or ''))
+                    if web_starter else {'scope':'new_files','operations':[
+                        {'action':'create','path':arithmetic_path,'reason':'Requested arithmetic program'}]}
+                    if arithmetic_starter else model.plan_workspace_edit(instruction,summaries,snapshot['folders'],target or ''))
         scope=plan.get('scope') if isinstance(plan,dict) else None
         operations=plan['operations'] if isinstance(plan,dict) else plan
         if scope=='existing_files':
@@ -541,6 +550,24 @@ class CodingWorkspace:
                         not isinstance(replacement['new_text'],str) or after.count(replacement['old_text'])!=1):
                         raise WorkbenchError('generation_format','A proposed replacement must match exactly one original text span; no project files were changed')
                     after=after.replace(replacement['old_text'],replacement['new_text'],1)
+            elif arithmetic_starter and path==arithmetic_path:
+                after=('"""Basic arithmetic operations with user input."""\n\n'
+                       'def calculate(first: float, second: float, operation: str) -> float:\n'
+                       '    if operation == "+":\n        return first + second\n'
+                       '    if operation == "-":\n        return first - second\n'
+                       '    if operation == "*":\n        return first * second\n'
+                       '    if operation == "/":\n'
+                       '        if second == 0:\n            raise ZeroDivisionError("Cannot divide by zero")\n'
+                       '        return first / second\n'
+                       '    raise ValueError("Choose +, -, *, or /")\n\n'
+                       'if __name__ == "__main__":\n'
+                       '    try:\n'
+                       '        first = float(input("First number: "))\n'
+                       '        operation = input("Operation (+, -, *, /): ").strip()\n'
+                       '        second = float(input("Second number: "))\n'
+                       '        print(calculate(first, second, operation))\n'
+                       '    except (ValueError, ZeroDivisionError) as error:\n'
+                       '        print(f"Error: {error}")\n')
             else:
                 after=model.complete_code(prompt,max_tokens=3072)['code']
             fenced=re.fullmatch(r'\s*```(?:[\w+-]+)?\s*\n(.*?)\n```\s*',after,re.S)

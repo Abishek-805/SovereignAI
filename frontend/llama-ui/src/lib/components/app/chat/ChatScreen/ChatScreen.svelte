@@ -248,21 +248,9 @@
 					behavior: 'smooth',
 					top: bubbleHeight > 0 ? baseHeight - bubbleHeight : baseHeight
 				});
-			} else if (lastUserBubble) {
-				// On desktop, place the last user message near the top of the viewport
-				const tabs = document.querySelector('.chat-tabs-fade');
-				const topPadding = Math.max(
-					64,
-					container.getBoundingClientRect().top + 16,
-					(tabs?.getBoundingClientRect().bottom ?? 0) + 12
-				);
-				const bubbleRect = lastUserBubble.getBoundingClientRect();
-
-				container.scrollTo({
-					behavior: 'smooth',
-					top: Math.max(0, container.scrollTop + bubbleRect.top - topPadding)
-				});
 			} else {
+				// Follow incoming streamed tokens. Pinning the user bubble near the
+				// top made long code replies grow behind the fixed composer.
 				autoScroll.scrollToBottom();
 			}
 		}, 100);
@@ -346,7 +334,7 @@
 {:else}
 	<div
 		style:--chat-form-bottom-position={chatFormBottomPosition}
-		class="chat-screen flex grow flex-col min-h-[calc(100dvh-1rem)] md:min-h-[calc(100dvh-1rem-var(--chat-tabs-offset,0px))] px-4 md:py-0 pt-12 pb-48 md:pb-4"
+		class="chat-screen flex grow flex-col min-h-[calc(100dvh-1rem)] md:min-h-[calc(100dvh-1rem-var(--chat-tabs-offset,0px))] px-4 md:py-0 pt-12 pb-48 md:pb-[calc(var(--chat-form-height,10rem)+4rem)]"
 		ondragenter={dragAndDrop.dragHandlers.dragenter}
 		ondragleave={dragAndDrop.dragHandlers.dragleave}
 		ondragover={dragAndDrop.dragHandlers.dragover}

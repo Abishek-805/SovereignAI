@@ -446,6 +446,10 @@ def create_app(service=None):
     def get_coding_workspace(workspace_id:str):
         return service.coding.get(workspace_id)
 
+    @app.delete('/coding/workspaces/{workspace_id}')
+    def delete_coding_workspace(workspace_id:str):
+        return service.coding.delete(workspace_id)
+
     @app.post('/coding/workspaces/{workspace_id}/reveal')
     def reveal_coding_workspace(workspace_id:str):
         import os

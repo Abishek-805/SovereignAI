@@ -42,6 +42,8 @@
 .ide.ide .toolbar-divider { width: 1px; height: 19px; background: var(--ide-stroke); flex: none; }
 .ide.ide .workspace-picker { width: min(220px, 26vw); height: 30px; padding: 4px 10px; border: 1px solid var(--ide-stroke); border-radius: 7px; background: var(--ide-bg); color: var(--foreground); font-weight: 550; }
 .ide.ide .workspace-picker option { background: var(--ide-bg); }
+.ide.ide .ide-delete-project {display:inline-flex;align-items:center;justify-content:center;height:30px;width:30px;border:1px solid var(--ide-stroke);border-radius:7px;background:var(--ide-bg);color:var(--foreground)}
+.ide.ide .ide-delete-project:disabled {opacity:.4;cursor:not-allowed}
 .ide.ide .engine { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; font-size: 11px; color: var(--ide-muted); }
 .ide.ide .engine.ready { color: var(--ide-success); }
 .ide.ide .engine-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 3px #ffffff0a; }

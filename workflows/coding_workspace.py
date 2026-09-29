@@ -132,6 +132,21 @@ class CodingWorkspace:
         return [self.get(path.name) for path in sorted(self.root.iterdir())
                 if path.is_dir() and not path.is_symlink() and WORKSPACE_ID.fullmatch(path.name)]
 
+    def delete(self, workspace_id: str):
+        """Remove only the selected managed project and its metadata."""
+        with self._mutation_lock:
+            directory = self._directory(workspace_id)
+            files = self.files_directory(workspace_id)
+            if files.is_symlink() or not files.resolve().is_relative_to((self.project_root or directory).resolve()):
+                raise WorkbenchError('invalid_workspace', 'Project path escapes its managed directory')
+            for root in (files, directory):
+                if any(item.is_symlink() or (hasattr(item, 'is_junction') and item.is_junction()) for item in root.rglob('*')):
+                    raise WorkbenchError('invalid_workspace', 'Remove linked items before deleting this project')
+            if files != directory / 'files':
+                shutil.rmtree(files)
+            shutil.rmtree(directory)
+            return {'workspace_id': workspace_id, 'deleted': True}
+
     def read(self, workspace_id: str, name: str):
         path = self._file(workspace_id, name)
         if not path.is_file():

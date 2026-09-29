@@ -99,6 +99,19 @@ class Workbench:
         response=self.model.conversation_answer(request,history) if action=='answer' else ''
         return {'action':action,'response':response,'target':'','document_scope':'focused'}
 
+    def _agent_document_followup(self, goal, history, workspace_id):
+        from router.tool_registry import explicit_operation_requested
+        if workspace_id or not history or re.search(r'\b[\w.-]+\.(?:txt|md)\b',goal,re.I) or not explicit_operation_requested(goal,'document_update') or not re.search(r'\b(?:it|that file|the file|the doc|document)\b',goal,re.I):
+            return None
+        names={item['display_name'] for item in self.documents()}
+        for entry in reversed(history[-8:]):
+            if not isinstance(entry,str):continue
+            match=re.match(r'Assistant: Completed: document (?:create|update) (.+?)\.?$',entry)
+            if not match:continue
+            name=match.group(1).rstrip('.')
+            if name in names and name.lower().endswith(('.txt','.md')):return name
+        return None
+
     def _lease(self,capability,required_context=None):
         trace=CURRENT_ROUTE.get()
         select=getattr(self.router,'select_model',None)
@@ -676,6 +689,12 @@ Path('/output/project-sync.json').write_bytes(payload)
                     workspace_metadata=[]
                 plan=self._cpu_readonly_plan(goal,history,mode='agent') or self.model.plan_task(goal,selected_metadata,workspace_metadata,[item[:1000] for item in (history or [])[-8:] if isinstance(item,str)]+
                                           [f'{len(document_ids or [])} indexed documents selected; workspace selected: {bool(workspace_id)}'])
+                # A completed library creation followed by "add details to it" is
+                # an edit of that exact document, even if no document is connected
+                # for retrieval. Never infer a target from mere library presence.
+                followup_document=self._agent_document_followup(goal,history,workspace_id)
+                if followup_document:
+                    plan={'action':'application_tools','target':followup_document,'response':'','document_scope':'focused'}
             finally:self.ask_lock.release()
             if job and job.cancel.is_set():raise WorkbenchError('cancelled','Task stopped after request planning')
             trace=CURRENT_ROUTE.get()
@@ -697,7 +716,8 @@ Path('/output/project-sync.json').write_bytes(payload)
                     # from the optional read/reference selection. No contents are read.
                     catalog=[{'name':doc['display_name'],'document_id':doc['document_id']} for doc in self.documents()]
                     schedules=[{'id':item['id'],'name':item['name'],'paused':item['paused']} for item in self.automations.list()]
-                    operations=self.model.plan_application_tools(goal,catalog,workspace_metadata,history,automations=schedules)
+                    operations=([{'tool':'document_update','target':followup_document,'value':goal,'input':''}]
+                                if followup_document else self.model.plan_application_tools(goal,catalog,workspace_metadata,history,automations=schedules))
                 finally:self.ask_lock.release()
                 result=ApplicationTools(self,workspace_id,job,document_ids,goal=goal).execute(operations,task)
                 checks={'workflow_returned':True,'workflow_succeeded':result['state']=='completed'}

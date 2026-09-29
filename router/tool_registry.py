@@ -21,7 +21,7 @@ def explicit_operation_requested(goal, operation):
     text=re.sub(r"\b(?:do\s+not|don't|don’t|without|never|no)\b[^.;,\n]*",'',text,flags=re.I)
     verbs={
         'file_edit':r'create|write|generate|modify|edit|change|fix|repair|solve|update|replace|implement|add|make',
-        'document_create':r'create|write|add|make', 'document_update':r'update|modify|edit|change|rewrite|expand|detail|make', 'document_import':r'import|upload|add',
+        'document_create':r'create|write|add|make', 'document_update':r'update|modify|edit|change|rewrite|expand|details?|add|make', 'document_import':r'import|upload|add',
         'document_rename':r'rename', 'document_move':r'move', 'document_copy':r'copy|duplicate',
         'document_delete':r'delete|remove', 'file_delete':r'delete|remove',
         'document_duplicates':r'find|list|show|check|identify', 'document_deduplicate':r'delete|remove|deduplicate',

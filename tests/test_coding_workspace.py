@@ -35,6 +35,24 @@ def workspace(tmp_path):
     return work, workspace_id
 
 
+def test_delete_project_removes_only_selected_workspace(tmp_path):
+    projects=tmp_path/'Projects'
+    work=CodingWorkspace(tmp_path/'data',projects)
+    first=work.create('Delete me')['workspace_id']
+    second=work.create('Keep me')['workspace_id']
+    first_path=work.files_directory(first)
+    second_path=work.files_directory(second)
+    work.write(first,'nature.txt','nature')
+    work.write(second,'keep.txt','keep')
+    result=work.delete(first)
+    assert result['workspace_id']==first
+    assert not first_path.exists()
+    assert not (work.root/first).exists()
+    assert second_path.is_dir()
+    assert work.read(second,'keep.txt')['content']=='keep'
+    with pytest.raises(WorkbenchError):work.delete(first)
+
+
 def test_workspace_file_boundary_and_roundtrip(tmp_path):
     work, workspace_id = workspace(tmp_path)
     assert work.read(workspace_id, 'solution.py')['content'].endswith('return 0\n')

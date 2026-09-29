@@ -54,6 +54,10 @@ export class CodingWorkspaceService {
 		return apiFetch('/coding/workspaces/' + encodeURIComponent(id));
 	}
 
+	static delete(id: string): Promise<{workspace_id: string; deleted: boolean}> {
+		return apiFetch('/coding/workspaces/' + encodeURIComponent(id), {method: 'DELETE'});
+	}
+
 	static read(id: string, name: string): Promise<{ name: string; content: string; sha256: string; bytes?: number; binary?: boolean; editable?: boolean }> {
 		return apiFetch('/coding/workspaces/' + encodeURIComponent(id) + '/files/' + encodeURIComponent(name));
 	}

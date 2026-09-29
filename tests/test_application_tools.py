@@ -260,3 +260,29 @@ def test_chat_application_plan_remains_inline_without_mutation(service):
     result=service.ask('Create a txt file explaining nature',[])
     assert result['status']=='conversation' and 'Nature' in result['answer']
     assert service.documents()==[]
+
+
+def test_document_update_accepts_details_followup(service):
+    from router.tool_registry import explicit_operation_requested
+    assert explicit_operation_requested('so can u add details to it', 'document_update')
+    source=service.sources_dir/'nature.txt';source.write_text('Nature includes life.',encoding='utf-8')
+    service.import_file(source)
+    result=ApplicationTools(service,goal='so can u add details to it').execute(
+        [op('document_update','nature.txt','Nature includes land, water, atmosphere and life.')],
+        service.tasks.create('test',[]))
+    assert result['state']=='completed'
+
+
+def test_agent_followup_resolves_only_explicit_prior_document(service):
+    source=service.sources_dir/'nature_explanation.txt'
+    source.write_text('Nature includes life.',encoding='utf-8')
+    service.import_file(source)
+    history=['User: can u add a txt file explaining nature',
+             'Assistant: Completed: document create nature_explanation.txt.',
+             'User: can u add more details for the file that is about nature',
+             'Assistant: The source is brief.']
+    assert service._agent_document_followup('so can u add details to it',history,None)=='nature_explanation.txt'
+    assert service._agent_document_followup('add details to it',['Assistant: Completed: document update nature_explanation.txt.'],None)=='nature_explanation.txt'
+    assert service._agent_document_followup('describe nature',history,None) is None
+    assert service._agent_document_followup('add details to it in another.txt',history,None) is None
+    assert service._agent_document_followup('so can u add details to it',history,'selected-project') is None

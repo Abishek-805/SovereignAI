@@ -15,10 +15,9 @@ CASES = {
  'main.cpp': '#include <iostream>\nint main(){std::cout<<42;}',
  'main.go': 'package main\nimport "fmt"\nfunc main(){fmt.Println(42)}',
  'main.rs': 'fn main(){println!("42");}',
- 'main.php': '<?php echo 42;', 'main.rb': 'puts 42', 'main.sh': 'echo 42',
+ 'main.php': '<?php echo 42;', 'main.sh': 'echo 42',
  'main.sql': 'CREATE TABLE numbers (n INTEGER); INSERT INTO numbers VALUES (42);',
- 'main.cs': 'Console.WriteLine(42);',
- 'main.R': 'cat(42)', 'main.lua': 'print(42)', 'main.pl': 'print "42\\n";',
+
 }
 
 def main():

@@ -105,3 +105,7 @@ With Docker Desktop's Linux engine running, build and verify the image before en
 ```
 
 The sandbox verifier records the pinned image only after its isolation probes pass. The language verifier checks compilation and execution and records the actual results. First-time Docker builds download compilers and can take time; subsequent builds reuse layers. Third-party package downloads are blocked during execution, and standalone adapters do not imply full framework, GUI, debugger or package-project support.
+
+Chat and Agent have separate behavior: Chat returns requested code/file contents inline and never automatically submits them to Agent. Use the Agent button explicitly to work on files. Agent creates ordinary text/code files in its selected project; explicit Knowledge text updates retain document identity and earlier source snapshots. The default Code sandbox has 11 program adapters; C#, Ruby, R, Lua and Perl were removed to reduce its footprint. See the current compatibility table before using Run.
+
+On the tested 16 GB RAM / 4 GB RTX 3050 A laptop, the existing Qwen3-4B model passed isolated project TXT creation and Knowledge document revision checks. Qwen3.5-4B Q4_K_M was identified as a candidate, but its download failed at the CDN; it has not been evaluated or enabled. Installing a larger model alone does not fix application routing or file publication. Model downloads must pass checksum and live task checks before activation.

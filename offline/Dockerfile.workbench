@@ -1,12 +1,8 @@
 FROM python:3.12-alpine3.24
-RUN apk add --no-cache nodejs npm openjdk17-jdk build-base go rust cargo php ruby sqlite bash \
+RUN apk add --no-cache nodejs npm openjdk17-jdk build-base go rust cargo php sqlite bash \
     && npm install -g typescript@5.9.3 \
     && npm cache clean --force
 ENV HOME=/output TMPDIR=/output
 WORKDIR /output
 
 RUN GOCACHE=/opt/go-cache go build std && chmod -R a+rX /opt/go-cache
-
-RUN apk add --no-cache dotnet10-sdk R perl lua5.4
-# .NET named mutexes use /tmp. Keep temporary writes in the isolated output mount.
-RUN rm -rf /tmp && ln -s /output /tmp

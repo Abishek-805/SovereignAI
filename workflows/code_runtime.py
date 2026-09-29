@@ -6,8 +6,8 @@ from backend.contracts import WorkbenchError
 
 LANGUAGES = {'.py':'Python', '.js':'JavaScript', '.mjs':'JavaScript', '.cjs':'JavaScript',
              '.ts':'TypeScript', '.java':'Java', '.c':'C', '.cpp':'C++', '.cc':'C++',
-             '.go':'Go', '.rs':'Rust', '.php':'PHP', '.rb':'Ruby', '.sh':'Shell',
-             '.sql':'SQL', '.cs':'C#', '.r':'R', '.lua':'Lua', '.pl':'Perl', '.cxx':'C++', '.bash':'Shell',
+             '.go':'Go', '.rs':'Rust', '.php':'PHP', '.sh':'Shell',
+             '.sql':'SQL', '.cxx':'C++', '.bash':'Shell',
              '.html':'HTML', '.htm':'HTML', '.css':'CSS', '.json':'JSON', '.md':'Markdown', '.txt':'Text'}
 
 
@@ -61,27 +61,7 @@ elif suffix == '.rs':
     command(['rustc',target,'-o','/output/app'])
     if run: command(['/output/app'])
 elif suffix == '.php': command(['php',target] if run else ['php','-l',target])
-elif suffix == '.rb': command(['ruby',target] if run else ['ruby','-c',target])
 elif suffix in ('.sh','.bash'): command(['bash',target] if run else ['bash','-n',target])
-elif suffix == '.lua': command(['lua5.4',target] if run else ['luac5.4','-p',target])
-elif suffix == '.pl': command(['perl',target] if run else ['perl','-c',target])
-elif suffix == '.r': command(['Rscript',target] if run else ['Rscript','-e','parse(file=commandArgs(TRUE)[1])',target])
-elif suffix == '.cs':
-    os.environ.update(DOTNET_CLI_HOME='/output', DOTNET_SKIP_FIRST_TIME_EXPERIENCE='1',
-                      DOTNET_CLI_TELEMETRY_OPTOUT='1', DOTNET_NOLOGO='1', NUGET_PACKAGES='/output/nuget',
-                      DOTNET_GCHeapHardLimit='08000000', DOTNET_gcServer='0', DOTNET_PROCESSOR_COUNT='1')
-    project=Path('/output/csharp');project.mkdir()
-    shutil.copy2(target,project/'Program.cs')
-    # Compile directly against installed framework references: no NuGet restore,
-    # MSBuild workers or compiler server, and no package/project claims.
-    compiler=next(Path('/usr/lib/dotnet/sdk').glob('*/Roslyn/bincore/csc.dll'))
-    references=sorted(Path('/usr/lib/dotnet/packs/Microsoft.NETCore.App.Ref').glob('*/ref/net10.0/*.dll'))
-    if not references: raise RuntimeError('Local .NET framework references are missing')
-    (project/'GlobalUsings.cs').write_text('global using System; global using System.Collections.Generic; global using System.IO; global using System.Linq; global using System.Threading; global using System.Threading.Tasks;')
-    command(['dotnet',str(compiler),'-nologo','-target:exe','-nostdlib+','-out:'+str(project/'App.dll'),
-             *['-r:'+str(reference) for reference in references],str(project/'GlobalUsings.cs'),str(project/'Program.cs')])
-    (project/'App.runtimeconfig.json').write_text(json.dumps({'runtimeOptions':{'tfm':'net10.0','framework':{'name':'Microsoft.NETCore.App','version':'10.0.0'},'rollForward':'LatestPatch'}}))
-    if run: command(['dotnet',str(project/'App.dll')])
 elif suffix == '.sql':
     import sqlite3
     db = sqlite3.connect(':memory:')

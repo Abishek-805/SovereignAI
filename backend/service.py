@@ -271,6 +271,12 @@ class Workbench:
                     return {'status':'conversation','answer':intent['response'],'sources':[],
                             'task_id':uuid4().hex,'timings':{'total_seconds':time.perf_counter()-started},
                             'routing':{'capability':route,'model':getattr(getattr(self.registry,'specs',{}).get(route),'alias','sovereign-text')}}
+                if intent['action'] in {'application_tools','inspect_code','analyze_image'}:
+                    # Chat supplies content inline; planning cannot grant mutation or change mode.
+                    response=self.model.conversation_answer(question,history)
+                    return {'status':'conversation','answer':response,'sources':[],
+                            'task_id':uuid4().hex,'timings':{'total_seconds':time.perf_counter()-started},
+                            'routing':{'capability':route,'model':'sovereign-text'}}
                 if intent['action']=='edit_code':
                     if job:job.progress('Writing code')
                     generated=self.model.inline_code_answer(question,history,intent.get('target',''))

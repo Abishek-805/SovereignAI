@@ -36,17 +36,10 @@ def test_runner_keeps_nested_program_dependency_but_excludes_root_wrapper(tmp_pa
     assert (outputs/'helpers'/'program.py').read_bytes()==dependency
 
 
-@pytest.mark.parametrize(('name','executable'), [('main.cs','dotnet'),('main.R','Rscript'),('main.lua','lua5.4'),('main.pl','perl')])
-def test_added_adapters_have_fixed_offline_check_and_run_commands(name, executable):
-    checked=runner(name,mode='check')
-    executed=runner(name,mode='run')
-    assert executable in checked and executable in executed
-    assert name in checked and name in executed
-    if name.endswith('.cs'):
-        assert 'Microsoft.NETCore.App.Ref' in executed
-        assert 'csc.dll' in executed
-        assert "'dotnet','build'" not in executed
-        assert "DOTNET_PROCESSOR_COUNT='1'" in executed
+@pytest.mark.parametrize('name', ['main.cs','main.R','main.lua','main.pl','main.rb'])
+def test_removed_heavy_or_optional_adapters_are_not_enabled(name):
+    with pytest.raises(WorkbenchError,match='no local execution adapter'):
+        runner(name,mode='run')
 
 
 def test_unknown_language_is_not_falsely_enabled():

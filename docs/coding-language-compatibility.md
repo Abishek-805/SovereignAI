@@ -18,23 +18,22 @@ Run executes the selected entry file in the validated Docker Linux image. No cod
 | Java | java | JDK 17; public class must match filename |
 | C | c | GCC |
 | C++ | cpp, cc, cxx | G++ |
-| C# | cs | .NET 10/Roslyn; standalone source file with installed framework references, no NuGet downloads |
 | Go | go | Go, offline |
 | Rust | rs | rustc; standalone source file |
 | PHP | php | PHP CLI |
-| Ruby | rb | Ruby |
 | Shell | sh, bash | Bash on Linux |
 | SQL | sql | SQLite, not a remote database |
-| R | r, R | Rscript |
-| Lua | lua | Lua 5.4 |
-| Perl | pl | Perl |
 
-Kotlin, Swift, Dart, Scala, PowerShell, F#, JSX/TSX and other project/framework formats may be edited with highlighting, but do not have a standalone Run adapter here. A language's platform-specific libraries, package builds, GUI applications, framework servers and debugger are not implied by this table.
+C#, Ruby, R, Lua, Perl, Kotlin, Swift, Dart, Scala, PowerShell, F#, JSX/TSX and other project/framework formats may be edited with highlighting, but do not have a standalone Run adapter here. A language's platform-specific libraries, package builds, GUI applications, framework servers and debugger are not implied by this table.
 
-Live sandbox results are recorded in `benchmarks/workbench-language-matrix.json`. Run `scripts/prepare-workbench-sandbox.ps1` after installing the application dependencies. It activates the pinned image only after every language check and the sandbox isolation probes pass. The .NET adapter bounds heap/thread usage and compiles directly against installed framework references; it does not run package restore or MSBuild worker servers.
+Live sandbox results are recorded in `benchmarks/workbench-language-matrix.json`. Run `scripts/prepare-workbench-sandbox.ps1` after installing the application dependencies. It activates the pinned image only after every language check and the sandbox isolation probes pass. The default image omits .NET, Ruby, R, Lua and Perl to reduce installation size. Docker program memory remains bounded at 512 MiB regardless of how many compiler packages are installed.
 
-## Verified release checks (2026-09-29)
+## Earlier extended-image checks (2026-09-29)
 
 All 16 listed program languages passed both their check and run fixture in the final pinned Linux image `sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b`. The five isolation probes passed: normal output, blocked network, read-only root, read-only input and non-root user. The 512 MiB / one CPU execution policy was retained. These small fixtures establish adapter availability, not compatibility with every library or application framework.
 
 The pre-fix matrix is retained in `benchmarks/workbench-language-matrix-pre-tmp-fix.json`: C# failed before temporary-directory handling was corrected. A later .NET/MSBuild attempt exhausted its bounded memory; the final direct Roslyn adapter passed without increasing the policy limits. Only the final matrix was activated.
+
+## Current slim-image checks (2026-09-29)
+
+All 11 remaining program adapters passed both check and execution. All five isolation probes passed for image `sha256:5370db5915e0774ba92a758199430a762f2cbc45515ed2958ca8e9a58faef272`. Reported image size is 2.12 GB versus 3.24 GB for the earlier extended image. The current language matrix records these 11 adapters; the 16-adapter image is superseded. Removing images/cache frees Docker storage internally; its Windows virtual-disk file may retain its allocated physical size until separately compacted.

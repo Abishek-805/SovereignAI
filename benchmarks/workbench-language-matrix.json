@@ -7,8 +7,8 @@
     "executed": true,
     "stdout": "42\nExecution finished.\n",
     "stderr": "",
-    "seconds": 5.31,
-    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
+    "seconds": 3.59,
+    "image_id": "sha256:5370db5915e0774ba92a758199430a762f2cbc45515ed2958ca8e9a58faef272"
   },
   "src/main.js": {
     "passed": true,
@@ -18,8 +18,8 @@
     "executed": true,
     "stdout": "42\nExecution finished.\n",
     "stderr": "",
-    "seconds": 3.37,
-    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
+    "seconds": 1.98,
+    "image_id": "sha256:5370db5915e0774ba92a758199430a762f2cbc45515ed2958ca8e9a58faef272"
   },
   "main.ts": {
     "passed": true,
@@ -29,8 +29,8 @@
     "executed": true,
     "stdout": "42\nExecution finished.\n",
     "stderr": "",
-    "seconds": 40.9,
-    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
+    "seconds": 7.18,
+    "image_id": "sha256:5370db5915e0774ba92a758199430a762f2cbc45515ed2958ca8e9a58faef272"
   },
   "Main.java": {
     "passed": true,
@@ -40,8 +40,8 @@
     "executed": true,
     "stdout": "42\nExecution finished.\n",
     "stderr": "",
-    "seconds": 20.91,
-    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
+    "seconds": 3.57,
+    "image_id": "sha256:5370db5915e0774ba92a758199430a762f2cbc45515ed2958ca8e9a58faef272"
   },
   "main.c": {
     "passed": true,
@@ -51,8 +51,8 @@
     "executed": true,
     "stdout": "42\nExecution finished.\n",
     "stderr": "",
-    "seconds": 12.13,
-    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
+    "seconds": 5.33,
+    "image_id": "sha256:5370db5915e0774ba92a758199430a762f2cbc45515ed2958ca8e9a58faef272"
   },
   "main.cpp": {
     "passed": true,
@@ -62,8 +62,8 @@
     "executed": true,
     "stdout": "42Execution finished.\n",
     "stderr": "",
-    "seconds": 5.46,
-    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
+    "seconds": 3.22,
+    "image_id": "sha256:5370db5915e0774ba92a758199430a762f2cbc45515ed2958ca8e9a58faef272"
   },
   "main.go": {
     "passed": true,
@@ -73,8 +73,8 @@
     "executed": true,
     "stdout": "42\nExecution finished.\n",
     "stderr": "",
-    "seconds": 6.2,
-    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
+    "seconds": 5.21,
+    "image_id": "sha256:5370db5915e0774ba92a758199430a762f2cbc45515ed2958ca8e9a58faef272"
   },
   "main.rs": {
     "passed": true,
@@ -84,8 +84,8 @@
     "executed": true,
     "stdout": "42\nExecution finished.\n",
     "stderr": "",
-    "seconds": 9.37,
-    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
+    "seconds": 13.89,
+    "image_id": "sha256:5370db5915e0774ba92a758199430a762f2cbc45515ed2958ca8e9a58faef272"
   },
   "main.php": {
     "passed": true,
@@ -95,19 +95,8 @@
     "executed": true,
     "stdout": "42Execution finished.\n",
     "stderr": "",
-    "seconds": 1.88,
-    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
-  },
-  "main.rb": {
-    "passed": true,
-    "check_exit_code": 0,
-    "check_stderr": "",
-    "exit_code": 0,
-    "executed": true,
-    "stdout": "42\nExecution finished.\n",
-    "stderr": "",
-    "seconds": 3.73,
-    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
+    "seconds": 3.94,
+    "image_id": "sha256:5370db5915e0774ba92a758199430a762f2cbc45515ed2958ca8e9a58faef272"
   },
   "main.sh": {
     "passed": true,
@@ -117,8 +106,8 @@
     "executed": true,
     "stdout": "42\nExecution finished.\n",
     "stderr": "",
-    "seconds": 3.38,
-    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
+    "seconds": 3.18,
+    "image_id": "sha256:5370db5915e0774ba92a758199430a762f2cbc45515ed2958ca8e9a58faef272"
   },
   "main.sql": {
     "passed": true,
@@ -128,51 +117,7 @@
     "executed": true,
     "stdout": "Execution finished.\n",
     "stderr": "",
-    "seconds": 3.51,
-    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
-  },
-  "main.cs": {
-    "passed": true,
-    "check_exit_code": 0,
-    "check_stderr": "",
-    "exit_code": 0,
-    "executed": true,
-    "stdout": "42\nExecution finished.\n",
-    "stderr": "",
-    "seconds": 6.51,
-    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
-  },
-  "main.R": {
-    "passed": true,
-    "check_exit_code": 0,
-    "check_stderr": "",
-    "exit_code": 0,
-    "executed": true,
-    "stdout": "42Execution finished.\n",
-    "stderr": "",
-    "seconds": 5.71,
-    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
-  },
-  "main.lua": {
-    "passed": true,
-    "check_exit_code": 0,
-    "check_stderr": "",
-    "exit_code": 0,
-    "executed": true,
-    "stdout": "42\nExecution finished.\n",
-    "stderr": "",
-    "seconds": 3.21,
-    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
-  },
-  "main.pl": {
-    "passed": true,
-    "check_exit_code": 0,
-    "check_stderr": "main.pl syntax OK\n",
-    "exit_code": 0,
-    "executed": true,
-    "stdout": "42\nExecution finished.\n",
-    "stderr": "",
-    "seconds": 1.87,
-    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
+    "seconds": 3.33,
+    "image_id": "sha256:5370db5915e0774ba92a758199430a762f2cbc45515ed2958ca8e9a58faef272"
   }
 }

@@ -238,3 +238,25 @@ def test_application_file_edit_preserves_near_limit_goal_without_appending(servi
     result=ApplicationTools(service,workspace,goal=goal).execute(
         [op('file_edit','hello.py','Model-supplied text must not replace the request')],service.tasks.create('test',[]))
     assert result['state']=='completed' and received==[goal]
+
+
+def test_document_update_retains_identity_and_original_snapshot(service):
+    source=service.sources_dir/'nature.txt';source.write_text('Nature includes life.',encoding='utf-8')
+    first=service.import_file(source)
+    task=service.tasks.create('test',[])
+    result=ApplicationTools(service,goal='Make the doc more detailed about Earth nature').execute(
+        [op('document_update','nature.txt','Nature on Earth includes ecosystems, oceans and forests.')],task)
+    assert result['state']=='completed'
+    docs=service.documents()
+    assert len(docs)==1 and docs[0]['document_id']==first['document_id']
+    assert docs[0]['active_hash']!=first['active_hash']
+    assert (service.sources_dir/(first['active_hash']+'.txt')).read_text()=='Nature includes life.'
+    assert source.read_text()=='Nature includes life.'
+
+
+def test_chat_application_plan_remains_inline_without_mutation(service):
+    service.model.plan_task=lambda *_:{'action':'application_tools','target':'','response':''}
+    service.model.conversation_answer=lambda *_:'Nature includes forests and oceans.'
+    result=service.ask('Create a txt file explaining nature',[])
+    assert result['status']=='conversation' and 'Nature' in result['answer']
+    assert service.documents()==[]

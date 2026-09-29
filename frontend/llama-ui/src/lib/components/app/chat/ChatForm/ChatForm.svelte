@@ -370,25 +370,8 @@
 				openAgent(agentNavigation[1]?.replace(/^and\s+/i, '').trim() || '');
 				return;
 			}
-			const projectAction =
-				/^(?:(?:can|could|would)\s+(?:you|u)\s+)?(?:please\s+)?(?:create|write|add|edit|modify|delete|remove|fix|refactor|build)\b/i.test(
-					request
-				) && /\b(?:file|folder|project|codebase|workspace)\b/i.test(request);
-			if (projectAction) {
-				openAgent(request, Boolean(localStorage.getItem('sovereign-active-workspace')));
-				return;
-			}
-			if (/^calculate:\s*\S/i.test(request)) {
-				openAgent(request, true);
-				return;
-			}
-			const arithmetic = request.match(
-				/^(?:what(?:'s| is)|calculate|compute)\s+([0-9.\s()+*/-]+)\??$/i
-			);
-			if (arithmetic && /[+*/-]/.test(arithmetic[1])) {
-				openAgent('Calculate: ' + arithmetic[1].trim(), true);
-				return;
-			}
+			// Chat always answers inline. Only explicit navigation or the Agent button changes mode.
+
 		}
 		onSubmit?.();
 	}

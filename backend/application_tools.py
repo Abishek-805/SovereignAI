@@ -10,6 +10,7 @@ from router.tool_registry import ToolRegistry, ToolContract
 
 OPERATIONS = {
     'document_create': 'Create a new text/Markdown document; target is its name, value its text.',
+    'document_update': 'Update the text of one existing Knowledge TXT/Markdown document; target is its exact name, value is complete replacement text. Never create it again.',
     'document_import': 'Index a file already in the selected project; target is its relative path.',
     'document_rename': 'Rename one library document; target is current name, value is new name.',
     'document_move': 'Move one library document into a library folder; value is folder.',
@@ -82,6 +83,38 @@ class ApplicationTools:
             with path.open('x', encoding='utf-8') as source:
                 source.write(value)
             return self.service.import_file(path)
+        if operation == 'document_update':
+            doc = self._document(target)
+            if doc.get('source_extension') not in {'.txt', '.md'}:
+                raise WorkbenchError('unsupported_file', 'Text updates support TXT and Markdown; replace other formats through Knowledge.')
+            generator = getattr(self.service.model, 'document_text', None)
+            if callable(generator):
+                original = self.service.sources_dir / (doc['active_hash'] + doc['source_extension'])
+                if not original.is_file():
+                    raise WorkbenchError('source_missing', 'The current document snapshot is missing')
+                current = original.read_text(encoding='utf-8-sig')
+                if len(current.encode('utf-8')) > 32000:
+                    raise WorkbenchError('context_budget', 'This document exceeds the bounded text-edit input budget')
+                if not self.service.ask_lock.acquire(blocking=False):
+                    raise WorkbenchError('busy', 'Another model task is running')
+                try:
+                    self.service._lease('text')
+                    value = generator(self.goal, current, doc['display_name'])
+                finally:
+                    self.service.ask_lock.release()
+            if self.job.cancel.is_set():
+                raise WorkbenchError('cancelled', 'Task stopped before publishing the update')
+            if not value.strip() or len(value.encode('utf-8')) > 128000:
+                raise WorkbenchError('invalid_file', 'Provide document text under 128 KB')
+            # Publish a new source/version; original snapshots and document identity survive.
+            from uuid import uuid4
+            path = self.service.sources_dir / (uuid4().hex + doc['source_extension'])
+            path.write_text(value, encoding='utf-8')
+            try:
+                return self.service.import_file(path, document_id=doc['document_id'],
+                    display_name=doc['display_name'], expected_hash=doc['active_hash'])
+            finally:
+                path.unlink(missing_ok=True)
         if operation == 'document_import':
             path = self.service.coding._file(self._workspace(), target)
             if not path.is_file():

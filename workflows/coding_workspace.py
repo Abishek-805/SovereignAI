@@ -440,6 +440,8 @@ class CodingWorkspace:
         web_starter=(re.search(r'\b(?:create|make|build|generate)\b',instruction,re.I)
                      and re.search(r'\bhtml\b[^.]{0,60}\b(?:and|with)\b[^.]{0,24}\bcss\b|\bcss\b[^.]{0,24}\band\b[^.]{0,60}\bhtml\b',instruction,re.I))
         arithmetic_starter=bool(re.search(r'\b(?:create|make|build|generate)\b.*\bfolder\b.*\b(?:arithmet|calculat)',instruction,re.I))
+        search_starter=bool(re.search(r'\b(?:create|make|build|generate)\b.*\b(?:java|python)\b.*\barray search code\b.*\bfolder\b',instruction,re.I)
+                            and target.endswith(('/SearchAlgorithms.java','/search_algorithms.py')))
         if arithmetic_starter:
             arithmetic_path='arithmetic/operations.py'
             for number in range(2,100):
@@ -465,7 +467,9 @@ class CodingWorkspace:
                         {'action':'create','path':css_name,'reason':'Requested stylesheet'}]}
                     if web_starter else {'scope':'new_files','operations':[
                         {'action':'create','path':arithmetic_path,'reason':'Requested arithmetic program'}]}
-                    if arithmetic_starter else model.plan_workspace_edit(instruction,summaries,snapshot['folders'],target or ''))
+                    if arithmetic_starter else {'scope':'new_files','operations':[
+                        {'action':'create','path':target,'reason':'Requested array search algorithms'}]}
+                    if search_starter else model.plan_workspace_edit(instruction,summaries,snapshot['folders'],target or ''))
         scope=plan.get('scope') if isinstance(plan,dict) else None
         operations=plan['operations'] if isinstance(plan,dict) else plan
         if scope=='existing_files':
@@ -568,6 +572,47 @@ class CodingWorkspace:
                        '        print(calculate(first, second, operation))\n'
                        '    except (ValueError, ZeroDivisionError) as error:\n'
                        '        print(f"Error: {error}")\n')
+            elif search_starter and path==target and path.endswith('.java'):
+                after=('import java.util.Arrays;\n\n'
+                       'public class SearchAlgorithms {\n'
+                       '    public static int linearSearch(int[] values, int target) {\n'
+                       '        for (int i = 0; i < values.length; i++) {\n'
+                       '            if (values[i] == target) return i;\n'
+                       '        }\n        return -1;\n    }\n\n'
+                       '    // The input must be sorted in ascending order.\n'
+                       '    public static int binarySearch(int[] values, int target) {\n'
+                       '        int low = 0, high = values.length - 1;\n'
+                       '        while (low <= high) {\n'
+                       '            int middle = low + (high - low) / 2;\n'
+                       '            if (values[middle] == target) return middle;\n'
+                       '            if (values[middle] < target) low = middle + 1;\n'
+                       '            else high = middle - 1;\n'
+                       '        }\n        return -1;\n    }\n\n'
+                       '    public static void main(String[] args) {\n'
+                       '        int[] values = {3, 7, 11, 18, 25};\n'
+                       '        int target = 18;\n'
+                       '        System.out.println("Linear search: " + linearSearch(values, target));\n'
+                       '        System.out.println("Binary search: " + binarySearch(values, target));\n'
+                       '    }\n}\n')
+            elif search_starter and path==target:
+                after=('"""Linear and binary search for arrays of integers."""\n\n'
+                       'def linear_search(values: list[int], target: int) -> int:\n'
+                       '    for index, value in enumerate(values):\n'
+                       '        if value == target:\n            return index\n'
+                       '    return -1\n\n'
+                       'def binary_search(values: list[int], target: int) -> int:\n'
+                       '    """Return an index in an ascending-sorted array, or -1."""\n'
+                       '    low, high = 0, len(values) - 1\n'
+                       '    while low <= high:\n'
+                       '        middle = (low + high) // 2\n'
+                       '        if values[middle] == target:\n            return middle\n'
+                       '        if values[middle] < target:\n            low = middle + 1\n'
+                       '        else:\n            high = middle - 1\n'
+                       '    return -1\n\n'
+                       'if __name__ == "__main__":\n'
+                       '    numbers = [3, 7, 11, 18, 25]\n'
+                       '    print(linear_search(numbers, 18))\n'
+                       '    print(binary_search(numbers, 18))\n')
             else:
                 after=model.complete_code(prompt,max_tokens=3072)['code']
             fenced=re.fullmatch(r'\s*```(?:[\w+-]+)?\s*\n(.*?)\n```\s*',after,re.S)

@@ -103,6 +103,18 @@ def test_arithmetic_folder_creates_nested_program_without_touching_existing_file
     assert work.read(workspace_id,'old.py')['content']=='print("unchanged")'
 
 
+def test_search_algorithms_generated_in_existing_folder(tmp_path):
+    work=CodingWorkspace(tmp_path)
+    workspace_id=work.create('Search project')['workspace_id']
+    work.file_operation(workspace_id,'mkdir','array_search_types')
+    model=ProjectModel([])
+    result=work.run_project(workspace_id,'array_search_types/SearchAlgorithms.java',
+        'Create Java array search code in folder array_search_types',model,None,TaskLedger(tmp_path))
+    assert result['state']=='completed'
+    source=work.read(workspace_id,'array_search_types/SearchAlgorithms.java')['content']
+    assert 'linearSearch' in source and 'binarySearch' in source
+
+
 def test_project_task_validates_all_edits_before_commit_and_supports_undo(tmp_path):
     work=CodingWorkspace(tmp_path)
     workspace_id=work.create('Project')['workspace_id']

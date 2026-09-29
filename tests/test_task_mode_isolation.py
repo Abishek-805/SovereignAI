@@ -91,6 +91,35 @@ def test_agent_can_create_arithmetic_folder_without_filename_clarification(servi
     assert calls[0][:2]==(workspace,'')
 
 
+def test_agent_search_folder_request_creates_code_not_just_empty_folder(service,monkeypatch):
+    workspace=service.coding.create('Search project')['workspace_id']
+    service.model.plan_task=lambda *_:{'action':'application_tools','response':'','target':''}
+    calls=[]
+    monkeypatch.setattr(service,'run_coding_project_task',lambda *args,**kwargs:
+        calls.append(args) or {'state':'completed','changes':[{'action':'create','path':'array_search_types/search_algorithms.py'}],
+            'checks':{'container_executed':False}})
+    result=service.run_auto_agent('can u create a folde holding different type of search in an array',[],workspace)
+    assert result['status']=='completed'
+    assert calls[0][1]=='array_search_types/search_algorithms.py'
+
+
+@pytest.mark.parametrize('goal',["i want code in them too",
+    'put the different type of search operation codes in java in that folder'])
+def test_agent_uses_recent_created_folder_for_code_followup(service,monkeypatch,goal):
+    workspace=service.coding.create('Search followup')['workspace_id']
+    service.coding.file_operation(workspace,'mkdir','array_search_types')
+    service.model.plan_task=lambda *_:{'action':'edit_code','response':'','target':''}
+    calls=[]
+    monkeypatch.setattr(service,'run_coding_project_task',lambda *args,**kwargs:
+        calls.append(args) or {'state':'completed','changes':[{'action':'create','path':args[1]}],
+            'checks':{'container_executed':False}})
+    result=service.run_auto_agent(goal,[],workspace,history=[
+        'User: can u create a folde holding different type of search in an array',
+        'Assistant: Completed: folder create array_search_types.'])
+    assert result['status']=='completed'
+    assert calls[0][1]=='array_search_types/'+('SearchAlgorithms.java' if 'java' in goal else 'search_algorithms.py')
+
+
 def test_agent_creates_code_in_empty_project_and_does_not_prefetch_sources(service, monkeypatch):
     service.model.plan_task=lambda *_: {'action':'edit_code','response':'','target':'division.py','expression':''}
     monkeypatch.setattr(service.coding,'get',lambda *_: {'files':[]})

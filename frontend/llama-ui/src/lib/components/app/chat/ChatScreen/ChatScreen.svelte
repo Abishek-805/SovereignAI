@@ -46,6 +46,20 @@
 	let isEmpty = $derived(
 		showCenteredEmpty && conversationsStore.activeMessages.length === 0 && !chatStore.isLoading
 	);
+	let emptyScrollReset = false;
+	$effect(() => {
+		if (!isEmpty) {
+			emptyScrollReset = false;
+			return;
+		}
+		if (emptyScrollReset) return;
+		emptyScrollReset = true;
+		// A new chat has no messages, so handleMessagesReady never runs. Clear
+		// the previous conversation's scroll offset before centering its welcome.
+		void tick().then(() => {
+			if (isEmpty) window.scrollTo(0, 0);
+		});
+	});
 	let activeErrorDialog = $derived(chatStore.errorDialogState);
 	let isServerLoading = $derived(serverStore.loading);
 	let hasPropsError = $derived(!!serverStore.error);
@@ -334,7 +348,10 @@
 {:else}
 	<div
 		style:--chat-form-bottom-position={chatFormBottomPosition}
-		class="chat-screen flex grow flex-col min-h-[calc(100dvh-1rem)] md:min-h-[calc(100dvh-1rem-var(--chat-tabs-offset,0px))] px-4 md:py-0 pt-12 pb-48 md:pb-[calc(var(--chat-form-height,10rem)+4rem)]"
+		class={[
+			'chat-screen flex grow flex-col min-h-[calc(100dvh-1rem)] md:min-h-[calc(100dvh-1rem-var(--chat-tabs-offset,0px))] px-4 md:py-0 pt-12 pb-48',
+			isEmpty ? 'md:pb-4' : 'md:pb-[calc(var(--chat-form-height,10rem)+4rem)]'
+		]}
 		ondragenter={dragAndDrop.dragHandlers.dragenter}
 		ondragleave={dragAndDrop.dragHandlers.dragleave}
 		ondragover={dragAndDrop.dragHandlers.dragover}

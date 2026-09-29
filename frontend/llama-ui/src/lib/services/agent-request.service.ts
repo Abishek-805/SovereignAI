@@ -9,7 +9,7 @@ export function agentConversationHistory(
 			`User: ${turn.instruction.slice(0, 1000)}`,
 			// Keep conversational context without replaying a whole evidence report
 			// or artifact body as the instruction for the next task.
-			...(turn.state !== 'failed' && turn.answer ? [`Assistant: ${turn.answer.slice(0, 500)}`] : [])
+			...(turn.state === 'failed' ? ['Assistant: Task failed.'] : turn.answer ? [`Assistant: ${turn.answer.slice(0, 500)}`] : [])
 		]);
 }
 

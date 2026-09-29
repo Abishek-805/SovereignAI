@@ -415,7 +415,8 @@ class CodingWorkspace:
             if progress:progress(label)
         if not isinstance(instruction,str) or not 1 <= len(instruction.strip()) <= 1000:
             raise WorkbenchError('sandbox_input','Enter a coding task under 1,000 characters')
-        sandbox._ready()
+        if sandbox is not None:
+            sandbox._ready()
         stage('Reading project structure')
         snapshot=self.get(workspace_id)
         raw_files=self.raw_files(workspace_id)
@@ -436,8 +437,13 @@ class CodingWorkspace:
         named_for_delete=[name for name in files if re.search(r'(?<![\w./-])'+re.escape(name)+r'(?![\w./-])',deletion_clause,re.I)]
         simple_delete=(explicit_delete and len(named_for_delete)==1 and
                        not re.search(r'\b(create|add|edit|modify|update|rename|move|copy|fix)\b',instruction,re.I))
+        web_starter=(not files and re.search(r'\b(?:create|make|build)\b',instruction,re.I)
+                     and re.search(r'\bhtml\b',instruction,re.I) and re.search(r'\bcss\b',instruction,re.I))
         plan=([{'action':'delete','path':named_for_delete[0],'reason':'Explicit single-file deletion'}]
-                    if simple_delete else model.plan_workspace_edit(instruction,summaries,snapshot['folders'],target or ''))
+                    if simple_delete else {'scope':'new_files','operations':[
+                        {'action':'create','path':'index.html','reason':'Requested HTML page'},
+                        {'action':'create','path':'style.css','reason':'Requested stylesheet'}]}
+                    if web_starter else model.plan_workspace_edit(instruction,summaries,snapshot['folders'],target or ''))
         scope=plan.get('scope') if isinstance(plan,dict) else None
         operations=plan['operations'] if isinstance(plan,dict) else plan
         if scope=='existing_files':
@@ -526,6 +532,21 @@ class CodingWorkspace:
                 after=model.complete_code(prompt,max_tokens=3072)['code']
             fenced=re.fullmatch(r'\s*```(?:[\w+-]+)?\s*\n(.*?)\n```\s*',after,re.S)
             if fenced:after=fenced.group(1).rstrip()+"\n"
+            # Small local models sometimes prepend a file label to generated
+            # source even when asked for contents only. Drop that label only
+            # when it names this exact output file.
+            label=re.match(r'^([^\r\n]+)\r?\n\s*\r?\n',after)
+            if label and label.group(1).strip().replace('\\','/').split('/')[-1]==Path(path).name:
+                after=after[label.end():]
+            if web_starter and path=='index.html':
+                if not re.search(r'<html\b',after,re.I) or not re.search(r'</head\s*>',after,re.I):
+                    raise WorkbenchError('generation_format','The model did not return a complete HTML page; no project changes were saved')
+                if not re.search(r'href\s*=\s*["\']style\.css["\']',after,re.I):
+                    after=re.sub(r'</head\s*>','    <link rel="stylesheet" href="style.css">\n</head>',after,count=1,flags=re.I)
+            if web_starter and path=='style.css' and not re.search(r'\{[^}]*\}',after,re.S):
+                raise WorkbenchError('generation_format','The model did not return a CSS rule; no project changes were saved')
+            if action=='create' and not after.strip():
+                raise WorkbenchError('generation_format','The model returned an empty new file; no project changes were saved')
             if len(after.encode('utf-8'))>MAX_FILE_BYTES:raise WorkbenchError('sandbox_input','Generated file exceeds 128 KB')
             planned[path]=after
             changes.append({'action':action,'path':path,'before':before,'after':after})
@@ -547,16 +568,17 @@ class CodingWorkspace:
                 {'event':'planned_changes','files':[change['path'] for change in changes]}],
                 'attempts':1,'stdout':'','stderr':'','output_files':[],
                 'routing':{'capability':'code','model':model_alias,'reason':'Project-wide local coding task'},
-                'sandbox':{'backend':'docker','image_id':getattr(sandbox,'image_id',None)}}
+                'sandbox':{'backend':'docker' if sandbox is not None else 'unavailable',
+                           'image_id':getattr(sandbox,'image_id',None)}}
         self._save_result(workspace_id,result)
         try:
-            stage('Validating project in Docker')
+            stage('Validating project in Docker' if sandbox is not None else 'Saving generated files without execution')
             input_files={**assets, **{name:content.encode('utf-8') for name,content in planned.items()}}
             check_targets=[change['path'] for change in changes if change['action'] in {'create','edit'}]
             has_tests=any(Path(name).name.startswith('test_') and name.endswith('.py') for name in planned)
             scripts=[TEST_RUNNER] if has_tests else [runner(name,mode='check') for name in check_targets]
             if not scripts:scripts=["print('Project file operations checked.')"]
-            for script in scripts:
+            for script in scripts if sandbox is not None else []:
                 stage('Running project tests' if has_tests else 'Checking changed files in Docker')
                 execution=sandbox.execute(script,input_files=input_files)
                 result['stdout']+=execution.stdout
@@ -567,7 +589,7 @@ class CodingWorkspace:
                     ledger.fail(task,'validation_failed')
                     self._save_result(workspace_id,result)
                     return result
-            stage('Saving checked project changes')
+            stage('Saving checked project changes' if sandbox is not None else 'Saving generated project changes')
             if self.raw_files(workspace_id)!=raw_files:raise WorkbenchError('workspace_conflict','Workspace changed during validation; rerun the task')
             applied=[]
             try:
@@ -588,11 +610,14 @@ class CodingWorkspace:
                     else:self.write(workspace_id,change['path'],change['before'])
                 raise
             result['state']='completed'
-            result['checks']={'container_executed':True,'tests_passed' if has_tests else 'syntax_or_format_checked':True,'target_committed':True}
+            result['checks']={'container_executed':sandbox is not None,
+                              'tests_passed' if has_tests else 'syntax_or_format_checked':sandbox is not None,
+                              'target_committed':True}
+            result['validation']='passed' if sandbox is not None else 'not run; Docker unavailable'
             for change in changes:
                 change['applied_hash']=hashlib.sha256(change['after'].encode('utf-8')).hexdigest() if change['after'] is not None else None
             result['applied_hash']=primary['applied_hash']
-            ledger.complete(task,result['checks'])
+            ledger.complete(task,result['checks'] if sandbox is not None else {'target_committed':True})
             self._save_result(workspace_id,result)
             return result
         except Exception as exc:

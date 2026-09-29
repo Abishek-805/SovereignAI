@@ -30,7 +30,7 @@ describe('Code assistant request contract', () => {
 			{ instruction: 'old request', answer: 'Error: Request failed', state: 'failed' },
 			{ instruction: 'cancelled edit', state: 'stopped' },
 			{ instruction: 'current question', state: 'running' }
-		])).toEqual(['User: hello', 'Assistant: A real reply', 'User: old request']);
+		])).toEqual(['User: hello', 'Assistant: A real reply', 'User: old request', 'Assistant: Task failed.']);
 	});
 
 	it('posts bounded history and returns the actual job ID', async () => {

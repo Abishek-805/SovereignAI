@@ -55,6 +55,25 @@ def test_project_task_creates_folder_and_file_without_editing_current_tab(tmp_pa
     assert [item['name'] for item in work.get(workspace_id)['files']]==['current.py']
 
 
+def test_new_html_css_project_saves_files_without_docker(tmp_path):
+    work=CodingWorkspace(tmp_path)
+    workspace_id=work.create('Web project')['workspace_id']
+    model=ProjectModel([], 'project_folder\\index.html\n\n<!doctype html><html><head></head><body><h1>Hello</h1></body></html>\n',
+                       'project_folder\\style.css\n\nh1 { color: teal; }\n')
+    result=work.run_project(workspace_id,'',
+        'Create a project folder with a simple HTML page and CSS in it',
+        model,None,TaskLedger(tmp_path))
+    assert result['state']=='completed'
+    assert result['validation']=='not run; Docker unavailable'
+    assert result['checks']['container_executed'] is False
+    assert {item['name'] for item in work.get(workspace_id)['files']}=={'index.html','style.css'}
+    assert 'style.css' in work.read(workspace_id,'index.html')['content']
+    assert work.read(workspace_id,'index.html')['content'].startswith('<!doctype html>')
+    assert work.read(workspace_id,'style.css')['content'].startswith('h1 {')
+    work.undo(workspace_id,result['task_id'])
+    assert work.get(workspace_id)['files']==[]
+
+
 def test_project_task_validates_all_edits_before_commit_and_supports_undo(tmp_path):
     work=CodingWorkspace(tmp_path)
     workspace_id=work.create('Project')['workspace_id']

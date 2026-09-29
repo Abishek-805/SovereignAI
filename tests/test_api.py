@@ -721,6 +721,29 @@ def test_auto_agent_can_create_project_without_selected_workspace(service):
     assert calls==[(result['workspace_id'],'main.js',True)]
 
 
+def test_auto_agent_retries_last_failed_code_request(service):
+    service.model.plan_task=lambda *args: {'action':'edit_code','target':'addition.py','expression':'','response':''}
+    calls=[]
+    service.run_coding_project_task=lambda workspace_id,target,instruction,job=None,routed=False: (
+        calls.append(instruction) or {'state':'completed','target':target,'validation':'not run'})
+    result=service.run_auto_agent('try again',history=[
+        'User: can u create a code for addition operation','Assistant: Task failed.'])
+    assert result['status']=='completed'
+    assert calls==['can u create a code for addition operation']
+
+
+def test_auto_agent_creates_html_css_project_without_selected_workspace(service):
+    service.model.plan_task=lambda *args: {'action':'application_tools','target':'','expression':'','response':''}
+    calls=[]
+    service.run_coding_project_task=lambda workspace_id,target,instruction,job=None,routed=False: (
+        calls.append((workspace_id,target,instruction)) or
+        {'state':'completed','target':'index.html','validation':'not run; Docker unavailable'})
+    result=service.run_auto_agent('create a project folder with simple html page and css in it')
+    assert result['status']=='completed'
+    assert result['plan']['action']=='edit_code'
+    assert calls==[(result['workspace_id'],'','create a project folder with simple html page and css in it')]
+
+
 def test_spreadsheet_original_is_retrievable(service):
     from openpyxl import Workbook
     from io import BytesIO

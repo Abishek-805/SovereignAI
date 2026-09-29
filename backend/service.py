@@ -541,8 +541,15 @@ class Workbench:
             from router.tool_registry import explicit_operation_requested
             if not explicit_operation_requested(instruction,'file_edit'):
                 raise WorkbenchError('needs_input','Specify the requested code change; classification alone cannot authorize an edit')
-            sandbox=self._verified_coding_sandbox()
-            if job:job.progress('Reading project structure');sandbox.on_output=job.append;sandbox.cancel_event=job.cancel
+            try:
+                sandbox=self._verified_coding_sandbox()
+                sandbox._ready()
+            except WorkbenchError as exc:
+                if exc.code!='sandbox_unavailable':raise
+                sandbox=None
+            if job:
+                job.progress('Reading project structure')
+                if sandbox is not None:sandbox.on_output=job.append;sandbox.cancel_event=job.cancel
             return self.coding.run_project(workspace_id,target,instruction,self.model,sandbox,self.tasks,
                                            model_alias=alias,progress=job.progress if job else None,cancel=job.cancel if job else None)
         finally:
@@ -662,6 +669,13 @@ Path('/output/project-sync.json').write_bytes(payload)
     @cancellable_model_job
     def run_auto_agent(self, goal, document_ids=None, workspace_id=None, history=None, job=None):
         """Infer the workflow and source target; callers need only a request and optional context."""
+        if re.fullmatch(r'\s*(?:please\s+)?(?:try|retry|run)(?:\s+it)?\s+again[.!]?\s*', goal, re.I):
+            tail=(history or [])[-2:]
+            if (len(tail)==2 and isinstance(tail[0],str) and tail[0].startswith('User: ')
+                    and tail[1]=='Assistant: Task failed.'):
+                goal=tail[0][6:]
+            else:
+                raise WorkbenchError('needs_input','Tell me which task to retry; the last task was not marked as failed')
         from rag.calculator import literal_expression
         expression=literal_expression(goal)
         if expression is not None:
@@ -697,6 +711,15 @@ Path('/output/project-sync.json').write_bytes(payload)
                     workspace_metadata=[]
                 plan=self._cpu_readonly_plan(goal,history,mode='agent') or self.model.plan_task(goal,selected_metadata,workspace_metadata,[item[:1000] for item in (history or [])[-8:] if isinstance(item,str)]+
                                           [f'{len(document_ids or [])} indexed documents selected; workspace selected: {bool(workspace_id)}'])
+                # A request for a new project with source files is a single
+                # project-wide coding task, regardless of a small model's
+                # choice of the generic folder tool.
+                new_project=bool(re.search(r'\b(?:create|make|build)\b.*\b(?:new\s+)?project(?:\s+folder)?\b',goal,re.I)
+                                 and re.search(r'\b(?:file|page|html|css|code|app|program)\b',goal,re.I))
+                web_files=(not workspace_id and re.search(r'\b(?:create|make|build)\b',goal,re.I)
+                           and re.search(r'\bhtml\b',goal,re.I) and re.search(r'\bcss\b',goal,re.I))
+                if (new_project and plan['action']=='application_tools') or web_files:
+                    plan={'action':'edit_code','target':'','response':'','document_scope':'focused'}
                 # A completed library creation followed by "add details to it" is
                 # an edit of that exact document, even if no document is connected
                 # for retrieval. Never infer a target from mere library presence.
@@ -805,9 +828,8 @@ Path('/output/project-sync.json').write_bytes(payload)
             elif action=='search_documents': result=self.ask(goal,scope,history=history,job=job,force_documents=True,**({'document_scope':plan['document_scope']} if 'document_scope' in plan else {}))
             elif action=='create_report': result=self.create_document_report(goal,scope,history=history,job=job,**({'document_scope':plan['document_scope']} if 'document_scope' in plan else {}))
             elif action=='edit_code':
-                self._verified_coding_sandbox()
                 target=plan['target']
-                if not workspace_id:
+                if new_project or not workspace_id:
                     workspace_id=self.coding.create(goal[:80])['workspace_id']
                 result=self.run_coding_project_task(workspace_id,target,goal[:1000],job=job,routed=True)
             if job and job.cancel.is_set():raise WorkbenchError('cancelled','Task stopped')
@@ -816,6 +838,12 @@ Path('/output/project-sync.json').write_bytes(payload)
             else: self.tasks.fail(task,'workflow_failed')
             answer_text=(result.get('answer') or (f"{result.get('expression')} = {result.get('rounded')}" if 'rounded' in result else
                 f"{result.get('target','File')}: {result.get('state','finished')}. Validation: {result.get('validation','see checks')}."))
+            if action=='edit_code' and result.get('state')=='completed' and result.get('changes'):
+                changed=[change['path'] for change in result['changes'] if change['action'] in {'create','edit'}]
+                if changed:
+                    answer_text=('Saved ' + ', '.join(changed) + ' in the project. ' +
+                                 ('Docker validation passed.' if result.get('checks',{}).get('container_executed') else
+                                  'Docker is unavailable, so the files were saved but not executed or validated.'))
             plan_model=getattr(self.registry,'specs',{}).get('text')
             return {'task_id':task['task_id'],'status':task['state'],'answer':answer_text,'plan':plan,
                     'routing':{'capability':'text','model':plan_model.alias if plan_model else 'sovereign-text',

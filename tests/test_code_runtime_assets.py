@@ -3,6 +3,15 @@ import subprocess
 import sys
 
 from workflows.code_runtime import runner
+import pytest
+from backend.contracts import WorkbenchError
+
+
+def test_browser_documents_require_preview_not_fake_execution():
+    for name in ('index.html', 'INDEX.HTM', 'style.css'):
+        with pytest.raises(WorkbenchError, match='Preview'):
+            runner(name, mode='run')
+        assert 'read_text' in runner(name, mode='check')
 
 
 def test_runner_keeps_nested_program_dependency_but_excludes_root_wrapper(tmp_path):
@@ -25,3 +34,21 @@ def test_runner_keeps_nested_program_dependency_but_excludes_root_wrapper(tmp_pa
     assert 'Nested dependency: 42' in completed.stdout
     assert not (outputs/'program.py').exists()
     assert (outputs/'helpers'/'program.py').read_bytes()==dependency
+
+
+@pytest.mark.parametrize(('name','executable'), [('main.cs','dotnet'),('main.R','Rscript'),('main.lua','lua5.4'),('main.pl','perl')])
+def test_added_adapters_have_fixed_offline_check_and_run_commands(name, executable):
+    checked=runner(name,mode='check')
+    executed=runner(name,mode='run')
+    assert executable in checked and executable in executed
+    assert name in checked and name in executed
+    if name.endswith('.cs'):
+        assert 'Microsoft.NETCore.App.Ref' in executed
+        assert 'csc.dll' in executed
+        assert "'dotnet','build'" not in executed
+        assert "DOTNET_PROCESSOR_COUNT='1'" in executed
+
+
+def test_unknown_language_is_not_falsely_enabled():
+    with pytest.raises(WorkbenchError,match='no local execution adapter'):
+        runner('main.kt',mode='run')

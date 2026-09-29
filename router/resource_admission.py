@@ -81,8 +81,16 @@ def admit_resources(spec, snapshot, *, resident=False, required_context=None):
         reasons.append('Available system memory is below the configured emergency reserve')
         reason_codes.append('ram_below_emergency_reserve')
     if snapshot.gpu_free_mib is not None and snapshot.gpu_free_mib < spec.gpu_reserve_mib:
-        reasons.append('Free GPU memory is below the configured emergency reserve')
-        reason_codes.append('gpu_below_emergency_reserve')
+        if resident:
+            # A healthy resident llama.cpp runtime already owns its weights and
+            # configured KV arena. Its own allocation must not block every next
+            # request. Additional allocation is still unmeasured and runtime
+            # failures remain visible; do not extend this exception to loading.
+            unknown.append('Resident runtime has low free GPU headroom; additional allocation is not guaranteed')
+            condition_codes.append('resident_gpu_headroom_low')
+        else:
+            reasons.append('Free GPU memory is below the configured emergency reserve')
+            reason_codes.append('gpu_below_emergency_reserve')
     if ram is None:
         unknown.append('Model peak system-memory requirement is not measured')
         condition_codes.append('peak_ram_unmeasured')

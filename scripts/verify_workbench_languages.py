@@ -1,4 +1,5 @@
-"""Run small language fixtures only in the verified Docker sandbox."""
+"""Check and run small language fixtures in a candidate Docker sandbox."""
+import argparse
 import json
 import time
 from pathlib import Path
@@ -16,18 +17,24 @@ CASES = {
  'main.rs': 'fn main(){println!("42");}',
  'main.php': '<?php echo 42;', 'main.rb': 'puts 42', 'main.sh': 'echo 42',
  'main.sql': 'CREATE TABLE numbers (n INTEGER); INSERT INTO numbers VALUES (42);',
+ 'main.cs': 'Console.WriteLine(42);',
+ 'main.R': 'cat(42)', 'main.lua': 'print(42)', 'main.pl': 'print "42\\n";',
 }
 
 def main():
  root=Path(__file__).resolve().parents[1]
- image=json.loads((root/'data/sandbox-validation.json').read_text())['image_id']
+ parser=argparse.ArgumentParser(description=__doc__)
+ parser.add_argument('--image', help='Pinned candidate image ID; does not activate it')
+ args=parser.parse_args()
+ image=args.image or json.loads((root/'data/sandbox-validation.json').read_text())['image_id']
  sandbox=CodeSandbox('docker',image)
  results={}
  for name,content in CASES.items():
   started=time.perf_counter()
+  checked=sandbox.execute(runner(name,'check'),input_files={name:content.encode()})
   result=sandbox.execute(runner(name,'run'),input_files={name:content.encode()})
-  passed=result.executed and result.exit_code==0 and ('42' in result.stdout or name.endswith('.sql'))
-  results[name]={'passed':passed,'exit_code':result.exit_code,'executed':result.executed,'stdout':result.stdout,'stderr':result.stderr,'seconds':round(time.perf_counter()-started,2),'image_id':image}
+  passed=checked.executed and checked.exit_code==0 and result.executed and result.exit_code==0 and ('42' in result.stdout or name.endswith('.sql'))
+  results[name]={'passed':passed,'check_exit_code':checked.exit_code,'check_stderr':checked.stderr,'exit_code':result.exit_code,'executed':result.executed,'stdout':result.stdout,'stderr':result.stderr,'seconds':round(time.perf_counter()-started,2),'image_id':image}
   print(name,passed,flush=True)
  (root/'benchmarks/workbench-language-matrix.json').write_text(json.dumps(results,indent=2),encoding='utf-8')
  return all(item['passed'] for item in results.values())

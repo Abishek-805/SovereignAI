@@ -1,0 +1,178 @@
+{
+  "main.py": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42\nExecution finished.\n",
+    "stderr": "",
+    "seconds": 3.68,
+    "image_id": "sha256:2d92a3cc96de823df866450a0c0505fd77250b251e3fb3b96c423197206b2790"
+  },
+  "src/main.js": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42\nExecution finished.\n",
+    "stderr": "",
+    "seconds": 2.24,
+    "image_id": "sha256:2d92a3cc96de823df866450a0c0505fd77250b251e3fb3b96c423197206b2790"
+  },
+  "main.ts": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42\nExecution finished.\n",
+    "stderr": "",
+    "seconds": 7.85,
+    "image_id": "sha256:2d92a3cc96de823df866450a0c0505fd77250b251e3fb3b96c423197206b2790"
+  },
+  "Main.java": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42\nExecution finished.\n",
+    "stderr": "",
+    "seconds": 6.09,
+    "image_id": "sha256:2d92a3cc96de823df866450a0c0505fd77250b251e3fb3b96c423197206b2790"
+  },
+  "main.c": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42\nExecution finished.\n",
+    "stderr": "",
+    "seconds": 2.52,
+    "image_id": "sha256:2d92a3cc96de823df866450a0c0505fd77250b251e3fb3b96c423197206b2790"
+  },
+  "main.cpp": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42Execution finished.\n",
+    "stderr": "",
+    "seconds": 4.33,
+    "image_id": "sha256:2d92a3cc96de823df866450a0c0505fd77250b251e3fb3b96c423197206b2790"
+  },
+  "main.go": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42\nExecution finished.\n",
+    "stderr": "",
+    "seconds": 5.61,
+    "image_id": "sha256:2d92a3cc96de823df866450a0c0505fd77250b251e3fb3b96c423197206b2790"
+  },
+  "main.rs": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42\nExecution finished.\n",
+    "stderr": "",
+    "seconds": 9.17,
+    "image_id": "sha256:2d92a3cc96de823df866450a0c0505fd77250b251e3fb3b96c423197206b2790"
+  },
+  "main.php": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42Execution finished.\n",
+    "stderr": "",
+    "seconds": 2.13,
+    "image_id": "sha256:2d92a3cc96de823df866450a0c0505fd77250b251e3fb3b96c423197206b2790"
+  },
+  "main.rb": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42\nExecution finished.\n",
+    "stderr": "",
+    "seconds": 3.31,
+    "image_id": "sha256:2d92a3cc96de823df866450a0c0505fd77250b251e3fb3b96c423197206b2790"
+  },
+  "main.sh": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42\nExecution finished.\n",
+    "stderr": "",
+    "seconds": 1.83,
+    "image_id": "sha256:2d92a3cc96de823df866450a0c0505fd77250b251e3fb3b96c423197206b2790"
+  },
+  "main.sql": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "Execution finished.\n",
+    "stderr": "",
+    "seconds": 2.2,
+    "image_id": "sha256:2d92a3cc96de823df866450a0c0505fd77250b251e3fb3b96c423197206b2790"
+  },
+  "main.cs": {
+    "passed": false,
+    "check_exit_code": 1,
+    "check_stderr": "System.IO.IOException: The system cannot open the device or file specified. : 'NuGet-Migrations'. One or more system calls failed: mkdtemp(\"/tmp/.dotnet.XXXXXX\") == nullptr; errno == EROFS;\n   at System.Threading.Mutex.CreateMutexCore(Boolean initiallyOwned, String name, NamedWaitHandleOptionsInternal options, Boolean& createdNew)\n   at System.Threading.Mutex..ctor(Boolean initiallyOwned, String name)\n   at NuGet.Common.Migrations.MigrationRunner.Run(String migrationsDirectory, IEnvironmentVariableReader environmentVariableReader)\n   at Microsoft.DotNet.Configurer.DotnetFirstTimeUseConfigurer.Configure()\n   at Microsoft.DotNet.Cli.Program.ConfigureDotNetForFirstTimeUse(IFirstTimeUseNoticeSentinel firstTimeUseNoticeSentinel, IAspNetCertificateSentinel aspNetCertificateSentinel, IFileSentinel toolPathSentinel, Boolean isDotnetBeingInvokedFromNativeInstaller, DotnetFirstRunConfiguration dotnetFirstRunConfiguration, IEnvironmentProvider environmentProvider, Dictionary`2 performanceMeasurements, Boolean skipFirstTimeUseCheck)\n   at Microsoft.DotNet.Cli.Program.ProcessArgs(String[] args, TimeSpan startupTime)\n   at Microsoft.DotNet.Cli.Program.Main(String[] args)\n",
+    "exit_code": 1,
+    "executed": true,
+    "stdout": "",
+    "stderr": "System.IO.IOException: The system cannot open the device or file specified. : 'NuGet-Migrations'. One or more system calls failed: mkdtemp(\"/tmp/.dotnet.XXXXXX\") == nullptr; errno == EROFS;\n   at System.Threading.Mutex.CreateMutexCore(Boolean initiallyOwned, String name, NamedWaitHandleOptionsInternal options, Boolean& createdNew)\n   at System.Threading.Mutex..ctor(Boolean initiallyOwned, String name)\n   at NuGet.Common.Migrations.MigrationRunner.Run(String migrationsDirectory, IEnvironmentVariableReader environmentVariableReader)\n   at Microsoft.DotNet.Configurer.DotnetFirstTimeUseConfigurer.Configure()\n   at Microsoft.DotNet.Cli.Program.ConfigureDotNetForFirstTimeUse(IFirstTimeUseNoticeSentinel firstTimeUseNoticeSentinel, IAspNetCertificateSentinel aspNetCertificateSentinel, IFileSentinel toolPathSentinel, Boolean isDotnetBeingInvokedFromNativeInstaller, DotnetFirstRunConfiguration dotnetFirstRunConfiguration, IEnvironmentProvider environmentProvider, Dictionary`2 performanceMeasurements, Boolean skipFirstTimeUseCheck)\n   at Microsoft.DotNet.Cli.Program.ProcessArgs(String[] args, TimeSpan startupTime)\n   at Microsoft.DotNet.Cli.Program.Main(String[] args)\n",
+    "seconds": 8.39,
+    "image_id": "sha256:2d92a3cc96de823df866450a0c0505fd77250b251e3fb3b96c423197206b2790"
+  },
+  "main.R": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42Execution finished.\n",
+    "stderr": "",
+    "seconds": 4.89,
+    "image_id": "sha256:2d92a3cc96de823df866450a0c0505fd77250b251e3fb3b96c423197206b2790"
+  },
+  "main.lua": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42\nExecution finished.\n",
+    "stderr": "",
+    "seconds": 2.3,
+    "image_id": "sha256:2d92a3cc96de823df866450a0c0505fd77250b251e3fb3b96c423197206b2790"
+  },
+  "main.pl": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "main.pl syntax OK\n",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42\nExecution finished.\n",
+    "stderr": "",
+    "seconds": 3.67,
+    "image_id": "sha256:2d92a3cc96de823df866450a0c0505fd77250b251e3fb3b96c423197206b2790"
+  }
+}

@@ -50,8 +50,8 @@ For the runtime, download the [b11132 Windows CUDA 12.4 archive](https://github.
 ## Using the workbench
 
 - **Chat** handles ordinary conversation. When the prompt is clearly about indexed knowledge, the backend retrieves matching passages and provides bounded source context with `[S1]` citations. The read-only `search_documents` tool is also available. Chat citations are model output, so use Knowledge for source-checked answers.
-- **Agent** chooses a bounded local workflow. An attached indexed document is always searched; a related question with no explicit selection also searches the indexed library when matching evidence exists. Edits and code tests require the Code workspace and Docker.
-- **Knowledge** imports PDF, DOCX, TXT and Markdown, manages the library, selects source documents and folders, and asks cited questions. With no selection, the document question endpoint searches all indexed documents. Original documents and source passages are inspectable.
+- **Agent** chooses a bounded local workflow. Connected documents are references available to the current request, not an instruction to retrieve them. Knowledge Off supplies no library documents; Knowledge On allows focused retrieval when evidence is needed. Edits and code tests require the Code workspace and Docker.
+- **Knowledge** imports PDF, DOCX, TXT, Markdown, CSV, JSON, log, XLSX and PPTX, manages the library, selects source documents and folders, and asks cited questions. The legacy document-question endpoint can search all indexed documents when its document scope is omitted; an explicit empty scope searches none. Original documents and source passages are inspectable.
 - **Code** offers an explorer, editor, file operations, assistant, and terminal with resizable panels and Windows shortcuts. Its execution is sandboxed. The UI is a bounded workspace, not access to the host's whole disk.
 - **Control Center → Models & routing / Runtimes / System & downloads / Appearance** shows current model, runtime and sandbox state, artifacts, and theme controls. It does not start Docker or a model simply by opening the page.
 
@@ -93,3 +93,15 @@ The current UI and routing/model engineering workstreams are tracked in [the wor
 Knowledge source snapshots are stored in `Documents/SovereignAI/Knowledge` by default alongside `Projects`. Existing snapshots are copied there without deleting the earlier data snapshot. Filenames are content hashes so citations retain their original versions; manage display names and folders through Knowledge. `SOVEREIGN_KNOWLEDGE_DIR` overrides this location. Backups include the live Knowledge folder.
 
 The latest routing implementation, measurements and unresolved release gates are recorded in [the final routing integration report](docs/final-routing-system-integration.md). Candidate/resource/context filtering and request-owned routing telemetry are implemented; the evaluated CPU classifier remains disabled until its quality gates pass.
+
+## Code language setup
+
+HTML/HTM uses **Preview** beside Save; CSS belongs in an HTML preview. Program Run supports the language adapters listed in [coding compatibility](docs/coding-language-compatibility.md). Python dependencies in `requirements.txt` do not install compilers: those live only in the Docker image. No host-language SDK installation is required for sandbox programs.
+
+With Docker Desktop's Linux engine running, build and verify the image before enabling execution:
+
+```powershell
+.\scripts\prepare-workbench-sandbox.ps1
+```
+
+The sandbox verifier records the pinned image only after its isolation probes pass. The language verifier checks compilation and execution and records the actual results. First-time Docker builds download compilers and can take time; subsequent builds reuse layers. Third-party package downloads are blocked during execution, and standalone adapters do not imply full framework, GUI, debugger or package-project support.

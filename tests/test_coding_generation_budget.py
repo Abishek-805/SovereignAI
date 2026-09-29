@@ -4,7 +4,7 @@ import httpx
 import pytest
 
 from backend.contracts import WorkbenchError
-from backend.model import CODE_GRAMMAR, WORKSPACE_PLAN_GRAMMAR, LocalModel
+from backend.model import CODE_GRAMMAR, COMPACT_WORKSPACE_PLAN_GRAMMAR, WORKSPACE_PLAN_GRAMMAR, LocalModel
 
 
 @pytest.mark.parametrize('kind', ['source', 'plan'])
@@ -30,9 +30,32 @@ def test_coding_template_budget_matches_nonthinking_generation(kind):
         else:model.plan_workspace_edit('Create division',{'other.py':'keep'},[],None)
     finally:model.close()
     assert templates==generated
-    assert generated[0]['grammar']==(CODE_GRAMMAR if kind=='source' else WORKSPACE_PLAN_GRAMMAR)
+    assert generated[0]['grammar']==(CODE_GRAMMAR if kind=='source' else COMPACT_WORKSPACE_PLAN_GRAMMAR)
     assert generated[0]['chat_template_kwargs']=={'enable_thinking':False}
     assert 'response_format' not in generated[0]
+
+
+@pytest.mark.parametrize('instruction, literal', [
+    ('Add CSS styling to the existing HTML page', False),
+    ('Fix the division function', False),
+    ('Replace Old item with Reviewed item in notes.md', True),
+])
+def test_creative_source_does_not_consume_the_plan_output_budget(instruction, literal):
+    generated=[]
+    def handler(request):
+        if request.url.path=='/props':return httpx.Response(200,json={'default_generation_settings':{'n_ctx':4096}})
+        if request.url.path=='/apply-template':return httpx.Response(200,json={'prompt':'formatted'})
+        if request.url.path=='/tokenize':return httpx.Response(200,json={'tokens':[1]})
+        generated.append(json.loads(request.content))
+        return httpx.Response(200,json={'choices':[{'finish_reason':'stop','message':{'content':json.dumps({
+            'scope':'existing_files','operations':[{'action':'edit','path':'page.html','reason':'Requested edit','replacements':[]}]})}}]})
+    model=LocalModel(transport=httpx.MockTransport(handler))
+    try:model.plan_workspace_edit(instruction,{'page.html':'<h1>Keep</h1>'},[],'page.html')
+    finally:model.close()
+    grammar=generated[0]['grammar']
+    assert grammar==(WORKSPACE_PLAN_GRAMMAR if literal else COMPACT_WORKSPACE_PLAN_GRAMMAR)
+    replacement_rule=next(line for line in grammar.splitlines() if line.startswith('replacements ::='))
+    assert ('(replacement ' in replacement_rule)==literal
 
 
 @pytest.mark.parametrize('kind', ['source', 'plan'])
@@ -48,4 +71,5 @@ def test_truncated_coding_generation_remains_failure(kind):
             if kind=='source':model.complete_code([])
             else:model.plan_workspace_edit('Create a file',{},[],None)
         assert error.value.code=='generation_format'
+        if kind=='plan':assert 'output limit' in str(error.value)
     finally:model.close()

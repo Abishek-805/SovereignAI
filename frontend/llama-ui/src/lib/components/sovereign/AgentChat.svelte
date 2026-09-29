@@ -22,6 +22,8 @@
 	import KnowledgeConnection from './KnowledgeConnection.svelte';
 	import KnowledgeChips from './KnowledgeChips.svelte';
 	import KnowledgeSources from './KnowledgeSources.svelte';
+	import DuplicateAudit from './DuplicateAudit.svelte';
+	import { removedDuplicateGroups, type DuplicateGroup } from '$lib/services/duplicate-audit';
 	import { knowledgeContext } from '$lib/stores/knowledge-context.svelte';
 	import type { KnowledgeSource } from '$lib/services/knowledge.service';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
@@ -64,6 +66,7 @@
 		requestId?: string;
 	} = $props();
 	type Turn = {
+		duplicateGroups?: DuplicateGroup[];
 		routing?: RoutingTelemetry;
 		question: string;
 		answer: string;
@@ -337,6 +340,7 @@
 		if (operations.some((operation: any) => typeof operation.tool === 'string' && operation.tool.startsWith('document_'))) void knowledgeContext.refresh().catch((error) => { notice = 'Task finished, but the Knowledge list could not refresh: ' + String(error); });
 		const lines = diff.split('\n');
 		turns[index] = {
+			duplicateGroups: removedDuplicateGroups(operations),
 			question: original.question,
 			attachments: original.attachments,
 			routing: result.routing || result.result?.routing || original.routing,
@@ -623,6 +627,7 @@
 						</div>{:else}<div class="agent-answer">
 							<MarkdownContent content={turn.answer || ''} />
 						</div>
+						<DuplicateAudit groups={turn.duplicateGroups} />
 						<RouteDetails routing={turn.routing} compact />
 						<KnowledgeSources
 							sources={turn.sources || []}

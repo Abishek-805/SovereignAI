@@ -1,3 +1,5 @@
+# Python application dependencies. Code compilers/runtimes are installed by
+# offline/Dockerfile.workbench, not pip; see README Code language setup.
 annotated-doc==0.0.5
 annotated-types==0.8.0
 antlr4-python3-runtime==4.9.3

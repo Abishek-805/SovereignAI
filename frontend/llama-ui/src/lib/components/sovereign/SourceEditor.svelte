@@ -16,7 +16,8 @@
  let failure = $state('');
  let lastReveal=0;
  const languages:Record<string,string> = {py:'python',js:'javascript',mjs:'javascript',ts:'typescript',tsx:'typescript',jsx:'javascript',java:'java',c:'c',h:'c',cpp:'cpp',cc:'cpp',go:'go',rs:'rust',php:'php',rb:'ruby',html:'html',css:'css',json:'json',md:'markdown',sh:'shell',sql:'sql',yaml:'yaml',yml:'yaml',xml:'xml',toml:'ini'};
- const language=(name:string)=>languages[name.split('.').pop()||'']||'plaintext';
+ Object.assign(languages,{cjs:'javascript',cxx:'cpp',hpp:'cpp',cs:'csharp',r:'r',lua:'lua',pl:'perl',bash:'shell',htm:'html',kt:'kotlin',kts:'kotlin',swift:'swift',dart:'dart',scala:'scala',vue:'html',scss:'scss',less:'less',markdown:'markdown',ps1:'powershell',fs:'fsharp',ex:'elixir',exs:'elixir'});
+ const language=(name:string)=>languages[(name.split('.').pop()||'').toLowerCase()]||'plaintext';
  onMount(() => {
   let disposed=false;
   let listener: Monaco.IDisposable | undefined;

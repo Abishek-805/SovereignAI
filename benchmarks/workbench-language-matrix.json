@@ -1,0 +1,178 @@
+{
+  "main.py": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42\nExecution finished.\n",
+    "stderr": "",
+    "seconds": 5.31,
+    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
+  },
+  "src/main.js": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42\nExecution finished.\n",
+    "stderr": "",
+    "seconds": 3.37,
+    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
+  },
+  "main.ts": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42\nExecution finished.\n",
+    "stderr": "",
+    "seconds": 40.9,
+    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
+  },
+  "Main.java": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42\nExecution finished.\n",
+    "stderr": "",
+    "seconds": 20.91,
+    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
+  },
+  "main.c": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42\nExecution finished.\n",
+    "stderr": "",
+    "seconds": 12.13,
+    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
+  },
+  "main.cpp": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42Execution finished.\n",
+    "stderr": "",
+    "seconds": 5.46,
+    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
+  },
+  "main.go": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42\nExecution finished.\n",
+    "stderr": "",
+    "seconds": 6.2,
+    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
+  },
+  "main.rs": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42\nExecution finished.\n",
+    "stderr": "",
+    "seconds": 9.37,
+    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
+  },
+  "main.php": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42Execution finished.\n",
+    "stderr": "",
+    "seconds": 1.88,
+    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
+  },
+  "main.rb": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42\nExecution finished.\n",
+    "stderr": "",
+    "seconds": 3.73,
+    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
+  },
+  "main.sh": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42\nExecution finished.\n",
+    "stderr": "",
+    "seconds": 3.38,
+    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
+  },
+  "main.sql": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "Execution finished.\n",
+    "stderr": "",
+    "seconds": 3.51,
+    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
+  },
+  "main.cs": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42\nExecution finished.\n",
+    "stderr": "",
+    "seconds": 6.51,
+    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
+  },
+  "main.R": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42Execution finished.\n",
+    "stderr": "",
+    "seconds": 5.71,
+    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
+  },
+  "main.lua": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42\nExecution finished.\n",
+    "stderr": "",
+    "seconds": 3.21,
+    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
+  },
+  "main.pl": {
+    "passed": true,
+    "check_exit_code": 0,
+    "check_stderr": "main.pl syntax OK\n",
+    "exit_code": 0,
+    "executed": true,
+    "stdout": "42\nExecution finished.\n",
+    "stderr": "",
+    "seconds": 1.87,
+    "image_id": "sha256:de4d03ebf7509fd3791515b958cfc5c34d2cc06c09b3fa4654e9e86c0e3dd11b"
+  }
+}

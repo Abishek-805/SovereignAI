@@ -57,6 +57,22 @@ def test_invalid_gpu_free_observation_cannot_exceed_total():
     assert observed.errors==('GPU free memory exceeds observed total',)
 
 
+def test_resident_model_low_gpu_headroom_is_conditional_not_a_reload_rejection(tmp_path):
+    candidate=spec(observed_memory_mib=1000,observed_gpu_mib=1000)
+    with patch('router.model_registry.ROOT',tmp_path):
+        selector=ModelSelector(registry(tmp_path,[candidate]))
+        decision=selector.select('code',current_residency=candidate.alias,
+                                 resource_snapshot=snapshot(gpu_free_mib=154))
+    assert decision.selected_model==candidate.identifier
+    assert decision.resource_admission['status']=='conditional'
+    assert 'resident_gpu_headroom_low' in decision.resource_admission['condition_codes']
+    assert 'gpu_below_emergency_reserve' not in decision.resource_admission['reason_codes']
+    # System memory reserve still applies even to a resident runtime.
+    blocked=admit_resources(candidate,snapshot(available_memory_mib=100,gpu_free_mib=154),resident=True)
+    assert blocked['status']=='rejected'
+    assert 'ram_below_emergency_reserve' in blocked['reason_codes']
+
+
 def test_measured_context_requires_matching_kv_profile():
     candidate=spec(observed_memory_mib=1000,observed_gpu_mib=1000,
                    resource_context=4096,kv_configuration='q8_0/q8_0',resource_kv_configuration='f16/f16')

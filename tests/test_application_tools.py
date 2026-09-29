@@ -286,3 +286,49 @@ def test_agent_followup_resolves_only_explicit_prior_document(service):
     assert service._agent_document_followup('describe nature',history,None) is None
     assert service._agent_document_followup('add details to it in another.txt',history,None) is None
     assert service._agent_document_followup('so can u add details to it',history,'selected-project') is None
+
+
+def test_typo_create_intent_and_duplicate_generated_knowledge_name(service):
+    from router.tool_registry import explicit_operation_requested
+    assert explicit_operation_requested('CAN U crate a doc explaining about nature','document_create')
+    source=service.sources_dir/'nature_explanation.txt';source.write_text('Old nature text.',encoding='utf-8')
+    service.import_file(source)
+    service.model.document_text=lambda instruction,current,filename:'Nature on Earth includes ecosystems, forests and oceans.'
+    result=ApplicationTools(service,goal='can u create a file in knowledge explaining about nature').execute(
+        [op('document_create','nature_explanation.txt','A short placeholder.')],service.tasks.create('test',[]))
+    assert result['state']=='completed'
+    assert 'nature_explanation_2.txt' in result['answer']
+    names={doc['display_name'] for doc in service.documents()}
+    assert names=={'nature_explanation.txt','nature_explanation_2.txt'}
+    assert source.read_text()=='Old nature text.'
+
+
+def test_agent_followup_resolves_unique_named_topic_after_failed_create(service):
+    source=service.sources_dir/'nature_explanation.txt';source.write_text('Nature.',encoding='utf-8')
+    service.import_file(source)
+    history=['User: can u create a file in knowledge explaining about nature',
+             'User: so can u add more details to it']
+    assert service._agent_document_followup('so can u add more details to it',history,None)=='nature_explanation.txt'
+
+
+def test_explicit_knowledge_filename_collision_asks_for_new_name(service):
+    source=service.sources_dir/'nature.txt';source.write_text('Original.',encoding='utf-8')
+    service.import_file(source)
+    with pytest.raises(WorkbenchError,match='already exists'):
+        ApplicationTools(service,goal='Create nature.txt in Knowledge').execute(
+            [op('document_create','nature.txt','New text.')],service.tasks.create('test',[]))
+    assert source.read_text(encoding='utf-8')=='Original.'
+
+
+def test_document_detail_expansion_keeps_current_text_and_uses_short_generation():
+    from backend.model import LocalModel
+    model=LocalModel()
+    calls=[]
+    def complete(messages,max_tokens=1536):
+        calls.append((messages,max_tokens))
+        return {'code':'Additional details about forests and oceans.'}
+    model.complete_code=complete
+    result=model.document_text('so can u add more details to it','Existing explanation.','nature.txt')
+    assert result.startswith('Existing explanation.')
+    assert result.strip().endswith('Additional details about forests and oceans.')
+    assert calls[0][1] <= 768

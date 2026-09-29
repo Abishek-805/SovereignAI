@@ -139,7 +139,7 @@
 	overflow-wrap: anywhere;
 }
 .agent-chat .failed {
-	color: var(--destructive);
+	color: var(--foreground);
 }
 .agent-chat details {
 	font-size: 11px;

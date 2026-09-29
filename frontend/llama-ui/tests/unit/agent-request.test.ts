@@ -1,5 +1,12 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { agentConversationHistory, agentGoalError, agentRequest, createJobAdmission, decodeAgentResponse } from '$lib/services/agent-request.service';
+import { agentConversationHistory, agentGoalError, agentProblem, agentRequest, createJobAdmission, decodeAgentResponse } from '$lib/services/agent-request.service';
+
+it('explains agent failures without a raw Error prefix', () => {
+	expect(agentProblem('Error: That Knowledge source already exists')).toContain('already exists');
+	expect(agentProblem('Error: The current request does not authorize document create. Specify the operation and its target.')).toContain('Please');
+	expect(agentProblem('Error: Unexpected runtime failure')).not.toMatch(/^Error:/);
+	expect(agentProblem('Error: Local model timed out; inspect its status and retry')).toContain('two minutes');
+});
 
 afterEach(() => vi.unstubAllGlobals());
 
@@ -17,13 +24,13 @@ describe('Code assistant request contract', () => {
 		expect(turns).toEqual(snapshot);
 	});
 
-	it('does not feed request errors, cancelled tasks, or the pending request back into planning', () => {
+	it('keeps a failed user request for follow-up references without replaying its error', () => {
 		expect(agentConversationHistory([
 			{ instruction: 'hello', answer: 'A real reply', state: 'answered' },
 			{ instruction: 'old request', answer: 'Error: Request failed', state: 'failed' },
 			{ instruction: 'cancelled edit', state: 'stopped' },
 			{ instruction: 'current question', state: 'running' }
-		])).toEqual(['User: hello', 'Assistant: A real reply']);
+		])).toEqual(['User: hello', 'Assistant: A real reply', 'User: old request']);
 	});
 
 	it('posts bounded history and returns the actual job ID', async () => {

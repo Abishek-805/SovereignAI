@@ -4,6 +4,7 @@ The planner selects only these registered operations. Names resolve uniquely at
 execution time; imports never grant the model arbitrary host filesystem access.
 """
 from pathlib import Path
+import re
 from backend.contracts import WorkbenchError
 from backend.jobs import Job
 from router.tool_registry import ToolRegistry, ToolContract
@@ -75,9 +76,26 @@ class ApplicationTools:
         if operation == 'document_create':
             if Path(target).name != target or Path(target).suffix.lower() not in {'.txt', '.md'}:
                 raise WorkbenchError('invalid_file', 'Create a text or Markdown document with a simple filename')
+            names={doc['display_name'].casefold() for doc in self.service.documents()}
             path = self.service.sources_dir / target
-            if path.exists() or path.is_symlink():
-                raise WorkbenchError('workspace_conflict', 'That Knowledge source already exists')
+            if path.exists() or path.is_symlink() or target.casefold() in names:
+                if re.search(re.escape(target),self.goal or '',re.I):
+                    raise WorkbenchError('workspace_conflict', 'A Knowledge document named '+target+' already exists. Ask to update it or choose a new name.')
+                base=Path(target)
+                for number in range(2,1000):
+                    candidate=f'{base.stem}_{number}{base.suffix}'
+                    path=self.service.sources_dir/candidate
+                    if candidate.casefold() not in names and not path.exists() and not path.is_symlink():break
+                else:raise WorkbenchError('workspace_conflict','No available Knowledge document name; choose a different name')
+            if re.search(r'\b(?:explain|explaining|describe|describing|about)\b',self.goal or '',re.I) and not re.search(r'\b(?:exactly|verbatim|containing|with the text)\b',self.goal or '',re.I):
+                generator=getattr(self.service.model,'document_text',None)
+                if callable(generator):
+                    if not self.service.ask_lock.acquire(blocking=False):raise WorkbenchError('busy','Another model task is running')
+                    try:
+                        self.service._lease('text')
+                        value=generator(self.goal,'',path.name)
+                    finally:self.service.ask_lock.release()
+            if self.job.cancel.is_set():raise WorkbenchError('cancelled','Task stopped before creating the document')
             if not value.strip() or len(value.encode('utf-8')) > 128000:
                 raise WorkbenchError('invalid_file', 'Provide document text under 128 KB')
             with path.open('x', encoding='utf-8') as source:
@@ -196,7 +214,9 @@ class ApplicationTools:
             if result.get('state', result.get('status')) == 'failed':
                 return {'state':'failed', 'answer':'The operation failed; later operations were not run.', 'operations':results}
         def summary(result):
-            label=result['tool'].replace('_', ' ') + ' ' + result['target']
+            actual_target=(result['result'].get('display_name',result['target'])
+                           if result['tool']=='document_create' else result['target'])
+            label=result['tool'].replace('_', ' ') + ' ' + actual_target
             if result['tool'] in {'document_duplicates', 'document_deduplicate'}:
                 data=result['result']
                 return ('Removed '+str(data['removed_count'])+' exact duplicate Knowledge entries; kept one per group and all source files'

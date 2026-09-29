@@ -110,6 +110,14 @@ class Workbench:
             if not match:continue
             name=match.group(1).rstrip('.')
             if name in names and name.lower().endswith(('.txt','.md')):return name
+        for entry in reversed(history[-8:]):
+            if not isinstance(entry,str) or not entry.startswith('User: '):continue
+            topic=re.search(r'\b(?:about|explaining(?:\s+about)?)\s+([\w-]+)\b',entry,re.I)
+            if not topic:continue
+            matches=[name for name in names if name.lower().endswith(('.txt','.md')) and
+                     topic.group(1).casefold() in re.split(r'[_\W]+',name.casefold())]
+            if len(matches)==1:return matches[0]
+            if matches:return None
         return None
 
     def _lease(self,capability,required_context=None):

@@ -2,7 +2,8 @@
 	import {
 		decodeAgentResponse,
 		agentGoalError,
-		agentConversationHistory
+		agentConversationHistory,
+		agentProblem
 	} from '$lib/services/agent-request.service';
 	import './agent-workspace.css';
 	import type { RoutingTelemetry } from '$lib/services/routing-telemetry';
@@ -344,7 +345,7 @@
 			question: original.question,
 			attachments: original.attachments,
 			routing: result.routing || result.result?.routing || original.routing,
-			answer: result.answer || 'Task finished. See details.',
+			answer: result.result?.state === 'failed' ? agentProblem(result.answer) : result.answer || 'Task finished. See details.',
 			status: result.result?.state === 'failed' ? 'failed' : result.status || 'completed',
 			sources: result.result?.sources || result.sources || [],
 			coverage: result.result?.coverage || result.coverage,
@@ -415,7 +416,7 @@
 			turns[index] = {
 				...turns[index],
 				question: turns[index].question,
-				answer: stopRequested ? 'Task stopped.' : String(e),
+				answer: stopRequested ? 'Task stopped.' : agentProblem(e),
 				status: stopRequested ? 'stopped' : 'failed'
 			};
 			notice = stopRequested
@@ -534,7 +535,7 @@
 			turns[index] = {
 				...turns[index],
 				question,
-				answer: stopRequested ? 'Task stopped.' : String(e),
+				answer: stopRequested ? 'Task stopped.' : agentProblem(e),
 				status: stopRequested ? 'stopped' : 'failed'
 			};
 			busy = false;

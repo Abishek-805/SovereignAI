@@ -3,14 +3,29 @@ export function agentConversationHistory(
 	turns: ReadonlyArray<{ instruction: string; answer?: string; state: string }>
 ): string[] {
 	return turns
-		.filter((turn) => ['answered', 'completed'].includes(turn.state))
+		.filter((turn) => ['answered', 'completed', 'failed'].includes(turn.state))
 		.slice(-4)
 		.flatMap((turn) => [
 			`User: ${turn.instruction.slice(0, 1000)}`,
 			// Keep conversational context without replaying a whole evidence report
 			// or artifact body as the instruction for the next task.
-			...(turn.answer ? [`Assistant: ${turn.answer.slice(0, 500)}`] : [])
+			...(turn.state !== 'failed' && turn.answer ? [`Assistant: ${turn.answer.slice(0, 500)}`] : [])
 		]);
+}
+
+export function agentProblem(problem: unknown): string {
+	const message = String(problem).replace(/^Error:\s*/i, '').trim();
+	if (/does not authorize/i.test(message))
+		return 'I could not confirm the requested file change. Please say what to create or update and, if you have a specific file in mind, name it.';
+	if (/Knowledge source already exists|Knowledge document named .* already exists/i.test(message))
+		return 'A Knowledge file with that name already exists. Please ask me to update it or give the new file a different name.';
+	if (/Name one unique Knowledge document/i.test(message))
+		return 'I found more than one possible Knowledge file. Please name the file you want me to change.';
+	if (/Local model timed out/i.test(message))
+		return 'The local model did not respond within two minutes. Please try again or check its status in Control Center.';
+	if (/invalid or incomplete code|invalid application operations/i.test(message))
+		return 'The local model returned an incomplete change, so I could not apply this task. Please try a shorter, more specific request.';
+	return message ? `I could not finish this task: ${message}` : 'I could not finish this task. Please try again.';
 }
 
 /** Keep backend validation details visible instead of hiding them as Request failed. */

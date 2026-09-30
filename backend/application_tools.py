@@ -302,7 +302,7 @@ class ApplicationTools:
             if result['tool'] in {'file_run','terminal'}:
                 label+='; exit '+str(result['result'].get('exit_code'))+'\n'+result['result'].get('stdout','')[-4000:]
             return label
-        prefix=('Staged: ' if any(item['tool']=='file_edit' and item['result'].get('changes') for item in results)
+        prefix=('Staged for review: ' if any(item['result'].get('publication_state')=='staged' and item['result'].get('changes') for item in results)
                 else 'Completed: ')
         return {'state':'completed', 'answer':prefix + '; '.join(summary(result) for result in results) + '.',
             'workspace_id':self.workspace_id,'operations':results}

@@ -86,7 +86,16 @@ def record_pages(text, suffix):
 
 def structured_chunks(page,tokenizer,document_id,display_name,source_hash,size):
     lines=page.text.splitlines()
-    context=(lines[0]+'\nColumns: '+lines[1][:256] if len(lines)>1 else lines[0]) if page.method=='spreadsheet_cells' else 'Structured records'
+    context='Structured records'
+    header_columns={}
+    if page.method=='spreadsheet_cells':
+        candidates=[]
+        for line in lines[1:21]:
+            cells=re.findall(r'([A-Z]+)\d+: ([^|]+)',line)
+            if cells and sum(not re.search(r'\d|@',v) for _,v in cells)>=.8*len(cells): candidates.append(cells)
+        headers=max(candidates,key=len,default=[])
+        header_columns={column:value.strip() for column,value in headers}
+        context=lines[0]+'\nColumns: '+' | '.join(f'{c}: {v}' for c,v in header_columns.items())
     result=[]
     def add(text,line_start,line_end,kind,identity):
         result.append(Chunk(hashlib.sha256(f'{document_id}:{source_hash}:{identity}'.encode()).hexdigest(),
@@ -100,7 +109,8 @@ def structured_chunks(page,tokenizer,document_id,display_name,source_hash,size):
     add(summary,page.line_base,page.line_base+min(3,len(lines)-1),'schema',f'{page.line_base}:{context}:schema')
     start=1 if page.method=='spreadsheet_cells' else 0
     for index,line in enumerate(lines[start:],start):
-        text=context+'\n'+line
+        labeled=re.sub(r'\b([A-Z]+)(\d+):',lambda m:f'{m[0]} [{header_columns[m[1]]}]' if m[1] in header_columns else m[0],line)
+        text=(context.split('\nColumns:')[0] if header_columns else context)+'\n'+labeled
         offsets=[(a,b) for a,b in tokenizer.encode(text,add_special_tokens=False).offsets if b>a]
         for segment,begin in enumerate(range(0,len(offsets),size)):
             end=min(begin+size,len(offsets))

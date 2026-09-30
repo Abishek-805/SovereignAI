@@ -33,7 +33,12 @@ def document_scope_for_question(documents, question, document_ids=None):
         stem = PurePath(document['display_name']).stem
         identifiers = [piece.casefold() for piece in re.findall(r'[^\W_]+', stem, re.UNICODE)
                        if len(piece) >= 5]
-        if any(identifier in compact_question for identifier in identifiers):
+        # An entity ID in the question may also occur in a filename. Only
+        # explicit file references or complete non-identifier names narrow scope.
+        file_reference=bool(re.search(r'\b(file|document|pdf|xlsx|report|sheet)\b',question,re.I))
+        if (document['display_name'].casefold() in question.casefold() or
+            stem.casefold() in question.casefold() and (file_reference or not any(c.isdigit() for c in stem)) or
+            any(identifier in compact_question and (file_reference or not any(c.isdigit() for c in identifier)) for identifier in identifiers)):
             matches.append(document['document_id'])
     return matches or document_ids
 
@@ -43,7 +48,7 @@ def retrieve(store, embedder, question, document_ids=None, limit=6):
     active=store.active_chunks(document_ids)
     if not active:
         return []
-    revisions={d['embedding_revision'] for d in store.documents() if document_ids is None or d['document_id'] in document_ids}
+    revisions={d['embedding_revision'] for d in store.documents() if d.get('chunk_count') and (document_ids is None or d['document_id'] in document_ids)}
     if revisions!={embedder.revision}:
         raise WorkbenchError('embedding_mismatch','Reindex with the configured embedding model')
     semantic=[(chunk,vector) for chunk,vector in active if chunk.retrieval_kind!='lexical']

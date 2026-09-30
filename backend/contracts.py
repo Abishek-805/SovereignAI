@@ -32,6 +32,7 @@ class Chunk:
     extraction_confidence: float | None = None
     page_image_hash: str | None = None
     retrieval_kind: str = 'dense'
+    query_result: dict | None = None
 
     def to_dict(self):
         return asdict(self)

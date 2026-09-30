@@ -145,6 +145,31 @@ class Workbench:
     def documents(self):
         return self.store.documents()
 
+    def receive_import(self,path,document_id,name,expected_hash=None):
+        data=Path(path).read_bytes()
+        if len(data)>self.settings.max_file_bytes: raise WorkbenchError('file_too_large','File exceeds upload limit')
+        digest=hashlib.sha256(data).hexdigest()
+        identity=document_id or hashlib.sha256(('upload:'+name+':'+digest).encode()).hexdigest()
+        current=self.store.current(identity)
+        if document_id and not current: raise WorkbenchError('unknown_document','Document not found')
+        if expected_hash is not None and (not current or current['active_hash']!=expected_hash):
+            raise WorkbenchError('document_conflict','Document changed before upload')
+        self.sources_dir.mkdir(parents=True,exist_ok=True)
+        snapshot=self.sources_dir/(digest+Path(path).suffix.lower())
+        temporary=self.sources_dir/(uuid4().hex+'.tmp')
+        try:
+            temporary.write_bytes(data); temporary.replace(snapshot)
+        finally: temporary.unlink(missing_ok=True)
+        return self.store.register_import(identity,current['display_name'] if current else name,digest,Path(path).suffix.lower())
+
+    def document_original(self,document_id):
+        doc=self.store.current(document_id)
+        if not doc: raise WorkbenchError('unknown_document','Document not found')
+        path=self.sources_dir/(doc['active_hash']+doc['source_extension'])
+        if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest()!=doc['active_hash']:
+            raise WorkbenchError('artifact_invalid','Original source is missing or failed verification')
+        return path
+
     def rename_document(self, document_id, display_name, expected_hash=None):
         with self.import_lock:
             return self.store.rename_document(document_id, display_name, expected_hash)
@@ -187,11 +212,14 @@ class Workbench:
             identity=('upload:'+name+':'+digest) if display_name is not None else os.path.normcase(str(path))
             document_id=document_id or hashlib.sha256(identity.encode()).hexdigest()
             current=self.store.current(document_id)
+            received=bool(current and current.get('indexing_status')=='indexing' and not current.get('chunk_count'))
+            if received: current=None
             if expected_hash is not None and (not current or current['active_hash']!=expected_hash):
                 raise WorkbenchError('document_conflict','Document changed. Refresh before replacing the file.')
             if current:
                 name=current['display_name']
             if current and current['active_hash']==digest:
+                with self.store.connect() as db: db.execute('DELETE FROM pending_imports WHERE document_id=?',(document_id,))
                 return {'status':'unchanged',**current}
             sources=self.sources_dir
             sources.mkdir(parents=True,exist_ok=True)
@@ -233,6 +261,11 @@ class Workbench:
             checkpoint('Saving indexed document')
             with self.import_lock:
                 latest=self.store.current(document_id)
+                if received:
+                    if not latest: raise WorkbenchError('document_conflict','Document removed while indexing')
+                    name=latest['display_name']
+                    chunks=[replace(chunk,display_name=name) for chunk in chunks]
+                    latest=None
                 if (latest['active_hash'] if latest else None)!=(current['active_hash'] if current else None):
                     raise WorkbenchError('document_conflict','Document changed while indexing; refresh before importing again')
                 if latest:
@@ -324,7 +357,32 @@ class Workbench:
             active=self.store.active_chunks(document_ids)
             retrieval_query=question
             overview=overview_documents(active) if document_scope=='overview' else None
-            passages=(overview_passages(active) if overview is not None else
+            table_evidence=None
+            table_query=None
+            if overview is None and active and callable(getattr(self.model,'plan_table_query',None)):
+                from rag.tables import load_tables,execute_query,TABULAR
+                from rag.retrieve import document_scope_for_question
+                scoped=document_scope_for_question(self.documents(),question,document_ids)
+                catalog=[]; available={}
+                for doc in self.documents():
+                    if doc.get('source_extension') not in TABULAR or not doc.get('chunk_count') or (scoped is not None and doc['document_id'] not in scoped): continue
+                    for index,table in enumerate(load_tables(self.document_original(doc['document_id']))):
+                        key='T'+str(len(catalog)+1)
+                        catalog.append({'id':key,'document':doc['display_name'],'sheet':table['name'],
+                            'title_rows':table['rows'][:min(3,table['header_row'])],
+                            'columns':table['columns'],'row_count':len(table['records']),'sample':table['records'][:2]})
+                        available[key]=(doc,table)
+                if catalog:
+                    if job:job.progress('Planning a read-only table query')
+                    query=self.model.plan_table_query(question,catalog,history)
+                    if query.get('operation')!='none':
+                        if query.get('table') not in available: raise WorkbenchError('invalid_query','Table query selected an unavailable table')
+                        doc,table=available[query['table']]
+                        table_query=execute_query(table,query)
+                        source=next((c for c,_ in active if c.document_id==doc['document_id'] and c.retrieval_kind=='schema'),None)
+                        if source:
+                            table_evidence=replace(source,query_result=table_query,text='Verified read-only table query over the complete source.\nDocument: '+doc['display_name']+'\n'+json.dumps(table_query,ensure_ascii=False))
+            passages=([table_evidence] if table_evidence else overview_passages(active) if overview is not None else
                       retrieve(self.store,self.embedder,retrieval_query,document_ids) if active else [])
             passages=enrich_pdf_chunks(passages,self.sources_dir)
             retrieval_seconds=time.perf_counter()-retrieval_start
@@ -342,6 +400,7 @@ class Workbench:
             if job and job.cancel.is_set():
                 raise WorkbenchError('cancelled', 'Task stopped')
             result['task_id']=uuid4().hex
+            if table_query is not None: result['table_query']=table_query
             result['routing']={'capability':route,'model':self.registry.specs[route].alias if hasattr(self.registry,'specs') else 'sovereign-text'}
             result['timings'].update(
                 retrieval_seconds=retrieval_seconds,

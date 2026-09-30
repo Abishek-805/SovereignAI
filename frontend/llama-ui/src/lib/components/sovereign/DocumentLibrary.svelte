@@ -1,5 +1,6 @@
 <script lang="ts">
 	import './knowledge-workspace.css';
+ import TablePreview from './TablePreview.svelte';
 	import { onMount, tick } from 'svelte';
 	import FileText from '@lucide/svelte/icons/file-text';
 	import Upload from '@lucide/svelte/icons/upload';
@@ -70,6 +71,7 @@
 			(active.source_extension || '.' + active.display_name.split('.').at(-1)?.toLowerCase()) ===
 				'.pdf'
 	);
+ const isTable=$derived(!!active&&['.xlsx','.csv','.tsv','.json','.jsonl'].includes(active.source_extension||''));
 	async function refresh() {
 		loading = true;
 		error = '';
@@ -139,6 +141,7 @@
 					await fetch('/documents/import?background=true', { method: 'POST', body: data, signal: AbortSignal.timeout(180000) })
 				);
 				importJob = added.job_id;
+    if(added.document){await refresh();await open(added.document.document_id);notice='Uploaded '+file.name+'. Indexing in the background…';}
 				while (added.state === 'running') {
 					notice = `${file.name}: ${added.stage} (${added.elapsed}s)`;
 					await new Promise((resolve) => setTimeout(resolve, 500));
@@ -162,6 +165,7 @@
 				count++;
 			}
 			await refresh();
+			if(active)await open(active.document_id);
 			notice = `${count} document${count === 1 ? '' : 's'} indexed.`;
 		} catch (e) {
 			error = e instanceof DOMException && e.name === 'TimeoutError'
@@ -467,7 +471,7 @@
 								><strong>{doc.display_name}</strong><small
 									>{(
 										doc.source_extension?.slice(1) || doc.display_name.split('.').at(-1)
-									)?.toUpperCase()} · {doc.chunk_count} passages · Indexed</small
+									)?.toUpperCase()} · {doc.chunk_count} passages · {doc.indexing_status==='indexing'?'Indexing':doc.indexing_status==='failed'?'Indexing incomplete':'Indexed'}</small
 								>{#if doc.folder}<small>{doc.folder}</small>{/if}</span
 							></button
 						>{/each}{#if !visible.length}<p>
@@ -491,9 +495,9 @@
 					<h2>{active?.display_name || 'Document preview'}</h2>
 				</div>
 				{#if active}<div class="knowledge-preview-actions">
-						<button aria-pressed={view === 'original'} onclick={() => (view = 'original')}
+						<button disabled={opening} aria-pressed={view === 'original'} onclick={() => (view = 'original')}
 							><Eye size={14} /> Preview</button
-						><button aria-pressed={view === 'text'} onclick={() => (view = 'text')}
+						><button disabled={opening} aria-pressed={view === 'text'} onclick={() => (view = 'text')}
 							>Extracted text</button
 						>
       <details class="knowledge-file-actions"><summary>Manage</summary><div class="knowledge-file-actions-menu"><button disabled={importing || managing} onclick={() => manage('rename')}>Rename</button><button disabled={importing || managing} onclick={() => manage('move')}>Move</button><button disabled={importing || managing} onclick={copyDocument}>Copy</button><button disabled={importing || managing} onclick={() => manage('remove')}>Delete</button></div></details>
@@ -508,7 +512,7 @@
 			<div class="knowledge-preview-body">
 				{#if opening}<p role="status">
 						Opening document…
-					</p>{:else if active}{#if view === 'original' && isPdf && active.original_url}<iframe
+					</p>{:else if active}{#if view === 'original' && isTable}<TablePreview documentId={active.document_id} />{:else if view === 'original' && isPdf && active.original_url}<iframe
 							title={'Preview ' + active.display_name}
 							src={active.original_url + '#page=' + page}
 						></iframe>{:else if view === 'original' && !isPdf}<article class="knowledge-paper">
@@ -529,10 +533,11 @@
 									<pre>{passage.text}</pre>
 								</section>{/each}{#if !active.passages?.length}<pre>{active.text}</pre>{/if}
 						</article>{/if}
-					{#if (active.passage_total || 0) > (active.passage_limit || 100) && (!isPdf || view === 'text')}
-						<nav aria-label="Document passages">
+					{#if (active.passage_total || 0) > (active.passage_limit || 100) && view === 'text'}
+						<nav class="passage-navigation" aria-label="Document passages">
 							<button disabled={opening || !(active.passage_offset || 0)} onclick={() => open(active!.document_id, null, undefined, Math.max(0, (active!.passage_offset || 0) - (active!.passage_limit || 100)))}>Previous passages</button>
 							<span>Passages {(active.passage_offset || 0) + 1}–{Math.min((active.passage_offset || 0) + (active.passage_limit || 100), active.passage_total || 0)} of {active.passage_total}</span>
+       <label>Page <select aria-label="Passage page" value={Math.floor((active.passage_offset||0)/(active.passage_limit||100))} onchange={e=>open(active!.document_id,null,undefined,Number(e.currentTarget.value)*(active!.passage_limit||100))}>{#each Array.from({length:Math.ceil((active.passage_total||0)/(active.passage_limit||100))}) as _,i}<option value={i}>{i+1}</option>{/each}</select></label>
 							<button disabled={opening || (active.passage_offset || 0) + (active.passage_limit || 100) >= (active.passage_total || 0)} onclick={() => open(active!.document_id, null, undefined, (active!.passage_offset || 0) + (active!.passage_limit || 100))}>Next passages</button>
 						</nav>
 					{/if}

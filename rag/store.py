@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS documents(document_id TEXT PRIMARY KEY, display_name 
 CREATE TABLE IF NOT EXISTS versions(document_id TEXT NOT NULL, version_hash TEXT NOT NULL, embedding_revision TEXT NOT NULL, warnings_json TEXT NOT NULL, PRIMARY KEY(document_id,version_hash));
 CREATE TABLE IF NOT EXISTS chunks(chunk_id TEXT PRIMARY KEY, document_id TEXT NOT NULL, version_hash TEXT NOT NULL, payload TEXT NOT NULL, text TEXT NOT NULL, vector BLOB NOT NULL, FOREIGN KEY(document_id,version_hash) REFERENCES versions(document_id,version_hash));
 CREATE TABLE IF NOT EXISTS document_folders(document_id TEXT PRIMARY KEY REFERENCES documents(document_id) ON DELETE CASCADE, folder TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS pending_imports(document_id TEXT PRIMARY KEY, payload TEXT NOT NULL);
 CREATE INDEX IF NOT EXISTS chunk_version ON chunks(document_id,version_hash);
 CREATE VIRTUAL TABLE IF NOT EXISTS chunk_fts USING fts5(chunk_id UNINDEXED,text);
 '''
@@ -27,6 +28,11 @@ class Store:
         with self.connect() as db:
             db.execute('PRAGMA journal_mode=WAL')
             db.executescript(SCHEMA)
+            for row in db.execute('SELECT * FROM pending_imports').fetchall():
+                payload=json.loads(row['payload'])
+                if payload.get('indexing_status')=='indexing':
+                    payload.update(indexing_status='failed',indexing_error='Indexing was interrupted. Original retained; reimport to resume.')
+                    db.execute('UPDATE pending_imports SET payload=? WHERE document_id=?',(json.dumps(payload),row['document_id']))
 
     @contextmanager
     def connect(self):
@@ -44,7 +50,25 @@ class Store:
             rows = db.execute('''SELECT d.document_id,d.display_name,d.source_path,d.active_hash,COALESCE((SELECT folder FROM document_folders f WHERE f.document_id=d.document_id),'') AS folder,v.embedding_revision,v.warnings_json,
                 (SELECT count(*) FROM chunks c WHERE c.document_id=d.document_id AND c.version_hash=d.active_hash) AS chunk_count
                 FROM documents d JOIN versions v ON d.document_id=v.document_id AND d.active_hash=v.version_hash ORDER BY d.document_id''').fetchall()
-        return [{**{k:r[k] for k in r.keys() if k not in {'warnings_json','source_path'}}, 'source_extension':Path(r['source_path']).suffix.lower(), 'warnings':json.loads(r['warnings_json'])} for r in rows]
+            pending={r['document_id']:json.loads(r['payload']) for r in db.execute('SELECT * FROM pending_imports')}
+        result=[{**{k:r[k] for k in r.keys() if k not in {'warnings_json','source_path'}}, 'source_extension':Path(r['source_path']).suffix.lower(), 'warnings':json.loads(r['warnings_json']), 'indexing_status':'indexed'} for r in rows]
+        for doc in result:
+            if doc['document_id'] in pending: doc['indexing_status']=pending.pop(doc['document_id'])['indexing_status']
+        return result+list(pending.values())
+
+    def register_import(self, document_id, name, digest, suffix):
+        payload={'document_id':document_id,'display_name':name,'active_hash':digest,'source_extension':suffix,
+                 'chunk_count':0,'warnings':[],'embedding_revision':None,'indexing_status':'indexing'}
+        with self.connect() as db:
+            db.execute('INSERT INTO pending_imports VALUES(?,?) ON CONFLICT(document_id) DO UPDATE SET payload=excluded.payload',(document_id,json.dumps(payload)))
+        return payload
+
+    def import_status(self, document_id, status, error=''):
+        with self.connect() as db:
+            row=db.execute('SELECT payload FROM pending_imports WHERE document_id=?',(document_id,)).fetchone()
+            if row:
+                payload=json.loads(row[0]); payload.update(indexing_status=status,indexing_error=error)
+                db.execute('UPDATE pending_imports SET payload=? WHERE document_id=?',(json.dumps(payload),document_id))
 
     def current(self, document_id):
         return next((d for d in self.documents() if d['document_id']==document_id), None)
@@ -90,6 +114,13 @@ class Store:
         if not name or len(name) > 255 or (any(ch in name for ch in '/\\:\x00') or any(ord(ch)<32 for ch in name)) or name in {'.', '..'}:
             raise WorkbenchError('invalid_filename', 'Use a simple document name without directories')
         with self.connect() as db:
+            pending=db.execute('SELECT payload FROM pending_imports WHERE document_id=?',(document_id,)).fetchone()
+            if pending and not db.execute('SELECT 1 FROM documents WHERE document_id=?',(document_id,)).fetchone():
+                payload=json.loads(pending[0])
+                if expected_hash and payload['active_hash']!=expected_hash: raise WorkbenchError('document_conflict','Document changed')
+                payload['display_name']=name
+                db.execute('UPDATE pending_imports SET payload=? WHERE document_id=?',(json.dumps(payload),document_id))
+                return payload
             self.check_version(db,document_id,expected_hash)
             changed = db.execute('UPDATE documents SET display_name=? WHERE document_id=?', (name, document_id)).rowcount
             if changed:
@@ -103,6 +134,12 @@ class Store:
 
     def remove_document(self, document_id, expected_hash=None):
         with self.connect() as db:
+            pending=db.execute('SELECT payload FROM pending_imports WHERE document_id=?',(document_id,)).fetchone()
+            if pending and not db.execute('SELECT 1 FROM documents WHERE document_id=?',(document_id,)).fetchone():
+                if expected_hash and json.loads(pending[0])['active_hash']!=expected_hash:
+                    raise WorkbenchError('document_conflict','Document changed')
+                db.execute('DELETE FROM pending_imports WHERE document_id=?',(document_id,))
+                return {'document_id':document_id,'removed':True}
             self.check_version(db,document_id,expected_hash)
             if db.execute('SELECT 1 FROM documents WHERE document_id=?', (document_id,)).fetchone() is None:
                 raise WorkbenchError('unknown_document', 'Document does not exist')
@@ -110,6 +147,7 @@ class Store:
             db.execute('DELETE FROM chunks WHERE document_id=?', (document_id,))
             db.execute('DELETE FROM versions WHERE document_id=?', (document_id,))
             db.execute('DELETE FROM documents WHERE document_id=?', (document_id,))
+            db.execute('DELETE FROM pending_imports WHERE document_id=?', (document_id,))
         return {'document_id': document_id, 'removed': True}
 
     def check_version(self, db, document_id, expected_hash=None):
@@ -155,6 +193,7 @@ class Store:
         ids = sorted(set(document_ids))
         placeholders = ','.join('?' for _ in ids)
         known = {r[0] for r in db.execute(f'SELECT document_id FROM documents WHERE document_id IN ({placeholders})', ids)}
+        known.update(r[0] for r in db.execute(f'SELECT document_id FROM pending_imports WHERE document_id IN ({placeholders})',ids))
         if known != set(ids):
             raise WorkbenchError('unknown_document', 'Selected document does not exist')
         return f' AND d.document_id IN ({placeholders}) ', ids
@@ -194,6 +233,7 @@ class Store:
                     db.execute('INSERT INTO documents VALUES(?,?,?,?) ON CONFLICT(document_id) DO UPDATE SET display_name=excluded.display_name,source_path=excluded.source_path,active_hash=excluded.active_hash',
                                (document_id,display_name,source_path,source_hash))
                     status='replaced' if old else 'indexed'
+                db.execute('DELETE FROM pending_imports WHERE document_id=?',(document_id,))
         except sqlite3.Error as exc:
             raise WorkbenchError('index_failed','Index update failed; previous active version retained') from exc
         return {'status':status, **self.current(document_id)}

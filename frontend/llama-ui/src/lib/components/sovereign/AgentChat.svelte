@@ -1,4 +1,5 @@
 <script lang="ts">
+ import {stagedTaskFromResponse} from '$lib/services/staged-task';
 	import {
 		decodeAgentResponse,
 		agentGoalError,
@@ -82,6 +83,7 @@
 		downloads?: Record<string, string>;
 		workspace?: string;
 		taskId?: string;
+  changes?: {action:string;path:string}[];
 		validated?: boolean;
 		diff?: string;
 		added?: number;
@@ -363,8 +365,7 @@
 	function finish(index: number, result: any) {
 		const original = turns[index];
 		const operations = Array.isArray(result.result?.operations) ? result.result.operations : [];
-		const edited = [...operations].reverse().find((operation: any) => ['file_edit', 'file_organization'].includes(operation.tool) && operation.result?.state === 'completed' && operation.result?.changes?.length)?.result;
-		const editResult = result.plan?.action === 'edit_code' ? result.result : edited;
+		const editResult = stagedTaskFromResponse(result);
 		const edit = !!editResult;
 		const diff = editResult?.diff || '';
 		if (operations.some((operation: any) => typeof operation.tool === 'string' && operation.tool.startsWith('document_'))) void knowledgeContext.refresh().catch((error) => { notice = 'Task finished, but the Knowledge list could not refresh: ' + String(error); });
@@ -383,6 +384,7 @@
 			downloads: result.downloads || result.result?.downloads,
 			workspace: edit ? result.workspace_id : undefined,
 			taskId: edit ? editResult?.task_id : undefined,
+   changes: editResult?.changes,
 			validated: edit ? editResult?.checks?.container_executed === true : undefined,
 			diff,
 			added: lines.filter((line: string) => line.startsWith('+') && !line.startsWith('+++')).length,
@@ -698,6 +700,7 @@
 								><span
 					>{turn.changeSummary || (turn.diff ? `+${turn.added || 0} −${turn.removed || 0}` : 'No saved diff')}</span
 								>
+								{#if turn.status==='completed' && turn.changes?.length}<ul aria-label="Pending project changes">{#each turn.changes as change}<li><strong>{['delete','rmdir'].includes(change.action)?'Remove':['create','mkdir'].includes(change.action)?'Create':'Update'}</strong> {change.path}</li>{/each}</ul>{/if}
 								<div class="change-buttons">
 									<button onclick={() => openCodeReview(turn)} disabled={!turn.taskId}
 										>Review changes</button

@@ -278,7 +278,20 @@ def create_app(service=None):
                 'passage_offset':offset,'passage_limit':limit,'passage_total':len(chunks),
                 'passages':[{'chunk_id':chunk.chunk_id,'page':chunk.page,'text':chunk.text} for chunk in selected],
                 'text':'\n\n'.join(chunk.text for chunk in selected)[:100000],
-                'original_url':f'/sources/{chunks[0].chunk_id}/original' if chunks else None}
+                'original_url':f'/documents/{document_id}/original'}
+
+    @app.get('/documents/{document_id}/original')
+    def document_original(document_id:str):
+        path=service.document_original(document_id)
+        return FileResponse(path,filename=service.store.current(document_id)['display_name'],
+                            content_disposition_type='inline' if path.suffix=='.pdf' else 'attachment')
+
+    @app.get('/documents/{document_id}/table')
+    def document_table(document_id:str,sheet:int=0,offset:int=0,limit:int=100):
+        from rag.tables import preview,TABULAR
+        path=service.document_original(document_id)
+        if path.suffix not in TABULAR: raise WorkbenchError('unsupported_file','This format has no worksheet preview')
+        return preview(path,sheet,offset,limit)
 
     @app.post('/agent/auto')
     def automatic_agent(payload:AgentRequest):
@@ -614,15 +627,23 @@ def create_app(service=None):
                             raise WorkbenchError('file_too_large','File exceeds upload limit')
                         handle.write(data)
                 if background:
+                    received=await run_in_threadpool(service.receive_import,temporary,document_id,name,expected_hash)
+                    identity=received['document_id']
                     worker_path=temporary
                     def run_import(job):
                         try:
-                            return service.import_file(worker_path,document_id,name,expected_hash,job=job)
+                            return service.import_file(worker_path,identity,name,expected_hash,job=job)
+                        except Exception as exc:
+                            service.store.import_status(identity,'failed',str(exc))
+                            raise
                         finally:
                             worker_path.unlink(missing_ok=True)
-                    started=jobs.start('import',run_import)
+                    try: started=jobs.start('import',run_import)
+                    except Exception as exc:
+                        service.store.import_status(identity,'failed',str(exc))
+                        raise
                     temporary=None  # The worker owns cleanup after a successful dispatch.
-                    return started
+                    return {**started,'document':received}
                 return await run_in_threadpool(service.import_file,temporary,document_id,name,expected_hash)
             finally:
                 if temporary is not None: temporary.unlink(missing_ok=True)

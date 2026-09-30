@@ -7,6 +7,7 @@ export interface KnowledgeDocument {
 	source_extension?: string;
 	active_hash?: string;
 	warnings?: string[];
+ indexing_status?: 'indexing'|'indexed'|'failed';
 }
 export interface KnowledgeReference {
 	id: string;

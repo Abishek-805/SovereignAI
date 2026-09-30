@@ -6,6 +6,8 @@ Code projects use live files under `Documents\SovereignAI\Projects` on the defau
 
 Chat and Agent default to Knowledge connected with all documents available. Switching Knowledge off persists; the model decides whether a connected question requires evidence retrieval. Availability does not force greetings and unrelated questions to search files. The library exposes Rename, Move, Copy and Delete; Move organizes the library and Delete removes its indexed records, leaving original files/source snapshots on disk.
 
+Knowledge uploads appear before background indexing finishes. Spreadsheet previews show original sheets and stored cell formatting; extracted passages remain a separate view. Document questions can query complete tables for lookups and aggregates. Code and Agent show named pending changes before acceptance. See [implementation evidence and preview limits](docs/table-preview-and-query-results.md).
+
 ## Quick start on Windows
 
 1. Install **Python 3.12**, **Node.js with npm**, and (for code execution) **Docker Desktop with a Linux engine**. A CUDA-capable Windows GPU is recommended for the bundled llama.cpp build. Python and Node must be on `PATH` (`py -3.12`, `npm`).

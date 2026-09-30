@@ -378,7 +378,15 @@ class Workbench:
                     if query.get('operation')!='none':
                         if query.get('table') not in available: raise WorkbenchError('invalid_query','Table query selected an unavailable table')
                         doc,table=available[query['table']]
-                        table_query=execute_query(table,query)
+                        try:
+                            table_query=execute_query(table,query)
+                        except WorkbenchError as exc:
+                            if exc.code!='invalid_query': raise
+                            query=self.model.plan_table_query(question,catalog,history,feedback=str(exc))
+                            if query.get('operation')=='none' or query.get('table') not in available:
+                                raise WorkbenchError('invalid_query','The requested table query needs clarification; no result was inferred')
+                            doc,table=available[query['table']]
+                            table_query=execute_query(table,query)
                         source=next((c for c,_ in active if c.document_id==doc['document_id'] and c.retrieval_kind=='schema'),None)
                         if source:
                             table_evidence=replace(source,query_result=table_query,text='Verified read-only table query over the complete source.\nDocument: '+doc['display_name']+'\n'+json.dumps(table_query,ensure_ascii=False))

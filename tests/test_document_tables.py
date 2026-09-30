@@ -119,3 +119,61 @@ def test_query_identifier_rendering_preserves_exact_source_spelling():
     sources=[{'query_result':{'filters':[{'value':'24ALR001'}]}}]
     result=_normalize_table_identifiers({'answer':'24alr00_1 scored 36.5. 24ALR002 is another ID. [S1]'},sources)
     assert result['answer']=='24ALR001 scored 36.5. 24ALR002 is another ID. [S1]'
+
+
+def test_comparison_query_matches_alternative_ids_and_retains_identity(tmp_path):
+    from rag.tables import load_tables,execute_query
+    table=load_tables(workbook(tmp_path))[0]
+    result=execute_query(table,{'operation':'select','columns':['Student ID','Total (50M)'],
+        'filters':[{'column':'Student ID','operator':'in','value':['24alr001','24ALR002']}]})
+    assert result['matched_rows']==2
+    assert result['records']==[{'Student ID':'24ALR001','Total (50M)':36.5},{'Student ID':'24ALR002','Total (50M)':12}]
+
+
+def test_contradictory_equalities_are_invalid_not_missing_evidence(tmp_path):
+    from rag.tables import load_tables,execute_query
+    from backend.contracts import WorkbenchError
+    with pytest.raises(WorkbenchError,match='mutually exclusive'):
+        execute_query(load_tables(workbook(tmp_path))[0],{'operation':'select','columns':[],
+            'filters':[{'column':'Student ID','operator':'eq','value':'24ALR001'},
+                       {'column':'Student ID','operator':'eq','value':'24ALR002'}]})
+
+
+def test_find_scans_original_cells_across_sheets_and_pages(service,tmp_path):
+    path=workbook(tmp_path)
+    book=__import__('openpyxl').load_workbook(path);book.create_sheet('Notes').append(['24ALR001']);book.save(path)
+    doc=service.receive_import(path,None,path.name)
+    with client_for(service) as client:
+        url='/documents/'+doc['document_id']+'/table/find'
+        result=client.get(url,params={'q':'24alr001','limit':1}).json()
+        assert result['total']==2 and result['matches'][0]['coordinate']=='A3'
+        assert client.get(url,params={'q':'24alr001','offset':1}).json()['matches'][0]['name']=='Notes'
+        assert client.get(url,params={'q':'24alr001','match_case':True}).json()['total']==0
+        assert client.get(url,params={'q':'24ALR','whole_cell':True}).json()['total']==0
+
+
+def test_invalid_table_plan_is_repaired_before_answering(service,tmp_path):
+    doc=service.import_file(workbook(tmp_path)); calls=[]
+    def plan(question,tables,history,feedback=None):
+        calls.append(feedback)
+        return {'table':tables[0]['id'],'operation':'select','columns':['Student ID','Total (50M)'],
+            'filters':[{'column':'Student ID','operator':'in','value':['24ALR001','24ALR002']}] if feedback else
+            [{'column':'Student ID','operator':'eq','value':'24ALR001'},{'column':'Student ID','operator':'eq','value':'24ALR002'}]}
+    service.model.plan_table_query=plan
+    service.model.complete=lambda messages,max_tokens:{'result':{'status':'answered','answer':'The scores are 36.5 and 12 marks. [S1]'}}
+    result=service.ask('Compare those two students.',[doc['document_id']],force_documents=True)
+    assert result['status']=='answered' and result['table_query']['matched_rows']==2
+    assert len(calls)==2 and 'mutually exclusive' in calls[1]
+
+def test_invalid_table_prose_displays_verified_records(service,tmp_path):
+    doc=service.import_file(workbook(tmp_path))
+    service.model.plan_table_query=lambda question,tables,history:{'table':tables[0]['id'],
+        'operation':'select','columns':['Student ID','Total (50M)'],
+        'filters':[{'column':'Student ID','operator':'in','value':['24ALR001','24ALR002']}]}
+    service.model.complete=lambda messages,max_tokens:{'result':{'status':'answered','answer':'The score is -999. [S1]'}}
+    result=service.ask('Compare these students.',[doc['document_id']],force_documents=True)
+    assert result['status']=='answered'
+    assert '36.5' in result['answer'] and '12' in result['answer'] and '-999' not in result['answer']
+    assert '24ALR001' in result['answer'] and '[S1]' in result['answer']
+    assert result['checks']['presentation']=='verified_query_result'
+    assert result['checks']['repair']['outcome']=='verification_failed'

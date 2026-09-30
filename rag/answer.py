@@ -50,22 +50,44 @@ def _unsupported_numbers(answer_text,sources):
     arithmetic needs separate validation and will be flagged for review here.
     """
     by_label={source['label']:source['text'] for source in sources}
-    number_pattern=r'(?<![\w.])\d+(?:\.\d+)?(?!\w|\.\d)'
+    number_pattern=r'(?<![\w.+-])[+-]?\d+(?:\.\d+)?(?!\w|\.\d)'
     unsupported=set()
-    for sentence in re.split(r'(?<=[.!?])\s+',answer_text):
-        cited=re.findall(r'\[(S\d+)\]',sentence)
-        if not cited: continue
-        claims=set(re.findall(number_pattern,re.sub(r'\[S\d+\]','',sentence)))
-        evidence=' '.join(by_label.get(label,'') for label in cited)
-        supported=set(re.findall(number_pattern,evidence))
-        # Numeric values may have adjacent units in source labels (50M, 8kg).
-        # Do not interpret numeric fragments inside alphanumeric entity IDs.
-        supported.update(re.findall(r'(?<![\w.])(\d+(?:\.\d+)?)(?=[A-Za-z]+\b)',evidence))
-        unsupported.update(claims-supported)
+    for paragraph in re.split(r'\n\s*\n',answer_text):
+        paragraph_labels=re.findall(r'\[(S\d+)\]',paragraph)
+        for sentence in re.split(r'(?<=[.!?])\s+',paragraph):
+            cited=re.findall(r'\[(S\d+)\]',sentence) or paragraph_labels
+            claims=set(re.findall(number_pattern,re.sub(r'\[S\d+\]','',sentence)))
+            evidence=' '.join(by_label.get(label,'') for label in cited)
+            supported=set(re.findall(number_pattern,evidence))
+            # Numeric values may have adjacent units in source labels (50M, 8kg).
+            # Preserve signs; do not extract fragments inside entity IDs.
+            supported.update(re.findall(r'(?<![\w.+-])([+-]?\d+(?:\.\d+)?)(?=[A-Za-z]+\b)',evidence))
+            unsupported.update(claims-supported)
     return sorted(unsupported)
 
 
 VERIFICATION_FAILURE='The generated answer failed citation or numerical verification. No unverified claims are shown. Review the source evidence or ask a narrower question.'
+
+
+def _query_presentation(sources):
+    """Render executor results without accepting or rewriting model claims."""
+    import html
+    def cell(value):
+        return html.escape('' if value is None else str(value)).replace('|',r'\|').replace('\n',' ')
+    if len(sources)!=1: return None
+    source=sources[0]; query=source.get('query_result') or {}
+    if not {'table','operation','scanned_rows','matched_rows'}<=query.keys(): return None
+    heading=f"Verified results from {cell(query['table'])}. [{source['label']}]"
+    if query['operation']=='select' and isinstance(query.get('records'),list):
+        records=query['records']; columns=query.get('columns') or (list(records[0]) if records else [])
+        if not records: return heading+'\n\nNo rows matched the query filters.'
+        if not columns: return None
+        lines=[' | '.join(cell(column) for column in columns), ' | '.join('---' for _ in columns)]
+        lines.extend(' | '.join(cell(row.get(column)) for column in columns) for row in records)
+        return heading+'\n\n'+'\n'.join(lines)+('\n\nAdditional matching rows were omitted from this view.' if query.get('truncated') else '')
+    if query['operation'] in {'count','sum','average','min','max'} and 'value' in query:
+        return heading+f"\n\n{cell(query['operation'].capitalize())}: {cell(query['value'])}. Matched rows: {query['matched_rows']}."
+    return None
 
 
 def _normalize_table_identifiers(result,sources):
@@ -77,9 +99,11 @@ def _normalize_table_identifiers(result,sources):
     canonical={}
     for source in sources:
         for item in (source.get('query_result') or {}).get('filters',[]):
-            value=str(item.get('value',''))
-            if re.fullmatch(r'[A-Za-z0-9]+',value) and re.search('[A-Za-z]',value) and re.search('[0-9]',value):
-                canonical.setdefault(value.casefold(),set()).add(value)
+            values=item.get('value','')
+            for raw in values if isinstance(values,list) else [values]:
+                value=str(raw)
+                if re.fullmatch(r'[A-Za-z0-9]+',value) and re.search('[A-Za-z]',value) and re.search('[0-9]',value):
+                    canonical.setdefault(value.casefold(),set()).add(value)
     def restore(match):
         forms=canonical.get(re.sub(r'[_-]','',match.group()).casefold(),set())
         return next(iter(forms)) if len(forms)==1 else match.group()
@@ -129,8 +153,14 @@ def _repair_messages(original,result,checks,report_review=False):
         instruction['validation_failures']['unexplained_table_units']=checks['unexplained_table_units']
         instruction['task']+=' Rewrite copied shorthand measurement labels into ordinary words using the question and table context. For educational marks, express the obtained score and maximum in marks. Preserve the numerical values and citations. Do not repeat unexplained column shorthand in the answer.'
     if report_review:
-        instruction['task']='Review whether the ORIGINAL evidence supports the requested report draft. The source need not contain an existing report, comparative analysis, template, or export instructions. If factual information is sufficient, synthesize a concise draft with exact citations and state authorization limitations. Fictional data can support a clearly fictional draft; it cannot authorize real action. If required facts really are absent, retain insufficient_evidence and explain the specific missing facts. Never invent facts or grant operational approval.'
-        instruction['review_reason']='Report refusal may confuse absent report formatting with absent factual evidence; independent citation and number checks still apply.'
+        # Regenerate from the original request and evidence. Repeating a refusal
+        # can anchor the next response to its invented report requirements.
+        instruction={
+            'task':'Independently compose the report content requested in the original question from ONLY its supplied evidence. Match the requested scope; do not expand a summary into a comprehensive audit requiring additional procedures, dates, findings or approval. The application handles Word export. The source does not need to contain a prewritten report, template or comparison. If the supplied facts support the requested content, return answered with a concise cited draft and clearly state relevant evidence gaps and authorization limitations. Fictional observations can support a clearly fictional descriptive report; they cannot grant operational approval. If facts necessary to the actual requested content are absent, return insufficient_evidence and identify those specific missing facts. Never invent facts, grant permission, or derive unsupported numbers.',
+            'output_contract':'Return the required JSON status and answer. An answered response must cite every evidence-derived claim using exact supplied bracketed citation labels. Preserve source values and units. Citation and numerical validation still apply.',
+        }
+        return [*[dict(message) for message in original],
+                {'role':'user','content':json.dumps(instruction,ensure_ascii=False)}]
     repair_messages=[dict(message) for message in original]
     if checks.get('unexplained_table_units'):
         repair_messages[0]['content']+='\nREPAIR OUTPUT REQUIREMENT: An answered JSON response MUST include an exact bracketed evidence citation inside its answer string, for example "A supported value. [S1]". A source title or an uncited correct value does not satisfy this requirement. If no supplied passage supports the answer, use insufficient_evidence.'
@@ -188,6 +218,13 @@ def answer(question,passages,model,context=4096,output_tokens=512,safety_tokens=
             repair['outcome']='evidence_still_missing' if report_review and result['status']=='insufficient_evidence' else 'validated' if valid else 'verification_failed'
         if trace:trace.stages.append({'stage':'answer_repair_result',**repair})
     checks['repair']=repair
+    if not valid:
+        presentation=_query_presentation(sources)
+        if presentation is not None:
+            checks['presentation']='verified_query_result'
+            checks['generated_prose_accepted']=False
+            result={'status':'answered','answer':presentation}
+            valid=True
     if trace and not valid:trace.failure_layer='validation'
     return {**({'coverage':overview_coverage(overview_documents,sources)} if overview_documents is not None else {}),
             'status':result['status'] if valid else 'citation_failure','answer':result['answer'] if valid else VERIFICATION_FAILURE,'sources':sources,

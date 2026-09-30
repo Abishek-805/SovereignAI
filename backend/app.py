@@ -293,6 +293,13 @@ def create_app(service=None):
         if path.suffix not in TABULAR: raise WorkbenchError('unsupported_file','This format has no worksheet preview')
         return preview(path,sheet,offset,limit)
 
+    @app.get('/documents/{document_id}/table/find')
+    def document_table_find(document_id:str,q:str,sheet:int|None=None,match_case:bool=False,whole_cell:bool=False,offset:int=0,limit:int=200):
+        from rag.tables import find_cells,TABULAR
+        path=service.document_original(document_id)
+        if path.suffix not in TABULAR: raise WorkbenchError('unsupported_file','This format has no worksheet preview')
+        return find_cells(path,q,sheet,match_case,whole_cell,offset,limit)
+
     @app.post('/agent/auto')
     def automatic_agent(payload:AgentRequest):
         return service.run_auto_agent(payload.goal,payload.document_ids,payload.workspace_id,payload.history)

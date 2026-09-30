@@ -168,6 +168,16 @@ def validate(service, workspace_id, case, result, before):
                 with zipfile.ZipFile(path) as archive:
                     bodies.append(' '.join(ET.fromstring(archive.read('word/document.xml')).itertext()))
             checks['artifact_content_readback']=all(' '.join(answer.split()) in ' '.join(body.split()) for body in bodies)
+    if expected == 'edit_code':
+        checks['canonical_unchanged_before_accept']=file_snapshot(service,workspace_id)==before
+        checks['staged_for_review']=nested.get('publication_state')=='staged'
+        checks['docker_validated']=nested.get('checks',{}).get('container_executed') is True
+        checks['explicit_accept']=False
+        if all(checks[key] for key in ('canonical_unchanged_before_accept','staged_for_review','docker_validated')):
+            # Suite authorization applies only to these disposable fixtures.
+            # Acceptance is timed as validation/publication, not model workflow.
+            accepted=service.accept_coding_task(workspace_id,nested['task_id'])
+            checks['explicit_accept']=accepted.get('publication_state')=='published'
     after = file_snapshot(service, workspace_id)
     if expected != 'edit_code':
         checks['unrelated_files_unchanged'] = before == after
@@ -180,7 +190,7 @@ def validate(service, workspace_id, case, result, before):
     else:
         from backend.jobs import Job
         terminal_job = Job('terminal')
-        command = "node -e \"const multiply=require('./multiply.js'); for(const [a,b] of [[6,7],[0,8],[-3,4],[1.5,2],[9,1]])if(multiply(a,b)!==a*b)process.exit(1); console.log('RESULT=42')\""
+        command = "node -e \"const exported=require('./multiply.js'); const multiply=typeof exported==='function'?exported:exported.multiply; if(typeof multiply!=='function')process.exit(1); for(const [a,b] of [[6,7],[0,8],[-3,4],[1.5,2],[9,1]])if(multiply(a,b)!==a*b)process.exit(1); console.log('RESULT=42')\""
         terminal = service.execute_terminal(workspace_id, command, terminal_job)
         checks['code_valid'] = terminal.get('exit_code') == 0 and 'RESULT=42' in terminal_job.output
         checks['unrelated_files_unchanged'] = before == {k: v for k, v in after.items() if k != 'multiply.js'}
@@ -276,7 +286,8 @@ def main():
     metadata['source_sha256']={name:hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in (
         'backend/model.py','backend/service.py','backend/cancellation.py','router/capability_classifier.py',
         'workflows/document_report.py','router/model_registry.py','router/model_selection.py','router/resource_admission.py',
-        'router/tool_registry.py','backend/application_tools.py','rag/answer.py','rag/calculator.py','rag/retrieve.py','router/telemetry.py')}
+        'router/tool_registry.py','backend/application_tools.py','rag/answer.py','rag/calculator.py','rag/retrieve.py','router/telemetry.py',
+        'workflows/coding_workspace.py','workflows/publication_journal.py','workflows/source_quality.py','rag/tables.py')}
     metadata['sandbox_verification']={'image_id':verified['image_id'],'source_sha256':hashlib.sha256(verified_path.read_bytes()).hexdigest()}
     rows = []
     persist(folder, rows, metadata)

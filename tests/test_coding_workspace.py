@@ -189,6 +189,57 @@ def test_unchanged_candidate_is_not_reported_as_applied(tmp_path):
     assert work.read(wid,'main.js')['content']=='console.log(1)'
 
 
+def test_comment_only_candidate_cannot_pass_container_stub_and_stage(tmp_path):
+    work = CodingWorkspace(tmp_path)
+    wid = work.create('Web')['workspace_id']
+    work.write(wid, 'index.html', '<p>Original</p>')
+    class PassingSandbox:
+        def _ready(self): pass
+        def execute(self, code, input_files):
+            return SandboxResult(0, 'syntax checked', '', True)
+    result = work.run(wid, 'index.html', 'Improve this page',
+                      Model(*(['<!-- implementation later -->'] * 3)),
+                      PassingSandbox(), TaskLedger(tmp_path))
+    assert result['state'] == 'failed'
+    assert result['attempts'] == 3
+    assert 'markup' in result['stderr']
+    assert not result.get('staged_files')
+    assert work.read(wid, 'index.html')['content'] == '<p>Original</p>'
+    with pytest.raises(WorkbenchError):
+        work.accept(wid, result['task_id'])
+
+
+def test_single_file_regenerates_missing_source_before_staging(tmp_path):
+    work = CodingWorkspace(tmp_path)
+    wid = work.create('Web')['workspace_id']
+    work.write(wid, 'style.css', 'p { color: red; }')
+    class PassingSandbox:
+        def _ready(self): pass
+        def execute(self, code, input_files):
+            return SandboxResult(0, '', '', True)
+    result = work.run(wid, 'style.css', 'Make the text blue',
+                      Model('/* styles later */', 'p { color: blue; }'),
+                      PassingSandbox(), TaskLedger(tmp_path))
+    assert result['state'] == 'completed' and result['attempts'] == 2
+    assert work.read(wid, 'style.css')['content'] == 'p { color: red; }'
+
+
+@pytest.mark.parametrize('instruction,original,candidate', [
+    ('Replace style.css with a comment-only file', 'p { color: red; }', '/* intentionally disabled */'),
+    ('Make style.css an empty file', 'p { color: red; }', ''),
+    ('Update the comment', '/* old explanation */', '/* new explanation */')])
+def test_single_file_explicit_non_source_edits_remain_allowed(tmp_path, instruction, original, candidate):
+    work = CodingWorkspace(tmp_path)
+    wid = work.create('Styles')['workspace_id']
+    work.write(wid, 'style.css', original)
+    class PassingSandbox:
+        def _ready(self): pass
+        def execute(self, code, input_files): return SandboxResult(0, '', '', True)
+    result = work.run(wid, 'style.css', instruction, Model(candidate), PassingSandbox(), TaskLedger(tmp_path))
+    assert result['state'] == 'completed'
+    assert result['changes'][0]['after'] == candidate
+
+
 def test_requires_sandbox(tmp_path):
     work = CodingWorkspace(tmp_path)
     workspace_id = work.create('No tests')['workspace_id']

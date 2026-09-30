@@ -97,16 +97,49 @@ def preview(path,sheet=0,offset=0,limit=100):
         'rows':[{'number':i+1,'cells':[{'coordinate':f'{get_column_letter(j+1)}{i+1}','value':value,
             **table['styles'].get(f'{get_column_letter(j+1)}{i+1}',{})} for j,value in enumerate(row)]} for i,row in enumerate(rows[offset:offset+limit],offset)]}
 
+def find_cells(path,q,sheet=None,match_case=False,whole_cell=False,offset=0,limit=200):
+    from openpyxl.utils import get_column_letter
+    if not isinstance(q,str) or not q.strip() or len(q)>256 or offset<0 or not 1<=limit<=200:
+        raise WorkbenchError('invalid_request','Enter a search value under 256 characters and a valid result range')
+    tables=load_tables(path)
+    if sheet is not None and not 0<=sheet<len(tables): raise WorkbenchError('invalid_request','Unknown worksheet')
+    needle=q if match_case else q.casefold()
+    matches=[];total=0
+    for index,table in enumerate(tables):
+        if sheet is not None and index!=sheet: continue
+        for row,values in enumerate(table['rows'],1):
+            for column,value in enumerate(values,1):
+                if value is None: continue
+                text=str(value);candidate=text if match_case else text.casefold()
+                if (candidate==needle if whole_cell else needle in candidate):
+                    if offset<=total<offset+limit:
+                        matches.append({'sheet':index,'name':table['name'],'row':row,'column':column,
+                            'coordinate':f'{get_column_letter(column)}{row}','value':value})
+                    total+=1
+    return {'matches':matches,'total':total,'offset':offset,'limit':limit}
+
 def execute_query(table,plan):
     operation=plan.get('operation'); columns=plan.get('columns',[]); filters=plan.get('filters',[])
     if operation not in {'select','count','sum','average','min','max'} or not isinstance(columns,list) or not isinstance(filters,list) or len(columns)>12 or len(filters)>8:
         raise WorkbenchError('invalid_query','Unsupported table query')
     if any(c not in table['columns'] for c in columns): raise WorkbenchError('invalid_query','Query refers to an unknown column')
     for f in filters:
-        if not isinstance(f,dict) or f.get('column') not in table['columns'] or f.get('operator') not in {'eq','ne','contains','gt','gte','lt','lte'} or not isinstance(f.get('value'),(str,int,float)):
+        if not isinstance(f,dict) or f.get('column') not in table['columns'] or f.get('operator') not in {'eq','ne','contains','in','gt','gte','lt','lte'}:
             raise WorkbenchError('invalid_query','Query has an unknown column or operator')
+        value=f.get('value')
+        if (f['operator']=='in' and (not isinstance(value,list) or not 1<=len(value)<=40 or any(not isinstance(v,(str,int,float)) for v in value)) or
+            f['operator']!='in' and not isinstance(value,(str,int,float))):
+            raise WorkbenchError('invalid_query','Query filter has an invalid value or alternative list')
+    equalities={}
+    for f in filters:
+        if f['operator']=='eq':
+            value=str(f['value']).strip().casefold()
+            if f['column'] in equalities and equalities[f['column']]!=value:
+                raise WorkbenchError('invalid_query','Query has mutually exclusive equalities; use an alternative-value filter')
+            equalities[f['column']]=value
     def match(row,f):
         a=row.get(f['column']); b=f['value']; op=f['operator']
+        if op=='in': return str(a).strip().casefold() in {str(v).strip().casefold() for v in b}
         if op in {'eq','ne','contains'}:
             a=str(a).strip().casefold(); b=str(b).strip().casefold()
             return a==b if op=='eq' else a!=b if op=='ne' else b in a

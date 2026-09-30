@@ -1,4 +1,5 @@
 <script lang="ts">
+ import { workspaceDeletionBlocked } from '$lib/services/workspace-ui-state';
  import RouteDetails from './RouteDetails.svelte';
  import DuplicateAudit from './DuplicateAudit.svelte';
  import { bundleHtmlPreview } from '$lib/services/html-preview';
@@ -43,6 +44,29 @@ import ChevronRight from '@lucide/svelte/icons/chevron-right';
  import { WorkbenchService, type WorkbenchInfo } from '$lib/services/workbench.service';
  let workspaces=$state<CodingWorkspace[]>([]), workspace=$state<CodingWorkspace|null>(null);
  let projectDelete=$state<CodingWorkspace|null>(null);
+ let manageWorkspaces=$state(false),selectedWorkspaces=$state<string[]>([]),deletePreview=$state<CodingWorkspace[]|null>(null),deletingWorkspaces=$state(false),manageError=$state('');
+ function deletionBlocked(item:CodingWorkspace){return workspaceDeletionBlocked(item.workspace_id,workspace?.workspace_id,busy,unsavedWorkspace,task?.publication_state==='staged');}
+ function toggleWorkspace(id:string){selectedWorkspaces=selectedWorkspaces.includes(id)?selectedWorkspaces.filter(value=>value!==id):[...selectedWorkspaces,id];}
+ async function openWorkspaceManager(){manageError='';selectedWorkspaces=[];deletePreview=null;manageWorkspaces=true;try{await refresh();}catch(error){manageError=String(error);}}
+ function previewWorkspaceDeletion(){deletePreview=workspaces.filter(item=>selectedWorkspaces.includes(item.workspace_id));manageError='';}
+ async function deleteSelectedWorkspaces(){
+  const selected=deletePreview;if(!selected?.length||deletingWorkspaces)return;
+  if(selected.some(deletionBlocked)){manageError='Save or discard edits and staged changes, and wait for the active task before deleting its workspace.';return;}
+  deletingWorkspaces=true;manageError='';const removed:string[]=[];
+  try{
+   for(const item of selected){
+    if(deletionBlocked(item))throw new Error('Active workspace became busy or has unsaved work. Deletion stopped.');
+    await API.delete(item.workspace_id);removed.push(item.workspace_id);
+    if(workspace?.workspace_id===item.workspace_id)await openWorkspace('');
+    workspaces=workspaces.filter(value=>value.workspace_id!==item.workspace_id);
+    selectedWorkspaces=selectedWorkspaces.filter(id=>id!==item.workspace_id);
+    deletePreview=deletePreview?.filter(value=>value.workspace_id!==item.workspace_id)||null;
+   }
+   deletePreview=null;notice=`Deleted ${removed.length} workspace${removed.length===1?'':'s'}.`;await refresh();
+  }catch(error){manageError=`${removed.length?`${removed.length} workspace(s) deleted. `:''}${String(error)}`;}
+  finally{deletingWorkspaces=false;}
+ }
+
  let projectCreate=$state(false), projectName=$state('');
  let fileName=$state(''), fileContent=$state(''), tabs=$state<string[]>([]), drafts=$state<Record<string,string>>({});
  let revisions=$state<Record<string,string>>({});
@@ -88,6 +112,7 @@ import ChevronRight from '@lucide/svelte/icons/chevron-right';
  function activity(running:boolean,label:string){window.dispatchEvent(new CustomEvent('sovereign-activity',{detail:{view:'Code',running,stage:label,jobId}}));}
  let newName=$state(''), creating=$state(false), creatingFolder=$state(false), preview=$state(false);
  const dirty=$derived(!!fileName && !isAsset && fileContent!==saved[fileName]);
+ const unsavedWorkspace=$derived(dirty||Object.keys(drafts).some(name=>drafts[name]!==saved[name]));
  const editorActive=$derived(!!fileName&&!isAsset&&!preview&&!reviewing&&!conflictReview&&task?.publication_state!=='staged');
  const formatSupported=$derived(editorActive&&/\.(js|jsx|mjs|cjs|ts|tsx|json|html?|css|scss|less)$/i.test(fileName));
  const runnable=$derived(/\.(py|js|mjs|cjs|ts|java|c|cpp|cc|cxx|go|rs|php|sh|bash|sql)$/i.test(fileName));
@@ -172,7 +197,7 @@ import ChevronRight from '@lucide/svelte/icons/chevron-right';
  function fullscreenChanged(){if(focusMode&&document.fullscreenElement!==ideElement){focusMode=false;document.body.classList.remove('sovereign-code-focus');}}
  onMount(()=>{if(window.innerWidth<=800){showExplorer=false;showAssistant=false;}autoSave=localStorage.getItem('sovereign-code-auto-save')==='1';terminalHeight=Math.max(130,Math.min(520,Number(localStorage.getItem('sovereign-terminal-height'))||230));explorerWidth=Math.max(170,Math.min(600,Number(localStorage.getItem('sovereign-explorer-width'))||260));assistantWidth=Math.max(170,Math.min(600,Number(localStorage.getItem('sovereign-assistant-width'))||320));const openRequested=(event:Event)=>{const detail=(event as CustomEvent<{tab?:string;taskId?:string}>).detail;if(detail?.tab!=='code'||busy)return;void (async()=>{const id=localStorage.getItem('sovereign-active-workspace');if(id&&id!==workspace?.workspace_id)await openWorkspace(id);else if(workspace&&fileName){if(dirty){notice='Save or discard your unsaved editor changes before reloading the agent edit.';return;}else{const file=await API.read(workspace.workspace_id,fileName);fileContent=file.content;drafts[fileName]=file.content;saved[fileName]=file.content;revisions[fileName]=file.sha256;}}if(id&&detail.taskId){task=await request(`/coding/workspaces/${id}/tasks/${detail.taskId}`);if(task?.target&&task.publication_state==='published'){const fresh=await API.read(id,task.target);drafts[task.target]=fresh.content;saved[task.target]=fresh.content;revisions[task.target]=fresh.sha256;if(fileName!==task.target)await openFile(task.target);else fileContent=fresh.content;}reviewChanges();}})().catch(e=>notice=String(e));};window.addEventListener('sovereign-open-workspace',openRequested);document.addEventListener('fullscreenchange',fullscreenChanged);void (async()=>{try{await refresh();let pending:{job_id:string;workspace_id:string;target:string}|null=null;try{pending=JSON.parse(localStorage.getItem('sovereign-code-job')||'null');}catch{localStorage.removeItem('sovereign-code-job');}const id=pending?.workspace_id||localStorage.getItem('sovereign-active-workspace');if(id&&workspaces.some(w=>w.workspace_id===id)){await openWorkspace(id);if(pending?.target)await openFile(pending.target);}if(pending?.job_id){jobId=pending.job_id;busy=true;void pollJob();}}catch(e){notice=String(e);}})();void refreshRuntime();return ()=>{clearTimeout(pollTimer);window.removeEventListener('sovereign-open-workspace',openRequested);document.removeEventListener('fullscreenchange',fullscreenChanged);document.body.classList.remove('sovereign-code-focus');if(document.fullscreenElement===ideElement)void document.exitFullscreen();};});
  async function refresh(){workspaces=await API.list();}
- async function confirmProjectDelete(){const selected=projectDelete;if(!selected||busy)return;if(workspace?.workspace_id===selected.workspace_id&&Object.keys(drafts).some(name=>drafts[name]!==saved[name])){notice='Save or discard open edits before deleting this project.';return;}try{await API.delete(selected.workspace_id);projectDelete=null;if(workspace?.workspace_id===selected.workspace_id)await openWorkspace('');await refresh();notice='Deleted project '+selected.name;}catch(error){notice=String(error);}}
+ async function confirmProjectDelete(){const selected=projectDelete;if(!selected||deletingWorkspaces)return;if(deletionBlocked(selected)){notice='Save or discard edits and staged changes, and wait for the active task before deleting this project.';return;}try{await API.delete(selected.workspace_id);projectDelete=null;if(workspace?.workspace_id===selected.workspace_id)await openWorkspace('');await refresh();notice='Deleted project '+selected.name;}catch(error){notice=String(error);}}
  async function createProject(){const name=projectName.trim();if(!name)return;keep();if(Object.keys(drafts).some(path=>drafts[path]!==saved[path])){notice='Save or discard open edits before creating another project.';return;}try{const created=await API.create(name);projectCreate=false;projectName='';await refresh();await openWorkspace(created.workspace_id);notice='Created project '+created.name;}catch(error){notice=String(error);}}
  async function refreshExplorer(){await refresh();const current=workspace;if(!current||busy)return;keep();try{const fresh=await API.get(current.workspace_id);if(workspace?.workspace_id!==current.workspace_id)return;workspace=fresh;const reads=await Promise.allSettled(tabs.filter(name=>fresh.files.some(file=>file.name===name)&&drafts[name]===saved[name]).map(name=>API.read(current.workspace_id,name)));if(workspace?.workspace_id!==current.workspace_id)return;for(const result of reads){if(result.status==='fulfilled'){const file=result.value;if(drafts[file.name]!==saved[file.name]||(file.name===fileName&&fileContent!==saved[file.name]))continue;if(file.editable===false){assetFiles[file.name]={bytes:file.bytes||0,binary:!!file.binary};delete drafts[file.name];delete saved[file.name];continue;}delete assetFiles[file.name];drafts[file.name]=file.content;saved[file.name]=file.content;revisions[file.name]=file.sha256;if(fileName===file.name)fileContent=file.content;}}const missing=tabs.filter(name=>!fresh.files.some(file=>file.name===name)&&drafts[name]===saved[name]);if(missing.length)finishClose(missing);indexedWorkspace='';searchIndex={};if(sidebarView==='search')void loadSearchIndex();notice=Object.keys(drafts).some(name=>drafts[name]!==saved[name])?'Workspace refreshed. Unsaved editor drafts were preserved.':'Workspace refreshed from the project files.';}catch(error){notice=String(error);}}
  async function refreshRuntime(){try{runtime=await WorkbenchService.info();}catch(e){notice=String(e);}}
@@ -241,6 +266,7 @@ import ChevronRight from '@lucide/svelte/icons/chevron-right';
   <span class="toolbar-divider"></span>
   <select class="workspace-picker" aria-label="Open coding workspace" value={workspace?.workspace_id||''} onchange={e=>void openWorkspace(e.currentTarget.value)} disabled={busy}><option value="">Local workspace</option>{#each workspaces as w}<option value={w.workspace_id}>{w.name}</option>{/each}</select>
   <button class="ide-shortcuts-button" onclick={()=>projectCreate=true} disabled={busy} title="Create project">+ New project</button>
+  <button class="ide-manage-workspaces" onclick={()=>void openWorkspaceManager()} disabled={deletingWorkspaces}>Manage workspaces</button>
   <button class="ide-delete-project" title="Delete selected project" aria-label="Delete selected project" disabled={!workspace||busy} onclick={()=>projectDelete=workspace}><Trash2 size={16}/></button>
   <button class="ide-shortcuts-button" onclick={()=>shortcutsOpen=true} title="Windows keyboard shortcuts">Shortcuts</button><span class="spacer"></span><span class="engine" class:ready={runtime?.sandbox.ready}><span class="engine-dot"></span>{runtime?.sandbox.ready?'Sandbox ready':'Sandbox offline'}</span>
   <span class="toolbar-divider"></span>
@@ -303,6 +329,20 @@ import ChevronRight from '@lucide/svelte/icons/chevron-right';
  </div>
  <footer role="status"><span>{notice}</span><span>{fileName.split('.').pop()?.toUpperCase()||'Workspace'} · UTF-8 · Local copy</span></footer>
  {#if projectCreate}<div class="file-dialog-backdrop" role="presentation" onclick={e=>{if(e.target===e.currentTarget)projectCreate=false;}}><div class="file-dialog" role="dialog" aria-modal="true" aria-label="Create project"><h3>Create project</h3><form onsubmit={e=>{e.preventDefault();void createProject();}}><input aria-label="Project name" placeholder="Project name" bind:value={projectName} maxlength="80"/><div class="file-dialog-actions"><button type="button" onclick={()=>projectCreate=false}>Cancel</button><button class="primary" disabled={!projectName.trim()}>Create project</button></div></form></div></div>{/if}
+ {#if manageWorkspaces}<div class="file-dialog-backdrop" role="presentation"><div class="file-dialog workspace-manager" role="dialog" aria-modal="true" aria-label="Manage workspaces">
+  <h3>{deletePreview?'Delete selected workspaces?':'Manage workspaces'}</h3>
+  {#if deletePreview}
+   <p>This permanently deletes the following workspaces and all their files. Review the names and locations before confirming.</p>
+   <ul class="workspace-delete-preview">{#each deletePreview as item}<li><strong>{item.name}</strong><small>{item.host_path||item.workspace_id}</small>{#if deletionBlocked(item)}<span>Protected: active task, unsaved edits, or staged changes.</span>{/if}</li>{/each}</ul>
+   <div class="file-dialog-actions"><button onclick={()=>deletePreview=null} disabled={deletingWorkspaces}>Back</button><button class="danger" disabled={deletingWorkspaces||!deletePreview.length||deletePreview.some(deletionBlocked)} onclick={()=>void deleteSelectedWorkspaces()}>{deletingWorkspaces?'Deleting…':`Delete ${deletePreview.length} workspace${deletePreview.length===1?'':'s'}`}</button></div>
+  {:else}
+   <p>Select workspaces to permanently delete. The active workspace is protected while it has unsaved work or a running task.</p>
+   <label class="workspace-select-all"><input type="checkbox" checked={workspaces.filter(item=>!deletionBlocked(item)).length>0&&workspaces.filter(item=>!deletionBlocked(item)).every(item=>selectedWorkspaces.includes(item.workspace_id))} onchange={e=>selectedWorkspaces=e.currentTarget.checked?workspaces.filter(item=>!deletionBlocked(item)).map(item=>item.workspace_id):[]}/>Select all available workspaces</label>
+   <div class="workspace-selection">{#each workspaces as item}<label><input type="checkbox" checked={selectedWorkspaces.includes(item.workspace_id)} disabled={deletionBlocked(item)} onchange={()=>toggleWorkspace(item.workspace_id)}/><span><strong>{item.name}{workspace?.workspace_id===item.workspace_id?' (active)':''}</strong><small>{item.host_path||item.workspace_id}</small>{#if deletionBlocked(item)}<small>Protected: active task, unsaved edits, or staged changes.</small>{/if}</span></label>{:else}<p>No workspaces.</p>{/each}</div>
+   <div class="file-dialog-actions"><button onclick={()=>manageWorkspaces=false}>Close</button><button class="danger" disabled={!selectedWorkspaces.length} onclick={previewWorkspaceDeletion}>Delete selected ({selectedWorkspaces.length})</button></div>
+  {/if}
+  {#if manageError}<p role="alert">{manageError}</p>{/if}
+ </div></div>{/if}
  {#if projectDelete}<div class="file-dialog-backdrop" role="presentation" onclick={e=>{if(e.target===e.currentTarget)projectDelete=null;}}><div class="file-dialog" role="dialog" aria-modal="true" aria-label="Delete project"><h3>Delete project?</h3><p>{projectDelete.name}</p><p>This permanently removes this project and its files from Documents/SovereignAI/Projects.</p><div class="file-dialog-actions"><button onclick={()=>projectDelete=null}>Cancel</button><button class="danger" onclick={()=>void confirmProjectDelete()}>Delete project</button></div></div></div>{/if}
 </section>
 <style>
@@ -334,4 +374,5 @@ import ChevronRight from '@lucide/svelte/icons/chevron-right';
  @media(max-width:800px){.ide-body,.ide-body.hide-explorer,.ide-body.hide-assistant,.ide-body.hide-explorer.hide-assistant{display:flex;flex-direction:column}.side-resizer{display:none}.ai-panel{max-height:300px;border-top:1px solid var(--border)}.ide{height:auto;min-height:800px}}
  .ide-menubar{display:flex;align-items:center;gap:2px}.ide-menu{position:relative}.ide-menu>button{padding:5px 8px;font-size:11px;color:var(--muted-foreground)}.ide-menu>button:hover,.ide-menu>button[aria-expanded=true]{color:var(--foreground);background:var(--accent)}.ide-menu-pop{position:absolute;top:100%;left:0;z-index:40;min-width:225px;padding:5px;border:1px solid #494b56;border-radius:8px;background:#24262d;box-shadow:0 16px 42px #0009}.ide-menu-pop button{display:flex;width:100%;justify-content:space-between;border:0;background:transparent;color:#e7e7ea;text-align:left;font-size:11px;padding:8px 10px}.ide-menu-pop button:hover{background:#393b45}.ide-menu-pop kbd{color:#aaadba;font:10px Consolas,monospace;margin-left:14px}
  @media(max-width:1050px){.ide-menubar{order:5;width:100%;justify-content:flex-start}.ide-shortcuts-button{display:none}}@media(max-width:600px){.ide-menubar{overflow-x:auto}.ide-menu-pop{position:fixed;top:115px;left:12px}}
+.workspace-manager{width:min(620px,calc(100vw - 32px));max-height:85vh;overflow:auto}.workspace-select-all,.workspace-selection label{display:flex;gap:10px;align-items:flex-start;padding:10px 0}.workspace-manager input[type=checkbox]{width:16px;height:16px;min-width:16px;margin-top:3px;accent-color:#a994ff}.workspace-selection{max-height:45vh;overflow:auto;margin-top:8px}.workspace-selection label{border-top:1px solid #40424b}.workspace-selection span{min-width:0}.workspace-manager small{display:block;color:#adaeb6;overflow-wrap:anywhere;margin-top:4px}.workspace-delete-preview{padding-left:20px}.workspace-delete-preview li{margin:12px 0;overflow-wrap:anywhere}.workspace-delete-preview span{display:block;color:#ffb8a9;font-size:12px}
 </style>

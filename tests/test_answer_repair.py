@@ -28,12 +28,49 @@ def test_report_format_refusal_gets_one_review_with_same_evidence(one_chunk):
     assert result['checks']['repair']['review_reason']=='insufficient_report_evidence_review'
     assert result['checks']['repair']['outcome']=='validated'
 
+
+def test_report_review_starts_fresh_without_rejected_refusal(one_chunk):
+    from dataclasses import replace
+    refusal = 'There is no inspection timeline or report template, so fictional evidence is unusable.'
+    passage = replace(one_chunk, text='Fictional inspection signed by Lee Chen. Pump vibration 3.6 mm/s; limit 4.0 mm/s. No real operational action is authorized.')
+    class ContextSensitiveModel(Model):
+        def complete(self, messages, max_tokens=512):
+            if self.calls:
+                assert refusal not in '\n'.join(item['content'] for item in messages)
+                assert 'Fictional inspection signed by Lee Chen.' in messages[1]['content']
+                assert 'report template' not in messages[1]['content']
+            return super().complete(messages, max_tokens)
+    model = ContextSensitiveModel(output(refusal, 'insufficient_evidence'),
+        output('Fictional inspection signed by Lee Chen. Vibration was 3.6 mm/s against the stated 4.0 mm/s limit. No real operational action is authorized. [S1]'))
+    result = answer('Draft a Word summary of the fictional inspection.', [passage], model, report_generation=True)
+    assert result['status'] == 'answered'
+    assert len(model.calls) == 2
+    assert model.calls[1][1] == model.calls[0][1]
+    assert result['checks']['citation_ids_valid']
+    assert result['checks']['numeric_claims_supported']
+
 def test_report_review_cannot_invent_missing_facts_or_repeat_unbounded(one_chunk):
-    model=Model(output('The requested price is absent.','insufficient_evidence'),output('Price evidence is still required.','insufficient_evidence'))
+    class MissingFactsModel(Model):
+        def complete(self, messages, max_tokens=512):
+            if self.calls:
+                assert 'The requested price is absent.' not in '\n'.join(item['content'] for item in messages)
+                assert messages[1] == self.calls[0][1]
+            return super().complete(messages, max_tokens)
+    model=MissingFactsModel(output('The requested price is absent.','insufficient_evidence'),output('Price evidence is still required.','insufficient_evidence'))
     result=answer('Draft a purchase price report.',[one_chunk],model,report_generation=True)
     assert result['status']=='insufficient_evidence'
     assert len(model.calls)==2
     assert result['checks']['repair']['outcome']=='evidence_still_missing'
+
+
+@pytest.mark.parametrize('draft', ['The limit is 99.9 mm/s. [S1]', 'The limit is 7.1 mm/s. [S99]'])
+def test_fresh_report_review_cannot_bypass_evidence_validation(one_chunk, draft):
+    model = Model(output('No report template exists.', 'insufficient_evidence'), output(draft))
+    result = answer('Draft a cited report of the limit.', [one_chunk], model, report_generation=True)
+    assert result['status'] == 'citation_failure'
+    assert result['answer'] == VERIFICATION_FAILURE
+    assert len(model.calls) == 2
+    assert result['checks']['repair']['outcome'] == 'verification_failed'
 
 
 def test_valid_answer_has_no_regeneration(one_chunk):

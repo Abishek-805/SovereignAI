@@ -35,6 +35,56 @@ class Sandbox:
         return SandboxResult(self.exit_code,'checked','',True)
 
 
+def test_generated_html_css_retries_non_source_and_receives_dependencies(tmp_path):
+    import json
+    work = CodingWorkspace(tmp_path)
+    wid = work.create('Web')['workspace_id']
+    class CapturingModel(ProjectModel):
+        def complete_code(self, messages, max_tokens=3072):
+            self.prompts = getattr(self, 'prompts', []) + [messages]
+            return super().complete_code(messages, max_tokens)
+    model = CapturingModel({'scope':'new_files','operations':[
+        {'action':'create','path':'site/index.html','reason':'page'},
+        {'action':'create','path':'site/style.css','reason':'styles'}]},
+        '/* page will be generated later */', '<!-- page -->',
+        '<!doctype html><link rel="stylesheet" href="style.css"><p>Hello</p>',
+        '/* styles later */', 'p { color: red; }')
+    sandbox = Sandbox()
+    task = work.run_project(wid, '', 'Create HTML and CSS in site', model, sandbox, TaskLedger(tmp_path))
+    assert len(model.prompts) == 5
+    first = json.loads(model.prompts[0][1]['content'])
+    assert first['language'] == 'HTML'
+    assert first['planned_operations'][1]['path'] == 'site/style.css'
+    css = json.loads(model.prompts[3][1]['content'])
+    assert '<p>Hello</p>' in css['file_contents']['site/index.html']
+    assert all(b'/*' not in snapshot['site/index.html'] for snapshot in sandbox.snapshots)
+    assert work.get(wid)['files'] == []
+    work.accept(wid, task['task_id'])
+    assert '<p>Hello</p>' in work.read(wid, 'site/index.html')['content']
+
+
+def test_generated_comment_only_source_exhaustion_cannot_stage(tmp_path):
+    work = CodingWorkspace(tmp_path)
+    wid = work.create('Web')['workspace_id']
+    sandbox = Sandbox()
+    model = ProjectModel([{'action':'create','path':'index.html','reason':'page'}], *(['/* later */'] * 3))
+    with pytest.raises(WorkbenchError, match='after three attempts'):
+        work.run_project(wid, '', 'Create an HTML page', model, sandbox, TaskLedger(tmp_path))
+    assert work.get(wid)['files'] == []
+    assert sandbox.snapshots == []
+    assert not list((work.root / wid / 'tasks').iterdir())
+
+
+@pytest.mark.parametrize('instruction,content', [('Create an empty file', ''),
+    ('Create a comment-only file', '/* styles intentionally omitted */')])
+def test_explicit_non_source_file_creation_is_preserved(tmp_path, instruction, content):
+    work = CodingWorkspace(tmp_path)
+    wid = work.create('Intentional')['workspace_id']
+    model = ProjectModel([{'action':'create','path':'style.css','reason':'requested'}], content)
+    task = work.run_project(wid, '', instruction, model, Sandbox(), TaskLedger(tmp_path))
+    assert task['changes'][0]['after'] == content
+
+
 def test_project_task_creates_folder_and_file_without_editing_current_tab(tmp_path):
     work=CodingWorkspace(tmp_path)
     workspace_id=work.create('Project')['workspace_id']

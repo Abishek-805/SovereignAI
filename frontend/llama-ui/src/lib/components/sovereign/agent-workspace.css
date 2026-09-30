@@ -446,8 +446,8 @@
 }
 .agent-chat .agent-change-card {
 	display: flex;
-	align-items: center;
-	flex-wrap: wrap;
+	flex-direction: column;
+	align-items: stretch;
 	gap: 8px;
 	margin-top: 14px;
 	padding: 10px 12px;
@@ -540,3 +540,6 @@
 }
 
 .agent-chat .composer.agent-drop-active{outline:2px dashed var(--wb-focus);outline-offset:3px}.agent-drop-hint{font-size:12px;color:var(--wb-focus);padding:6px 0}
+
+.agent-chat .agent-change-card > ul { margin: 0; padding-left: 20px; width: 100%; overflow-wrap: anywhere; }
+.agent-chat .agent-change-card > ul li { margin: 5px 0; }

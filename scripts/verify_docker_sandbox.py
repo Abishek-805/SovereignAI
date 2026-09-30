@@ -7,6 +7,8 @@ import time
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from router.sandbox import (CodeSandbox, LOCAL_ENGINE, MAX_OUTPUT_VOLUME_BYTES,
                             SANDBOX_VERIFICATION_VERSION, sandbox_policy_fingerprint)
 from backend.settings import Settings
@@ -28,6 +30,7 @@ status=read('/proc/self/status')
 print(json.dumps({'cap_eff':next((x.split(':',1)[1].strip() for x in status.splitlines() if x.startswith('CapEff:')),''),
  'no_new_privs':next((x.split(':',1)[1].strip() for x in status.splitlines() if x.startswith('NoNewPrivs:')),''),
  'pids':read('/sys/fs/cgroup/pids.max'),'memory':read('/sys/fs/cgroup/memory.max'),
+ 'swap':read('/sys/fs/cgroup/memory.swap.max'),
  'cpu':read('/sys/fs/cgroup/cpu.max'),'pid1':read('/proc/1/cmdline'),
  'output_capacity':os.statvfs('/output').f_blocks*os.statvfs('/output').f_frsize,
  'docker_socket':any(pathlib.Path(p).exists() for p in ('/var/run/docker.sock','/run/docker.sock'))}))""")
@@ -60,7 +63,7 @@ print(json.dumps({'cap_eff':next((x.split(':',1)[1].strip() for x in status.spli
             'no_new_privileges': inspection.exit_code==0 and details.get('no_new_privs')=='1',
             'process_isolated': 'sleep' in details.get('pid1',''),
             'pids_bounded': details.get('pids')=='64',
-            'memory_bounded': details.get('memory')==str(512*1024*1024),
+            'memory_bounded': details.get('memory')==str(512*1024*1024) and details.get('swap')=='0',
             'cpu_bounded': details.get('cpu','').split()[:2] in (['100000','100000'],['1000000','1000000']),
             'output_bounded': 0 < details.get('output_capacity',0) <= MAX_OUTPUT_VOLUME_BYTES,
             'docker_socket_absent': details.get('docker_socket') is False,

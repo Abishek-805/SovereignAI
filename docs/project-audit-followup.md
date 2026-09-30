@@ -1,5 +1,7 @@
 # Project audit follow-up — 2026-09-30
 
+> Historical checkpoint. This preserves the findings and tests at that stage. See [final release report](final-release-report.md) and [publication architecture](publication-architecture.md) for current recovery behavior, release gates and unresolved limitations; earlier counts do not establish final release completion.
+
 This is an evidence-based continuation, not a claim that every project flaw is resolved. Screenshots establish symptoms; source tracing and tests establish the findings below. Existing user projects were not used as test fixtures.
 
 ## Findings addressed

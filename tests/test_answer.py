@@ -50,6 +50,22 @@ def test_numeric_claim_must_be_supported_by_its_cited_passages(one_chunk):
     assert result['status']=='answered'
     assert result['checks']['numeric_claims_supported'] is True
 
+@pytest.mark.parametrize('source,claim,unsupported',[
+    ('Maximum: 50 marks.', 'Maximum: -50 marks [S1].', '-50'),
+    ('Temperature: -7.1 degrees.', 'Temperature: 7.1 degrees [S1].', '7.1'),
+])
+def test_numeric_verification_preserves_sign(one_chunk,source,claim,unsupported):
+    model=FakeModel(); model.output['answer']=claim
+    result=answer('What is the value?',[replace(one_chunk,text=source)],model)
+    assert result['status']=='citation_failure'
+    assert result['checks']['unsupported_numbers']==[unsupported]
+
+def test_paragraph_end_citation_cannot_hide_unsupported_numbers(one_chunk):
+    model=FakeModel(); model.output['answer']='Maximum: -50 marks. The score is supported [S1].'
+    result=answer('What is the maximum?',[replace(one_chunk,text='Maximum: 50 marks.')],model)
+    assert result['status']=='citation_failure'
+    assert result['checks']['unsupported_numbers']==['-50']
+
 def test_abstain(one_chunk):
     model=FakeModel(); model.output={'status':'insufficient_evidence','answer':'No temperature limit supplied.'}
     assert answer('temperature?',[one_chunk],model)['status']=='insufficient_evidence'

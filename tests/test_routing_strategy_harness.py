@@ -44,6 +44,23 @@ def test_raw_snapshot_detects_binary_changes():
     assert before['assets/photo.png']!=after['assets/photo.png']
     assert before['notes.md']==after['notes.md']
 
+def test_code_benchmark_explicitly_accepts_validated_staged_changes(tmp_path):
+    from workflows.coding_workspace import CodingWorkspace
+    from router.task_ledger import TaskLedger
+    from tests.test_coding_project import ProjectModel, Sandbox
+    work=CodingWorkspace(tmp_path); wid=work.create('Fixture')['workspace_id']
+    work.write(wid,'notes.md','# Working notes\nOld item.\n')
+    module=harness(); service=SimpleNamespace(coding=work,accept_coding_task=work.accept)
+    before=module.file_snapshot(service,wid)
+    task=work.run_project(wid,'notes.md','Replace Old item. with Verified item.',
+        ProjectModel({'scope':'existing_files','operations':[{'action':'edit','path':'notes.md','reason':'Requested change'}]},
+            '# Working notes\nVerified item.\n'),Sandbox(),TaskLedger(tmp_path))
+    assert module.file_snapshot(service,wid)==before
+    _,checks=module.validate(service,wid,{'action':'edit_code','question':'Edit notes.md','needle':None},
+        {'plan':{'action':'edit_code'},'result':task},before)
+    assert checks['canonical_unchanged_before_accept'] and checks['explicit_accept'] and checks['code_valid']
+    assert work.read(wid,'notes.md')['content']=='# Working notes\nVerified item.\n'
+
 
 @pytest.mark.parametrize('answer,valid',[
     ('The valve is red [S1].',True),

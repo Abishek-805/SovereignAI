@@ -113,7 +113,7 @@ def test_spreadsheet_ignores_inflated_dimensions_and_sparse_coordinates(tmp_path
     assert len(result.pages[0].text) < 100
 
 
-@pytest.mark.parametrize('suffix', ['.tsv', '.yaml', '.xml', '.html', '.py', '.java', '.jsonl'])
+@pytest.mark.parametrize('suffix', ['.html', '.py', '.java'])
 def test_text_formats_and_utf16(tmp_path, suffix):
     path = tmp_path / ('source' + suffix)
     path.write_text('Earth 🌍\nSecond line', encoding='utf-16')

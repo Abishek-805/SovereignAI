@@ -31,6 +31,7 @@ class Chunk:
     extraction_method: str = 'text_layer'
     extraction_confidence: float | None = None
     page_image_hash: str | None = None
+    retrieval_kind: str = 'dense'
 
     def to_dict(self):
         return asdict(self)

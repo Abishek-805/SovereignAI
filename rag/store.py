@@ -25,6 +25,7 @@ class Store:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self.max_chunks = max_chunks
         with self.connect() as db:
+            db.execute('PRAGMA journal_mode=WAL')
             db.executescript(SCHEMA)
 
     @contextmanager
@@ -160,8 +161,11 @@ class Store:
 
     def publish(self, document_id, display_name, source_path, source_hash, chunks, vectors, embedding_revision, warnings):
         vectors = np.asarray(vectors, dtype='<f4')
+        norms=np.linalg.norm(vectors,axis=1) if vectors.ndim==2 else np.array([])
+        expected=np.array([0 if c.retrieval_kind=='lexical' else 1 for c in chunks])
         valid = (len(chunks)>0 and vectors.shape==(len(chunks),384) and np.isfinite(vectors).all()
-                 and np.allclose(np.linalg.norm(vectors,axis=1),1,atol=1e-3)
+                 and all(c.retrieval_kind in {'dense','schema','lexical'} for c in chunks)
+                 and np.allclose(norms,expected,atol=1e-3)
                  and len({c.chunk_id for c in chunks})==len(chunks)
                  and all(c.document_id==document_id and c.version_hash==source_hash for c in chunks))
         if not valid:

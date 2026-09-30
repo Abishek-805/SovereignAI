@@ -19,6 +19,9 @@
 		text: string;
 		original_url: string | null;
 		passages?: { chunk_id: string; page: number | null; text: string }[];
+		passage_offset?: number;
+		passage_limit?: number;
+		passage_total?: number;
 	};
 	let { target }: { target?: { id: string; page?: number | null; chunk?: string } } = $props();
 	$effect(() => {
@@ -79,17 +82,18 @@
 			loading = false;
 		}
 	}
-	async function open(id: string, location?: number | null, chunk?: string) {
+	async function open(id: string, location?: number | null, chunk?: string, offset?: number) {
 		const sequence = ++requestSequence;
 		opening = true;
 		error = '';
 		try {
-			const content = await knowledgeJson(await fetch(`/documents/${id}/content`));
+			const query = chunk ? `chunk_id=${encodeURIComponent(chunk)}` : `offset=${offset ?? 0}`;
+			const content = await knowledgeJson(await fetch(`/documents/${id}/content?${query}`));
 			if (sequence !== requestSequence) return;
 			active = content;
 			page = location || content.pages[0] || 1;
 			evidenceChunk = chunk || '';
-			view = chunk ? 'text' : 'original';
+			view = chunk || offset !== undefined ? 'text' : 'original';
 			folder = content.folder || '';
 			sessionStorage.setItem('sovereign-knowledge-active', id);
 			if (window.innerWidth < 700) listVisible = false;
@@ -524,7 +528,15 @@
 									<small>{passage.page ? `Page ${passage.page}` : 'Text passage'}</small>
 									<pre>{passage.text}</pre>
 								</section>{/each}{#if !active.passages?.length}<pre>{active.text}</pre>{/if}
-						</article>{/if}{:else}<div class="knowledge-library-empty">
+						</article>{/if}
+					{#if (active.passage_total || 0) > (active.passage_limit || 100) && (!isPdf || view === 'text')}
+						<nav aria-label="Document passages">
+							<button disabled={opening || !(active.passage_offset || 0)} onclick={() => open(active!.document_id, null, undefined, Math.max(0, (active!.passage_offset || 0) - (active!.passage_limit || 100)))}>Previous passages</button>
+							<span>Passages {(active.passage_offset || 0) + 1}–{Math.min((active.passage_offset || 0) + (active.passage_limit || 100), active.passage_total || 0)} of {active.passage_total}</span>
+							<button disabled={opening || (active.passage_offset || 0) + (active.passage_limit || 100) >= (active.passage_total || 0)} onclick={() => open(active!.document_id, null, undefined, (active!.passage_offset || 0) + (active!.passage_limit || 100))}>Next passages</button>
+						</nav>
+					{/if}
+				{:else}<div class="knowledge-library-empty">
 						<FileText size={32} />
 						<h2>Your documents, in one place.</h2>
 						<p>

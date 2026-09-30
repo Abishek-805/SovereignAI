@@ -6,6 +6,7 @@ from pathlib import Path
 from types import SimpleNamespace
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import uvicorn
+from starlette.responses import JSONResponse
 from backend.app import create_app
 from backend.service import Workbench
 from backend.settings import Settings
@@ -24,4 +25,16 @@ with tempfile.TemporaryDirectory(prefix='sovereign-import-browser-') as director
     service=Workbench(Settings(data_dir=root/'data', project_dir=root/'projects'),
                       Store(root/'index.sqlite'), SlowEmbedder(), model,
                       SimpleNamespace(acquire_lease=lambda capability: None))
-    uvicorn.run(create_app(service), host='127.0.0.1', port=8088, log_level='error')
+    app=create_app(service)
+    server=None
+    @app.middleware('http')
+    async def fixture_identity(request,call_next):
+        if request.url.path=='/__audit_shutdown__' and request.method=='POST':
+            server.should_exit=True
+            response=JSONResponse({'stopping':True})
+        else:
+            response=await call_next(request)
+        response.headers['x-sovereign-audit']='disposable'
+        return response
+    server=uvicorn.Server(uvicorn.Config(app,host='127.0.0.1',port=8088,log_level='error'))
+    server.run()

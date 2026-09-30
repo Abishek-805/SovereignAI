@@ -46,11 +46,16 @@ def retrieve(store, embedder, question, document_ids=None, limit=6):
     revisions={d['embedding_revision'] for d in store.documents() if document_ids is None or d['document_id'] in document_ids}
     if revisions!={embedder.revision}:
         raise WorkbenchError('embedding_mismatch','Reindex with the configured embedding model')
-    query=embedder.encode([question],query=True)[0]
-    dense=sorted(((chunk.chunk_id,float(vector@query)) for chunk,vector in active),key=lambda pair:(-pair[1],pair[0]))[:12]
+    semantic=[(chunk,vector) for chunk,vector in active if chunk.retrieval_kind!='lexical']
+    query=embedder.encode([question],query=True)[0] if semantic else None
+    dense=sorted(((chunk.chunk_id,float(vector@query)) for chunk,vector in semantic),key=lambda pair:(-pair[1],pair[0]))[:12]
     lexical=store.lexical(fts_query(question),12,document_ids)
     by_id={chunk.chunk_id:chunk for chunk,_ in active}
     order=rrf([lexical,[key for key,_ in dense]])
+    # A table overview must not outrank an exact matching record merely
+    # because it participates in both lexical and semantic rankings.
+    records=[key for key in lexical if key in by_id and by_id[key].retrieval_kind=='lexical']
+    order=records+[key for key in order if key not in records]
     selected=[]
     for key in order:
         # Another import can commit between the lexical and dense reads.

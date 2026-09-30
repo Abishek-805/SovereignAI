@@ -40,6 +40,8 @@ def _xlsx_pages(data: bytes, max_sheets: int):
             if not name.startswith('xl/') or '..' in name.split('/'):
                 raise WorkbenchError('parse_failed', 'Invalid spreadsheet worksheet path')
             lines = []
+            row_values = []
+            current_row = None
             with archive.open(name) as source:
                 for _, cell in etree.iterparse(source, events=('end',), tag='{'+ns['s']+'}c',
                                                resolve_entities=False, no_network=True, huge_tree=False):
@@ -55,15 +57,21 @@ def _xlsx_pages(data: bytes, max_sheets: int):
                         value = shared[index]
                     elif kind == 'inlineStr':
                         value = ''.join(cell.xpath('.//s:t/text()', namespaces=ns))
-                    if value is not None:
+                    coordinate = cell.get('r', 'cell')
+                    row = ''.join(ch for ch in coordinate if ch.isdigit())
+                    if current_row is not None and row != current_row and row_values:
+                        lines.append(' | '.join(row_values)); row_values = []
+                    current_row = row
+                    if value is not None and str(value).strip():
                         line = f'{cell.get("r", "cell")}: {value}'
-                        total += len(line) + 1
+                        total += len(line) + 3
                         if total > 2_000_000:
                             raise WorkbenchError('file_too_large', 'Extracted text exceeds two million characters')
-                        lines.append(line)
+                        row_values.append(line)
                     cell.clear()
                     while cell.getprevious() is not None:
                         del cell.getparent()[0]
+            if row_values: lines.append(' | '.join(row_values))
             if lines:
                 pages.append(Page('Sheet: '+sheet.get('name', '')+'\n'+'\n'.join(lines), None, method='spreadsheet_cells'))
         return pages
@@ -199,10 +207,16 @@ def extract(path: Path, max_bytes=20*1024*1024, max_pages=200) -> Extraction:
             raise WorkbenchError('invalid_encoding', 'This file contains binary data; import a text export instead')
         if len(text) > 2_000_000:
             raise WorkbenchError('file_too_large', 'Text exceeds two million characters')
-        if text.strip():
+        from rag.structured import FORMATS, record_pages
+        if path.suffix.lower() in FORMATS:
+            pages.extend(record_pages(text,path.suffix.lower()))
+        elif text.strip():
             pages.append(Page(text, None, method='utf16_text' if encoding == 'utf-16' else 'utf8_text'))
     if not pages:
         raise WorkbenchError('no_extractable_text', 'No usable text found; scanned PDFs need OCR')
+    from rag.structured import METHODS
+    if any(page.method in METHODS for page in pages):
+        warnings.append('Hybrid table index: exact records are searchable; semantic embeddings describe tables. Retrieved excerpts are not an exhaustive calculation over all records.')
     return Extraction(pages, warnings, digest)
 
 
@@ -211,6 +225,10 @@ def chunk_pages(extraction, tokenizer, document_id, display_name, size=384, over
         raise ValueError('Chunk size must exceed nonnegative overlap')
     chunks = []
     for page in extraction.pages:
+        from rag.structured import METHODS, structured_chunks
+        if page.method in METHODS:
+            chunks.extend(structured_chunks(page,tokenizer,document_id,display_name,extraction.source_hash,size))
+            continue
         newlines = [index for index, char in enumerate(page.text) if char == '\n']
         offsets = [(a,b) for a,b in tokenizer.encode(page.text, add_special_tokens=False).offsets if b>a]
         start = 0

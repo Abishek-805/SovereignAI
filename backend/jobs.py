@@ -29,9 +29,13 @@ class Jobs:
         return job
     def start(self,kind,work):
         with self.lock:
-            if any(j.state=='running' for j in self.jobs.values()):raise WorkbenchError('busy','Wait for the current workspace job or stop it first')
-            self.jobs={k:j for k,j in self.jobs.items() if time.time()-j.created<3600}
-            if len(self.jobs)>=20:self.jobs.pop(next(iter(self.jobs)))
+            lane = 'import' if kind == 'import' else 'workspace'
+            if any(j.state=='running' and ('import' if j.kind=='import' else 'workspace')==lane for j in self.jobs.values()):
+                raise WorkbenchError('busy','Another document import is running' if lane=='import' else 'Wait for the current workspace job or stop it first')
+            self.jobs={k:j for k,j in self.jobs.items() if j.state=='running' or time.time()-j.created<3600}
+            if len(self.jobs)>=20:
+                completed=next((k for k,j in self.jobs.items() if j.state!='running'),None)
+                if completed is not None:self.jobs.pop(completed)
             job=Job(kind);self.jobs[job.id]=job
         def run():
             try:

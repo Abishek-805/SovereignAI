@@ -262,14 +262,22 @@ def create_app(service=None):
         return service.copy_document(document_id,payload.folder,payload.expected_hash)
 
     @app.get('/documents/{document_id}/content')
-    def document_content(document_id:str):
+    def document_content(document_id:str, offset:int=0, limit:int=100, chunk_id:str|None=None):
+        if offset<0 or not 1<=limit<=200:
+            raise WorkbenchError('invalid_request','Use a nonnegative passage offset and a limit from 1 to 200')
         current=service.store.current(document_id)
         if current is None: raise WorkbenchError('unknown_document','Document not found')
         chunks=sorted(enrich_pdf_chunks([chunk for chunk,_ in service.store.active_chunks([document_id])],service.sources_dir), key=lambda chunk:(chunk.page or 0,chunk.line_start or 0,chunk.chunk_id))
+        if chunk_id is not None:
+            index=next((i for i,chunk in enumerate(chunks) if chunk.chunk_id==chunk_id),None)
+            if index is None:raise WorkbenchError('unknown_source','Passage is not part of this document')
+            offset=(index//limit)*limit
+        selected=chunks[offset:offset+limit]
         return {**current,'pages':sorted({chunk.page for chunk in chunks if chunk.page is not None}),
                 'methods':sorted({chunk.extraction_method for chunk in chunks}),
-                'passages':[{'chunk_id':chunk.chunk_id,'page':chunk.page,'text':chunk.text} for chunk in chunks],
-                'text':'\n\n'.join(chunk.text for chunk in chunks)[:100000],
+                'passage_offset':offset,'passage_limit':limit,'passage_total':len(chunks),
+                'passages':[{'chunk_id':chunk.chunk_id,'page':chunk.page,'text':chunk.text} for chunk in selected],
+                'text':'\n\n'.join(chunk.text for chunk in selected)[:100000],
                 'original_url':f'/sources/{chunks[0].chunk_id}/original' if chunks else None}
 
     @app.post('/agent/auto')

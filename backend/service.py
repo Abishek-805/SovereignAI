@@ -1,7 +1,7 @@
 from backend.cancellation import cancellable_model_job
 from pathlib import Path
 from uuid import uuid4
-from dataclasses import asdict
+from dataclasses import asdict, replace
 import hashlib
 import json
 import os
@@ -66,6 +66,7 @@ class Workbench:
         self.coding=CodingWorkspace(self.settings.data_dir, project_root)
         self.ask_lock=threading.Lock()
         self.import_lock=threading.Lock()
+        self.indexing_lock=threading.Lock()
         self.embedding_lock=threading.Lock()
         self.routing_decisions=OrderedDict()
         self.routing_lock=threading.Lock()
@@ -165,7 +166,7 @@ class Workbench:
         name=display_name or path.name
         if path.suffix.lower() not in SUPPORTED:
             raise WorkbenchError('unsupported_file','Use PDF, DOCX, XLSX, PPTX, CSV, JSON, LOG, TXT or Markdown')
-        if not self.import_lock.acquire(blocking=False):
+        if not self.indexing_lock.acquire(blocking=False):
             raise WorkbenchError('busy','Another document is being indexed')
         try:
             def checkpoint(stage):
@@ -222,21 +223,26 @@ class Workbench:
             chunks=chunk_pages(extraction,self.embedder.tokenizer,document_id,name,self.settings.chunk_tokens,self.settings.overlap_tokens)
             if len(chunks)>self.settings.max_chunks:
                 raise WorkbenchError('file_too_large','Document exceeds the searchable passage limit')
-            if job:
-                import numpy as np
-                batches=[]
-                for start in range(0,len(chunks),8):
-                    checkpoint(f'Indexing passages {start+1}–{min(start+8,len(chunks))} of {len(chunks)}')
-                    batches.append(self.embedder.encode([c.text for c in chunks[start:start+8]]))
-                vectors=np.concatenate(batches)
-            else:
-                vectors=self.embedder.encode([c.text for c in chunks])
+            import numpy as np
+            vectors=np.zeros((len(chunks),384),dtype=np.float32)
+            dense=[index for index,c in enumerate(chunks) if c.retrieval_kind!='lexical']
+            for start in range(0,len(dense),8):
+                indices=dense[start:start+8]
+                checkpoint(f'Embedding descriptions {start+1}–{min(start+8,len(dense))} of {len(dense)}; {len(chunks)} searchable passages')
+                vectors[indices]=self.embedder.encode([chunks[index].text for index in indices])
             checkpoint('Saving indexed document')
-            result=self.store.publish(document_id,name,str(path),digest,chunks,vectors,self.embedder.revision,extraction.warnings)
+            with self.import_lock:
+                latest=self.store.current(document_id)
+                if (latest['active_hash'] if latest else None)!=(current['active_hash'] if current else None):
+                    raise WorkbenchError('document_conflict','Document changed while indexing; refresh before importing again')
+                if latest:
+                    name=latest['display_name']
+                    chunks=[replace(chunk,display_name=name) for chunk in chunks]
+                result=self.store.publish(document_id,name,str(path),digest,chunks,vectors,self.embedder.revision,extraction.warnings)
             result['usable_pages']=len(extraction.pages)
             return result
         finally:
-            self.import_lock.release()
+            self.indexing_lock.release()
 
     @cancellable_model_job
     def ask(self,question,document_ids=None,history=None,job=None,force_documents=False,document_scope='focused',report_generation=False):

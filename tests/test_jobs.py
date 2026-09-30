@@ -33,3 +33,18 @@ def test_output_is_bounded():
     from backend.jobs import Job
     job=Job('terminal');job.append('stdout','x'*100000)
     assert len(job.snapshot()['output'])==65536
+
+
+def test_import_and_workspace_have_independent_bounded_lanes():
+    jobs=Jobs(); release=threading.Event()
+    def work(job):
+        release.wait(3); return {'state':'completed'}
+    try:
+        imported=jobs.start('import',work)
+        agent=jobs.start('agent',work)
+        assert imported['state']==agent['state']=='running'
+        with pytest.raises(WorkbenchError,match='document import'): jobs.start('import',work)
+        with pytest.raises(WorkbenchError,match='workspace job'): jobs.start('terminal',work)
+        jobs.get(imported['job_id']).created-=7200
+        release.set()
+    finally: release.set()

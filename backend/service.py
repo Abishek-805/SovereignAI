@@ -160,7 +160,7 @@ class Workbench:
         with self.import_lock:
             return self.store.copy_document(document_id,folder,expected_hash)
 
-    def import_file(self,path,document_id=None,display_name=None,expected_hash=None):
+    def import_file(self,path,document_id=None,display_name=None,expected_hash=None,job=None):
         path=Path(path).resolve()
         name=display_name or path.name
         if path.suffix.lower() not in SUPPORTED:
@@ -168,6 +168,11 @@ class Workbench:
         if not self.import_lock.acquire(blocking=False):
             raise WorkbenchError('busy','Another document is being indexed')
         try:
+            def checkpoint(stage):
+                if job:
+                    if job.cancel.is_set(): raise WorkbenchError('cancelled', 'Document import stopped before publication')
+                    job.progress(stage)
+            checkpoint('Reading document')
             if document_id is not None and self.store.current(document_id) is None:
                 raise WorkbenchError('unknown_document','Update requires an existing document ID')
             try:
@@ -197,6 +202,7 @@ class Workbench:
                     temporary.replace(snapshot)
                 finally:
                     temporary.unlink(missing_ok=True)
+            checkpoint('Extracting document text')
             extraction=extract(snapshot,self.settings.max_file_bytes,self.settings.max_pages)
             ocr_pages=[{'page':page.page,'method':page.method,'confidence':page.confidence,
                         'page_image_hash':page.image_hash,'observations':page.observations}
@@ -212,8 +218,20 @@ class Workbench:
                         temporary.replace(metadata)
                     finally:
                         temporary.unlink(missing_ok=True)
+            checkpoint('Preparing searchable passages')
             chunks=chunk_pages(extraction,self.embedder.tokenizer,document_id,name,self.settings.chunk_tokens,self.settings.overlap_tokens)
-            vectors=self.embedder.encode([c.text for c in chunks])
+            if len(chunks)>self.settings.max_chunks:
+                raise WorkbenchError('file_too_large','Document exceeds the searchable passage limit')
+            if job:
+                import numpy as np
+                batches=[]
+                for start in range(0,len(chunks),8):
+                    checkpoint(f'Indexing passages {start+1}–{min(start+8,len(chunks))} of {len(chunks)}')
+                    batches.append(self.embedder.encode([c.text for c in chunks[start:start+8]]))
+                vectors=np.concatenate(batches)
+            else:
+                vectors=self.embedder.encode([c.text for c in chunks])
+            checkpoint('Saving indexed document')
             result=self.store.publish(document_id,name,str(path),digest,chunks,vectors,self.embedder.revision,extraction.warnings)
             result['usable_pages']=len(extraction.pages)
             return result

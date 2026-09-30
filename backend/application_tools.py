@@ -23,6 +23,7 @@ OPERATIONS = {
     'document_deduplicate': 'Remove exact source-content duplicate library entries, keeping one per group and all source files; target knowledge, unused fields empty.',
     'file_edit': 'Create or modify requested project code; target is filename, value is the full change instruction.',
     'file_delete': 'Delete one explicitly named project file; target is its relative path.',
+    'file_delete_scope': 'Stage deletion of ALL project files and folders, optionally preserving one existing folder and everything inside it. target must be all; value is the preserved folder path or empty.',
     'file_move': 'Move or rename one project file; target is old path, value is new path.',
     'file_copy': 'Copy one project file; target is old path, value is new path.',
     'folder_create': 'Create a project folder; target is its relative path.',
@@ -188,7 +189,7 @@ class ApplicationTools:
             if workspace==self.created_project_id:target=''
             return self.service.run_coding_project_task(workspace, target, self.goal, job=self.job, routed=True,
                 **({'history':self.history} if self.history else {}))
-        if operation in {'file_delete', 'file_move', 'file_copy', 'folder_create'}:
+        if operation in {'file_delete', 'file_delete_scope', 'file_move', 'file_copy', 'folder_create'}:
             raise WorkbenchError('tool_input', 'File organization is staged as one reviewed plan, not executed one operation at a time')
         if len(input.encode('utf-8')) > 8000:
             raise WorkbenchError('tool_input', 'Program input exceeds its 8 KB budget')
@@ -238,9 +239,14 @@ class ApplicationTools:
             # part of its staged change. A separate mkdir can conflict with an
             # existing folder or write before review.
             operations=[operation for operation in operations if operation['tool']!='folder_create']
-        organization={'file_delete','file_move','file_copy','folder_create'}
+        organization={'file_delete','file_delete_scope','file_move','file_copy','folder_create'}
         if operations and all(operation['tool'] in organization for operation in operations):
             workspace=self._workspace()
+            broad_delete=bool(re.search(r'\b(?:delete|remove)\b.{0,100}\b(?:all|every)\b|\b(?:all|every)\b.{0,100}\b(?:delete|remove)\b',self.goal or '',re.I))
+            if broad_delete and not any(operation['tool']=='file_delete_scope' for operation in operations):
+                if re.search(r'\b(?:except|excluding|apart from|other th[ae]n|but keep)\b', self.goal or '', re.I):
+                    raise WorkbenchError('generation_format','The planner did not identify the folder to preserve. No files were changed; name that folder exactly and retry.')
+                operations=[{'tool':'file_delete_scope','target':'all','value':'','input':''}]
             try:
                 sandbox=self.service._verified_coding_sandbox()
             except WorkbenchError as exc:
@@ -253,9 +259,10 @@ class ApplicationTools:
                     sandbox.on_output=self.job.append
             result=self.service.coding.stage_file_operations(workspace,operations,sandbox,self.service.tasks,
                                                               cancel=self.job.cancel)
-            paths=', '.join(change['path'] for change in result.get('changes',[]) if change['action'] in {'create','delete'})
+            affected=[change['path'] for change in result.get('changes',[]) if change['action'] in {'create','delete'}]
+            paths=', '.join(affected) if len(affected)<=5 else f'{len(affected)} files'
             answer=('The requested folder already exists; no project files were changed.' if result.get('already_exists') else
-                    ('Staged '+paths+' for review. Publish reviewed changes to update the project.' if result['state']=='completed' else
+                    ('Staged '+paths+' for review. Accept changes to save this deletion to the project.' if result['state']=='completed' else
                      'File organization did not pass validation; project files are unchanged.'))
             return {'state':result['state'],'answer':answer,'workspace_id':workspace,
                     'operations':[{'tool':'file_organization','target':result.get('target',''), 'result':result}]}

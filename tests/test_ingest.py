@@ -93,3 +93,52 @@ def test_office_spreadsheet_and_slide_text(tmp_path):
     result=extract(slides)
     assert result.pages[0].page==1 and result.pages[0].method=='slide_text'
     assert 'Inspection findings' in result.pages[0].text
+
+
+def test_spreadsheet_ignores_inflated_dimensions_and_sparse_coordinates(tmp_path):
+    from openpyxl import Workbook
+    from zipfile import ZipFile, ZIP_DEFLATED
+    from io import BytesIO
+    book = Workbook()
+    book.active['A1'] = 'First'
+    book.active['XFD1048576'] = 'Last'
+    buffer = BytesIO(); book.save(buffer)
+    path = tmp_path / 'sparse.xlsx'
+    with ZipFile(buffer) as original, ZipFile(path, 'w', ZIP_DEFLATED) as modified:
+        for item in original.infolist():
+            modified.writestr(item, original.read(item.filename))
+    result = extract(path)
+    assert 'A1: First' in result.pages[0].text
+    assert 'XFD1048576: Last' in result.pages[0].text
+    assert len(result.pages[0].text) < 100
+
+
+@pytest.mark.parametrize('suffix', ['.tsv', '.yaml', '.xml', '.html', '.py', '.java', '.jsonl'])
+def test_text_formats_and_utf16(tmp_path, suffix):
+    path = tmp_path / ('source' + suffix)
+    path.write_text('Earth 🌍\nSecond line', encoding='utf-16')
+    assert extract(path).pages[0].text == 'Earth 🌍\nSecond line'
+
+
+def test_binary_disguised_as_text_rejected(tmp_path):
+    path = tmp_path / 'binary.txt'; path.write_bytes(b'abc\x00def')
+    with pytest.raises(WorkbenchError, match='binary data'):
+        extract(path)
+
+
+def test_spreadsheet_shared_strings_and_invalid_references(tmp_path):
+    import xlsxwriter
+    from zipfile import ZipFile, ZIP_DEFLATED
+    from io import BytesIO
+    buffer=BytesIO()
+    book=xlsxwriter.Workbook(buffer, {'in_memory': True})
+    sheet=book.add_worksheet('Names'); sheet.write('A1','Earth'); book.close()
+    path=tmp_path/'shared.xlsx'; path.write_bytes(buffer.getvalue())
+    assert 'A1: Earth' in extract(path).pages[0].text
+    with ZipFile(buffer) as original, ZipFile(path, 'w', ZIP_DEFLATED) as modified:
+        for item in original.infolist():
+            data=original.read(item.filename)
+            if item.filename=='xl/worksheets/sheet1.xml': data=data.replace(b'<v>0</v>',b'<v>-1</v>')
+            modified.writestr(item,data)
+    with pytest.raises(WorkbenchError, match='shared-string'):
+        extract(path)

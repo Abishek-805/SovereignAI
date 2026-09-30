@@ -102,6 +102,13 @@
 		}
 	}
 	let dropping = $state(false);
+	let importJob = $state('');
+	async function stopImport() {
+		try {
+			if (importJob) await knowledgeJson(await fetch(`/coding/jobs/${importJob}/stop`, { method: 'POST', signal: AbortSignal.timeout(15000) }));
+		} catch (e) { error = String(e); }
+	}
+	const supportedExtensions = '.pdf,.docx,.xlsx,.pptx,.txt,.md,.markdown,.csv,.tsv,.json,.jsonl,.log,.xml,.html,.htm,.css,.yaml,.yml,.toml,.ini,.cfg,.sql,.py,.js,.jsx,.ts,.tsx,.java,.c,.cpp,.h,.cs,.go,.rs,.php,.rb,.sh,.ps1,.tex';
 	async function upload(event: Event) {
 		const input = event.currentTarget as HTMLInputElement;
 		await importFiles(Array.from(input.files || []));
@@ -110,7 +117,7 @@
 	async function importFiles(selected: File[], paths: Map<File, string> = new Map()) {
 		if (importing || managing) return;
 		const files = selected.filter((file) =>
-			/\.(pdf|docx|txt|md|csv|json|log|xlsx|pptx)$/i.test(file.name)
+			supportedExtensions.split(',').includes('.' + file.name.split('.').at(-1)?.toLowerCase())
 		);
 		if (!files.length) {
 			notice = 'No supported documents selected.';
@@ -124,9 +131,18 @@
 				notice = 'Importing and indexing ' + file.name + '…';
 				const data = new FormData();
 				data.append('file', file, file.name.split(/[\\/]/).at(-1) || file.name);
-				const added = await knowledgeJson(
-					await fetch('/documents/import', { method: 'POST', body: data })
+				let added = await knowledgeJson(
+					await fetch('/documents/import?background=true', { method: 'POST', body: data, signal: AbortSignal.timeout(180000) })
 				);
+				importJob = added.job_id;
+				while (added.state === 'running') {
+					notice = `${file.name}: ${added.stage} (${added.elapsed}s)`;
+					await new Promise((resolve) => setTimeout(resolve, 500));
+					added = await knowledgeJson(await fetch(`/coding/jobs/${importJob}`, { signal: AbortSignal.timeout(15000) }));
+				}
+				importJob = '';
+				if (added.state !== 'completed') throw new Error(added.error || 'Document import stopped before indexing completed.');
+				added = added.result;
 				const relativePath = paths.get(file) || file.webkitRelativePath;
 				if (relativePath)
 					await knowledgeJson(
@@ -144,9 +160,12 @@
 			await refresh();
 			notice = `${count} document${count === 1 ? '' : 's'} indexed.`;
 		} catch (e) {
-			error = String(e);
+			error = e instanceof DOMException && e.name === 'TimeoutError'
+				? 'The import connection timed out. The server may still be indexing. Refresh the library to check before importing again.'
+				: String(e);
 			notice = count ? `${count} documents imported before the error.` : '';
 		} finally {
+			importJob = '';
 			importing = false;
 		}
 	}
@@ -350,6 +369,7 @@
 			<button title="Refresh library" aria-label="Refresh Knowledge" onclick={refresh}
 				><RefreshCw size={16} /></button
 			>
+			{#if importJob}<button onclick={stopImport}>Stop import</button>{/if}
 			<details class="knowledge-import-menu" bind:this={importMenu}>
 				<summary class="knowledge-add"
 					><Upload size={15} /> {importing ? 'Indexing…' : 'Add documents'}</summary
@@ -375,7 +395,7 @@
 				bind:this={filesInput}
 				type="file"
 				multiple
-				accept=".pdf,.docx,.txt,.md,.csv,.json,.log,.xlsx,.pptx"
+				accept={supportedExtensions}
 				onchange={upload}
 				disabled={importing}
 			/>

@@ -576,7 +576,7 @@ def create_app(service=None):
         return FileResponse(path,filename=name,media_type=media[kind])
 
     @app.post('/documents/import')
-    async def import_document(request:Request):
+    async def import_document(request:Request, background:bool=False):
         temporary=None
         async with request.form(max_files=1,max_fields=3,max_part_size=65536) as form:
             upload=form.get('file')
@@ -587,7 +587,7 @@ def create_app(service=None):
                 raise WorkbenchError('invalid_filename','Use a simple filename without directories')
             suffix=Path(name).suffix.lower()
             if suffix not in SUPPORTED:
-                raise WorkbenchError('unsupported_file','Use PDF, DOCX, TXT or Markdown')
+                raise WorkbenchError('unsupported_file','Use PDF, DOCX, XLSX, PPTX or a supported text/source file; export legacy binary formats as text or XLSX')
             document_id=form.get('document_id')
             if document_id is not None and (not isinstance(document_id,str) or len(document_id)>128):
                 raise WorkbenchError('unknown_document','Invalid document ID')
@@ -605,6 +605,16 @@ def create_app(service=None):
                         if total>service.settings.max_file_bytes:
                             raise WorkbenchError('file_too_large','File exceeds upload limit')
                         handle.write(data)
+                if background:
+                    worker_path=temporary
+                    def run_import(job):
+                        try:
+                            return service.import_file(worker_path,document_id,name,expected_hash,job=job)
+                        finally:
+                            worker_path.unlink(missing_ok=True)
+                    started=jobs.start('import',run_import)
+                    temporary=None  # The worker owns cleanup after a successful dispatch.
+                    return started
                 return await run_in_threadpool(service.import_file,temporary,document_id,name,expected_hash)
             finally:
                 if temporary is not None: temporary.unlink(missing_ok=True)

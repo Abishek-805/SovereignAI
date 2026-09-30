@@ -24,6 +24,37 @@ def test_model_plan_cannot_authorize_unrequested_application_operation(service,g
     assert service.coding.raw_files(workspace)==before
     assert service.documents()==documents
 
+
+def test_all_files_request_expands_model_selected_subset_to_complete_scope(service, monkeypatch):
+    workspace = service.coding.create('Complete scope')['workspace_id']
+    service.coding.write(workspace, 'one.txt', 'one')
+    service.coding.write(workspace, 'two.txt', 'two')
+    monkeypatch.setattr(service, '_verified_coding_sandbox', lambda: None)
+    result = ApplicationTools(service, workspace, goal='Delete all files in this workspace').execute(
+        [op('file_delete', 'one.txt')], service.tasks.create('test', []))
+    changes = result['operations'][0]['result']['changes']
+    assert {change['path'] for change in changes if change['action'] == 'delete'} == {'one.txt', 'two.txt'}
+    assert len(service.coding.raw_files(workspace)) == 2
+
+
+def test_all_except_folder_does_not_guess_when_planner_only_lists_files(service):
+    workspace = service.coding.create('Preserve scope')['workspace_id']
+    service.coding.file_operation(workspace, 'mkdir', 'keep')
+    service.coding.write(workspace, 'old.txt', 'old')
+    with pytest.raises(WorkbenchError, match='folder to preserve'):
+        ApplicationTools(service, workspace, goal='Delete all files except the keep folder').execute(
+            [op('file_delete', 'old.txt')], service.tasks.create('test', []))
+    assert service.coding.read(workspace, 'old.txt')['content'] == 'old'
+
+
+def test_delete_files_in_workspace_does_not_authorize_deleting_project(service):
+    workspace = service.coding.create('Keep project')['workspace_id']
+    service.coding.write(workspace, 'example.txt', 'keep')
+    with pytest.raises(WorkbenchError, match='does not authorize'):
+        ApplicationTools(service, workspace, goal='Delete all files in the workspace').execute(
+            [op('project_delete', 'Keep project')], service.tasks.create('test', []))
+    assert service.coding.get(workspace)['name'] == 'Keep project'
+
 def test_negated_edit_intent_cannot_become_project_write(service):
     workspace=service.coding.create('Read only policy')['workspace_id']
     service.coding.write(workspace,'notes.txt','Original')

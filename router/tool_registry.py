@@ -25,6 +25,7 @@ def explicit_operation_requested(goal, operation):
         'document_create':r'create|crate|write|add|make', 'document_update':r'update|modify|edit|change|rewrite|expand|details?|add|make', 'document_import':r'import|upload|add',
         'document_rename':r'rename', 'document_move':r'move', 'document_copy':r'copy|duplicate',
         'document_delete':r'delete|remove', 'file_delete':r'delete|remove',
+        'file_delete_scope':r'delete|remove',
         'document_duplicates':r'find|list|show|check|identify', 'document_deduplicate':r'delete|remove|deduplicate',
         'file_move':r'move|put|place', 'file_copy':r'copy|duplicate', 'folder_create':r'create|add|make|generate|put|move|place',
         'file_run':r'run|execute|test', 'terminal':r'run|execute',
@@ -35,7 +36,12 @@ def explicit_operation_requested(goal, operation):
             re.search(r'\b(?:duplicate|duplicates|deduplicate)\b',text,re.I) and
             re.search(r'\b(?:knowledge|library)\b',text,re.I)):
         return False
-    if operation in {'project_create','project_delete'} and not re.search(r'\b(?:project|workspace)\b',text,re.I):
+    if operation in {'project_create','project_delete'}:
+        verb = r'(?:create|make|build|start)' if operation == 'project_create' else r'(?:delete|remove)'
+        project_action = re.search(r'\b' + verb + r'\b\s+(?:(?:the|my|a|an|this|selected|named)\s+){0,3}(?:[\w-]+\s+)?\b(?:project|workspace)\b', text, re.I)
+        if not project_action or re.search(r'\b(?:files?|folders?)\b', project_action.group(), re.I):
+            return False
+    if operation=='file_delete_scope' and not (re.search(r'\b(?:all|every)\b',text,re.I) and re.search(r'\b(?:files?|folders?|project|workspace)\b',text,re.I)):
         return False
     if operation=='file_edit' and re.search(r'\b(?:want|need|put)\b.{0,80}\b(?:codes?|programs?|scripts?)\b',text,re.I):
         return re.search(r'\b(?:explain|describe|review|read)\b',text,re.I) is None

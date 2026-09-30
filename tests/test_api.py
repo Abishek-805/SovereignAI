@@ -775,6 +775,38 @@ def test_spreadsheet_original_is_retrievable(service):
         assert response.content==buffer.getvalue()
 
 
+def test_background_import_reports_progress_and_cleans_upload(service):
+    import time
+    with client_for(service) as client:
+        response=client.post('/documents/import?background=true', files={'file':('notes.tsv',b'Name\tValue\nEarth\t42')})
+        assert response.status_code==200, response.text
+        job_id=response.json()['job_id']
+        deadline=time.monotonic()+5
+        while True:
+            job=client.get('/coding/jobs/'+job_id).json()
+            if job['state']!='running': break
+            assert time.monotonic()<deadline
+            time.sleep(.01)
+        assert job['state']=='completed', job
+        assert any('Indexing passages' in event['stage'] for event in job['events'])
+        assert client.get('/documents/'+job['result']['document_id']+'/content').status_code==200
+        assert not list((service.settings.data_dir/'uploads').iterdir())
+
+
+def test_cancelled_import_does_not_publish(service,tmp_path):
+    from backend.jobs import Job
+    from backend.contracts import WorkbenchError
+    import pytest
+    path=tmp_path/'cancelled.txt'; path.write_text('Do not publish this document')
+    job=Job('import')
+    def progress(stage):
+        if stage.startswith('Indexing passages'): job.cancel.set()
+    job.progress=progress
+    with pytest.raises(WorkbenchError, match='stopped'):
+        service.import_file(path,job=job)
+    assert not service.documents()
+
+
 def test_pdf_original_displays_inline(service):
     from pypdf import PdfWriter
     from pypdf.generic import DictionaryObject,NameObject,DecodedStreamObject

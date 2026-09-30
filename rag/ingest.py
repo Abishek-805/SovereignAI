@@ -2,13 +2,71 @@ import hashlib
 import statistics
 from io import BytesIO
 from pathlib import Path
+from bisect import bisect_left
+import posixpath
 from zipfile import ZipFile, BadZipFile
 from lxml import etree
 from pypdf import PdfReader
 from backend.contracts import WorkbenchError, Page, Chunk, Extraction
 from rag.pdf_visuals import overall_star_rating
 
-SUPPORTED = {'.pdf', '.txt', '.md', '.docx', '.csv', '.json', '.log', '.xlsx', '.pptx'}
+TEXT_FORMATS = {'.txt', '.md', '.markdown', '.csv', '.tsv', '.json', '.jsonl', '.log',
+                '.xml', '.html', '.htm', '.css', '.yaml', '.yml', '.toml', '.ini', '.cfg',
+                '.sql', '.py', '.js', '.jsx', '.ts', '.tsx', '.java', '.c', '.cpp', '.h',
+                '.cs', '.go', '.rs', '.php', '.rb', '.sh', '.ps1', '.tex'}
+SUPPORTED = TEXT_FORMATS | {'.pdf', '.docx', '.xlsx', '.pptx'}
+
+
+def _xlsx_pages(data: bytes, max_sheets: int):
+    """Read actual stored cells, never expand a worksheet's declared dimensions."""
+    ns = {'s': 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'}
+    parser = etree.XMLParser(resolve_entities=False, no_network=True, huge_tree=False)
+    with ZipFile(BytesIO(data)) as archive:
+        def xml(name):
+            return etree.fromstring(archive.read(name), parser=parser)
+        shared = []
+        if 'xl/sharedStrings.xml' in archive.namelist():
+            shared = [''.join(item.xpath('.//s:t/text()', namespaces=ns)) for item in xml('xl/sharedStrings.xml')]
+        relations = {item.get('Id'): item.get('Target') for item in xml('xl/_rels/workbook.xml.rels')
+                     if item.get('TargetMode') != 'External'}
+        sheets = xml('xl/workbook.xml').findall('s:sheets/s:sheet', ns)
+        if len(sheets) > max_sheets:
+            raise WorkbenchError('page_limit', 'Spreadsheet exceeds sheet limit')
+        pages, count, total = [], 0, 0
+        for sheet in sheets:
+            rel = sheet.get('{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id')
+            target = relations[rel]
+            name = posixpath.normpath(target.lstrip('/') if target.startswith('/') else 'xl/' + target)
+            if not name.startswith('xl/') or '..' in name.split('/'):
+                raise WorkbenchError('parse_failed', 'Invalid spreadsheet worksheet path')
+            lines = []
+            with archive.open(name) as source:
+                for _, cell in etree.iterparse(source, events=('end',), tag='{'+ns['s']+'}c',
+                                               resolve_entities=False, no_network=True, huge_tree=False):
+                    count += 1
+                    if count > 100000:
+                        raise WorkbenchError('file_too_large', 'Spreadsheet exceeds 100,000 stored cells')
+                    value = cell.findtext('s:v', namespaces=ns)
+                    kind = cell.get('t')
+                    if kind == 's' and value is not None:
+                        index = int(value)
+                        if not 0 <= index < len(shared):
+                            raise WorkbenchError('parse_failed', 'Invalid spreadsheet shared-string reference')
+                        value = shared[index]
+                    elif kind == 'inlineStr':
+                        value = ''.join(cell.xpath('.//s:t/text()', namespaces=ns))
+                    if value is not None:
+                        line = f'{cell.get("r", "cell")}: {value}'
+                        total += len(line) + 1
+                        if total > 2_000_000:
+                            raise WorkbenchError('file_too_large', 'Extracted text exceeds two million characters')
+                        lines.append(line)
+                    cell.clear()
+                    while cell.getprevious() is not None:
+                        del cell.getparent()[0]
+            if lines:
+                pages.append(Page('Sheet: '+sheet.get('name', '')+'\n'+'\n'.join(lines), None, method='spreadsheet_cells'))
+        return pages
 
 
 def _docx_text(data: bytes) -> str:
@@ -111,20 +169,8 @@ def extract(path: Path, max_bytes=20*1024*1024, max_pages=200) -> Extraction:
                 if len(archive.infolist()) > 4000 or sum(item.file_size for item in archive.infolist()) > 80*1024*1024:
                     raise WorkbenchError('file_too_large','Office archive expands beyond 80 MB')
             if path.suffix.lower()=='.xlsx':
-                from openpyxl import load_workbook
-                workbook=load_workbook(BytesIO(data),read_only=True,data_only=True)
-                try:
-                    count=0
-                    for sheet in workbook:
-                        lines=[]
-                        for row in sheet.iter_rows():
-                            count+=len(row)
-                            if count>100000: raise WorkbenchError('file_too_large','Spreadsheet exceeds 100,000 cells')
-                            values=[f'{cell.coordinate}: {cell.value}' for cell in row if cell.value is not None]
-                            if values: lines.append(' | '.join(values))
-                        if lines: pages.append(Page('Sheet: '+sheet.title+'\n'+'\n'.join(lines),None,method='spreadsheet_cells'))
-                    warnings.append('Spreadsheet formulas use saved values; this import does not recalculate formulas or interpret charts.')
-                finally: workbook.close()
+                pages.extend(_xlsx_pages(data, max_pages))
+                warnings.append('Spreadsheet formulas use saved values; numeric dates and numbers retain their stored values. This import does not recalculate formulas or interpret charts.')
             else:
                 from pptx import Presentation
                 presentation=Presentation(BytesIO(data))
@@ -145,13 +191,16 @@ def extract(path: Path, max_bytes=20*1024*1024, max_pages=200) -> Extraction:
         if text.strip(): pages.append(Page(text,None,method='docx_text'))
     else:
         try:
-            text = data.decode('utf-8-sig').replace('\r\n', '\n').replace('\r', '\n')
+            encoding = 'utf-16' if data.startswith((b'\xff\xfe', b'\xfe\xff')) else 'utf-8-sig'
+            text = data.decode(encoding).replace('\r\n', '\n').replace('\r', '\n')
         except UnicodeDecodeError as exc:
             raise WorkbenchError('invalid_encoding', 'Save the text file as UTF-8') from exc
+        if '\x00' in text:
+            raise WorkbenchError('invalid_encoding', 'This file contains binary data; import a text export instead')
         if len(text) > 2_000_000:
             raise WorkbenchError('file_too_large', 'Text exceeds two million characters')
         if text.strip():
-            pages.append(Page(text, None, method='utf8_text'))
+            pages.append(Page(text, None, method='utf16_text' if encoding == 'utf-16' else 'utf8_text'))
     if not pages:
         raise WorkbenchError('no_extractable_text', 'No usable text found; scanned PDFs need OCR')
     return Extraction(pages, warnings, digest)
@@ -162,13 +211,14 @@ def chunk_pages(extraction, tokenizer, document_id, display_name, size=384, over
         raise ValueError('Chunk size must exceed nonnegative overlap')
     chunks = []
     for page in extraction.pages:
+        newlines = [index for index, char in enumerate(page.text) if char == '\n']
         offsets = [(a,b) for a,b in tokenizer.encode(page.text, add_special_tokens=False).offsets if b>a]
         start = 0
         while start < len(offsets):
             end = min(start + size, len(offsets))
             a, b = offsets[start][0], offsets[end-1][1]
             text = page.text[a:b]
-            first = page.line_base + page.text[:a].count('\n') if page.page is None else None
+            first = page.line_base + bisect_left(newlines, a) if page.page is None else None
             last = first + text.rstrip('\n').count('\n') if first is not None else None
             identity = f'{document_id}:{extraction.source_hash}:{page.page}:{first}:{a}:{b}'
             chunks.append(Chunk(hashlib.sha256(identity.encode()).hexdigest(), document_id,

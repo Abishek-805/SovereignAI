@@ -23,6 +23,7 @@
 	import KnowledgeConnection from './KnowledgeConnection.svelte';
 	import KnowledgeChips from './KnowledgeChips.svelte';
 	import KnowledgeSources from './KnowledgeSources.svelte';
+	import { KnowledgeService } from '$lib/services/knowledge.service';
 	import DuplicateAudit from './DuplicateAudit.svelte';
 	import DockerControl from './DockerControl.svelte';
 	import { removedDuplicateGroups, type DuplicateGroup } from '$lib/services/duplicate-audit';
@@ -76,6 +77,7 @@
 		attachments?: string[];
 		coverage?: import('$lib/services/knowledge.service').KnowledgeCoverage;
 		sources?: KnowledgeSource[];
+		createdDocuments?: { id: string; name: string }[];
 		details?: string;
 		downloads?: Record<string, string>;
 		workspace?: string;
@@ -84,6 +86,7 @@
 		diff?: string;
 		added?: number;
 		removed?: number;
+		changeSummary?: string;
 		review?: boolean;
 	};
 	let lastDraft = '';
@@ -375,6 +378,8 @@
 			status: result.result?.state === 'failed' ? 'failed' : result.status || 'completed',
 			sources: result.result?.sources || result.sources || [],
 			coverage: result.result?.coverage || result.coverage,
+			createdDocuments: operations.filter((operation: any) => operation.tool === 'document_create' && operation.result?.document_id)
+				.map((operation: any) => ({ id: operation.result.document_id, name: operation.result.display_name || operation.target })),
 			downloads: result.downloads || result.result?.downloads,
 			workspace: edit ? result.workspace_id : undefined,
 			taskId: edit ? editResult?.task_id : undefined,
@@ -383,6 +388,13 @@
 			added: lines.filter((line: string) => line.startsWith('+') && !line.startsWith('+++')).length,
 			removed: lines.filter((line: string) => line.startsWith('-') && !line.startsWith('---'))
 				.length,
+			changeSummary: editResult?.changes?.length
+				? [
+					`${editResult.changes.filter((change: any) => change.action === 'delete').length} files deleted`,
+					`${editResult.changes.filter((change: any) => change.action === 'rmdir').length} folders removed`,
+					`${editResult.changes.filter((change: any) => ['create', 'edit'].includes(change.action)).length} files added or changed`
+				].filter((part: string) => !part.startsWith('0 ')).join(' · ')
+				: undefined,
 			details: JSON.stringify(
 				{
 					plan: result.plan,
@@ -663,6 +675,7 @@
 							{#if agentJob}<button class="stop-task" onclick={stopAgent}>Stop task</button>{/if}
 						</div>{:else}<div class="agent-answer">
 							<MarkdownContent content={turn.answer || ''} />
+							{#each turn.createdDocuments || [] as document}<button class="open-created-document" onclick={() => KnowledgeService.open(document.id)}>Open {document.name} in Knowledge →</button>{/each}
 						</div>
 						<DuplicateAudit groups={turn.duplicateGroups} />
 						<RouteDetails routing={turn.routing} compact />
@@ -683,7 +696,7 @@
 											? 'Change undone'
 											: 'Edit not applied'}</strong
 								><span
-									>{turn.diff ? `+${turn.added || 0} −${turn.removed || 0}` : 'No saved diff'}</span
+					>{turn.changeSummary || (turn.diff ? `+${turn.added || 0} −${turn.removed || 0}` : 'No saved diff')}</span
 								>
 								<div class="change-buttons">
 									<button onclick={() => openCodeReview(turn)} disabled={!turn.taskId}

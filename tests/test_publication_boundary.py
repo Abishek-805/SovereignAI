@@ -149,6 +149,39 @@ def test_agent_moves_files_into_existing_folder_only_after_accept(tmp_path):
         'web-page/index.html', 'web-page/style.css'}
 
 
+def test_scoped_cleanup_preserves_folder_and_stages_every_other_file(tmp_path):
+    work = CodingWorkspace(tmp_path)
+    wid = work.create('Scoped cleanup')['workspace_id']
+    work.file_operation(wid, 'mkdir', 'array_search')
+    work.file_operation(wid, 'mkdir', 'extra/nested')
+    work.write(wid, 'array_search/LinearSearch.java', 'class LinearSearch {}')
+    for index in range(12):
+        work.write(wid, f'extra/nested/old_{index}.txt', f'old {index}')
+    before = digest(work, wid)
+    task = work.stage_file_operations(wid, [
+        {'tool':'file_delete_scope','target':'all','value':'array_search','input':''}
+    ], Sandbox(), TaskLedger(tmp_path))
+    assert task['publication_state'] == 'staged'
+    assert len([change for change in task['changes'] if change['action']=='delete']) == 12
+    assert digest(work, wid) == before
+    work.accept(wid, task['task_id'])
+    assert {item['name'] for item in work.get(wid)['files']} == {'array_search/LinearSearch.java'}
+    assert 'extra' not in work.get(wid)['folders']
+
+
+def test_all_project_cleanup_stages_files_and_directories(tmp_path):
+    work = CodingWorkspace(tmp_path)
+    wid = work.create('Full cleanup')['workspace_id']
+    work.write(wid, 'folder/example.txt', 'example')
+    task = work.stage_file_operations(wid, [
+        {'tool':'file_delete_scope','target':'all','value':'','input':''}
+    ], Sandbox(), TaskLedger(tmp_path))
+    assert len(task['changes']) == 2
+    assert work.raw_files(wid)
+    work.accept(wid, task['task_id'])
+    assert work.get(wid)['files'] == [] and work.get(wid)['folders'] == []
+
+
 def test_existing_folder_create_is_idempotent_without_publication(tmp_path):
     work = CodingWorkspace(tmp_path)
     wid = work.create('Existing folder')['workspace_id']

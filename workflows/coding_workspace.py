@@ -383,6 +383,8 @@ class CodingWorkspace:
             if not result.get('checks', {}).get('container_executed') or result.get('validation') in {'not run; Docker unavailable', 'validation unavailable'}:
                 raise WorkbenchError('sandbox_unavailable', 'Docker validation is required before publication')
             changes = result['changes']
+            deleted_paths = {change['path'] for change in changes if change['action'] == 'delete'}
+            removed_folders = {change['path'] for change in changes if change['action'] == 'rmdir'}
             files = self.files_directory(workspace_id)
             stage_dir = self._directory(workspace_id) / 'tasks' / task_id / 'staged'
             if stage_dir.is_symlink() or not stage_dir.is_dir():
@@ -394,7 +396,14 @@ class CodingWorkspace:
                 if action == 'mkdir':
                     if path.exists(): raise WorkbenchError('workspace_conflict', 'A staged folder now exists; compare or refresh before publishing')
                 elif action == 'rmdir':
-                    if not path.is_dir() or any(path.iterdir()): raise WorkbenchError('workspace_conflict', 'A staged folder changed; compare or refresh before publishing')
+                    if not path.is_dir():
+                        raise WorkbenchError('workspace_conflict', 'A staged folder changed; compare or refresh before accepting')
+                    for child in path.rglob('*'):
+                        relative = child.relative_to(files).as_posix()
+                        if child.is_symlink() or (hasattr(child, 'is_junction') and child.is_junction()):
+                            raise WorkbenchError('workspace_conflict', 'A linked project path appeared after staging')
+                        if child.is_file() and relative not in deleted_paths or child.is_dir() and relative not in removed_folders:
+                            raise WorkbenchError('workspace_conflict', 'A staged folder gained content; compare or refresh before accepting')
                 else:
                     current = path.read_bytes() if path.is_file() else None
                     expected = result['expected_revisions'].get(change['path'])
@@ -515,6 +524,8 @@ class CodingWorkspace:
         """Stage an ordered Agent file-organization plan without touching canonical files."""
         if not 1 <= len(operations) <= 8:
             raise WorkbenchError('tool_input', 'Use one to eight file operations')
+        if any(item['tool'] == 'file_delete_scope' for item in operations) and len(operations) != 1:
+            raise WorkbenchError('tool_input', 'A complete project cleanup must be one reviewed operation')
         with self._mutation_lock:
             original = self.raw_files(workspace_id)
             snapshot = self.get(workspace_id)
@@ -536,6 +547,28 @@ class CodingWorkspace:
             for item in operations:
                 action = item['tool']
                 source = self._name(item['target'])
+                if action == 'file_delete_scope':
+                    if source != 'all':
+                        raise WorkbenchError('tool_input', 'A scoped deletion must target all project files')
+                    keep = self._name(item['value']) if item['value'].strip() else ''
+                    if keep and keep not in folders:
+                        raise WorkbenchError('invalid_file', 'The folder to preserve does not exist in this project')
+                    to_delete = [name for name in sorted(planned)
+                                 if not keep or not name.startswith(keep + '/')]
+                    if any(sensitive_project_path(name) for name in to_delete):
+                        raise WorkbenchError('invalid_file', 'Bulk deletion includes a protected project path; remove it separately')
+                    for name in to_delete:
+                        data = planned.pop(name)
+                        try:
+                            before = data.decode('utf-8') if len(data) <= MAX_FILE_BYTES else None
+                        except UnicodeDecodeError:
+                            before = None
+                        changes.append({'action':'delete','path':name,'before':before,'after':None})
+                    for name in sorted(folders, key=lambda path:(-path.count('/'),path), reverse=False):
+                        if keep and (name == keep or keep.startswith(name + '/') or name.startswith(keep + '/')):
+                            continue
+                        changes.append({'action':'rmdir','path':name,'before':None,'after':None})
+                    continue
                 if sensitive_project_path(source):
                     raise WorkbenchError('invalid_file', 'Agent file operations cannot target project secret paths')
                 self._file(workspace_id, source)
@@ -583,7 +616,7 @@ class CodingWorkspace:
                                 'path':destination,'before':display_before,'after':before})
             if not changes:
                 return {'state':'completed','changes':[],'already_exists':True}
-            if len(changes) > 16 or len(planned) > MAX_FILES or sum(map(len, planned.values())) > MAX_WORKSPACE_BYTES:
+            if len(changes) > 2 * MAX_FILES or len(planned) > MAX_FILES or sum(map(len, planned.values())) > MAX_WORKSPACE_BYTES:
                 raise WorkbenchError('sandbox_input', 'File organization exceeds the workspace budget')
             task = ledger.create('coding_workspace', [])
             ledger.step(task, 'plan', {'paths':[change['path'] for change in changes]})

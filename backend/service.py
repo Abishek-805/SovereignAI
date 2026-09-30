@@ -456,11 +456,27 @@ class Workbench:
             config=json.loads(validation.read_text(encoding='utf-8'))
         except (OSError,ValueError) as exc:
             raise WorkbenchError('sandbox_unavailable','Docker isolation record is invalid') from exc
-        required={'normal_execution','network_blocked','root_read_only','input_read_only','non_root'}
+        from router.sandbox import SANDBOX_VERIFICATION_VERSION, SANDBOX_VERIFICATION_MAX_AGE, sandbox_policy_fingerprint
+        required={'normal_execution','network_blocked','root_read_only','input_read_only','non_root',
+                  'capabilities_dropped','no_new_privileges','process_isolated','pids_bounded',
+                  'memory_bounded','cpu_bounded','output_bounded','docker_socket_absent',
+                  'host_env_excluded','project_secret_excluded','timeout_stops','cancel_stops',
+                  'containers_cleaned'}
         checks=config.get('checks')
-        if not isinstance(checks,dict) or not all(checks.get(name) is True for name in required):
+        if (not isinstance(checks,dict) or not all(checks.get(name) is True for name in required) or
+            config.get('verification_version') != SANDBOX_VERIFICATION_VERSION or
+            config.get('policy_fingerprint') != sandbox_policy_fingerprint() or
+            not isinstance(config.get('validated_at'),(int,float)) or
+            not 0 <= time.time()-config['validated_at'] <= SANDBOX_VERIFICATION_MAX_AGE):
             raise WorkbenchError('sandbox_unavailable','Docker isolation verification did not pass')
         return CodeSandbox('docker',image_id=config.get('image_id'),task_root=self.settings.data_dir/'code-tasks')
+
+    def accept_coding_task(self, workspace_id, task_id):
+        task = self.coding.result(workspace_id, task_id)
+        if task.get('publication_state') == 'staged' and not task.get('checks', {}).get('container_executed'):
+            sandbox = self._verified_coding_sandbox()
+            self.coding.validate_staged(workspace_id, task_id, sandbox)
+        return self.coding.accept(workspace_id, task_id)
 
     def create_csv_coding_demo(self):
         from workflows.coding import run_csv_demo
@@ -817,9 +833,10 @@ Path('/output/project-sync.json').write_bytes(payload)
             if action=='edit_code' and result.get('state')=='completed' and result.get('changes'):
                 changed=[change['path'] for change in result['changes'] if change['action'] in {'create','edit'}]
                 if changed:
-                    answer_text=('Saved ' + ', '.join(changed) + ' in the project. ' +
-                                 ('Docker validation passed.' if result.get('checks',{}).get('container_executed') else
-                                  'Docker is unavailable, so the files were saved but not executed or validated.'))
+                    answer_text=('Staged ' + ', '.join(changed) + ' for review. ' +
+                                 ('Docker validation passed; publish the reviewed changes to update the project.'
+                                  if result.get('checks',{}).get('container_executed') else
+                                  'Docker is unavailable. Validation is required before these changes can be published.'))
             plan_model=getattr(self.registry,'specs',{}).get('text')
             return {'task_id':task['task_id'],'status':task['state'],'answer':answer_text,'plan':plan,
                     'routing':{'capability':'text','model':plan_model.alias if plan_model else 'sovereign-text',

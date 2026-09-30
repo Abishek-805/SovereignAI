@@ -125,6 +125,8 @@ def test_repair_tests_diff_and_commit(tmp_path):
     assert result['attempts'] == 2
     assert [event['event'] for event in result['events']].count('test_failed') == 1
     assert '+    return a + b' in result['diff']
+    assert work.read(workspace_id, 'solution.py')['content'].endswith('return 0\n')
+    work.accept(workspace_id,result['task_id'])
     assert work.read(workspace_id, 'solution.py')['content'].endswith('return a + b\n')
     assert work.result(workspace_id, result['task_id'])['checks']['tests_passed']
     assert result['output_files'][0]['name'] == 'result.csv'
@@ -160,6 +162,7 @@ def test_error_repair_runs_file_and_can_be_undone(tmp_path):
     result=work.run(wid,'broken.py','Solve the runtime error',Model('print(sales)\n','print(42)\n'),RuntimeSandbox(),TaskLedger(tmp_path))
     assert result['state']=='completed' and result['validation']=='runtime_check'
     assert result['checks']['runtime_passed'] and '+print(42)' in result['diff']
+    work.accept(wid,result['task_id'])
     assert work.undo(wid,result['task_id'])['state']=='undone'
     assert work.read(wid,'broken.py')['content']=='print(sales)\n'
 
@@ -167,6 +170,7 @@ def test_error_repair_runs_file_and_can_be_undone(tmp_path):
 def test_undo_does_not_overwrite_later_edits(tmp_path):
     work,wid=workspace(tmp_path)
     result=work.run(wid,'solution.py','Fix add',Model('def add(a, b):\n    return a + b\n'),Sandbox(),TaskLedger(tmp_path))
+    work.accept(wid,result['task_id'])
     work.write(wid,'solution.py','def add(a, b):\n    return 99\n')
     with pytest.raises(WorkbenchError) as error:
         work.undo(wid,result['task_id'])
@@ -231,6 +235,8 @@ def test_nested_text_files_and_validation_without_tests(tmp_path):
     assert result['checks']['syntax_or_format_checked']
     assert 'tests_passed' not in result['checks']
     assert result['validation']=='syntax_or_format_check'
+    assert work.read(wid,'src/main.js')['content']=='console.log(1)'
+    work.accept(wid,result['task_id'])
     assert work.read(wid,'src/main.js')['content']=='console.log(42)'
 
 

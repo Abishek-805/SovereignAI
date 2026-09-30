@@ -64,8 +64,10 @@ def test_agent_moves_recent_generated_web_files_into_folder(service):
         history=['User: generate html and css files',
                  'Assistant: Saved index.html, style.css in the project. Docker validation was not run.'])
     assert result['status']=='completed'
+    draft=result['result']['operations'][0]['result']
+    assert draft['publication_state']=='staged' and not draft['checks']['container_executed']
     assert {item['name'] for item in service.coding.get(workspace)['files']}=={
-        'web-page/index.html','web-page/style.css'}
+        'index.html','style.css'}
 
 
 def test_agent_moves_only_unambiguous_web_files_from_ide(service):
@@ -79,8 +81,9 @@ def test_agent_moves_only_unambiguous_web_files_from_ide(service):
         for name in ('index.html','style.css')]
     result=service.run_auto_agent('put the files related to web in a single folder',[],workspace)
     assert result['status']=='completed'
+    assert result['result']['operations'][0]['result']['publication_state']=='staged'
     assert {item['name'] for item in service.coding.get(workspace)['files']}=={
-        'web-page/index.html','web-page/style.css','notes.py'}
+        'index.html','style.css','notes.py'}
 
 
 def test_agent_can_create_arithmetic_folder_without_filename_clarification(service,monkeypatch):
@@ -95,6 +98,24 @@ def test_agent_can_create_arithmetic_folder_without_filename_clarification(servi
     result=service.run_auto_agent('can u generate folder containg a code that does simple arithmetic operations',[],workspace)
     assert result['status']=='completed'
     assert calls[0][:2]==(workspace,'')
+
+
+def test_folder_only_model_plan_recovers_requested_code_generation(service, monkeypatch):
+    workspace=service.coding.create('Search recovery')['workspace_id']
+    service.coding.file_operation(workspace,'mkdir','array_search')
+    service.model.plan_task=lambda *_:{'action':'application_tools','response':'','target':''}
+    service.model.plan_application_tools=lambda *args,**kwargs:[
+        {'tool':'folder_create','target':'array_search','value':'','input':''}]
+    calls=[]
+    monkeypatch.setattr(service,'run_coding_project_task',lambda *args,**kwargs:
+        calls.append(args) or {'state':'completed','changes':[
+            {'action':'create','path':'array_search/LinearSearch.java'},
+            {'action':'create','path':'array_search/BinarySearch.java'}],
+            'checks':{'container_executed':False}})
+    result=service.run_auto_agent('Create linear and binary search codes in array_search folder',[],workspace)
+    assert result['status']=='completed'
+    assert calls[0][:2]==(workspace,'')
+    assert result['result']['operations'][0]['tool']=='file_edit'
 
 
 def test_agent_search_folder_request_creates_code_not_just_empty_folder(service,monkeypatch):

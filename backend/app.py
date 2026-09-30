@@ -513,6 +513,14 @@ def create_app(service=None):
     def undo_coding_workspace_task(workspace_id:str,task_id:str):
         return service.coding.undo(workspace_id,task_id)
 
+    @app.post('/coding/workspaces/{workspace_id}/tasks/{task_id}/accept')
+    def accept_coding_workspace_task(workspace_id:str,task_id:str):
+        return service.accept_coding_task(workspace_id,task_id)
+
+    @app.post('/coding/workspaces/{workspace_id}/tasks/{task_id}/discard')
+    def discard_coding_workspace_task(workspace_id:str,task_id:str):
+        return service.coding.discard(workspace_id,task_id)
+
     @app.get('/coding/workspaces/{workspace_id}/tasks/{task_id}/artifacts/{name}')
     def get_coding_artifact(workspace_id:str,task_id:str,name:str):
         return FileResponse(service.coding.artifact(workspace_id,task_id,name),

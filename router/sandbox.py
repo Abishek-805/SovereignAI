@@ -1,6 +1,9 @@
 """Fail-closed adapter for a locally verified Docker Linux sandbox."""
 from dataclasses import dataclass, field
 from pathlib import Path
+import base64
+import hashlib
+import json
 import re
 import shutil
 import subprocess
@@ -16,6 +19,15 @@ from router.telemetry import measured_validation
 
 IMAGE_ID = re.compile(r'^sha256:[a-f0-9]{64}$')
 FILE_NAME = re.compile(r'^[A-Za-z0-9][A-Za-z0-9_.-]{0,79}$')
+
+def sensitive_project_path(name: str) -> bool:
+    """Exclude project-held credentials and VCS internals from model/sandbox snapshots."""
+    parts = name.replace('\\', '/').casefold().split('/')
+    basename = parts[-1]
+    return (any(part in {'.git', '.ssh', '.aws', '.azure', 'gcloud'} for part in parts) or
+            basename == '.env' or basename.startswith('.env.') or
+            basename in {'id_rsa', 'id_ed25519', 'credentials', 'credentials.json'} or
+            basename.startswith('credentials.') or basename.endswith(('.pem', '.key', '.p12', '.pfx')))
 def safe_relative_name(name):
     if not isinstance(name, str) or len(name) > 240 or '\\' in name or ':' in name:
         return False
@@ -30,6 +42,20 @@ MAX_INPUT_FILES = 256
 MAX_INPUT_FILE_BYTES = 20 * 1024 * 1024
 MAX_INPUT_BYTES = 256 * 1024 * 1024
 MAX_CONTAINER_FILE_BYTES = 32 * 1024 * 1024
+MAX_OUTPUT_VOLUME_BYTES = 384 * 1024 * 1024
+COLLECT_OUTPUT_SCRIPT = '''import os,re,json,base64
+valid=re.compile(r'^[A-Za-z0-9][A-Za-z0-9_.-]{0,79}$')
+files={}
+for index,entry in enumerate(os.scandir('/output')):
+    if index>=4096: raise RuntimeError('Too many output entries')
+    if not valid.fullmatch(entry.name) or not entry.is_file(follow_symlinks=False): continue
+    if entry.stat(follow_symlinks=False).st_size>1000000: continue
+    with open(entry.path,'rb') as stream: data=stream.read(1000001)
+    if len(data)>1000000: continue
+    files[entry.name]=base64.b64encode(data).decode('ascii')
+    if len(files)>8: raise RuntimeError('Too many collected output files')
+print(json.dumps(files))
+'''
 _READY_CACHE = {}
 _READY_LOCK = threading.Lock()
 LOCAL_ENGINE = 'npipe:////./pipe/dockerDesktopLinuxEngine'
@@ -39,6 +65,16 @@ SANDBOX_POLICY = {
     'cpus': 1, 'memory_mb': 512, 'timeout_seconds': 120,
     'privileged': False, 'docker_socket': False,
 }
+SANDBOX_VERIFICATION_VERSION = 2
+SANDBOX_VERIFICATION_MAX_AGE = 24 * 60 * 60  # Reprobe each day; desktop/daemon updates can change enforcement.
+
+def sandbox_policy_fingerprint() -> str:
+    """Bind a verification record to the actual runner, image recipe, and probe code."""
+    digest = hashlib.sha256()
+    for path in (Path(__file__), ROOT / 'offline' / 'Dockerfile.workbench',
+                 ROOT / 'scripts' / 'verify_docker_sandbox.py'):
+        digest.update(path.read_bytes())
+    return digest.hexdigest()
 
 
 @dataclass
@@ -108,7 +144,11 @@ class CodeSandbox:
         if not isinstance(code, str) or len(code.encode('utf-8')) > 100_000 or not 1 <= timeout <= 120:
             raise WorkbenchError('sandbox_input', 'Code or time budget is invalid')
         if input_files is None:input_files={}
-        if not isinstance(input_files, dict) or len(input_files)>MAX_INPUT_FILES:
+        if not isinstance(input_files, dict):
+            raise WorkbenchError('sandbox_input', 'Execution input files must be a file mapping')
+        input_files={name:data for name,data in input_files.items()
+                     if not isinstance(name,str) or not sensitive_project_path(name)}
+        if len(input_files)>MAX_INPUT_FILES:
             raise WorkbenchError('sandbox_input', 'Execution supports up to 256 project files')
         if any(not safe_relative_name(name) or name=='program.py' for name in input_files):
             raise WorkbenchError('sandbox_input', 'Input names must be safe relative project paths; program.py is reserved')
@@ -122,15 +162,15 @@ class CodeSandbox:
         self.task_root.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(prefix='run-', dir=self.task_root) as directory:
             task = Path(directory)
-            inputs, outputs = task / 'input', task / 'output'
-            inputs.mkdir(); outputs.mkdir()
+            inputs = task / 'input'
+            inputs.mkdir()
             (inputs / 'program.py').write_text(code, encoding='utf-8')
             for name, data in input_files.items():
                 destination = inputs / name
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 destination.write_bytes(data)
             container = 'sovereign-code-' + uuid4().hex
-            args = [*self.docker, 'run', '-i', '--rm', '--pull=never', '--name', container,
+            args = [*self.docker, 'run', '-d', '--rm', '--pull=never', '--name', container,
                     f"--network={SANDBOX_POLICY['network']}", '--read-only', '--cap-drop=ALL',
                     '--security-opt=no-new-privileges', '--pids-limit=64',
                     f"--memory={SANDBOX_POLICY['memory_mb']}m", f"--cpus={SANDBOX_POLICY['cpus']}",
@@ -138,12 +178,16 @@ class CodeSandbox:
                     f"--user={SANDBOX_POLICY['user']}",
                     '--workdir=/output', '--env=PYTHONDONTWRITEBYTECODE=1', '--env=PYTHONUNBUFFERED=1',
                     '--mount', f'type=bind,src={inputs},dst=/input,readonly',
-                    '--mount', f'type=bind,src={outputs},dst=/output',
-                    self.image_id, 'python', '-I', '/input/program.py']
+                    '--tmpfs', f'/output:rw,nosuid,nodev,size={MAX_OUTPUT_VOLUME_BYTES},mode=1777',
+                    self.image_id, 'sleep', '300']
             try:
-                process = subprocess.Popen(args, stdin=subprocess.PIPE if self.stdin_queue is not None else subprocess.DEVNULL,
+                subprocess.run(args, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, timeout=20, check=True)
+                execution_args = [*self.docker, 'exec', '-i', container, 'python', '-I', '/input/program.py']
+                process = subprocess.Popen(execution_args, stdin=subprocess.PIPE if self.stdin_queue is not None else subprocess.DEVNULL,
                                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            except OSError as exc:
+            except (OSError, subprocess.SubprocessError) as exc:
+                try: subprocess.run([*self.docker, 'rm', '-f', container], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=8)
+                except (OSError, subprocess.SubprocessError): pass
                 raise WorkbenchError('sandbox_unavailable', 'Could not start Docker CLI') from exc
             out, err = bytearray(), bytearray()
             readers = [threading.Thread(target=_bounded_stream, args=(pipe, buffer, self.on_output, channel), daemon=True)
@@ -175,8 +219,25 @@ class CodeSandbox:
             for reader in readers: reader.join(timeout=2)
             if getattr(process,'stdin',None) is not None:process.stdin.close()
             produced = {}
-            for path in outputs.iterdir():
-                if not path.is_symlink() and path.is_file() and FILE_NAME.fullmatch(path.name) and path.stat().st_size <= 1_000_000:
-                    produced[path.name] = path.read_bytes()
+            try:
+                if exit_code >= 0:
+                    collected = subprocess.run([*self.docker, 'exec', container, 'python', '-I', '-c', COLLECT_OUTPUT_SCRIPT],
+                                               capture_output=True, timeout=45, check=True)
+                    payload = json.loads(collected.stdout)
+                    if not isinstance(payload, dict) or len(payload)>8:
+                        raise ValueError('Invalid output manifest')
+                    for name, encoded in payload.items():
+                        if not FILE_NAME.fullmatch(name): raise ValueError('Invalid output filename')
+                        data=base64.b64decode(encoded, validate=True)
+                        if len(data)>1_000_000: raise ValueError('Oversized output')
+                        produced[name]=data
+            except (OSError, subprocess.SubprocessError, ValueError, TypeError) as exc:
+                raise WorkbenchError('sandbox_output', 'Could not collect bounded container output') from exc
+            finally:
+                try:
+                    subprocess.run([*self.docker, 'rm', '-f', container],
+                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=8)
+                except (OSError, subprocess.SubprocessError):
+                    pass
             return SandboxResult(exit_code, out.decode('utf-8', 'replace'),
                                  err.decode('utf-8', 'replace'), True, produced)

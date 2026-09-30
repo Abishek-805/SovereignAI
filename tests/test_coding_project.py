@@ -47,6 +47,8 @@ def test_project_task_creates_folder_and_file_without_editing_current_tab(tmp_pa
     assert task['state']=='completed'
     assert [change['path'] for change in task['changes']]==['tools','tools/add.py']
     assert work.read(workspace_id,'current.py')['content']=='print("keep")\n'
+    assert not (work.files_directory(workspace_id)/'tools/add.py').exists()
+    work.accept(workspace_id,task['task_id'])
     assert work.read(workspace_id,'tools/add.py')['content'].startswith('def add')
     assert sandbox.snapshots[0]['tools/add.py'].startswith(b'def add')
     assert 'current.py' in model.tree[0]
@@ -67,13 +69,12 @@ def test_new_html_css_project_saves_files_without_docker(tmp_path):
         'Create a project folder with a simple HTML page and CSS in it',
         model,None,TaskLedger(tmp_path))
     assert result['state']=='completed'
-    assert result['validation']=='not run; Docker unavailable'
+    assert result['validation']=='validation unavailable'
     assert result['checks']['container_executed'] is False
-    assert {item['name'] for item in work.get(workspace_id)['files']}=={'site/index.html','site/style.css'}
-    assert 'style.css' in work.read(workspace_id,'site/index.html')['content']
-    assert work.read(workspace_id,'site/index.html')['content'].startswith('<!doctype html>')
-    assert work.read(workspace_id,'site/style.css')['content'].startswith('h1 {')
-    work.undo(workspace_id,result['task_id'])
+    assert work.get(workspace_id)['files']==[]
+    with pytest.raises(WorkbenchError,match='Docker validation'):
+        work.accept(workspace_id,result['task_id'])
+    work.discard(workspace_id,result['task_id'])
     assert work.get(workspace_id)['files']==[]
 
 
@@ -90,9 +91,11 @@ def test_new_web_pair_uses_unused_names_in_selected_project(tmp_path):
     result=work.run_project(workspace_id,'',
         'generate html and css file for simple html web page',model,None,TaskLedger(tmp_path))
     assert result['state']=='completed'
-    assert {item['name'] for item in work.get(workspace_id)['files']}=={
-        'index.html','style.css','page2.html','page2.css'}
-    assert 'href="page2.css"' in work.read(workspace_id,'page2.html')['content']
+    assert {item['name'] for item in work.get(workspace_id)['files']}=={'index.html','style.css'}
+    with pytest.raises(WorkbenchError,match='Docker validation'):
+        work.accept(workspace_id,result['task_id'])
+    assert {change['path'] for change in result['changes']}=={'page2.html','page2.css'}
+    work.discard(workspace_id,result['task_id'])
     assert work.read(workspace_id,'index.html')['content']=='<html>Old</html>'
 
 
@@ -107,7 +110,8 @@ def test_arithmetic_folder_creates_nested_program_without_touching_existing_file
         'generate folder containing code that does simple arithmetic operations',
         model,None,TaskLedger(tmp_path))
     assert result['state']=='completed'
-    generated=work.read(workspace_id,'arithmetic/operations.py')['content']
+    assert 'arithmetic/operations.py' not in {item['name'] for item in work.get(workspace_id)['files']}
+    generated=next(change['after'] for change in result['changes'] if change['path']=='arithmetic/operations.py')
     assert 'def calculate(' in generated and 'first / second' in generated
     assert work.read(workspace_id,'old.py')['content']=='print("unchanged")'
 
@@ -122,8 +126,44 @@ def test_search_algorithms_generated_in_existing_folder(tmp_path):
     result=work.run_project(workspace_id,'array_search_types/SearchAlgorithms.java',
         'Create Java array search code in folder array_search_types',model,None,TaskLedger(tmp_path))
     assert result['state']=='completed'
-    source=work.read(workspace_id,'array_search_types/SearchAlgorithms.java')['content']
+    source=next(change['after'] for change in result['changes'] if change['path']=='array_search_types/SearchAlgorithms.java')
     assert 'linearSearch' in source and 'binarySearch' in source
+
+
+def test_model_can_include_redundant_mkdir_for_existing_code_folder(tmp_path):
+    work=CodingWorkspace(tmp_path)
+    wid=work.create('Existing search folder')['workspace_id']
+    work.file_operation(wid,'mkdir','array_search')
+    model=ProjectModel({'scope':'new_files','operations':[
+        {'action':'mkdir','path':'array_search','reason':'Reuse folder'},
+        {'action':'create','path':'array_search/LinearSearch.java','reason':'Linear search'},
+        {'action':'create','path':'array_search/BinarySearch.java','reason':'Binary search'}]},
+        'public class LinearSearch { public static int find(int[] a, int x) { return -1; } }',
+        'public class BinarySearch { public static int find(int[] a, int x) { return -1; } }')
+    task=work.run_project(wid,'','Create linear and binary search code in array_search',
+                          model,Sandbox(),TaskLedger(tmp_path))
+    assert task['state']=='completed'
+    assert {change['path'] for change in task['changes']}=={
+        'array_search/LinearSearch.java','array_search/BinarySearch.java'}
+    assert work.get(wid)['files']==[]
+    work.accept(wid,task['task_id'])
+    assert {item['name'] for item in work.get(wid)['files']}=={
+        'array_search/LinearSearch.java','array_search/BinarySearch.java'}
+
+
+def test_creation_request_repairs_model_edits_of_nonexistent_files(tmp_path):
+    work=CodingWorkspace(tmp_path)
+    wid=work.create('Search model repair')['workspace_id']
+    work.file_operation(wid,'mkdir','array_search')
+    model=ProjectModel({'scope':'existing_files','operations':[
+        {'action':'edit','path':'array_search/LinearSearch.java','reason':'New linear search'},
+        {'action':'edit','path':'array_search/BinarySearch.java','reason':'New binary search'}]},
+        'public class LinearSearch {}','public class BinarySearch {}')
+    result=work.run_project(wid,'','Create linear and binary search Java codes in array_search',
+                            model,Sandbox(),TaskLedger(tmp_path))
+    assert result['state']=='completed'
+    assert {change['action'] for change in result['changes']}=={'create'}
+    assert work.get(wid)['files']==[]
 
 
 def test_project_task_validates_all_edits_before_commit_and_supports_undo(tmp_path):
@@ -139,6 +179,8 @@ def test_project_task_validates_all_edits_before_commit_and_supports_undo(tmp_pa
     applied=work.run_project(workspace_id,'a.py','Update both files',ProjectModel(operations,'A=2\n','B=2\n'),Sandbox(),TaskLedger(tmp_path))
     assert applied['state']=='completed'
     assert len(applied['changes'])==2
+    assert work.read(workspace_id,'a.py')['content']=='A=1\n'
+    work.accept(workspace_id,applied['task_id'])
     work.undo(workspace_id,applied['task_id'])
     assert work.read(workspace_id,'a.py')['content']=='A=1\n'
     assert work.read(workspace_id,'b.py')['content']=='B=1\n'
@@ -220,6 +262,8 @@ def test_literal_replacement_preserves_heading_and_skips_full_file_generation(tm
         {'action':'edit','path':'docs/notes.md','reason':'requested replacement',
          'replacements':[{'old_text':'Old item.','new_text':'Reviewed item.'}]}]})
     result=work.run_project(ident,'docs/notes.md','Replace Old item. with Reviewed item. in docs/notes.md',model,Sandbox(),TaskLedger(tmp_path))
+    assert work.read(ident,'docs/notes.md')['content']=='# Heading\n\nOld item.\n\nOther content.\n'
+    work.accept(ident,result['task_id'])
     assert result['state']=='completed'
     assert work.read(ident,'docs/notes.md')['content']=='# Heading\n\nReviewed item.\n\nOther content.\n'
     work.undo(ident,result['task_id'])
@@ -245,6 +289,8 @@ def test_project_task_deletes_requested_file_and_can_restore_it(tmp_path):
     result=work.run_project(workspace_id,'obsolete.py','Delete obsolete.py',ProjectModel([
         {'action':'delete','path':'obsolete.py','reason':'explicitly requested'}]),Sandbox(),TaskLedger(tmp_path))
     assert result['state']=='completed'
+    assert work.read(workspace_id,'obsolete.py')['content']=='print("old")\n'
+    work.accept(workspace_id,result['task_id'])
     assert work.get(workspace_id)['files']==[]
     work.undo(workspace_id,result['task_id'])
     assert work.read(workspace_id,'obsolete.py')['content']=='print("old")\n'
@@ -257,5 +303,6 @@ def test_project_task_tracks_implicit_parent_folders_for_undo(tmp_path):
         {'action':'create','path':'nested/add.py','reason':'requested file'}],
         'def add(a, b):\n    return a + b\n'),Sandbox(),TaskLedger(tmp_path))
     assert [change['path'] for change in result['changes']]==['nested','nested/add.py']
+    work.accept(workspace_id,result['task_id'])
     work.undo(workspace_id,result['task_id'])
     assert work.get(workspace_id)['folders']==[]

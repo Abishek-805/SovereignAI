@@ -39,14 +39,16 @@ def test_docker_runner_security_arguments(tmp_path,monkeypatch):
             self.stdout=BytesIO(b'ok\n');self.stderr=BytesIO()
         def wait(self,timeout=None): return 0
     def command(args,**kwargs):
+        calls.append(args)
         if args[3]=='info': return type('Completed',(),{'stdout':'linux\n'})()
+        if args[3]=='exec' and '-c' in args: return type('Completed',(),{'stdout':b'{}'})()
         return type('Completed',(),{})()
     monkeypatch.setattr('router.sandbox.subprocess.run',command)
     monkeypatch.setattr('router.sandbox.subprocess.Popen',Process)
     sandbox=CodeSandbox('docker',image_id=image,task_root=tmp_path,docker_cli='docker')
     result=sandbox.execute('print(1)',input_files={'input.csv':b'a,b\n1,2\n'})
     assert result.executed and result.stdout=='ok\n'
-    args=calls[0]
+    args=next(args for args in calls if 'run' in args)
     for flag in ('--network=none','--read-only','--cap-drop=ALL','--security-opt=no-new-privileges',
                  '--pids-limit=64','--memory=512m','--cpus=1','--ulimit=fsize=33554432:33554432',
                  '--user=65534:65534','--pull=never'):

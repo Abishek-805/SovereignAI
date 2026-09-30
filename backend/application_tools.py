@@ -189,11 +189,7 @@ class ApplicationTools:
             return self.service.run_coding_project_task(workspace, target, self.goal, job=self.job, routed=True,
                 **({'history':self.history} if self.history else {}))
         if operation in {'file_delete', 'file_move', 'file_copy', 'folder_create'}:
-            # Folder deletion is deliberately not inferred from a vague "clean up".
-            if operation == 'file_delete' and not self.service.coding._file(workspace, target).is_file():
-                raise WorkbenchError('invalid_file', 'Choose one existing project file to delete')
-            action = {'file_delete':'delete', 'file_move':'move', 'file_copy':'copy', 'folder_create':'mkdir'}[operation]
-            return self.service.coding.file_operation(workspace, action, target, value or None)
+            raise WorkbenchError('tool_input', 'File organization is staged as one reviewed plan, not executed one operation at a time')
         if len(input.encode('utf-8')) > 8000:
             raise WorkbenchError('tool_input', 'Program input exceeds its 8 KB budget')
         if input:
@@ -230,6 +226,39 @@ class ApplicationTools:
             first=next(i for i,operation in enumerate(operations) if operation['tool']=='file_edit')
             operations=[operation for i,operation in enumerate(operations)
                         if operation['tool']!='file_edit' or i==first]
+        # A small model may mistake "create code in a folder" for mkdir only.
+        # Recover the requested source-generation operation generically; a
+        # directory by itself cannot satisfy a request for new program files.
+        if (operations and all(operation['tool'] in {'folder_create','project_create'} for operation in operations)
+                and re.search(r'\b(?:create|generate|write|build|make)\b.{0,100}\b(?:code|codes|program|programs|script|scripts|html|css|webpage|website)\b', self.goal or '', re.I)):
+            operations=[operation for operation in operations if operation['tool']=='project_create']
+            operations.append({'tool':'file_edit','target':'','value':self.goal,'input':''})
+        if any(operation['tool']=='file_edit' for operation in operations):
+            # The project-wide coding plan creates the requested directory as
+            # part of its staged change. A separate mkdir can conflict with an
+            # existing folder or write before review.
+            operations=[operation for operation in operations if operation['tool']!='folder_create']
+        organization={'file_delete','file_move','file_copy','folder_create'}
+        if operations and all(operation['tool'] in organization for operation in operations):
+            workspace=self._workspace()
+            try:
+                sandbox=self.service._verified_coding_sandbox()
+            except WorkbenchError as exc:
+                if exc.code!='sandbox_unavailable': raise
+                sandbox=None
+            if self.job:
+                self.job.progress('Staging project file organization')
+                if sandbox is not None:
+                    sandbox.cancel_event=self.job.cancel
+                    sandbox.on_output=self.job.append
+            result=self.service.coding.stage_file_operations(workspace,operations,sandbox,self.service.tasks,
+                                                              cancel=self.job.cancel)
+            paths=', '.join(change['path'] for change in result.get('changes',[]) if change['action'] in {'create','delete'})
+            answer=('The requested folder already exists; no project files were changed.' if result.get('already_exists') else
+                    ('Staged '+paths+' for review. Publish reviewed changes to update the project.' if result['state']=='completed' else
+                     'File organization did not pass validation; project files are unchanged.'))
+            return {'state':result['state'],'answer':answer,'workspace_id':workspace,
+                    'operations':[{'tool':'file_organization','target':result.get('target',''), 'result':result}]}
         if trace:
             trace.tool_candidates=[{'name':operation['tool'],'status':'eligible','reason':'Current operation wording checked; target and scope validated by tool'} for operation in operations]
         results = []
@@ -256,15 +285,17 @@ class ApplicationTools:
                 return 'Recurring tasks: ' + '; '.join(item['name']+' ('+item['id']+')'+(' paused' if item['paused'] else ' active')
                     for item in result['result']['automations'])
             if result['tool'] == 'automation_create':label+=' ('+result['result']['id']+')'
-            if result['tool']=='file_edit' and result['result'].get('changes'):
+            if result['tool'] in {'file_edit','file_organization'} and result['result'].get('changes'):
                 paths=[change['path'] for change in result['result']['changes']
                        if change['action'] in {'create','edit'}]
                 if paths:
                     label='project files '+', '.join(paths)
                     if not result['result'].get('checks',{}).get('container_executed'):
-                        label+=' (saved; Docker validation not run)'
+                        label+=' (staged; Docker validation not run)'
             if result['tool'] in {'file_run','terminal'}:
                 label+='; exit '+str(result['result'].get('exit_code'))+'\n'+result['result'].get('stdout','')[-4000:]
             return label
-        return {'state':'completed', 'answer':'Completed: ' + '; '.join(summary(result) for result in results) + '.',
+        prefix=('Staged: ' if any(item['tool']=='file_edit' and item['result'].get('changes') for item in results)
+                else 'Completed: ')
+        return {'state':'completed', 'answer':prefix + '; '.join(summary(result) for result in results) + '.',
             'workspace_id':self.workspace_id,'operations':results}

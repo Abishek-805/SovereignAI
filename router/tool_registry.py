@@ -26,7 +26,7 @@ def explicit_operation_requested(goal, operation):
         'document_rename':r'rename', 'document_move':r'move', 'document_copy':r'copy|duplicate',
         'document_delete':r'delete|remove', 'file_delete':r'delete|remove',
         'document_duplicates':r'find|list|show|check|identify', 'document_deduplicate':r'delete|remove|deduplicate',
-        'file_move':r'move|put|place', 'file_copy':r'copy|duplicate', 'folder_create':r'create|add|make|generate',
+        'file_move':r'move|put|place', 'file_copy':r'copy|duplicate', 'folder_create':r'create|add|make|generate|put|move|place',
         'file_run':r'run|execute|test', 'terminal':r'run|execute',
         'automation_create':r'automate|schedule|repeat|every', 'automation_pause':r'pause|resume|stop',
         'automation_delete':r'delete|remove', 'automation_list':r'list|show|view|what',

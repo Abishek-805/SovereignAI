@@ -327,6 +327,24 @@
 .agent-chat .project-options button.chosen {
 	background: var(--accent);
 }
+.agent-chat .project-dialog-backdrop {
+	position: fixed;
+	inset: 0;
+	z-index: 1200;
+	display: grid;
+	place-items: center;
+	background: #0009;
+}
+.agent-chat .project-dialog {
+	width: min(400px, calc(100vw - 32px));
+	padding: 20px;
+	border: 1px solid var(--border);
+	border-radius: 10px;
+	background: var(--popover);
+}
+.agent-chat .project-dialog input { width: 100%; margin: 10px 0; padding: 9px; }
+.agent-chat .project-dialog div { display: flex; justify-content: flex-end; gap: 8px; }
+.agent-chat .project-dialog button { padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; }
 .agent-chat .spacer {
 	flex: 1;
 }

@@ -228,6 +228,10 @@ def test_coding_workspace_api_is_bounded(service):
         assert client.delete(f"/workbench/artifacts/{result['task_id']}/{artifact_name}").json()=={'deleted':True}
         assert all(item['name']!=artifact_name or item['task_id']!=result['task_id']
                    for item in client.get('/workbench/artifacts').json())
+        assert client.get(f'/coding/workspaces/{workspace_id}/files/solution.py').json()['content'].endswith('return 0\n')
+        accepted=client.post(f"/coding/workspaces/{workspace_id}/tasks/{result['task_id']}/accept")
+        assert accepted.status_code==200 and accepted.json()['publication_state']=='published'
+        assert client.get(f'/coding/workspaces/{workspace_id}/files/solution.py').json()['content'].endswith('return a + b\n')
         undone=client.post(f"/coding/workspaces/{workspace_id}/tasks/{result['task_id']}/undo")
         assert undone.status_code==200 and undone.json()['state']=='undone'
         assert client.get(f'/coding/workspaces/{workspace_id}/files/solution.py').json()['content'].endswith('return 0\n')

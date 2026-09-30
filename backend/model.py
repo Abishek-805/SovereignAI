@@ -260,6 +260,11 @@ class LocalModel:
             {'role':'assistant','content':json.dumps({'scope':'new_files','operations':[
                 {'action':'create','path':'index.html','reason':'Create page and link stylesheet'},
                 {'action':'create','path':'style.css','reason':'Style requested page'}]})},
+            {'role':'user','content':json.dumps({'task':'Create Java linear and binary search code in the existing array_search folder',
+                'current_file':'','files':{},'folders':['array_search']})},
+            {'role':'assistant','content':json.dumps({'scope':'new_files','operations':[
+                {'action':'create','path':'array_search/LinearSearch.java','reason':'Create linear search'},
+                {'action':'create','path':'array_search/BinarySearch.java','reason':'Create binary search'}]})},
             {'role':'user','content':json.dumps({'task':instruction,'current_file':current_file,
                 'files':files,'folders':folders,'recent_conversation':(history or [])[-16:]},ensure_ascii=False)}]
         payload={'model':'sovereign-text','messages':messages,'temperature':0,'max_tokens':2048,
@@ -348,6 +353,10 @@ class LocalModel:
             {'role':'assistant','content':'{"action":"application_tools","response":""}'},
             {'role':'user','content':'Classification example: Create multiplication_check.py with a function multiply(a,b).'},
             {'role':'assistant','content':'{"action":"edit_code","response":"","target":"multiplication_check.py"}'},
+            {'role':'user','content':'Classification example: The array_search folder already exists. Create linear and binary search Java codes in that folder.'},
+            {'role':'assistant','content':'{"action":"edit_code","response":"","target":""}'},
+            {'role':'user','content':'Classification example: Put the existing index.html and style.css into one web folder.'},
+            {'role':'assistant','content':'{"action":"application_tools","response":""}'},
             {'role':'user','content':'Classification example: Explain how plants obtain energy. Library documents and a project are connected but not relevant.'},
             {'role':'assistant','content':'{"action":"answer","response":"Plants use sunlight to convert water and carbon dioxide into sugars through photosynthesis. The sugars provide energy for growth."}'},
             {'role':'user','content':'Classification example: Using the connected handbook, what training is required? Filenames alone do not reveal its contents.'},
@@ -401,6 +410,10 @@ tool ::= ''' + names + '\n' + JSON_STRING_GRAMMAR
             {'role':'assistant','content':'{"operations":[{"tool":"file_edit","target":"multiplication_check.py","value":"Create multiply(a,b) returning a*b and print multiply(6,7) when run.","input":""},{"tool":"file_run","target":"multiplication_check.py","value":"","input":""}]}'},
             {'role':'user','content':'Operation example: Create a new project named Demo with an HTML page and CSS.'},
             {'role':'assistant','content':'{"operations":[{"tool":"project_create","target":"Demo","value":"","input":""},{"tool":"file_edit","target":"","value":"Create an HTML page and linked CSS file in the new project.","input":""}]}'},
+            {'role':'user','content':'Operation example: The array_search folder already exists. Create linear and binary search Java code in that folder.'},
+            {'role':'assistant','content':'{"operations":[{"tool":"file_edit","target":"","value":"Create Java linear and binary search programs in the existing array_search folder.","input":""}]}'},
+            {'role':'user','content':'Operation example: Put the existing index.html and style.css into a single web folder.'},
+            {'role':'assistant','content':'{"operations":[{"tool":"file_move","target":"index.html","value":"web/index.html","input":""},{"tool":"file_move","target":"style.css","value":"web/style.css","input":""}]}'},
             {'role':'user','content':'Operation example: Create a new Knowledge document named notes.txt containing exactly: Application tools acceptance.'},
             {'role':'assistant','content':'{"operations":[{"tool":"document_create","target":"notes.txt","value":"Application tools acceptance.","input":""}]}'},
             {'role':'user','content':'Operation example: Delete duplicate documents in Knowledge, keeping one of each.'},

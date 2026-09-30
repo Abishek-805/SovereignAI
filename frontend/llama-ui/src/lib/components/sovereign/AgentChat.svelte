@@ -24,6 +24,7 @@
 	import KnowledgeChips from './KnowledgeChips.svelte';
 	import KnowledgeSources from './KnowledgeSources.svelte';
 	import DuplicateAudit from './DuplicateAudit.svelte';
+	import DockerControl from './DockerControl.svelte';
 	import { removedDuplicateGroups, type DuplicateGroup } from '$lib/services/duplicate-audit';
 	import { knowledgeContext } from '$lib/stores/knowledge-context.svelte';
 	import type { KnowledgeSource } from '$lib/services/knowledge.service';
@@ -79,6 +80,7 @@
 		downloads?: Record<string, string>;
 		workspace?: string;
 		taskId?: string;
+		validated?: boolean;
 		diff?: string;
 		added?: number;
 		removed?: number;
@@ -145,6 +147,30 @@
 	let projects = $state<{ workspace_id: string; name: string }[]>([]);
 	let projectsReady = $state(false);
 	let projectMenu = $state(false);
+	let projectCreate = $state(false), projectDelete = $state(false), projectName = $state('');
+	async function createProject() {
+		const name = projectName.trim();
+		if (!name) return;
+		try {
+			const created = await CodingWorkspaceService.create(name);
+			projects = await CodingWorkspaceService.list();
+			workspace = created.workspace_id;
+			localStorage.setItem('sovereign-active-workspace', workspace);
+			projectCreate = false; projectMenu = false; projectName = '';
+			notice = 'Created project ' + created.name;
+		} catch (error) { notice = String(error); }
+	}
+	async function deleteProject() {
+		if (!workspace || busy) return;
+		const name = projects.find((project) => project.workspace_id === workspace)?.name || 'project';
+		try {
+			await CodingWorkspaceService.delete(workspace);
+			projects = await CodingWorkspaceService.list();
+			workspace = ''; localStorage.removeItem('sovereign-active-workspace');
+			projectDelete = false; projectMenu = false;
+			notice = 'Deleted project ' + name;
+		} catch (error) { notice = String(error); }
+	}
 	let projectControl: HTMLDivElement;
 	function dismissProjectMenu(event: MouseEvent) {
 		if (projectMenu && projectControl && !projectControl.contains(event.target as Node))
@@ -334,7 +360,7 @@
 	function finish(index: number, result: any) {
 		const original = turns[index];
 		const operations = Array.isArray(result.result?.operations) ? result.result.operations : [];
-		const edited = [...operations].reverse().find((operation: any) => operation.tool === 'file_edit' && operation.result?.state === 'completed')?.result;
+		const edited = [...operations].reverse().find((operation: any) => ['file_edit', 'file_organization'].includes(operation.tool) && operation.result?.state === 'completed' && operation.result?.changes?.length)?.result;
 		const editResult = result.plan?.action === 'edit_code' ? result.result : edited;
 		const edit = !!editResult;
 		const diff = editResult?.diff || '';
@@ -352,6 +378,7 @@
 			downloads: result.downloads || result.result?.downloads,
 			workspace: edit ? result.workspace_id : undefined,
 			taskId: edit ? editResult?.task_id : undefined,
+			validated: edit ? editResult?.checks?.container_executed === true : undefined,
 			diff,
 			added: lines.filter((line: string) => line.startsWith('+') && !line.startsWith('+++')).length,
 			removed: lines.filter((line: string) => line.startsWith('-') && !line.startsWith('---'))
@@ -384,17 +411,26 @@
 		const turn = turns[index];
 		if (!turn.workspace || !turn.taskId) return;
 		try {
-			await CodingWorkspaceService.undo(turn.workspace, turn.taskId);
+			await CodingWorkspaceService.discard(turn.workspace, turn.taskId);
 			turns[index] = {
 				...turn,
 				status: 'undone',
-				answer: `Reverted ${turn.workspace ? 'the applied file change' : 'the change'}.`,
+				answer: 'Staged changes discarded. The project was not changed.',
 				review: false
 			};
 			persist();
 		} catch (e) {
 			notice = String(e);
 		}
+	}
+	async function acceptTurn(index: number) {
+		const turn = turns[index];
+		if (!turn.workspace || !turn.taskId) return;
+		try {
+			await CodingWorkspaceService.accept(turn.workspace, turn.taskId);
+			turns[index] = { ...turn, status: 'published', answer: 'Changes accepted and saved to the project.' };
+			persist();
+		} catch (e) { notice = 'Could not accept changes. The draft is still saved: ' + String(e); }
 	}
 	async function poll(index: number, id: string) {
 		try {
@@ -640,7 +676,9 @@
 							</div>{/if}{#if turn.workspace}<div class="agent-change-card">
 								<strong
 									>{turn.status === 'completed'
-										? 'File edited'
+										? 'Changes staged for review'
+										: turn.status === 'published'
+											? 'Changes accepted'
 										: turn.status === 'undone'
 											? 'Change undone'
 											: 'Edit not applied'}</strong
@@ -651,12 +689,14 @@
 									<button onclick={() => openCodeReview(turn)} disabled={!turn.taskId}
 										>Review changes</button
 									>{#if turn.status === 'completed' && turn.taskId}<button
-											onclick={() => void undoTurn(index)}>Undo</button
+											onclick={() => void acceptTurn(index)}>Accept changes</button><button
+											onclick={() => void undoTurn(index)}>Discard</button
 										>{/if}<button onclick={() => openCodeReview(turn)}>Open code workspace →</button
 									>
 								</div>
 								{#if turn.review}<pre class="agent-diff">{turn.diff ||
 											'No file changes were applied.'}</pre>{/if}
+								{#if turn.status === 'completed' && !turn.validated}<p>Draft saved outside the project. Docker validation is required when you accept it.</p><DockerControl />{/if}
 							</div>{/if}{/if}
 				</div>
 			</article>{/each}
@@ -768,6 +808,8 @@
 										projectMenu = false;
 									}}>{project.name}</button
 								>{/each}
+							<button type="button" onclick={() => { projectMenu = false; projectCreate = true; }}>+ Create project</button>
+							{#if workspace}<button type="button" onclick={() => { projectMenu = false; projectDelete = true; }}>Delete selected project…</button>{/if}
 						</div>{/if}
 				</div>
 				<span class="spacer"></span><span class="local-label">Automatic · Local</span
@@ -779,4 +821,6 @@
 		</form>
 		<p class="notice" role="status">{notice || 'Enter to send · Shift+Enter for a new line'}</p>
 	</div>
+	{#if projectCreate}<div class="project-dialog-backdrop" role="presentation" onclick={(event) => { if (event.target === event.currentTarget) projectCreate = false; }}><div class="project-dialog" role="dialog" aria-modal="true" aria-label="Create project"><h3>Create project</h3><form onsubmit={(event) => { event.preventDefault(); void createProject(); }}><input aria-label="Project name" placeholder="Project name" maxlength="80" bind:value={projectName}/><div><button type="button" onclick={() => projectCreate = false}>Cancel</button><button disabled={!projectName.trim()}>Create project</button></div></form></div></div>{/if}
+	{#if projectDelete}<div class="project-dialog-backdrop" role="presentation" onclick={(event) => { if (event.target === event.currentTarget) projectDelete = false; }}><div class="project-dialog" role="dialog" aria-modal="true" aria-label="Delete project"><h3>Delete project?</h3><p>This permanently removes {projects.find((project) => project.workspace_id === workspace)?.name} and its files.</p><div><button onclick={() => projectDelete = false}>Cancel</button><button onclick={() => void deleteProject()}>Delete project</button></div></div></div>{/if}
 </section>

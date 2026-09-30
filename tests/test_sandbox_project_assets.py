@@ -3,6 +3,7 @@ import hashlib
 import os
 from io import BytesIO
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -22,17 +23,24 @@ def test_execution_stages_large_mixed_project_assets_without_truncation(tmp_path
     class Process:
         def __init__(self,args,**kwargs):
             calls.append(args)
+            self.stdout=BytesIO(b'ok\n');self.stderr=BytesIO()
+        def wait(self,timeout=None):return 0
+    def fake_run(args,**kwargs):
+        calls.append(args)
+        if 'run' in args:
             mount=args[args.index('--mount')+1]
             source=Path(mount.split('src=',1)[1].split(',dst=',1)[0])
             for name,expected in samples.items():assert (source/name).read_bytes()==expected
             assert (source/'program.py').read_text()=='print(1)'
-            self.stdout=BytesIO(b'ok\n');self.stderr=BytesIO()
-        def wait(self,timeout=None):return 0
+        return SimpleNamespace(stdout=b'{}')
     sandbox=CodeSandbox('docker','sha256:'+'a'*64,tmp_path/'runs','docker')
     monkeypatch.setattr(sandbox,'_ready',lambda:None)
     monkeypatch.setattr('router.sandbox.subprocess.Popen',Process)
+    monkeypatch.setattr('router.sandbox.subprocess.run',fake_run)
     assert sandbox.execute('print(1)',input_files=samples).executed
-    assert '--ulimit=fsize=33554432:33554432' in calls[0]
+    run_args=next(args for args in calls if 'run' in args)
+    assert '--ulimit=fsize=33554432:33554432' in run_args
+    assert any(arg.startswith('/output:rw,nosuid,nodev,size=') for arg in run_args)
     assert samples['assets/photo.png'].endswith(b'p'*100)
 
 

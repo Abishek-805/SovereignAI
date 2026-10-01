@@ -238,6 +238,51 @@ class Store:
             raise WorkbenchError('index_failed','Index update failed; previous active version retained') from exc
         return {'status':status, **self.current(document_id)}
 
+    def planning_context(self, document_ids=None, query='', max_documents=8, total_chars=6000):
+        """Bounded active-source previews for routing, never final evidence.
+
+        Reads text only: no vector decoding, embeddings, original-file parsing,
+        or instructions from the source are executed here.
+        """
+        if (isinstance(max_documents,bool) or not isinstance(max_documents,int) or
+                not 1<=max_documents<=8 or isinstance(total_chars,bool) or
+                not isinstance(total_chars,int) or not 1<=total_chars<=6000 or
+                not isinstance(query,str)):
+            raise WorkbenchError('invalid_request','Invalid planning context limits')
+        from rag.retrieve import fts_query
+        terms=fts_query(query[:8000])
+        result=[]
+        with self.connect() as db:
+            scope,args=self._scope(db,document_ids)
+            documents=db.execute('SELECT d.document_id,d.display_name FROM documents d WHERE 1 '+
+                                 scope+' ORDER BY d.document_id LIMIT ?',[*args,max_documents]).fetchall()
+            remaining=total_chars
+            for position,document in enumerate(documents):
+                if not remaining:break
+                allowance=max(1,remaining//(len(documents)-position))
+                # Prefer the imported schema overview; otherwise source order.
+                # Chunk hashes deliberately do not determine preview order.
+                first=db.execute('SELECT c.chunk_id,substr(c.text,1,?) AS text'+ACTIVE+
+                    "WHERE d.document_id=? ORDER BY CASE WHEN json_extract(c.payload,'$.retrieval_kind')='schema' THEN 0 ELSE 1 END, "+
+                    "COALESCE(json_extract(c.payload,'$.page'),0),COALESCE(json_extract(c.payload,'$.line_start'),0),c.rowid LIMIT 1",
+                    (allowance,document['document_id'])).fetchone()
+                if first is None:continue
+                excerpt=first['text']
+                if terms:
+                    match=db.execute('SELECT c.chunk_id,substr(c.text,1,?) AS text FROM chunk_fts '+
+                        'JOIN chunks c ON c.chunk_id=chunk_fts.chunk_id JOIN documents d '+
+                        'ON d.document_id=c.document_id AND d.active_hash=c.version_hash '+
+                        'WHERE chunk_fts MATCH ? AND d.document_id=? ORDER BY bm25(chunk_fts),c.rowid LIMIT 1',
+                        (allowance,terms,document['document_id'])).fetchone()
+                    if match is not None and match['chunk_id']!=first['chunk_id'] and match['text']!=excerpt:
+                        base=max(1,allowance*2//3)
+                        excerpt=(excerpt[:base]+'\n'+match['text'][:max(0,allowance-base-1)])[:allowance]
+                excerpt=excerpt[:allowance]
+                remaining-=len(excerpt)
+                result.append({'document_id':document['document_id'],'name':document['display_name'],
+                               'reference_excerpt':excerpt})
+        return result
+
     def active_chunks(self, document_ids=None):
         with self.connect() as db:
             scope, args = self._scope(db,document_ids)

@@ -17,6 +17,18 @@
 		},
 		title: 'Components/MarkdownContent'
 	});
+
+	// Keep the complete formula fixture while bounding each render and accessibility scan.
+	// The original single story can take longer than the browser test timeout on Windows.
+	const mathFormulaParts = MATH_FORMULAS_MD.split(
+		/(?=\n## (?:Statistics and Probability|Advanced Topics|Further Bracket Styles and Amounts|Formulas in a Table))/
+	);
+	function mathFormulaPart(index: number): string {
+		if (mathFormulaParts.length !== 5 || !mathFormulaParts[index]) {
+			throw new Error('Math formula fixture sections changed; update the story boundaries.');
+		}
+		return mathFormulaParts[index];
+	}
 </script>
 
 <Story args={{ class: 'max-w-[56rem] w-[calc(100vw-2rem)]', content: EMPTY_MD }} name="Empty" />
@@ -46,10 +58,11 @@
 	name="README file"
 />
 
-<Story
-	args={{ class: 'max-w-[56rem] w-[calc(100vw-2rem)]', content: MATH_FORMULAS_MD }}
-	name="Math Formulas"
-/>
+<Story args={{ class: 'max-w-[56rem] w-[calc(100vw-2rem)]', content: mathFormulaPart(0) }} name="Math Formulas — Arithmetic, Algebra, Calculus" />
+<Story args={{ class: 'max-w-[56rem] w-[calc(100vw-2rem)]', content: mathFormulaPart(1) }} name="Math Formulas — Statistics through Set Theory" />
+<Story args={{ class: 'max-w-[56rem] w-[calc(100vw-2rem)]', content: mathFormulaPart(2) }} name="Math Formulas — Advanced and Inline" />
+<Story args={{ class: 'max-w-[56rem] w-[calc(100vw-2rem)]', content: mathFormulaPart(3) }} name="Math Formulas — Brackets and Amounts" />
+<Story args={{ class: 'max-w-[56rem] w-[calc(100vw-2rem)]', content: mathFormulaPart(4) }} name="Math Formulas — Tables and Chemistry" />
 
 <Story
 	args={{

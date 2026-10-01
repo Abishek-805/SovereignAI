@@ -58,7 +58,8 @@ def run_provenance(dataset, args, settings, registry):
     compatibility = {'dataset_sha256': digest(dataset), 'production_sha256': hashes, 'git_head': git_head,
                      'profiles': profiles, 'settings': json.loads(json.dumps(configured, default=str)),
                      'timeout_seconds': args.timeout, 'strategies': args.strategies,
-                     'categories': args.categories, 'limit': args.limit, 'sample_resources': args.sample_resources,
+                     'categories': args.categories, 'case_ids': getattr(args, 'case_ids', None),
+                     'limit': args.limit, 'sample_resources': args.sample_resources,
                      'generation_policy': 'Workflow-specific payloads in hashed backend/model.py; no benchmark override'}
     return {'started_at_utc': datetime.now(timezone.utc).isoformat(),
             'compatibility_sha256': digest(compatibility), **compatibility}
@@ -73,6 +74,18 @@ def resume_captures(report, dataset, provenance):
                 for strategy, result in report['results'].items()}
     compare(dataset, captured, 'live')  # Validate every fixture hash and duplicate ID.
     return captured
+
+
+def selected_cases(dataset, args):
+    requested = getattr(args, 'case_ids', None)
+    if requested:
+        unknown = sorted(set(requested) - {case['id'] for case in dataset['cases']})
+        if unknown:
+            raise ValueError('Unknown case IDs: ' + ', '.join(unknown))
+    cases = [case for case in dataset['cases']
+             if (not args.categories or case['category'] in args.categories)
+             and (not requested or case['id'] in requested)]
+    return cases[:args.limit] if args.limit else cases
 
 
 def finite(value):
@@ -400,9 +413,7 @@ def run_live(dataset, args):
     def report():
         return {**compare(dataset, captured, 'live'), 'provenance': provenance}
     atomic_report(args.output, report())
-    cases = [case for case in dataset['cases'] if not args.categories or case['category'] in args.categories]
-    if args.limit:
-        cases = cases[:args.limit]
+    cases = selected_cases(dataset, args)
     for strategy in args.strategies:
         with TemporaryDirectory(prefix='sovereign-benchmark-') as temporary:
             data = Path(temporary)
@@ -452,6 +463,7 @@ def main():
     parser.add_argument('--strategies', nargs='+', choices=list(STRATEGIES), default=list(STRATEGIES))
     parser.add_argument('--limit', type=int, default=0)
     parser.add_argument('--categories', nargs='+', help='Optional category subset; incomplete full-suite coverage is reported')
+    parser.add_argument('--case-ids', nargs='+', help='Run exact fixture IDs, intersected with categories before limit; preserves dataset ordering')
     parser.add_argument('--timeout', type=float, default=120)
     parser.add_argument('--model-port', type=int, default=8087)
     parser.add_argument('--model-url', default='http://127.0.0.1:8087')
@@ -462,6 +474,10 @@ def main():
     if args.timeout <= 0 or args.timeout > 3600 or args.limit < 0:
         parser.error('Invalid timeout or limit')
     dataset = json.loads(args.dataset.read_text(encoding='utf-8'))
+    try:
+        selected_cases(dataset, args)
+    except ValueError as error:
+        parser.error(str(error))
     args.output.parent.mkdir(parents=True, exist_ok=True)
     if args.mode == 'live':
         if not args.allow_model_lifecycle:

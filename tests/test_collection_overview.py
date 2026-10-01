@@ -63,6 +63,7 @@ def test_context_limited_overview_identifies_omitted_documents_and_passages():
 
 def test_agent_propagates_model_scope_into_document_workflows(service,monkeypatch):
     monkeypatch.setattr(service,'documents',lambda:[{'document_id':'selected','display_name':'Selected.txt'}])
+    monkeypatch.setattr(service.store,'planning_context',lambda *_:[{'document_id':'selected','name':'Selected.txt'}])
     calls=[]
     def workflow(question,ids,**kwargs):
         calls.append(kwargs)

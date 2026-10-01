@@ -1,6 +1,6 @@
 # Universal Task Agent: implementation and provisional verification report
 
-Status: 1 October 2026. The software supervisor, worker broker, completion observations, and isolated comparison harness are implemented. The full 128-fixture × 3-strategy live comparison is still running when this report was written. This document does not claim universal correctness, model retraining, or superiority of one strategy before the comparison finishes.
+Status: 1 October 2026. The software supervisor, worker broker, completion observations, and isolated comparison harness are implemented. Live diagnostics exposed missing source context, false intermediate-stage vetoes, and an inherited structured-output thinking default. Generic corrections pass regression and the narrow live source check; the full 128-fixture × 3-strategy comparison is next. This document does not claim universal correctness, model retraining, or superiority of one strategy before the comparison finishes.
 
 ## 1. Architecture summary
 
@@ -33,7 +33,7 @@ This is an architectural inventory, not an assertion that every listed file was 
 
 Worker roles are lightweight text, reasoning text, coding, and vision. The installed worker identities are resolved through registry metadata and runtime observations rather than trusting a display label. The intended installed families include Gemma 4 E2B, Qwen reasoning, Qwen 2.5 Coder 3B, and the installed vision worker; current configuration and actual served identity are the authority for each run.
 
-Acquisition passes through the existing single-server lease machinery. Before a swap, operational task state is checkpointed. An owned resident worker can be unloaded before the next is admitted. CPU embeddings remain separate from the heavy generative worker. The benchmark runs strategies sequentially and does not preload a second candidate.
+Acquisition passes through the existing single-server lease machinery. Before a swap, operational task state is checkpointed. An owned resident worker can be unloaded before the next is admitted. CPU embeddings remain separate from the heavy generative worker. The benchmark runs strategies sequentially and does not preload a second candidate. The launcher accepts a verified owned registered runtime profile rather than requiring the text alias: a real warm Gemma process was observed ready without a swap, with one actual worker PID.
 
 ## 4. Routing behavior
 
@@ -83,7 +83,7 @@ The universal pilot contains 128 engineer-authored cases across 16 categories: s
 
 The first 384-case A/B/C attempt was stopped after production fixes so a result would not mix loaded code versions. Its preserved [initial partial artifact](../benchmarks/universal-live-A-initial.json) contains 13 A cases and valid JSON; it has no run provenance and cannot be resumed by the updated harness. The fresh comparison remains pending. Full metrics must come from the finished [live result artifact](../benchmarks/universal-live-comparison.json). Replay scoring, unit tests, and actual live execution are reported separately. Unsupported, timed-out, and environment-blocked cases are not successful tasks. Missing security telemetry and semantic oracles remain null or unverified.
 
-Reports now use atomic temporary-file replacement. Each fresh live run records UTC start time, production Python file hashes, Git HEAD when available, installed model profile identities and launch settings, and benchmark/settings budgets. Resume requires compatible provenance and fixture hashes; it rebuilds isolated sources and workspaces and does not claim uninterrupted warm-runtime continuity.
+Reports now use atomic temporary-file replacement. Each fresh live run records UTC start time, production Python file hashes, Git HEAD when available, installed model profile identities and launch settings, and benchmark/settings budgets. Resume requires compatible provenance and fixture hashes; it rebuilds isolated sources and workspaces and does not claim uninterrupted warm-runtime continuity. The diagnostic against commit `a937424` is preserved in [pre-correction observations](../benchmarks/universal-live-pre-context-fix.json). Selected document IDs were correct, but the planner saw only names and never retrieved source-dependent answers. Both planning entry points now receive bounded, active-version, scoped text/schema previews without vectors or embeddings; the model interface preserves those previews and treats them as untrusted routing context, never final factual evidence or mutation authority. The first corrected live source check passes; no superiority conclusion follows from a partial run.
 
 The earlier frozen 42-case single-call controller experiment produced:
 
@@ -96,9 +96,11 @@ See [Smol results](../experimental/results/micro-controller-smollm2-result.json)
 
 ## 11. Test results
 
-The final backend suite passed **812 tests with 7 skips**. The benchmark harness tests passed 17 checks again after expanding production-code provenance to include retrieval and workflow modules. Frontend unit tests passed 722, client tests passed 124, and the production build passed.
+The final backend suite passed **829 tests with 7 skips** after correcting source planning context, optional-table applicability, verifier stage contracts and grounded-output settings. The benchmark harness tests passed 19 checks, including focused case selection and provenance. Frontend unit tests passed 722, client tests passed 124, and the production build passed.
 
-The initial parallel UI/Storybook run failed with import errors and timeouts. A serial run narrowed this to four failing tests. Three stale story assumptions were corrected: all three sidebar stories and both affected Chat accessibility checks then passed. The remaining MathFormulas accessibility scan exceeded 60 seconds. A temporary diagnostic rendered the same fixture in 460 ms without the scan; the original accessibility check was restored, so this gate remains **FAIL**, not skipped or passed.
+The corrected live `rag-02` source check passes in 40.52 seconds with seven model calls: [captured result](../benchmarks/universal-grounded-output-check.json). Previous attempts are preserved separately and failed. Table proposals retain semantic review; a valid read-only `none` abstention defers to the normal retrieval and grounded-answer path, never certifies task success. Application-authored stage contracts remain system policy; source previews remain data. Grounded JSON output explicitly disables hidden thinking in its small output budget, following a separate bounded task-interpretation pass.
+
+The initial parallel UI/Storybook run failed with import errors and timeouts. Three stale story assumptions were corrected. The oversized MathFormulas fixture was then split at its existing headings into five independently rendered stories, preserving every formula and the original accessibility configuration. The full UI suite now passes **39 checks across 11 files** in 43 seconds, including the math checks; no accessibility check is disabled.
 
 Live JSON and streaming Chat checks both returned warm Gemma answers in 1.51 and 1.40 seconds respectively, with private reasoning fields absent. [API observations](../benchmarks/universal-live-api-checks.json) also record calculation of 60 with zero model calls and a completed executor contract. An actual running inference was stopped and persisted as cancelled with one model call; see [cancellation observation](../benchmarks/universal-live-cancellation.json). A built-browser calculation displayed `COMPLETED` without JavaScript page errors; see [browser observation](../benchmarks/universal-browser-calculator.png). These narrow checks are not a general accuracy benchmark.
 
@@ -110,11 +112,15 @@ Native Chat now uses the shared envelope around acquisition, planner calls, dire
 
 The pilot may penalize legitimate clarification where a fixture expected a coding classification without enough behavioral detail. Report such cases explicitly rather than tuning prompts on the same frozen pilot and claiming independent improvement.
 
+The pilot has 82 cases with no task-success oracle, 16 fixture-test cases, eight literal source-fact cases, eight calculations, eight cancellation cases, and six table-value cases. A clarification yields unknown task success, not completed user work. Its classification metric reflects terminal handling because the adapter assigns clarification intent when execution requests input. Literal source facts establish required strings in an answer and actual source text, not their relationship, negation, units, correct citation attribution, or complete answer semantics. Cancellation success measures stopping correctly. Consequently the task-success rate's measured denominator must accompany the rate; it is not a correctness percentage for all 128 user goals.
+
 ## 13. Remaining risks
 
 Small workers can still misunderstand scope, thresholds, entities, or follow-up references. Retrieval can select incomplete evidence; structured execution needs correct plan semantics as well as arithmetic. Source-backed checks reduce unsupported claims but do not establish every meaning of an answer. More passes cost latency and can repeat an incorrect interpretation. Staged code can still require user review and unavailable platform dependencies, camera access, or Docker validation.
 
-Before promotion, finish the frozen comparison, inspect failures and physical residency observations, resolve UI test failures and Docker availability, and evaluate a separately authored held-out set. Do not call a delivered answer “verified” solely because its JSON was valid or the model agreed with itself.
+The diagnostic self-review repeatedly rejected a valid intermediate abstention. This is a local observation, not a universal conclusion about models. [Huang et al., ICLR 2024](https://arxiv.org/abs/2310.01798) also found that intrinsic reasoning self-correction without external feedback can fail or worsen results in their experiments. Therefore repeated model agreement is not an execution or factual oracle; this implementation retains source grounding and executor checks.
+
+Before promotion, finish the frozen comparison, inspect failures and physical residency observations, resolve Docker availability, and evaluate a separately authored held-out set. Do not call a delivered answer “verified” solely because its JSON was valid or the model agreed with itself.
 
 ## 14. Exact commands
 

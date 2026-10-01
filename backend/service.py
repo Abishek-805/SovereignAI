@@ -405,7 +405,7 @@ class Workbench:
             if job:job.progress('Preparing document answer' if force_documents else 'Understanding the request')
             report_requested=False
             if not force_documents:
-                selected_metadata=[{'document_id':doc['document_id'],'name':doc['display_name']} for doc in self.documents() if doc['document_id'] in document_ids] if document_ids else []
+                selected_metadata=self.store.planning_context(document_ids,question) if document_ids else []
                 intent=self._request_plan(question,selected_metadata,[],[*history,f'{len(document_ids or [])} indexed documents selected; search them only if the request needs their contents'])
                 route=intent.pop('_worker_route',route)
                 if (re.search(r'\b(?:create|make|build|generate)\b',question,re.I) and
@@ -474,6 +474,12 @@ class Workbench:
                                 for column in table['columns'] if 0<len({str(r.get(column)) for r in table['records'] if isinstance(r.get(column),str)})<=12}})
                         available[key]=(doc,table)
                 if catalog:
+                    # Source applicability needs the competing reference
+                    # sources too, not merely unrelated table column names.
+                    # Store previews are bounded, read-only planning data.
+                    catalog[0]['alternative_reference_sources']=[
+                        {key:source[key] for key in ('document_id','name','reference_excerpt') if key in source}
+                        for source in self.store.planning_context(scoped,question,total_chars=6000)]
                     if job:job.progress('Planning a read-only table query')
                     query_feedback=None
                     for attempt in range(2):
@@ -1008,7 +1014,7 @@ Path('/output/project-sync.json').write_bytes(payload)
         try:
             if not self.ask_lock.acquire(blocking=False): raise WorkbenchError('busy','Another model task is running')
             try:
-                selected_metadata=[{'document_id':doc['document_id'],'name':doc['display_name']} for doc in self.documents() if doc['document_id'] in document_ids] if document_ids else []
+                selected_metadata=self.store.planning_context(document_ids,goal) if document_ids else []
                 try:
                     workspace_snapshot=self.coding.get(workspace_id) if workspace_id else {'files':[],'folders':[]}
                     workspace_metadata=[{'name':item['name']} for item in workspace_snapshot['files']]

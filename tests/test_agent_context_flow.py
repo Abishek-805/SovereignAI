@@ -15,6 +15,7 @@ def test_document_action_retrieves_only_in_dispatched_workflow(service, monkeypa
     """A selection is metadata until the chosen workflow needs actual evidence."""
     monkeypatch.setattr(service, 'documents', lambda: [
         {'document_id': 'selected', 'display_name': 'Assessment.pdf'}])
+    monkeypatch.setattr(service.store,'planning_context',lambda ids,query:[{'document_id':'selected','name':'Assessment.pdf','reference_excerpt':'Assessment rating records'}])
     service.model.plan_task = lambda *_: planned(action)
 
     def premature_read(*_, **__):
@@ -72,6 +73,7 @@ def test_stop_during_intent_generation_does_not_complete_answer(service, monkeyp
 def test_connected_context_unrelated_answer_never_reads_evidence(service, monkeypatch):
     monkeypatch.setattr(service, 'documents', lambda: [
         {'document_id': 'selected', 'display_name': 'Inspection.pdf'}])
+    monkeypatch.setattr(service.store,'planning_context',lambda ids,query:[{'document_id':'selected','name':'Inspection.pdf','reference_excerpt':'Inspection observations'}])
 
     def unexpected(*args, **kwargs):
         raise AssertionError('General answers must not inspect connected document contents')
@@ -89,6 +91,7 @@ def test_repair_vocabulary_does_not_override_document_intent(service, monkeypatc
     """A model-selected evidence workflow cannot be promoted to a code write."""
     monkeypatch.setattr(service, 'documents', lambda: [
         {'document_id': 'selected', 'display_name': 'Project repair notes.txt'}])
+    monkeypatch.setattr(service.store,'planning_context',lambda ids,query:[{'document_id':'selected','name':'Project repair notes.txt','reference_excerpt':'Repair notes'}])
     service.model.plan_task = lambda *_: planned('search_documents')
     monkeypatch.setattr(service.coding, 'get', lambda *_: {'files':[{'name':'notes.md'}]})
     monkeypatch.setattr(service.coding, 'read', lambda *_: pytest.fail('Unexpected project read'))

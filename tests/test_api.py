@@ -176,7 +176,8 @@ def test_connected_document_metadata_reaches_intent_planner_without_retrieval(se
         for endpoint,payload in [('/ask',{'question':'hello','document_ids':[first['document_id']]}),('/agent/auto',{'goal':'What is your name?','document_ids':[first['document_id']]})]:
             result=client.post(endpoint,json=payload)
             assert result.status_code==200,result.text
-        assert seen==[[{'document_id':first['document_id'],'name':'Abishek assessment.txt'}]]*2
+        assert seen==[[{'document_id':first['document_id'],'name':'Abishek assessment.txt',
+                        'reference_excerpt':'Overall rating Excellent.'}]]*2
 
 
 def test_document_manager_rename_and_remove(service):

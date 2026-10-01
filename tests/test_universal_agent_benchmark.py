@@ -51,6 +51,31 @@ def test_run_provenance_records_profiles_settings_and_code_without_weight_hashes
     assert all(not path.endswith('.gguf') for path in provenance['production_sha256'])
 
 
+def test_case_id_filter_intersects_categories_before_limit():
+    from argparse import Namespace
+    args = Namespace(case_ids=['rag-02', 'simple-01', 'rag-01'], categories=['rag'], limit=1)
+    assert [case['id'] for case in evaluation.selected_cases(DATASET, args)] == ['rag-01']
+    args.limit = 0
+    args.case_ids = ['rag-02']
+    assert [case['id'] for case in evaluation.selected_cases(DATASET, args)] == ['rag-02']
+    args.case_ids = ['missing-fixture']
+    with pytest.raises(ValueError, match='Unknown case IDs: missing-fixture'):
+        evaluation.selected_cases(DATASET, args)
+
+
+def test_case_id_selection_changes_run_provenance():
+    from argparse import Namespace
+    from backend.settings import Settings
+    from router.model_registry import ModelRegistry
+    args = Namespace(timeout=300, strategies=['C'], categories=None, case_ids=['rag-01'],
+                     limit=0, sample_resources=False)
+    first = evaluation.run_provenance(DATASET, args, Settings(), ModelRegistry())
+    args.case_ids = ['rag-02']
+    second = evaluation.run_provenance(DATASET, args, Settings(), ModelRegistry())
+    assert first['case_ids'] == ['rag-01']
+    assert first['compatibility_sha256'] != second['compatibility_sha256']
+
+
 def fixture(category):
     return next(case for case in DATASET['cases'] if case['category'] == category)
 

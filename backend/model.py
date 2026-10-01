@@ -691,7 +691,15 @@ class LocalModel:
         context=self._request('GET','/props').get('default_generation_settings',{}).get('n_ctx',0)
         if not isinstance(context,int) or self.count_messages(messages,payload)+2048+64>context:
             raise WorkbenchError('context_budget','Project tree exceeds the planning context budget')
-        response=self._planned_completion(payload)
+        response=self._planned_completion(payload,task_context={'request':instruction,'history':history},
+            review_context=[{'role':'system','content':
+                'Review this intermediate workspace edit plan for authorized scope, paths, operation intent and file relationships. '
+                'The next stage generates complete source for every create/edit operation, then validates the generated source. '
+                'An edit with replacements [] or omitted replacements delegates implementation to that source-generation stage; it is a valid requested edit, not a no-op. '
+                'Nonempty replacements are optional exact literal edits, not a requirement for behavior implementation. '
+                'Do not require generated code or completed execution in this plan. Preserve the exact user-authorized targets and selected workspace; reject unrelated targets or destructive operations without authorization. '
+                'A mkdir-only plan cannot satisfy requested software behavior; create/edit operations must cover its necessary code files.'},
+                messages[-1]])
         try:
             choice=response['choices'][0]
             if choice['finish_reason']=='length':

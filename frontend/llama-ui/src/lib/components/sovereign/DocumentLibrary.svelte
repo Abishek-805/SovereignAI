@@ -165,7 +165,13 @@
 				count++;
 			}
 			await refresh();
-			if(active)await open(active.document_id);
+			if(active){
+                // Index completion updates metadata, not the user's preview,
+                // worksheet selection, search text or scroll position.
+                const id=active.document_id,sequence=requestSequence;
+                const content=await knowledgeJson(await fetch(`/documents/${id}/content?offset=${active.passage_offset||0}`));
+                if(sequence===requestSequence&&active?.document_id===id)active=content;
+            }
 			notice = `${count} document${count === 1 ? '' : 's'} indexed.`;
 		} catch (e) {
 			error = e instanceof DOMException && e.name === 'TimeoutError'

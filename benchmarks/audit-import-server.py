@@ -20,6 +20,8 @@ from router.sandbox import SandboxResult
 class FixtureSandbox:
     """UI contract fixture only; this does not verify Docker isolation."""
     image_id='disposable-test-fixture'
+    def _ready(self):
+        return None  # UI contract simulation; not Docker isolation evidence.
     def execute(self,code,input_files):
         return SandboxResult(0,'Fixture validation passed','',True)
 

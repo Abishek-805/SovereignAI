@@ -21,6 +21,10 @@ class Settings:
     max_chunks: int = 20000
     chunk_tokens: int = 384
     overlap_tokens: int = 48
+    supervisor_model_calls: int = field(default_factory=lambda:int(os.environ.get('SOVEREIGN_SUPERVISOR_MODEL_CALLS','64')))
+    supervisor_tool_calls: int = field(default_factory=lambda:int(os.environ.get('SOVEREIGN_SUPERVISOR_TOOL_CALLS','12')))
+    supervisor_model_switches: int = field(default_factory=lambda:int(os.environ.get('SOVEREIGN_SUPERVISOR_MODEL_SWITCHES','4')))
+    supervisor_seconds: float = field(default_factory=lambda:float(os.environ.get('SOVEREIGN_SUPERVISOR_SECONDS','900')))
 
     @property
     def sources_dir(self) -> Path:

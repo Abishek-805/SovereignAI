@@ -35,6 +35,18 @@ def test_output_is_bounded():
     assert len(job.snapshot()['output'])==65536
 
 
+def test_pending_review_finishes_transport_without_claiming_achieved():
+    jobs=Jobs()
+    record=jobs.start('agent',lambda job:{'state':'completed','publication_state':'staged'})
+    job=jobs.get(record['job_id'])
+    for _ in range(100):
+        if job.state!='running':break
+        time.sleep(.01)
+    assert job.snapshot()['state']=='completed'
+    assert job.snapshot()['completion']['state']=='awaiting_review'
+    assert not job.snapshot()['completion']['achieved']
+
+
 def test_import_and_workspace_have_independent_bounded_lanes():
     jobs=Jobs(); release=threading.Event()
     def work(job):

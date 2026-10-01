@@ -77,6 +77,8 @@ class ToolRegistry:
         logger.info(f"Registered tool: {name}")
         
     def execute(self, name: str, kwargs: dict) -> Any:
+        from backend.task_supervisor import consume
+        consume('tool_calls')
         if name not in self.tools:
             raise WorkbenchError('tool_not_found', f"Tool {name} is not available")
         contract=self.contracts.get(name)

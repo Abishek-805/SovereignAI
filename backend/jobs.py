@@ -8,7 +8,7 @@ from backend.contracts import WorkbenchError
 class Job:
     def __init__(self,kind):
         self.id=uuid4().hex;self.kind=kind;self.state='running';self.stage='Starting';self.output=''
-        self.result=None;self.error=None;self.created=time.time();self.events=[];self.routing=None
+        self.result=None;self.error=None;self.created=time.time();self.events=[];self.routing=None;self.completion=None
         self.cancel=threading.Event();self.input=Queue(maxsize=32);self.lock=threading.Lock()
     def progress(self,stage):
         with self.lock:
@@ -19,7 +19,7 @@ class Job:
             if self.kind in {'run','terminal'} and channel=='stdout' and self.output.rstrip().endswith((':','?')):
                 self.stage='Waiting for program input'
     def snapshot(self):
-        with self.lock:return {'job_id':self.id,'kind':self.kind,'state':self.state,'stage':self.stage,'output':self.output,'result':self.result,'error':self.error,'routing':self.routing,'events':list(self.events),'elapsed':round(time.time()-self.created,1)}
+        with self.lock:return {'job_id':self.id,'kind':self.kind,'state':self.state,'stage':self.stage,'output':self.output,'result':self.result,'error':self.error,'routing':self.routing,'completion':self.completion,'events':list(self.events),'elapsed':round(time.time()-self.created,1)}
 
 class Jobs:
     def __init__(self):self.jobs={};self.lock=threading.Lock()
@@ -40,10 +40,18 @@ class Jobs:
         def run():
             try:
                 result=work(job)
+                from router.task_completion import observe_completion
+                completion=observe_completion(result,kind)
                 with job.lock:
+                    job.completion=completion
                     job.result=result;job.state='cancelled' if job.cancel.is_set() else 'failed' if result.get('state',result.get('status'))=='failed' else 'completed'
-                    job.stage='Stopped' if job.state=='cancelled' else 'Finished' if job.state=='completed' else 'Check failed'
+                    if job.cancel.is_set():job.completion={**completion,'state':'cancelled','achieved':False}
+                    job.stage=('Stopped' if job.state=='cancelled' else 'Check failed' if job.state=='failed' else
+                        {'awaiting_review':'Ready for review','needs_input':'Needs information',
+                         'failed':'Check failed','unverified':'Response ready','completed':'Finished'}.get(completion['state'],'Response ready'))
             except Exception as exc:
-                with job.lock:job.state='cancelled' if job.cancel.is_set() else 'failed';job.error=str(exc);job.stage='Stopped' if job.state=='cancelled' else 'Could not finish'
+                with job.lock:
+                    job.state='cancelled' if job.cancel.is_set() else 'failed';job.error=str(exc);job.stage='Stopped' if job.state=='cancelled' else 'Could not finish'
+                    job.completion={'state':job.state,'achieved':False,'response_delivered':False,'checks':{},'limitations':[str(exc)]}
         threading.Thread(target=run,daemon=True).start()
         return job.snapshot()

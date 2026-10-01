@@ -1,4 +1,5 @@
 from backend.cancellation import cancellable_model_job
+from backend.task_supervisor import supervised_task, consume
 from pathlib import Path
 from uuid import uuid4
 from dataclasses import asdict, replace
@@ -35,6 +36,10 @@ from workflows.coding_workspace import CodingWorkspace
 class Workbench:
     def __init__(self, settings=None, store=None, embedder=None, model=None, registry=None):
         self.settings=settings or Settings()
+        from backend.task_supervisor import SupervisorLimits
+        self.supervisor_limits=SupervisorLimits(model_calls=self.settings.supervisor_model_calls,
+            tool_calls=self.settings.supervisor_tool_calls,model_switches=self.settings.supervisor_model_switches,
+            seconds=self.settings.supervisor_seconds)
         self.sources_dir = self.settings.sources_dir
         if self.sources_dir.is_symlink() or (hasattr(self.sources_dir, 'is_junction') and self.sources_dir.is_junction()):
             raise WorkbenchError('source_conflict', 'Knowledge folder links are not supported')
@@ -128,6 +133,7 @@ class Workbench:
             trace.runtime_alias=getattr(getattr(self.registry,'specs',{}).get(route),'alias',None)
             trace._context_admit=lambda required:self._lease(capability,required)
         started=time.perf_counter()
+        consume('model_switches',identity=getattr(getattr(self.registry,'specs',{}).get(route),'alias',route))
         lease=self.registry.acquire_lease(route)
         if trace:
             trace.event('MODEL_READY')
@@ -285,6 +291,7 @@ class Workbench:
         finally:
             self.indexing_lock.release()
 
+    @supervised_task
     @cancellable_model_job
     def ask(self,question,document_ids=None,history=None,job=None,force_documents=False,document_scope='focused',report_generation=False):
         if not isinstance(question,str) or not question.strip():
@@ -455,6 +462,23 @@ class Workbench:
             result=answer(question,passages,self.model,self.settings.context,self.settings.output_tokens,self.settings.safety_tokens,
                           history=history,**({'overview_documents':overview} if overview is not None else {}),
                           **({'report_generation':True} if report_generation or report_requested else {}))
+            refiner=getattr(self.model,'refine_retrieval',None)
+            if active and table_evidence is None and overview is None and callable(refiner):
+                from rag.recovery import recover_evidence
+                from backend.task_supervisor import checkpoint
+                pinned_scope=document_scope_for_question(self.documents(),question,document_ids)
+                permitted=[{'name':doc['display_name']} for doc in self.documents()
+                           if pinned_scope is None or doc['document_id'] in pinned_scope]
+                def recovery_checkpoint():
+                    checkpoint()
+                    if job and job.cancel.is_set():raise WorkbenchError('cancelled','Task stopped during evidence recovery')
+                result=recover_evidence(result,passages,
+                    refine=lambda feedback:refiner(question,history,feedback,permitted),
+                    retrieve=lambda query:enrich_pdf_chunks(retrieve(self.store,self.embedder,query,pinned_scope),self.sources_dir),
+                    generate=lambda evidence:answer(question,evidence,self.model,self.settings.context,
+                        self.settings.output_tokens,self.settings.safety_tokens,history=history,
+                        **({'report_generation':True} if report_generation or report_requested else {})),
+                    checkpoint=recovery_checkpoint,progress=job.progress if job else None)
             if job and job.cancel.is_set():
                 raise WorkbenchError('cancelled', 'Task stopped')
             result['task_id']=uuid4().hex
@@ -485,6 +509,7 @@ class Workbench:
         finally:
             self.ask_lock.release()
 
+    @supervised_task
     @cancellable_model_job
     def ask_vision(self, image_path, question, job=None):
         if not isinstance(question,str) or not question.strip():
@@ -525,6 +550,7 @@ class Workbench:
         finally:
             self.ask_lock.release()
 
+    @supervised_task
     @cancellable_model_job
     def run_image_agent(self, goal, image_path, job=None):
         """An attachment permits visual context; intent decides whether to read it."""
@@ -562,6 +588,7 @@ class Workbench:
             if isinstance(exc,WorkbenchError):exc.task_id=task['task_id']
             raise
 
+    @supervised_task
     def create_maintenance_draft(self,document_ids):
         from workflows.maintenance import create_maintenance_draft
         if not self.ask_lock.acquire(blocking=False):
@@ -612,6 +639,7 @@ class Workbench:
             raise WorkbenchError('sandbox_unavailable','Docker isolation verification did not pass')
         return CodeSandbox('docker',image_id=config.get('image_id'),task_root=self.settings.data_dir/'code-tasks')
 
+    @supervised_task
     def accept_coding_task(self, workspace_id, task_id):
         task = self.coding.result(workspace_id, task_id)
         if task.get('publication_state') == 'staged' and not task.get('checks', {}).get('container_executed'):
@@ -630,6 +658,7 @@ class Workbench:
         finally:
             self.ask_lock.release()
 
+    @supervised_task
     def run_coding_workspace_task(self, workspace_id, target, instruction, job=None):
         if not self.ask_lock.acquire(blocking=False):
             raise WorkbenchError('busy','Another task is running')
@@ -644,6 +673,7 @@ class Workbench:
         finally:
             self.ask_lock.release()
 
+    @supervised_task
     @cancellable_model_job
     def run_coding_project_task(self, workspace_id, target, instruction, job=None, routed=False, history=None):
         if not self.ask_lock.acquire(blocking=False):
@@ -712,6 +742,7 @@ class Workbench:
         finally:
             self.ask_lock.release()
 
+    @supervised_task
     def execute_coding_file(self, workspace_id, target, job=None):
         from workflows.code_runtime import runner, desktop_requirements
         if not self.ask_lock.acquire(blocking=False):
@@ -746,6 +777,7 @@ class Workbench:
         finally:
             self.ask_lock.release()
 
+    @supervised_task
     def execute_terminal(self, workspace_id, command, job, cwd=''):
         if not self.ask_lock.acquire(blocking=False):raise WorkbenchError('busy','Another task is running')
         try:
@@ -785,6 +817,7 @@ Path('/output/project-sync.json').write_bytes(payload)
             return {'state':'completed' if result.exit_code==0 else 'failed','exit_code':result.exit_code,'stdout':result.stdout,'stderr':result.stderr,'cwd':cwd,'workspace_id':workspace_id,**changes}
         finally:self.ask_lock.release()
 
+    @supervised_task
     def calculate(self,expression):
         from rag.calculator import evaluate_expression
         if not isinstance(expression,str) or len(expression)>100:
@@ -807,6 +840,7 @@ Path('/output/project-sync.json').write_bytes(payload)
         finally:
             self.ask_lock.release()
 
+    @supervised_task
     @cancellable_model_job
     def create_document_report(self, question, document_ids, history=None,job=None,document_scope=None):
         from workflows.document_report import is_overview_request, publish_report, selected_document_overview
@@ -831,6 +865,7 @@ Path('/output/project-sync.json').write_bytes(payload)
             self.tasks.fail(task,'report_failed')
             raise
 
+    @supervised_task
     @cancellable_model_job
     def run_auto_agent(self, goal, document_ids=None, workspace_id=None, history=None, job=None):
         """Infer the workflow and source target; callers need only a request and optional context."""
@@ -1018,6 +1053,7 @@ Path('/output/project-sync.json').write_bytes(payload)
             if isinstance(exc,WorkbenchError): exc.task_id=task['task_id']
             raise
 
+    @supervised_task
     def run_agent_goal(self,goal,document_ids=None,workspace_id=None,target=None,image_path=None):
         """Route one explicit agent request through the existing bounded orchestrator."""
         if not isinstance(goal,str) or not goal.strip() or len(goal)>8000:

@@ -52,3 +52,6 @@ offline-manifest.json
 /benchmarks/routing-system-integration-corrections.csv
 /benchmarks/routing-report-correction-results.json
 /benchmarks/cpu-calculator-live-results-invalid-draft.json
+# Full universal pilot evidence is checked in as lossless .json.gz plus summary.
+/benchmarks/universal-live-comparison.json
+/benchmarks/universal-live-save-lock-checkpoint.json

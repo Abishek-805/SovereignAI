@@ -1,6 +1,6 @@
-# Universal Task Agent: implementation and provisional verification report
+# Universal Task Agent: implementation and verification report
 
-Status: 1 October 2026. The software supervisor, worker broker, completion observations, and isolated comparison harness are implemented. Live diagnostics exposed missing source context, false intermediate-stage vetoes, and an inherited structured-output thinking default. Generic corrections pass regression and the narrow live source check; the full 128-fixture × 3-strategy comparison is next. This document does not claim universal correctness, model retraining, or superiority of one strategy before the comparison finishes.
+Status: 2 October 2026. The software supervisor, worker broker, completion observations, and isolated comparison harness are implemented. The full frozen **128-fixture × 3-strategy comparison completed: 384 live executions**. Source-context and intermediate-stage contract corrections pass regression. Universal routing matched fixed routing on the narrow verified work goals; no general accuracy advantage is established. Docker validation and live publication remain blocked by the local environment. This is an implementation and evidence report, not universal correctness, model retraining, or release certification.
 
 ## 1. Architecture summary
 
@@ -31,7 +31,7 @@ This is an architectural inventory, not an assertion that every listed file was 
 
 ## 3. Model lifecycle behavior
 
-Worker roles are lightweight text, reasoning text, coding, and vision. The installed worker identities are resolved through registry metadata and runtime observations rather than trusting a display label. The intended installed families include Gemma 4 E2B, Qwen reasoning, Qwen 2.5 Coder 3B, and the installed vision worker; current configuration and actual served identity are the authority for each run.
+Worker roles are lightweight text, reasoning text, coding, and vision. The actual installed identities recorded in the completed run are `google/gemma-4-E2B-it`, `Qwen/Qwen3.5-4B`, `Qwen/Qwen2.5-Coder-3B-Instruct`, and `Qwen/Qwen3.5-2B`. The reasoning worker is the installed Qwen3.5 4B, rather than the master prompt's presumed Qwen3 4B. Registry metadata and runtime observations establish these identities; display aliases are not proof.
 
 Acquisition passes through the existing single-server lease machinery. Before a swap, operational task state is checkpointed. An owned resident worker can be unloaded before the next is admitted. CPU embeddings remain separate from the heavy generative worker. The benchmark runs strategies sequentially and does not preload a second candidate. The launcher accepts a verified owned registered runtime profile rather than requiring the text alias: a real warm Gemma process was observed ready without a swap, with one actual worker PID.
 
@@ -61,7 +61,7 @@ Selection is lexicographic rather than an unvalidated weighted score. Quality or
 
 The enforced design boundary is the existing registry's single heavy-worker lease, with serialized acquisition and owned-process lifecycle control. Broker tests verify admission, identity, affinity, and switching behavior. The live harness can additionally sample actual llama process count, RAM, and GPU memory once per second.
 
-A live sequence loaded Gemma, Qwen Coder, Qwen reasoning, Qwen vision, and Gemma again. Each ready-worker observation found one `llama-server` process and the same persisted task ID and original goal. Actual model identities, PIDs, timings and counters are in [runtime lease observations](../benchmarks/universal-runtime-leases.json). This verifies ready-state observations and checkpoint continuity, not continuous sampling of every transition. Full-run resource measurements remain pending. Total GPU memory includes other applications; unavailable peaks remain unknown.
+A live sequence loaded Gemma, Qwen Coder, Qwen reasoning, Qwen vision, and Gemma again. Each ready-worker observation found one `llama-server` process and the same persisted task ID and original goal. Actual model identities, PIDs, timings and counters are in [runtime lease observations](../benchmarks/universal-runtime-leases.json). Across the completed 384 live executions, approximately one-second samples observed a maximum of **one llama-server process** for each strategy. This is sampled evidence, not proof of every instant between samples. Maximum recorded RAM was A 7,969.83 MiB, B 9,094.93 MiB, C 7,227.29 MiB; it sums benchmark Python and all llama-server RSS. Maximum total device VRAM was A 3,142 MiB, B 3,133 MiB, C 3,125 MiB, including other applications. These maxima differ from the raw report's medians of per-case peaks; unavailable measurements remain unknown.
 
 ## 8. Completion gate behavior
 
@@ -81,7 +81,37 @@ The project workflow preserves staging, validation, explicit review/acceptance, 
 
 The universal pilot contains 128 engineer-authored cases across 16 categories: simple requests, noisy spelling, general questions, RAG, tables, calculation, coding, vision, follow-ups, task changes, ambiguity, Docker failure, repairs, completion checks, cancellation, and resource switching. It is frozen with semantic SHA-256 `af943758778eb08de4d351611ab7488737c1a92a82c947e932c85be0c9da839a`. It is not an independent held-out user dataset.
 
-The first 384-case A/B/C attempt was stopped after production fixes so a result would not mix loaded code versions. Its preserved [initial partial artifact](../benchmarks/universal-live-A-initial.json) contains 13 A cases and valid JSON; it has no run provenance and cannot be resumed by the updated harness. The fresh comparison remains pending. Full metrics must come from the finished [live result artifact](../benchmarks/universal-live-comparison.json). Replay scoring, unit tests, and actual live execution are reported separately. Unsupported, timed-out, and environment-blocked cases are not successful tasks. Missing security telemetry and semantic oracles remain null or unverified.
+The completed comparison has 128 unique fixture IDs per strategy with identical fixture coverage and verified production hashes. See the [compact live summary](../benchmarks/universal-live-summary.json) and losslessly compressed [full live captures](../benchmarks/universal-live-comparison.json.gz). The local uncompressed JSON is retained and ignored by Git; its SHA-256 is `a3c57279c7429fd1735d69893ff95c34c8f258a44e1093c9a85f1163a12334c5`. Replay scoring, unit tests, and actual live execution remain distinct. Environment-blocked cases are not successful tasks, and missing semantic or security evidence remains unknown.
+
+| Metric and measured coverage | A fixed | B always reasoning | C universal |
+| --- | ---: | ---: | ---: |
+| Independently checked work goals, excluding cancellation | 21/38 | 20/38 | 21/38 |
+| Unknown work-goal correctness | 82 | 82 | 82 |
+| Cancellation handling | 8/8 | 8/8 | 8/8 |
+| Combined narrow oracle outcomes, including cancellation | 29/46 | 28/46 | 29/46 |
+| Intent agreement, 120 observed | 86/120 | 81/120 | 86/120 |
+| Workflow agreement, 110 observed | 69/110 | 63/110 | 69/110 |
+| Tool agreement, 10 observed / 118 unknown | 10/10 | 10/10 | 10/10 |
+| Configured strategy worker adherence, 111 observed | 98/111 | 110/111 | 98/111 |
+| Noisy-input intent agreement | 7/8 | 6/8 | 7/8 |
+| Follow-up intent agreement | 4/8 | 5/8 | 4/8 |
+| Follow-up workflow agreement | 2/8 | 2/8 | 2/8 |
+| Clarification classification agreement | 2/8 | 2/8 | 2/8 |
+| End-to-end repair goal checks | 0/8 | 0/8 | 0/8 |
+| Supervisor-contract false completion, 128 observed | 0/128 | 0/128 | 0/128 |
+| Unsafe action proposal measurements | Unknown, 0 observed | Unknown, 0 observed | Unknown, 0 observed |
+| Total latency median / p95, seconds | 20.04 / 92.99 | 21.29 / 92.54 | 19.64 / 85.29 |
+| Model calls median / p95 | 2 / 15 | 2 / 13 | 2 / 13 |
+| Model switches median / p95 | 0 / 1 | 0 / 0 | 0 / 1 |
+| Tool calls median / p95 | 0 / 1 | 0 / 1 | 0 / 1 |
+
+Gate counts are A: 91 executed, 15 waiting, 4 failed, 10 environment-blocked, 8 cancelled; B: 99 executed, 13 waiting, 1 failed, 7 environment-blocked, 8 cancelled; C: 92 executed, 15 waiting, 3 failed, 10 environment-blocked, 8 cancelled. Executed does not mean independently verified. A and C passed eight source-fact, eight calculator, and five of six numeric table checks; B passed seven source-fact, eight calculator, and five of six numeric table checks. All 16 coding/repair work goals per strategy remained unsuccessful. C's eight coding cases reached staging and Docker admission, but none ran successfully or was published.
+
+C's simple fixtures used one model call each, with median 1.75 seconds versus A 17.47 and B 15.50 seconds. The first C simple request included a cold switch; later requests reused Gemma. All calculator fixtures used zero model calls. C's table median was 78.15 seconds with 12 calls; this remains expensive. The single sequential, nonrandomized comparison shares orchestration across strategies and principally compares worker policy. It does not establish an architectural accuracy gain or statistically reliable latency superiority.
+
+Several table captures correctly executed a deterministic table query while the adapter reported workflow `KNOWLEDGE_QUERY`, excluded by the fixture's expected labels. Thus table workflow agreement is 0/8 for all strategies despite five verified numeric results. Worker adherence is strategy-specific: B expects reasoning even for coding. Neither metric is a common independent oracle of task suitability. Source-fact and cancellation oracles have the narrower meanings described in the methodology.
+
+Earlier attempts were stopped when production corrections required a fresh comparison. The [initial partial artifact](../benchmarks/universal-live-A-initial.json) has 13 A cases and no resumable provenance. The completed comparison uses production commit `b3ecced`; evaluator commit `0bfb1b7` repaired transient Windows atomic-save locks without changing production. At A128/B43 the save failed after a completed case; the fsynced pending result was validated and preserved in [save-lock checkpoint](../benchmarks/universal-live-save-lock-checkpoint.json.gz). Explicit evaluator-only resumption preserved completed cases and full provenance history. No case was selected for rerun because it failed.
 
 Reports now use atomic temporary-file replacement. Each fresh live run records UTC start time, production Python file hashes, Git HEAD when available, installed model profile identities and launch settings, and benchmark/settings budgets. Resume requires compatible provenance and fixture hashes; it rebuilds isolated sources and workspaces and does not claim uninterrupted warm-runtime continuity. The diagnostic against commit `a937424` is preserved in [pre-correction observations](../benchmarks/universal-live-pre-context-fix.json). Selected document IDs were correct, but the planner saw only names and never retrieved source-dependent answers. Both planning entry points now receive bounded, active-version, scoped text/schema previews without vectors or embeddings; the model interface preserves those previews and treats them as untrusted routing context, never final factual evidence or mutation authority. The first corrected live source check passes; no superiority conclusion follows from a partial run.
 
@@ -96,7 +126,7 @@ See [Smol results](../experimental/results/micro-controller-smollm2-result.json)
 
 ## 11. Test results
 
-The latest backend suite passed **840 tests with 7 skips** after correcting source planning context, optional-table applicability, verifier stage contracts and grounded-output settings. The benchmark harness tests passed 25 checks, including focused case selection and provenance. Frontend unit tests passed 722, client tests passed 124, and the production build passed.
+The latest backend suite passed **840 tests with 7 skips** after correcting source planning context, optional-table applicability, verifier stage contracts and grounded-output settings. The benchmark harness tests passed **27 checks**, including focused case selection, provenance and transient Windows report-save locks. Frontend unit tests passed 722, client tests passed 124, and the production build passed.
 
 The corrected live `rag-02` source check passes in 40.52 seconds with seven model calls: [captured result](../benchmarks/universal-grounded-output-check.json). Previous attempts are preserved separately and failed. Table proposals retain semantic review; a valid read-only `none` abstention defers to the normal retrieval and grounded-answer path, never certifies task success. Application-authored stage contracts remain system policy; source previews remain data. Grounded JSON output explicitly disables hidden thinking in its small output budget, following a separate bounded task-interpretation pass.
 
@@ -104,7 +134,24 @@ The initial parallel UI/Storybook run failed with import errors and timeouts. Th
 
 Live JSON and streaming Chat checks both returned warm Gemma answers in 1.51 and 1.40 seconds respectively, with private reasoning fields absent. [API observations](../benchmarks/universal-live-api-checks.json) also record calculation of 60 with zero model calls and a completed executor contract. An actual running inference was stopped and persisted as cancelled with one model call; see [cancellation observation](../benchmarks/universal-live-cancellation.json). A built-browser calculation displayed `COMPLETED` without JavaScript page errors; see [browser observation](../benchmarks/universal-browser-calculator.png). These narrow checks are not a general accuracy benchmark.
 
-Docker validation is **BLOCKED BY ENVIRONMENT**: Docker Desktop failed to open its local secrets-engine IPC endpoint (`engine.sock`, Windows error: the file cannot be accessed). The Linux engine pipe never became available. No Docker reset or volume deletion was performed. Live Docker validation and publication are not claimed as passed. The full live comparison remains separate.
+Docker validation is **BLOCKED BY ENVIRONMENT**: Docker Desktop failed to open its local secrets-engine IPC endpoint (`engine.sock`, Windows error: the file cannot be accessed). The Linux engine pipe never became available. No Docker reset or volume deletion was performed. Live Docker validation, feedback-driven revalidation and publication are not claimed as passed. The completed comparison records the resulting blockers.
+
+| Required live gate | Status and evidence |
+| --- | --- |
+| Simple greeting and warm reuse | PASS for the delivery contract; C eight simple fixtures use Gemma, one call each. Semantic quality has no independent oracle. |
+| `12 * 5` | PASS: 60, zero model calls, deterministic completion in API/browser observations. |
+| Table source execution | PARTIAL: five of six numeric fixtures pass for C; one requests input. Two additional semantic outcomes unknown. |
+| Maintenance source retrieval | PASS for eight narrow C source-fact checks; complete answer semantics not certified. |
+| Typo handling and Coder staging | PASS for observed routing/staging; live Docker execution BLOCKED BY ENVIRONMENT. |
+| Actual Docker failure, repair and revalidation | BLOCKED BY ENVIRONMENT; controlled regression tests are not live proof. |
+| Image worker and single-model sampling | PASS for worker selection/execution and sampled residency; image answer quality NOT VERIFIED. |
+| Coder → reasoning replan → Coder during real failed execution | NOT VERIFIED live because Docker never supplied an actual failure; broker/checkpoint switching and controlled tests pass separately. |
+| Follow-up intent and durable task continuation | PARTIAL: C intent agreement 4/8; history-only fixtures do not prove complete live continuation. Persistence and scope regressions pass. |
+| Cancellation during running inference | PASS in separate live observation; eight benchmark entry-cancellation checks also pass. |
+| Publication, cancelled publication and stale revision | Controlled gates pass regression; live Docker-dependent publication BLOCKED BY ENVIRONMENT. |
+| Backend/frontend/build/browser | PASS for the reported test suites, build and narrow browser calculation checks. |
+
+After the comparison, `start-sovereign.ps1 -NoBrowser` restored the application. Both API 8088 and model server 8087 returned healthy, with one actual Qwen3.5 4B worker process. See [post-run health](../benchmarks/universal-postrun-health.json). The restart is a readiness observation, not another task-accuracy test.
 
 ## 12. Known limitations
 
@@ -120,7 +167,7 @@ Small workers can still misunderstand scope, thresholds, entities, or follow-up 
 
 The diagnostic self-review repeatedly rejected a valid intermediate abstention. This is a local observation, not a universal conclusion about models. [Huang et al., ICLR 2024](https://arxiv.org/abs/2310.01798) also found that intrinsic reasoning self-correction without external feedback can fail or worsen results in their experiments. Therefore repeated model agreement is not an execution or factual oracle; this implementation retains source grounding and executor checks.
 
-Before promotion, finish the frozen comparison, inspect failures and physical residency observations, resolve Docker availability, and evaluate a separately authored held-out set. Do not call a delivered answer “verified” solely because its JSON was valid or the model agreed with itself.
+Before promotion, resolve Docker availability, run live repair/publication gates, and evaluate a separately authored held-out set with complete source and semantic oracles. The completed pilot already exposes unresolved follow-up, clarification and repair understanding, alongside expensive multipass table execution. Do not call a delivered answer “verified” solely because its JSON was valid or the model agreed with itself.
 
 ## 14. Exact commands
 
@@ -156,10 +203,16 @@ Replay scoring has no runtime execution authority:
 
 Use the [benchmark methodology](../benchmarks/universal-agent-benchmark.md) for category subsets and partial-coverage interpretation. A limited sample is not a completed 128-case comparison.
 
+Full evidence is stored as `.json.gz` to avoid committing the 62.6 MB uncompressed capture. To restore the exact local JSON from a fresh checkout:
+
+```powershell
+.\.app-venv\Scripts\python.exe -c "import gzip,pathlib; p=pathlib.Path('benchmarks/universal-live-comparison.json.gz'); p.with_suffix('').write_bytes(gzip.decompress(p.read_bytes()))"
+```
+
 ## Additional table planning diagnostics
 
-Independent execution caught a count answer of four from an eight-record table. The answer had used a partial retrieval excerpt, so it was not counted as successful. Applicability planning now retains table identity and complete row count, distinguishes preview rows from complete populations, and treats a total record count independently of pass/fail thresholds. Source binding preserves the validated operation and uses the original request/history. Abstract measure and grouping stages use schema validation rather than a critic expecting a completed numeric answer; concrete source-bound query review remains enabled. These are generic stage contracts, not student-specific rules. The corrected live count passes its independent eight-record oracle. The complete C table diagnostic finished: four of eight cases passed independent checks, two failed, one timed out, and one stopped with semantic uncertainty. See benchmarks/universal-table-coverage-check.json. The resource-sampled comparison against 5dbd644 was stopped for the workspace stage correction described below; no completed comparison or superiority is claimed yet. Earlier failed diagnostics are preserved in universal-measure-stage-check.json and universal-source-binding-check.json.
+Independent execution caught a count answer of four from an eight-record table. The answer had used a partial retrieval excerpt, so it was not counted as successful. Applicability planning now retains table identity and complete row count, distinguishes preview rows from complete populations, and treats a total record count independently of pass/fail thresholds. Source binding preserves the validated operation and uses the original request/history. Abstract measure and grouping stages use schema validation rather than a critic expecting a completed numeric answer; concrete source-bound query review remains enabled. These are generic stage contracts, not student-specific rules. The corrected live count passes its independent eight-record oracle. An earlier C table diagnostic finished with four of eight independently passing, two failing, one timeout and one semantic-uncertainty stop; see benchmarks/universal-table-coverage-check.json. It is separate from the completed comparison's five of six numeric goals and two unknown semantic goals. Earlier failed diagnostics remain in universal-measure-stage-check.json and universal-source-binding-check.json.
 
 ## Workspace planning stage correction
 
-The resource-sampled run against 5dbd644 was stopped and preserved as benchmarks/universal-live-pre-code-stage-fix.json after seven coding fixtures exposed a review-stage mismatch: legitimate empty replacements delegated implementation to source generation, but the critic demanded completed code in the plan. Workspace planning now uses original-task context and an explicit intermediate-stage contract while retaining path/scope/deletion checks. Both pipeline regressions pass. All eight subsequent live C coding fixtures reach staging/validation rather than that planning veto, but Docker remains unavailable, so all eight are environment-blocked and none is claimed to run successfully. The complete frozen comparison must be restarted against this correction; the earlier partial is not a completed comparison.
+The resource-sampled run against 5dbd644 was stopped and preserved as benchmarks/universal-live-pre-code-stage-fix.json after seven coding fixtures exposed a review-stage mismatch: legitimate empty replacements delegated implementation to source generation, but the critic demanded completed code in the plan. Workspace planning now uses original-task context and an explicit intermediate-stage contract while retaining path/scope/deletion checks. Both pipeline regressions pass. The complete frozen comparison was restarted against b3ecced and finished; all eight C coding fixtures reach staging/validation rather than that planning veto. Docker remains unavailable, so all eight are environment-blocked and none is claimed to run successfully.

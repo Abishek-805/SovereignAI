@@ -1,0 +1,15 @@
+{
+  "observed_at_utc": "2026-10-01T22:14:42.4916670Z",
+  "api": {
+    "status": "ok"
+  },
+  "model_health": {
+    "status": "ok"
+  },
+  "workers": [
+    {
+      "ProcessId": 27484,
+      "CommandLine": "C:\\Users\\ashek\\Desktop\\SovereignAI\\runtime\\llama-b11132\\llama-server.exe -m C:\\Users\\ashek\\Desktop\\SovereignAI\\models\\Qwen3.5-4B-Q4_K_M.gguf --alias sovereign-text -c 16384 -np 1 --n-predict 8192 -b 256 -ub 128 -t 6 -fa on -ctk q8_0 -ctv q8_0 --fit on --fit-target 1024 --host 127.0.0.1 --port 8087 --cors-origins localhost --offline --sleep-idle-seconds 600 -lv 4"
+    }
+  ]
+}

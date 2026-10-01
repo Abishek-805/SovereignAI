@@ -1,0 +1,4676 @@
+{
+  "mode": "live",
+  "comparison_complete": true,
+  "total_executions": 384,
+  "dataset_sha256": "af943758778eb08de4d351611ab7488737c1a92a82c947e932c85be0c9da839a",
+  "raw_artifact_sha256": "a3c57279c7429fd1735d69893ff95c34c8f258a44e1093c9a85f1163a12334c5",
+  "production_hashes_verified": true,
+  "git_head_at_resume": "0bfb1b7ff4d837426fc45c7101bed079119d4cd2",
+  "resumption_reason": "harness-only repair",
+  "strategies": {
+    "A": {
+      "overall": {
+        "cases": 128,
+        "intent_correct": {
+          "observed_cases": 120,
+          "unknown_cases": 8,
+          "value": 0.7166666666666667
+        },
+        "workflow_correct": {
+          "observed_cases": 110,
+          "unknown_cases": 18,
+          "value": 0.6272727272727273
+        },
+        "tools_correct": {
+          "observed_cases": 10,
+          "unknown_cases": 118,
+          "value": 1.0
+        },
+        "worker_correct": {
+          "observed_cases": 111,
+          "unknown_cases": 17,
+          "value": 0.8828828828828829
+        },
+        "task_success": {
+          "observed_cases": 46,
+          "unknown_cases": 82,
+          "value": 0.6304347826086957
+        },
+        "repair_success": {
+          "observed_cases": 8,
+          "unknown_cases": 120,
+          "value": 0.0
+        },
+        "false_completion": {
+          "observed_cases": 128,
+          "unknown_cases": 0,
+          "value": 0.0
+        },
+        "unsafe_action_proposals": {
+          "observed_cases": 0,
+          "unknown_cases": 128,
+          "value": null
+        },
+        "clarification_correct": {
+          "observed_cases": 8,
+          "unknown_cases": 120,
+          "value": 0.25
+        },
+        "latency_seconds": {
+          "observed_cases": 128,
+          "unknown_cases": 0,
+          "value": 20.037520449999647,
+          "p95": 92.9936146
+        },
+        "model_calls": {
+          "observed_cases": 128,
+          "unknown_cases": 0,
+          "value": 2.0,
+          "p95": 15
+        },
+        "model_switches": {
+          "observed_cases": 128,
+          "unknown_cases": 0,
+          "value": 0.0,
+          "p95": 1
+        },
+        "tool_calls": {
+          "observed_cases": 128,
+          "unknown_cases": 0,
+          "value": 0.0,
+          "p95": 1
+        },
+        "peak_ram_mib": {
+          "observed_cases": 128,
+          "unknown_cases": 0,
+          "value": 4727.44921875,
+          "p95": 7963.98828125
+        },
+        "peak_vram_mib": {
+          "observed_cases": 128,
+          "unknown_cases": 0,
+          "value": 3079.5,
+          "p95": 3135.0
+        },
+        "max_llama_server_processes": {
+          "observed_cases": 128,
+          "unknown_cases": 0,
+          "value": 1.0,
+          "p95": 1
+        }
+      },
+      "gates": {
+        "EXECUTED": 91,
+        "WAITING_FOR_USER": 15,
+        "FAIL": 4,
+        "BLOCKED_BY_ENVIRONMENT": 10,
+        "CANCELLED": 8
+      },
+      "work_goal_oracles": {
+        "passed": 21,
+        "failed": 17,
+        "unknown": 82
+      },
+      "observed_maxima": {
+        "peak_ram_mib": 7969.83203125,
+        "peak_vram_mib": 3142.0,
+        "max_llama_server_processes": 1
+      },
+      "categories": {
+        "ambiguous": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.25
+          },
+          "workflow_correct": {
+            "observed_cases": 7,
+            "unknown_cases": 1,
+            "value": 0.0
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.25
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 17.122365150000405,
+            "p95": 90.04453040000226
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 2.0,
+            "p95": 10
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 4906.10546875,
+            "p95": 4908.5546875
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3079.0,
+            "p95": 3091.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "calculator": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "tools_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.8428186000001006,
+            "p95": 1.0200597000002745
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 7963.990234375,
+            "p95": 7964.00390625
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3071.5,
+            "p95": 3073.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "cancellation": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "workflow_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "task_success": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.9567001499999606,
+            "p95": 1.0439967999991495
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3987.17578125,
+            "p95": 3987.26953125
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3073.5,
+            "p95": 3076.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "coding": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.875
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 18.194177500001388,
+            "p95": 25.156185499999992
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 8.0,
+            "p95": 13
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 1
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 2676.158203125,
+            "p95": 7964.0078125
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3084.5,
+            "p95": 3086.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "completion_checks": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 20.17516280000018,
+            "p95": 26.602446600001713
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 2.0,
+            "p95": 2
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 1
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 4019.158203125,
+            "p95": 4020.4921875
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3073.0,
+            "p95": 3075.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "docker_failures": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.125
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.25
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.25
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 22.825162149998505,
+            "p95": 68.41227720000097
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 2.0,
+            "p95": 12
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.5,
+            "p95": 1
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3969.279296875,
+            "p95": 5711.30859375
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3081.0,
+            "p95": 3088.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "followups": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.5
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.25
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.875
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 54.942036149999694,
+            "p95": 109.24762650000048
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 7.0,
+            "p95": 17
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 1
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 6598.857421875,
+            "p95": 6763.7734375
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3082.5,
+            "p95": 3139.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "general": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 24.86998230000063,
+            "p95": 33.31888660000186
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 2.0,
+            "p95": 2
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 4956.388671875,
+            "p95": 5131.90234375
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3076.5,
+            "p95": 3080.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "rag": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 49.90252700000019,
+            "p95": 53.159302500000194
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 7.0,
+            "p95": 7
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 5007.513671875,
+            "p95": 5272.1171875
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3073.0,
+            "p95": 3128.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "repair_tasks": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.25
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.5
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.625
+          },
+          "task_success": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "repair_success": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 22.11912824999854,
+            "p95": 60.37847629999669
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 8.0,
+            "p95": 14
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.5,
+            "p95": 3
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 1
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3942.041015625,
+            "p95": 4221.2421875
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3083.5,
+            "p95": 3091.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "resource_switching": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.75
+          },
+          "workflow_correct": {
+            "observed_cases": 7,
+            "unknown_cases": 1,
+            "value": 0.5714285714285714
+          },
+          "tools_correct": {
+            "observed_cases": 1,
+            "unknown_cases": 7,
+            "value": 1.0
+          },
+          "worker_correct": {
+            "observed_cases": 7,
+            "unknown_cases": 1,
+            "value": 0.8571428571428571
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 19.355326500000956,
+            "p95": 59.40490979999959
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 2.5,
+            "p95": 7
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 1
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 1
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3953.291015625,
+            "p95": 5036.19140625
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3084.0,
+            "p95": 3134.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "simple": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 17.470108949999485,
+            "p95": 21.887803599998733
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 2.0,
+            "p95": 2
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 1
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3943.525390625,
+            "p95": 3961.87109375
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3087.0,
+            "p95": 3092.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "table": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.75
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 6,
+            "unknown_cases": 2,
+            "value": 0.8333333333333334
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 81.55622555000082,
+            "p95": 173.96122620000097
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 13.5,
+            "p95": 17
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 6442.76953125,
+            "p95": 7969.83203125
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3073.0,
+            "p95": 3076.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "task_changes": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.375
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.375
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.875
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 25.02794299999914,
+            "p95": 113.99657619999925
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 4.5,
+            "p95": 17
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 1
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 1
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 7121.0234375,
+            "p95": 7264.42578125
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3081.5,
+            "p95": 3084.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "typo_noisy": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.875
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.75
+          },
+          "tools_correct": {
+            "observed_cases": 1,
+            "unknown_cases": 7,
+            "value": 1.0
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.875
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 48.31348380000054,
+            "p95": 92.9936146
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 7.0,
+            "p95": 14
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.5,
+            "p95": 1
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 1
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 4727.638671875,
+            "p95": 5687.57421875
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3083.0,
+            "p95": 3096.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "vision": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "workflow_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3.0391294500004733,
+            "p95": 13.227284799999325
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3.0,
+            "p95": 3
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 1
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 2396.96875,
+            "p95": 2669.84375
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3141.5,
+            "p95": 3142.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        }
+      }
+    },
+    "B": {
+      "overall": {
+        "cases": 128,
+        "intent_correct": {
+          "observed_cases": 120,
+          "unknown_cases": 8,
+          "value": 0.675
+        },
+        "workflow_correct": {
+          "observed_cases": 110,
+          "unknown_cases": 18,
+          "value": 0.5727272727272728
+        },
+        "tools_correct": {
+          "observed_cases": 10,
+          "unknown_cases": 118,
+          "value": 1.0
+        },
+        "worker_correct": {
+          "observed_cases": 111,
+          "unknown_cases": 17,
+          "value": 0.990990990990991
+        },
+        "task_success": {
+          "observed_cases": 46,
+          "unknown_cases": 82,
+          "value": 0.6086956521739131
+        },
+        "repair_success": {
+          "observed_cases": 8,
+          "unknown_cases": 120,
+          "value": 0.0
+        },
+        "false_completion": {
+          "observed_cases": 128,
+          "unknown_cases": 0,
+          "value": 0.0
+        },
+        "unsafe_action_proposals": {
+          "observed_cases": 0,
+          "unknown_cases": 128,
+          "value": null
+        },
+        "clarification_correct": {
+          "observed_cases": 8,
+          "unknown_cases": 120,
+          "value": 0.25
+        },
+        "latency_seconds": {
+          "observed_cases": 128,
+          "unknown_cases": 0,
+          "value": 21.291415500001676,
+          "p95": 92.5437957000031
+        },
+        "model_calls": {
+          "observed_cases": 128,
+          "unknown_cases": 0,
+          "value": 2.0,
+          "p95": 13
+        },
+        "model_switches": {
+          "observed_cases": 128,
+          "unknown_cases": 0,
+          "value": 0.0,
+          "p95": 0
+        },
+        "tool_calls": {
+          "observed_cases": 128,
+          "unknown_cases": 0,
+          "value": 0.0,
+          "p95": 1
+        },
+        "peak_ram_mib": {
+          "observed_cases": 128,
+          "unknown_cases": 0,
+          "value": 7759.275390625,
+          "p95": 9093.91015625
+        },
+        "peak_vram_mib": {
+          "observed_cases": 128,
+          "unknown_cases": 0,
+          "value": 3070.0,
+          "p95": 3106.0
+        },
+        "max_llama_server_processes": {
+          "observed_cases": 128,
+          "unknown_cases": 0,
+          "value": 1.0,
+          "p95": 1
+        }
+      },
+      "gates": {
+        "EXECUTED": 99,
+        "FAIL": 1,
+        "WAITING_FOR_USER": 13,
+        "BLOCKED_BY_ENVIRONMENT": 7,
+        "CANCELLED": 8
+      },
+      "work_goal_oracles": {
+        "passed": 20,
+        "failed": 18,
+        "unknown": 82
+      },
+      "observed_maxima": {
+        "peak_ram_mib": 9094.92578125,
+        "peak_vram_mib": 3133.0,
+        "max_llama_server_processes": 1
+      },
+      "categories": {
+        "ambiguous": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.25
+          },
+          "workflow_correct": {
+            "observed_cases": 7,
+            "unknown_cases": 1,
+            "value": 0.0
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.25
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 16.528025399999024,
+            "p95": 92.5437957000031
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 2.0,
+            "p95": 10
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 8125.05859375,
+            "p95": 8157.6171875
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3069.5,
+            "p95": 3072.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "calculator": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "tools_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.936265899999853,
+            "p95": 1.2525912999990396
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 7897.173828125,
+            "p95": 7897.55859375
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3076.5,
+            "p95": 3083.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "cancellation": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "workflow_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "task_success": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.9275606499995774,
+            "p95": 0.9792073999997228
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 9061.634765625,
+            "p95": 9061.6796875
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3050.0,
+            "p95": 3053.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "coding": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.375
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 69.64319905000048,
+            "p95": 73.66593889999785
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 12.0,
+            "p95": 12
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 8979.048828125,
+            "p95": 9041.18359375
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3048.0,
+            "p95": 3106.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "completion_checks": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 20.03076279999914,
+            "p95": 22.5223404999997
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 2.0,
+            "p95": 2
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 9094.125,
+            "p95": 9094.92578125
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3055.0,
+            "p95": 3094.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "docker_failures": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 22.655327349999425,
+            "p95": 89.55406959999891
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 2.0,
+            "p95": 11
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 8487.90625,
+            "p95": 8872.0703125
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3054.5,
+            "p95": 3070.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "followups": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.625
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.25
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 53.236280299999635,
+            "p95": 114.65371869999944
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 7.0,
+            "p95": 14
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 1
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 1
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 6704.466796875,
+            "p95": 6821.83203125
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3060.5,
+            "p95": 3108.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "general": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 24.006111800001236,
+            "p95": 31.841195099998004
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 2.0,
+            "p95": 2
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 6116.822265625,
+            "p95": 6118.53125
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3071.5,
+            "p95": 3075.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "rag": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.875
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.875
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 48.59908929999983,
+            "p95": 69.40492690000247
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 7.0,
+            "p95": 11
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 6324.193359375,
+            "p95": 7093.13671875
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3074.0,
+            "p95": 3115.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "repair_tasks": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.375
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.375
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "repair_success": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 25.69437094999921,
+            "p95": 61.34225829999923
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 2.0,
+            "p95": 8
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 9043.828125,
+            "p95": 9049.81640625
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3055.5,
+            "p95": 3109.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "resource_switching": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.625
+          },
+          "workflow_correct": {
+            "observed_cases": 7,
+            "unknown_cases": 1,
+            "value": 0.42857142857142855
+          },
+          "tools_correct": {
+            "observed_cases": 1,
+            "unknown_cases": 7,
+            "value": 1.0
+          },
+          "worker_correct": {
+            "observed_cases": 7,
+            "unknown_cases": 1,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 16.975549500000852,
+            "p95": 53.189897800002655
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 2.0,
+            "p95": 7
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 1
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 1
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 7036.73828125,
+            "p95": 9061.67578125
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3056.0,
+            "p95": 3098.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "simple": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 15.501116100000218,
+            "p95": 23.155709800001205
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 2.0,
+            "p95": 2
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 5364.91796875,
+            "p95": 5384.68359375
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3073.0,
+            "p95": 3078.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "table": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.75
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 6,
+            "unknown_cases": 2,
+            "value": 0.8333333333333334
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 78.1390612999985,
+            "p95": 100.93236590000015
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 12.0,
+            "p95": 15
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 7537.109375,
+            "p95": 7766.03125
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3077.0,
+            "p95": 3082.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "task_changes": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.5
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.375
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 37.0297246500013,
+            "p95": 140.0354090999972
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 4.5,
+            "p95": 17
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 1
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 7285.583984375,
+            "p95": 8214.95703125
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3062.0,
+            "p95": 3068.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "typo_noisy": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.75
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.5
+          },
+          "tools_correct": {
+            "observed_cases": 1,
+            "unknown_cases": 7,
+            "value": 1.0
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.875
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 38.157465850001245,
+            "p95": 97.43676499999856
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 4.5,
+            "p95": 14
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 1
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 5490.765625,
+            "p95": 5912.41015625
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3072.5,
+            "p95": 3133.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "vision": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "workflow_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 2.8959602000013547,
+            "p95": 11.704216300000553
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3.0,
+            "p95": 3
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 1
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 2430.923828125,
+            "p95": 9016.4296875
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3104.0,
+            "p95": 3108.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        }
+      }
+    },
+    "C": {
+      "overall": {
+        "cases": 128,
+        "intent_correct": {
+          "observed_cases": 120,
+          "unknown_cases": 8,
+          "value": 0.7166666666666667
+        },
+        "workflow_correct": {
+          "observed_cases": 110,
+          "unknown_cases": 18,
+          "value": 0.6272727272727273
+        },
+        "tools_correct": {
+          "observed_cases": 10,
+          "unknown_cases": 118,
+          "value": 1.0
+        },
+        "worker_correct": {
+          "observed_cases": 111,
+          "unknown_cases": 17,
+          "value": 0.8828828828828829
+        },
+        "task_success": {
+          "observed_cases": 46,
+          "unknown_cases": 82,
+          "value": 0.6304347826086957
+        },
+        "repair_success": {
+          "observed_cases": 8,
+          "unknown_cases": 120,
+          "value": 0.0
+        },
+        "false_completion": {
+          "observed_cases": 128,
+          "unknown_cases": 0,
+          "value": 0.0
+        },
+        "unsafe_action_proposals": {
+          "observed_cases": 0,
+          "unknown_cases": 128,
+          "value": null
+        },
+        "clarification_correct": {
+          "observed_cases": 8,
+          "unknown_cases": 120,
+          "value": 0.25
+        },
+        "latency_seconds": {
+          "observed_cases": 128,
+          "unknown_cases": 0,
+          "value": 19.639932449999833,
+          "p95": 85.2944490000009
+        },
+        "model_calls": {
+          "observed_cases": 128,
+          "unknown_cases": 0,
+          "value": 2.0,
+          "p95": 13
+        },
+        "model_switches": {
+          "observed_cases": 128,
+          "unknown_cases": 0,
+          "value": 0.0,
+          "p95": 1
+        },
+        "tool_calls": {
+          "observed_cases": 128,
+          "unknown_cases": 0,
+          "value": 0.0,
+          "p95": 1
+        },
+        "peak_ram_mib": {
+          "observed_cases": 128,
+          "unknown_cases": 0,
+          "value": 4836.9375,
+          "p95": 7213.08203125
+        },
+        "peak_vram_mib": {
+          "observed_cases": 128,
+          "unknown_cases": 0,
+          "value": 3062.0,
+          "p95": 3118.0
+        },
+        "max_llama_server_processes": {
+          "observed_cases": 128,
+          "unknown_cases": 0,
+          "value": 1.0,
+          "p95": 1
+        }
+      },
+      "gates": {
+        "EXECUTED": 92,
+        "WAITING_FOR_USER": 15,
+        "FAIL": 3,
+        "BLOCKED_BY_ENVIRONMENT": 10,
+        "CANCELLED": 8
+      },
+      "work_goal_oracles": {
+        "passed": 21,
+        "failed": 17,
+        "unknown": 82
+      },
+      "observed_maxima": {
+        "peak_ram_mib": 7227.29296875,
+        "peak_vram_mib": 3125.0,
+        "max_llama_server_processes": 1
+      },
+      "categories": {
+        "ambiguous": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.25
+          },
+          "workflow_correct": {
+            "observed_cases": 7,
+            "unknown_cases": 1,
+            "value": 0.0
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.25
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 15.604202100001203,
+            "p95": 85.2944490000009
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 2.0,
+            "p95": 10
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 4898.185546875,
+            "p95": 4962.125
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3063.5,
+            "p95": 3100.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "calculator": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "tools_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.9725998500016431,
+            "p95": 1.2582199999997101
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 7213.0859375,
+            "p95": 7220.4296875
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3049.5,
+            "p95": 3052.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "cancellation": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "workflow_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "task_success": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0487327000009827,
+            "p95": 1.2020265999999538
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 4036.4609375,
+            "p95": 4036.484375
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3058.5,
+            "p95": 3062.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "coding": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 19.202453899999455,
+            "p95": 32.000956300002144
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 8.0,
+            "p95": 13
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 1
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 2742.1328125,
+            "p95": 7213.75390625
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3074.0,
+            "p95": 3077.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "completion_checks": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 16.97470235000037,
+            "p95": 24.62317670000266
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 2.0,
+            "p95": 2
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 1
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 4073.16015625,
+            "p95": 4074.7890625
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3060.0,
+            "p95": 3064.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "docker_failures": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.25
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.25
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 22.553900099999737,
+            "p95": 67.16985080000086
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 2.0,
+            "p95": 12
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.5,
+            "p95": 1
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 4025.841796875,
+            "p95": 5619.76953125
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3063.0,
+            "p95": 3072.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "followups": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.5
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.25
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.875
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 53.193787349999184,
+            "p95": 115.32801050000126
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 7.0,
+            "p95": 17
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 1
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 6610.8671875,
+            "p95": 6867.1015625
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3065.0,
+            "p95": 3121.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "general": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 23.980651150000995,
+            "p95": 32.419656200003374
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 2.0,
+            "p95": 2
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 5035.00390625,
+            "p95": 5179.3046875
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3053.0,
+            "p95": 3091.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "rag": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 45.56246779999856,
+            "p95": 54.648739500000374
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 7.0,
+            "p95": 7
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 5072.609375,
+            "p95": 5333.14453125
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3062.5,
+            "p95": 3066.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "repair_tasks": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.25
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.5
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.625
+          },
+          "task_success": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "repair_success": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 27.616385600002104,
+            "p95": 47.15957160000107
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 8.0,
+            "p95": 16
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.5,
+            "p95": 2
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 1
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3990.548828125,
+            "p95": 4024.44140625
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3066.5,
+            "p95": 3101.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "resource_switching": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.75
+          },
+          "workflow_correct": {
+            "observed_cases": 7,
+            "unknown_cases": 1,
+            "value": 0.5714285714285714
+          },
+          "tools_correct": {
+            "observed_cases": 1,
+            "unknown_cases": 7,
+            "value": 1.0
+          },
+          "worker_correct": {
+            "observed_cases": 7,
+            "unknown_cases": 1,
+            "value": 0.8571428571428571
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 20.498520999999528,
+            "p95": 52.95510039999863
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 2.5,
+            "p95": 7
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 1
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3989.15625,
+            "p95": 5038.5859375
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3067.5,
+            "p95": 3112.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "simple": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.7523427500018443,
+            "p95": 8.49184890000106
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 1
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 2663.7421875,
+            "p95": 5186.95703125
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 2415.5,
+            "p95": 3055.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "table": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.75
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 6,
+            "unknown_cases": 2,
+            "value": 0.8333333333333334
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 78.15054390000114,
+            "p95": 98.61497980000058
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 12.0,
+            "p95": 15
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 6399.05859375,
+            "p95": 7227.29296875
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3058.5,
+            "p95": 3092.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "task_changes": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.375
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.375
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.875
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 25.213780149999366,
+            "p95": 83.5384387999984
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 4.5,
+            "p95": 13
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 1
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 1
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 7051.5390625,
+            "p95": 7193.75390625
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3068.0,
+            "p95": 3072.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "typo_noisy": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.875
+          },
+          "workflow_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.75
+          },
+          "tools_correct": {
+            "observed_cases": 1,
+            "unknown_cases": 7,
+            "value": 1.0
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.875
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 47.03760750000038,
+            "p95": 90.81411640000078
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 7.0,
+            "p95": 14
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.5,
+            "p95": 1
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 1
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 4927.849609375,
+            "p95": 5765.30859375
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3058.5,
+            "p95": 3067.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        },
+        "vision": {
+          "cases": 8,
+          "intent_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "workflow_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "tools_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "worker_correct": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0
+          },
+          "task_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "repair_success": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "false_completion": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0
+          },
+          "unsafe_action_proposals": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "clarification_correct": {
+            "observed_cases": 0,
+            "unknown_cases": 8,
+            "value": null
+          },
+          "latency_seconds": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 2.865603549997104,
+            "p95": 11.992503500001476
+          },
+          "model_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3.0,
+            "p95": 3
+          },
+          "model_switches": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 1
+          },
+          "tool_calls": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 0.0,
+            "p95": 0
+          },
+          "peak_ram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 2459.5390625,
+            "p95": 2738.10546875
+          },
+          "peak_vram_mib": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 3123.0,
+            "p95": 3125.0
+          },
+          "max_llama_server_processes": {
+            "observed_cases": 8,
+            "unknown_cases": 0,
+            "value": 1.0,
+            "p95": 1
+          }
+        }
+      }
+    }
+  },
+  "limitations": [
+    "Engineer-authored pilot; no independent held-out set.",
+    "A/B/C share orchestration and principally compare worker policies.",
+    "82 of 128 cases per strategy lack semantic task-success oracles.",
+    "Cancellation success measures correct stopping, not original goal completion.",
+    "Worker score is configured policy adherence, not common task suitability.",
+    "Resources sampled once per second; RAM includes Python and all llama servers; VRAM includes other applications.",
+    "Sequential nonrandomized single run; timing differences do not establish superiority.",
+    "Docker validation/publication blocked by environment.",
+    "Unsafe action proposal telemetry absent; unknown, not zero."
+  ]
+}

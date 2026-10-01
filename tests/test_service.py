@@ -97,3 +97,20 @@ def test_unknown_selection_and_empty_question(service):
     with pytest.raises(WorkbenchError): service.ask('limit?',['missing'])
     with pytest.raises(WorkbenchError): service.ask('   ')
     assert service.status()['generator']['is_sleeping'] is True
+
+def test_switch_resamples_resources_after_unloading_owned_resident(service):
+    events=[]
+    blocked=SimpleNamespace(registry_key=None,to_dict=lambda:{'failure_category':'RESOURCE_FAILURE','route_reason':'Resident occupies capacity'})
+    admitted=SimpleNamespace(registry_key='code',to_dict=lambda:{'route_reason':'Measured after unload'})
+    selections=iter([blocked,admitted])
+    def select(*args,**kwargs):
+        events.append(('select',kwargs['current_residency']))
+        return next(selections)
+    service.router.select_model=select
+    service.registry.installed=lambda spec:True
+    service.registry._get_current_alias=lambda:'sovereign-text'
+    service.registry._owns_server=lambda:True
+    service.registry.kill_server=lambda:events.append(('unload',None))
+    service.registry.acquire_lease=lambda capability:events.append(('load',capability))
+    assert service._lease('code')=='code'
+    assert events==[('select','sovereign-text'),('unload',None),('select',None),('load','code')]

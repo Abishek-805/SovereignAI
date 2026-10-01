@@ -68,3 +68,6 @@ def test_implicit_or_duplicate_kv_configuration_is_not_trusted(registry):
         assert not registry._runtime_profile_matches(args)
         process.return_value.cmdline.return_value=[item for index,item in enumerate(args) if index not in {args.index('-ctk'),args.index('-ctk')+1}]
         assert not registry._runtime_profile_matches(args)
+
+def test_registry_instances_share_runtime_switch_lock():
+    assert ModelRegistry()._lock is ModelRegistry()._lock

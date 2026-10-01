@@ -1,0 +1,415 @@
+[
+  {
+    "model": "baseline",
+    "context": 16384,
+    "cases": [
+      {
+        "task": "I have to do a project now but I do not have any idea in my mind",
+        "expected": "answer",
+        "actual": "answer",
+        "pass": true,
+        "seconds": 7.14076759999989,
+        "response": {
+          "action": "answer",
+          "response": "I'm ready to help you start your project! Let me know your topic, goal, or area of interest, and I'll guide you through brainstorming or planning the next steps.",
+          "document_scope": "focused",
+          "target": "",
+          "expression": ""
+        }
+      },
+      {
+        "task": "Create a python file that detects faces using my laptop camera with OpenCV",
+        "expected": "edit_code",
+        "actual": "application_tools",
+        "pass": false,
+        "seconds": 1.593062700000246,
+        "response": {
+          "action": "application_tools",
+          "response": "",
+          "document_scope": "focused",
+          "target": "",
+          "expression": ""
+        }
+      },
+      {
+        "task": "Can you explain this project?",
+        "expected": "inspect_code",
+        "actual": "inspect_code",
+        "pass": true,
+        "seconds": 2.197798700000021,
+        "response": {
+          "action": "inspect_code",
+          "response": "",
+          "target": "python_file.py",
+          "document_scope": "focused",
+          "expression": ""
+        }
+      },
+      {
+        "task": "OpenCV generation syntax and required API contract",
+        "pass": true,
+        "seconds": 31.320712300000196,
+        "code": "import cv2\nimport sys\n\n# Load the Haar cascade classifier for face detection\nface_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')\n\n# Initialize the camera (using camera 0)\ncap = cv2.VideoCapture(0)\n\n# Check if camera is available\nif not cap.isOpened():\n    print(\"Error: Could not open camera. Please check your camera connection or permissions.\")\n    sys.exit(1)\n\nprint(\"Camera opened successfully. Press 'q' to exit.\")\n\ntry:\n    while True:\n        # Read a frame from the camera\n        ret, frame = cap.read()\n        \n        # Check if frame is read successfully\n        if not ret:\n            print(\"Error: Failed to grab frame. Exiting...\")\n            break\n        \n        # Convert the frame to grayscale for face detection\n        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)\n        \n        # Detect faces in the frame\n        faces = face_cascade.detectMultiScale(\n            gray,\n            scaleFactor=1.1,\n            minNeighbors=5,\n            minSize=(30, 30),\n            flags=cv2.CASCADE_SCALE_IMAGE\n        )\n        \n        # Draw rectangles around detected faces\n        for (x, y, w, h) in faces:\n            cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)\n        \n        # Display the frame with detected faces\n        cv2.imshow('Face Detection', frame)\n        \n        # Check for 'q' key press to exit\n        if cv2.waitKey(1) & 0xFF == ord('q'):\n            break\n\nfinally:\n    # Release the camera and close all windows\n    cap.release()\n    cv2.destroyAllWindows()"
+      },
+      {
+        "task": "Multi-entity all-measurement table comparison",
+        "pass": true,
+        "seconds": 6.725759399999788,
+        "response": {
+          "table": "marks",
+          "operation": "select",
+          "columns": [
+            "Member Id",
+            "Name",
+            "WAT 1",
+            "WAT 2",
+            "CAT 1"
+          ],
+          "filters": [
+            {
+              "column": "Member Id",
+              "operator": "in",
+              "value": [
+                "24stu001",
+                "24stu051"
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "lease": {
+      "model_load_time": 7.503086000000167,
+      "switch_required": true,
+      "current_residency": null,
+      "selected_model": "baseline",
+      "state": "Ready",
+      "available_context": 16384
+    },
+    "runtime_rss_mib": 3590.8,
+    "gpu": "3279, 614"
+  },
+  {
+    "model": "coder",
+    "context": 16384,
+    "cases": [
+      {
+        "task": "I have to do a project now but I do not have any idea in my mind",
+        "expected": "answer",
+        "actual": "answer",
+        "pass": true,
+        "seconds": 2.0286584999998922,
+        "response": {
+          "action": "answer",
+          "response": "I'm sorry, but I need more information to help you with your project. Can you please provide me with some details about the project you need to do? This will help me give you a more accurate and helpful response.",
+          "document_scope": "focused",
+          "target": "",
+          "expression": ""
+        }
+      },
+      {
+        "task": "Create a python file that detects faces using my laptop camera with OpenCV",
+        "expected": "edit_code",
+        "actual": "edit_code",
+        "pass": true,
+        "seconds": 0.35262809999994715,
+        "response": {
+          "action": "edit_code",
+          "response": "",
+          "target": "python_file.py",
+          "document_scope": "focused",
+          "expression": ""
+        }
+      },
+      {
+        "task": "Can you explain this project?",
+        "expected": "inspect_code",
+        "actual": "inspect_code",
+        "pass": true,
+        "seconds": 0.35284479999972973,
+        "response": {
+          "action": "inspect_code",
+          "response": "",
+          "target": "python_file.py",
+          "document_scope": "focused",
+          "expression": ""
+        }
+      },
+      {
+        "task": "OpenCV generation syntax and required API contract",
+        "pass": true,
+        "seconds": 7.12117840000019,
+        "code": "import cv2\n\n# Initialize the camera\ncap = cv2.VideoCapture(0)\n\n# Check if the camera is opened successfully\nif not cap.isOpened():\n    print('Error: Could not open camera')\n    exit()\n\n# Load the Haar cascade for face detection\nface_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')\n\n# Loop to capture frames and detect faces\nwhile True:\n    # Capture frame-by-frame\n    ret, frame = cap.read()\n\n    # Check if the frame was captured successfully\n    if not ret:\n        print('Error: Could not capture frame')\n        break\n\n    # Convert the frame to grayscale\n    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)\n\n    # Detect faces in the frame\n    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))\n\n    # Draw rectangles around the detected faces\n    for (x, y, w, h) in faces:\n        cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)\n\n    # Display the resulting frame\n    cv2.imshow('Face Detection', frame)\n\n    # Check for 'q' key to exit\n    if cv2.waitKey(1) & 0xFF == ord('q'):\n        break\n\n# Release the camera and destroy all windows\ncap.release()\n\n# Close all OpenCV windows\ncv2.destroyAllWindows()"
+      },
+      {
+        "task": "Multi-entity all-measurement table comparison",
+        "pass": true,
+        "seconds": 1.9172542000001158,
+        "response": {
+          "table": "marks",
+          "operation": "select",
+          "columns": [
+            "Member Id",
+            "WAT 1",
+            "WAT 2",
+            "CAT 1"
+          ],
+          "filters": [
+            {
+              "column": "Member Id",
+              "operator": "in",
+              "value": [
+                "24STU001",
+                "24STU051"
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "lease": {
+      "model_load_time": 3.3144336000000294,
+      "switch_required": true,
+      "current_residency": "baseline",
+      "selected_model": "coder",
+      "state": "Ready",
+      "available_context": 16384
+    },
+    "runtime_rss_mib": 2355.2,
+    "gpu": "3246, 647"
+  },
+  {
+    "model": "qwen35",
+    "context": 16384,
+    "cases": [
+      {
+        "task": "I have to do a project now but I do not have any idea in my mind",
+        "expected": "answer",
+        "actual": "answer",
+        "pass": true,
+        "seconds": 8.19620709999981,
+        "response": {
+          "action": "answer",
+          "response": "I can help you brainstorm project ideas based on your interests or goals. What kind of project are you thinking about? For example, a simple script, a web app, a data analysis tool, or something else? Let me know your preferences, and I\u2019ll suggest some concrete ideas to get started.",
+          "document_scope": "focused",
+          "target": "",
+          "expression": ""
+        }
+      },
+      {
+        "task": "Create a python file that detects faces using my laptop camera with OpenCV",
+        "expected": "edit_code",
+        "actual": "edit_code",
+        "pass": true,
+        "seconds": 1.3731390000002648,
+        "response": {
+          "action": "edit_code",
+          "response": "",
+          "target": "python_file.py",
+          "document_scope": "focused",
+          "expression": ""
+        }
+      },
+      {
+        "task": "Can you explain this project?",
+        "expected": "inspect_code",
+        "actual": "answer",
+        "pass": false,
+        "seconds": 2.7545052000000396,
+        "response": {
+          "action": "answer",
+          "response": "This project contains a single file named python_file.py with the content '# starter'. It appears to be a basic Python file ready for development.",
+          "document_scope": "focused",
+          "target": "",
+          "expression": ""
+        }
+      },
+      {
+        "task": "OpenCV generation syntax and required API contract",
+        "pass": true,
+        "seconds": 26.108259999999973,
+        "code": "import cv2\n\n# Load the Haar cascade classifier for face detection\nface_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')\n\n# Initialize the camera\n# camera_index=0 refers to the default camera (usually webcam)\ncap = cv2.VideoCapture(0)\n\n# Check if the camera opened successfully\nif not cap.isOpened():\n    print(\"Error: Could not open camera.\")\n    exit()\n\nprint(\"Camera opened successfully.\")\n\n# Main loop for live detection\nwhile True:\n    # Read a single frame from the camera\n    ret, frame = cap.read()\n    \n    # If frame reading fails, break the loop\n    if not ret:\n        print(\"Error: Could not read frame.\")\n        break\n    \n    # Convert the frame to grayscale (Haar cascades work on grayscale)\n    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)\n    \n    # Detect faces in the grayscale frame\n    faces = face_cascade.detectMultiScale(\n        gray,\n        scaleFactor=1.1,\n        minNeighbors=5,\n        minSize=(30, 30)\n    )\n    \n    # Loop through each detected face\n    for (x, y, w, h) in faces:\n        # Draw a green rectangle around the detected face\n        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)\n    \n    # Display the resulting frame with rectangles\n    cv2.imshow('Face Detection', frame)\n    \n    # Check for user input to exit\n    if cv2.waitKey(1) & 0xFF == ord('q'):\n        break\n\n# Release the camera and destroy all windows\ncap.release()\ncv2.destroyAllWindows()\n"
+      },
+      {
+        "task": "Multi-entity all-measurement table comparison",
+        "pass": true,
+        "seconds": 20.4372556000003,
+        "response": {
+          "table": "marks",
+          "operation": "select",
+          "columns": [
+            "Member Id",
+            "WAT 1",
+            "WAT 2",
+            "CAT 1"
+          ],
+          "filters": [
+            {
+              "column": "Member Id",
+              "operator": "in",
+              "value": [
+                "24STU001",
+                "24STU051"
+              ]
+            },
+            {
+              "column": "Member Id",
+              "operator": "in",
+              "value": [
+                "24STU001",
+                "24STU051"
+              ]
+            },
+            {
+              "column": "Member Id",
+              "operator": "in",
+              "value": [
+                "24STU001",
+                "24STU051"
+              ]
+            },
+            {
+              "column": "Member Id",
+              "operator": "in",
+              "value": [
+                "24STU001",
+                "24STU051"
+              ]
+            },
+            {
+              "column": "Member Id",
+              "operator": "in",
+              "value": [
+                "24STU001",
+                "24STU051"
+              ]
+            },
+            {
+              "column": "Member Id",
+              "operator": "in",
+              "value": [
+                "24STU001",
+                "24STU051"
+              ]
+            },
+            {
+              "column": "Member Id",
+              "operator": "in",
+              "value": [
+                "24STU001",
+                "24STU051"
+              ]
+            },
+            {
+              "column": "Member Id",
+              "operator": "in",
+              "value": [
+                "24STU001",
+                "24STU051"
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "lease": {
+      "model_load_time": 10.912611000000197,
+      "switch_required": true,
+      "current_residency": "coder",
+      "selected_model": "qwen35",
+      "state": "Ready",
+      "available_context": 16384
+    },
+    "runtime_rss_mib": 3855.9,
+    "gpu": "3180, 713"
+  },
+  {
+    "model": "gemma4",
+    "context": 16384,
+    "cases": [
+      {
+        "task": "I have to do a project now but I do not have any idea in my mind",
+        "expected": "answer",
+        "actual": "answer",
+        "pass": true,
+        "seconds": 3.891060500000094,
+        "response": {
+          "action": "answer",
+          "response": "I can help you brainstorm project ideas! To give you the best suggestions, could you tell me what general areas interest you, such as programming, art, writing, or science?",
+          "document_scope": "focused",
+          "target": "",
+          "expression": ""
+        }
+      },
+      {
+        "task": "Create a python file that detects faces using my laptop camera with OpenCV",
+        "expected": "edit_code",
+        "actual": "edit_code",
+        "pass": true,
+        "seconds": 0.967978199999834,
+        "response": {
+          "action": "edit_code",
+          "response": "",
+          "target": "python_file.py",
+          "document_scope": "focused",
+          "expression": ""
+        }
+      },
+      {
+        "task": "Can you explain this project?",
+        "expected": "inspect_code",
+        "actual": "inspect_code",
+        "pass": true,
+        "seconds": 1.1969444999999723,
+        "response": {
+          "action": "inspect_code",
+          "response": "",
+          "target": "python_file.py",
+          "document_scope": "focused",
+          "expression": ""
+        }
+      },
+      {
+        "task": "OpenCV generation syntax and required API contract",
+        "pass": true,
+        "seconds": 13.290358299999752,
+        "code": "import cv2\nimport sys\n\ndef detect_faces_with_haar():\n    \"\"\"Detects faces in the live camera feed using a Haar Cascade classifier.\"\"\"\n\n    # 1. Load the Haar Cascade classifier for face detection\n    # You need to have the haarcascade_frontalface_default.xml file in the same directory or provide the full path.\n    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')\n\n    if face_cascade.empty():\n        print(\"Error: Could not load the Haar Cascade classifier.\")\n        print(\"Please ensure 'haarcascade_frontalface_default.xml' is accessible.\")\n        sys.exit(1)\n\n    # 2. Initialize video capture (Camera 0)\n    cap = cv2.VideoCapture(0)\n\n    # Check if the camera opened successfully\n    if not cap.isOpened():\n        print(\"Error: Could not open camera 0. Check if the camera is connected or in use.\")\n        sys.exit(1)\n\n    print(\"Camera opened successfully. Starting video stream. Press 'q' to exit.\")\n\n    while True:\n        # Capture frame-by-frame\n        ret, frame = cap.read()\n\n        # If frame is read correctly ret is True\n        if not ret:\n            print(\"Error: Failed to grab frame.\")\n            break\n\n        # Convert the frame to grayscale for better performance with Haar cascades\n        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)\n\n        # Perform face detection\n        # scaleFactor and minNeighbors are parameters to tune detection sensitivity\n        faces = face_cascade.detectMultiScale(\n            gray, \n            scaleFactor=1.1, \n            minNeighbors=5, \n            minSize=(30, 30)\n        )\n\n        # Draw rectangles around the detected faces\n        for (x, y, w, h) in faces:\n            # Draw rectangle (Blue color, thickness 2)\n            cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)\n\n        # Display the resulting frame\n        cv2.imshow('Live Face Detection (Press Q to Quit)', frame)\n\n        # Wait for 'q' key press to exit the loop\n        if cv2.waitKey(1) & 0xFF == ord('q'):\n            break\n\n    # 3. Release resources\n    print(\"Exiting program and releasing resources.\")\n    cap.release()\n    cv2.destroyAllWindows()\n\nif __name__ == \"__main__\":\n    detect_faces_with_haar()\n"
+      },
+      {
+        "task": "Multi-entity all-measurement table comparison",
+        "pass": true,
+        "seconds": 4.201601799999935,
+        "response": {
+          "table": "marks",
+          "operation": "select",
+          "columns": [
+            "Member Id",
+            "WAT 1",
+            "WAT 2",
+            "CAT 1"
+          ],
+          "filters": [
+            {
+              "column": "Member Id",
+              "operator": "in",
+              "value": [
+                "24STU001",
+                "24STU051"
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "lease": {
+      "model_load_time": 7.5224771000002875,
+      "switch_required": true,
+      "current_residency": "qwen35",
+      "selected_model": "gemma4",
+      "state": "Ready",
+      "available_context": 16384
+    },
+    "runtime_rss_mib": 2291.6,
+    "gpu": "2612, 1281"
+  }
+]

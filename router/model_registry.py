@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 ROOT = Path(__file__).resolve().parents[1]
 RUNTIME = ROOT / 'runtime' / 'llama-b11132' / 'llama-server.exe'
 PID_FILE = ROOT / 'benchmarks' / 'server.pid'
+_RUNTIME_LOCK = Lock()
 
 @dataclass(frozen=True)
 class ModelSpec:
@@ -57,7 +58,7 @@ class ModelSpec:
 
 
 def default_specs():
-    return {
+    specs = {
         'text': ModelSpec('text','sovereign-text','Qwen3-4B-Instruct-2507-Q4_K_M.gguf',
                           revision='4edb920b6f14e3b9284d4502a6485103d72cde05',license_reference='docs/model-and-runtime-notices.md',
                           provider_repository='lmstudio-community/Qwen3-4B-Instruct-2507-GGUF',modalities=('text',),
@@ -72,11 +73,28 @@ def default_specs():
                             license_id='Apache-2.0',license_reviewed=True,
                             license_source='https://huggingface.co/Qwen/Qwen3.5-2B',license_reviewed_at='2026-09-28')
     }
+    if (ROOT/'models'/'gemma-4-E2B-it-Q4_K_M.gguf').is_file():
+        specs['text']=ModelSpec('text','sovereign-text','gemma-4-E2B-it-Q4_K_M.gguf',context=16384,
+            revision='0314792d7f1f7e229411f620751375812bb9faf2',
+            provider_repository='unsloth/gemma-4-E2B-it-GGUF',display_name='Gemma 4 E2B',
+            capabilities=('text','code','calculation'),kv_configuration='q8_0/q8_0',
+            license_reference='docs/model-and-runtime-notices.md',license_id='Apache-2.0',license_reviewed=True,
+            license_source='https://ai.google.dev/gemma/docs/core/model_card_4',license_reviewed_at='2026-10-01')
+    if (ROOT/'models'/'qwen2.5-coder-3b-instruct-q4_k_m.gguf').is_file():
+        from dataclasses import replace
+        specs['text']=replace(specs['text'],capabilities=('text','calculation'))
+        specs['code']=ModelSpec('code','sovereign-code','qwen2.5-coder-3b-instruct-q4_k_m.gguf',context=16384,
+            revision='f74adce6aa16316c625447af059dbebe4983757c',
+            provider_repository='Qwen/Qwen2.5-Coder-3B-Instruct-GGUF',display_name='Qwen2.5 Coder 3B',
+            capabilities=('code',),kv_configuration='q8_0/q8_0',
+            license_reference='docs/model-and-runtime-notices.md',license_id='Apache-2.0',license_reviewed=True,
+            license_source='https://huggingface.co/Qwen/Qwen2.5-Coder-3B-Instruct',license_reviewed_at='2026-10-01')
+    return specs
 
 class ModelRegistry:
     def __init__(self, port=8087, specs=None):
         self.port = port
-        self._lock = Lock()
+        self._lock = _RUNTIME_LOCK
         self.current_alias = "sovereign-text"
         self.runtime_state = None
         self.specs = dict(default_specs() if specs is None else specs)

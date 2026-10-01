@@ -116,8 +116,9 @@ def test_registry_records_license_and_actual_runtime_configuration():
     records=models.records()
     for entry in records:
         assert entry['license_id']=='Apache-2.0' and entry['license_reviewed'] is True
-        assert entry['license_source'].startswith('https://huggingface.co/Qwen/')
-        assert entry['license_reviewed_at']=='2026-09-28'
+        assert entry['license_source'].startswith(('https://huggingface.co/Qwen/', 'https://ai.google.dev/gemma/'))
+        from datetime import date
+        assert date.fromisoformat(entry['license_reviewed_at'])<=date.today()
         assert entry['quantization']=='Q4_K_M'
         assert entry['resource_kv_configuration'] is None
     assert default_specs()['vision'].kv_configuration=='f16/f16'

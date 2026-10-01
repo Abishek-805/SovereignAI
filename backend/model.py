@@ -228,6 +228,7 @@ class LocalModel:
             'Choose the table by document title, sheet name, labels and sample values together; a person identifier is a row filter, not a filename instruction. '
             'Prefer the detailed table whose sheet name matches the requested assessment or subject over a summary table that only has a column with that name, especially when the detailed measurement column includes its unit or scale. '
             'Use recent questions to resolve follow-ups. Match exact schema column names. select looks up records; count counts all matching rows; sum/average/min/max require one numeric column. '
+            'When comparing all tests or all measurements, select the identity column and all relevant measurement columns available in the table. Answer the available coverage; the word all does not require a prewritten comparison or unknown external records. '
             'Filters are ANDed. Exact matches ALWAYS use in with an array: one value for one entity, multiple values for alternatives in the same column. Emit at most ONE filter per column. For example, comparing IDs A and B uses {"column":"ID","operator":"in","value":["A","B"]}; it cannot use separate filters for A and B. For a comparison or lookup of several entities select the identity column together with measurements, preserving which value belongs to each entity. Use explicit categorical result values for passing/failing when present. Never invent a numeric pass threshold, conversion, column, unit or fact. '
             'If multiple tables are equally relevant, a required threshold is unknown, or the question needs other evidence, choose none. '
             'Empty filters means all rows. For an individual lookup filter the identifier column and select requested measurement columns. '
@@ -367,7 +368,7 @@ class LocalModel:
         # named-source questions without paying prompt processing for UUIDs.
         document_names=[{'name':item.get('name','')} if isinstance(item,dict) else item for item in documents]
         messages=[{'role':'system','content':
-            'You are SovereignAI, a local assistant. Choose one action for the CURRENT request. DECISION PRIORITY: (1) application operations or ordered create/change AND run tasks => application_tools; (2) single code creation/change => edit_code; (3) grounded evidence-report export => create_report. Creating a Knowledge document containing user-provided text is application_tools, NEVER create_report. Ordinary TXT/Markdown creation or modification in a selected project uses edit_code unless Knowledge/library was explicitly requested. For a request missing its action verb, ask a concise clarification rather than inventing authorization. Past tasks are finished: use history only to resolve explicit follow-up references. A new standalone task replaces the previous task; never carry forward its action or output format. '
+            'You are SovereignAI, a local assistant. Choose one action for the CURRENT request. A selected project is optional context, never an instruction to edit. Brainstorming, project ideas, planning a possible project, and discussing interests use answer until the user requests a concrete operation. Explaining, inspecting, or reviewing an existing selected project uses inspect_code so the application reads actual source; filenames and planning metadata alone cannot substantiate a project explanation. DECISION PRIORITY: (1) application operations or ordered create/change AND run tasks => application_tools; (2) single code creation/change => edit_code; (3) grounded evidence-report export => create_report. Creating a Knowledge document containing user-provided text is application_tools, NEVER create_report. Ordinary TXT/Markdown creation or modification in a selected project uses edit_code unless Knowledge/library was explicitly requested. For a request missing its action verb, ask a concise clarification rather than inventing authorization. Past tasks are finished: use history only to resolve explicit follow-up references. A new standalone task replaces the previous task; never carry forward its action or output format. '
             'answer: ordinary conversation, greetings, questions about your identity, unrelated general knowledge, or explanations that need no local evidence. Write the actual natural answer in response, within 90 words when appropriate. Never use canned greetings. For a detailed explanation beyond this budget, response must be empty; a separate conversation generator will answer fully. '
             'search_documents: facts or questions that depend on connected library documents. Names are metadata, never evidence of contents or absence. A named source identifier or a fact about the user\'s local organization may require retrieval. General explanations do not require local evidence merely because documents are connected. A named workspace file is project context: use inspect_code to explain it; NEVER import it into Knowledge just to read it. Do not claim connected files are inaccessible or contain no information before retrieval. Ordinary questions about you and unrelated general questions still use answer. '
             'create_report: the current request explicitly asks for a downloadable Word report grounded in connected-document evidence. An ordinary summary uses search_documents. A new Knowledge/library document containing user-provided text uses application_tools; it does not require reference documents to be connected. A past report request does not make a new code request a report. Search alone cannot export it. '
@@ -404,9 +405,27 @@ class LocalModel:
             {'role':'user','content':'Classification example: In config.ini replace retries=2 with retries=3 and keep every other setting unchanged.'},
             {'role':'assistant','content':'{"action":"edit_code","response":"","target":"config.ini"}'},
             {'role':'user','content':'CURRENT REQUEST (classify this operation only; earlier tasks are completed): '+goal}]
+        # Keep demonstrations separate from the live request. Repeating only
+        # the goal after examples made small models lose the selected project
+        # metadata and ask for context the application already supplied.
+        request_context=messages.pop(1)
+        messages[-1]=request_context
         context=self._request('GET','/props').get('default_generation_settings',{}).get('n_ctx',0)
+        # Constrain the action vocabulary by current-request authority before
+        # decoding. A connected workspace must not turn conversation into edits.
+        from router.tool_registry import explicit_operation_requested
+        grammar=TASK_PLAN_GRAMMAR
+        if not explicit_operation_requested(goal,'file_edit'):
+            grammar=grammar.replace('(code | generic)', 'generic')
+        operations=('project_create','project_delete','document_create','document_update',
+                    'document_import','document_rename','document_move','document_copy','document_delete',
+                    'document_duplicates','document_deduplicate','file_delete','file_delete_scope',
+                    'file_move','file_copy','folder_create','file_run','terminal',
+                    'automation_create','automation_pause','automation_delete','automation_list')
+        if not any(explicit_operation_requested(goal,operation) for operation in operations):
+            grammar=grammar.replace(' | "\\\"application_tools\\\""','')
         payload={'model':'sovereign-text','messages':messages,'temperature':0,'max_tokens':384,
-                 'grammar':TASK_PLAN_GRAMMAR,'chat_template_kwargs':{'enable_thinking':False}}
+                 'grammar':grammar,'chat_template_kwargs':{'enable_thinking':False}}
         if not isinstance(context,int) or self.count_messages(messages,payload)+384+64>context:
             raise WorkbenchError('context_budget','Task metadata exceeds the planning context budget')
         result=self._request('POST','/v1/chat/completions',json=payload)
@@ -521,7 +540,7 @@ tool ::= ''' + names + '\n' + JSON_STRING_GRAMMAR
         budget=min(4096,context-self.count_messages(messages)-64)
         if budget<128:
             raise WorkbenchError('context_budget','Conversation exceeds the model context budget')
-        result=self._request('POST','/v1/chat/completions',json={'model':'sovereign-text','messages':messages,'temperature':0,'max_tokens':budget})
+        result=self._request('POST','/v1/chat/completions',json={'model':'sovereign-text','messages':messages,'temperature':0,'max_tokens':budget,'chat_template_kwargs':{'enable_thinking':False}})
         try:
             choice=result['choices'][0]
             content=choice['message']['content']

@@ -356,3 +356,25 @@ def test_project_task_tracks_implicit_parent_folders_for_undo(tmp_path):
     work.accept(workspace_id,result['task_id'])
     work.undo(workspace_id,result['task_id'])
     assert work.get(workspace_id)['folders']==[]
+
+def test_project_python_syntax_is_repaired_before_sandbox(tmp_path):
+    work = CodingWorkspace(tmp_path)
+    wid = work.create('Syntax repair')['workspace_id']
+    model = ProjectModel([{'action':'create','path':'camera.py','reason':'requested'}],
+                         'cv-2.destroyAllWindows()', 'print("camera example")\n')
+    sandbox = Sandbox()
+    result = work.run_project(wid, '', 'Create a Python camera example', model, sandbox, TaskLedger(tmp_path))
+    assert result['state'] == 'completed'
+    assert all(snapshot['camera.py'] == b'print("camera example")\n' for snapshot in sandbox.snapshots)
+    assert work.get(wid)['files'] == []
+
+
+def test_project_python_syntax_exhaustion_saves_no_changes(tmp_path):
+    work = CodingWorkspace(tmp_path)
+    wid = work.create('Invalid')['workspace_id']
+    sandbox = Sandbox()
+    model = ProjectModel([{'action':'create','path':'example.py','reason':'requested'}], *(['def broken(:'] * 3))
+    with pytest.raises(WorkbenchError, match='Python syntax error'):
+        work.run_project(wid, '', 'Create Python code', model, sandbox, TaskLedger(tmp_path))
+    assert sandbox.snapshots == []
+    assert work.get(wid)['files'] == []

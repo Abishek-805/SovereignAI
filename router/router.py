@@ -39,8 +39,7 @@ class CapabilityRouter:
             capability = 'vision'
             
         elif task_type == 'code':
-            # Prototype spec states: A coding specialist is optional and must beat the current baseline...
-            capability = 'text'
+            capability = 'code' if 'code' in getattr(self.model_registry,'specs',{}) else 'text'
             
         elif task_type == 'calculation':
             # Calculation is a tool, but if routed to a model, text is best

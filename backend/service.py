@@ -111,6 +111,14 @@ class Workbench:
             data['routing_time']=time.perf_counter()-route_start
             if trace:trace.selection(data)
             route=selection.registry_key
+            if route is None and data.get('failure_category')=='RESOURCE_FAILURE' and current and self.registry._owns_server():
+                # The resident model's allocations are not free capacity. Release
+                # the owned runtime, then measure real headroom for the new load.
+                self.registry.kill_server()
+                selection=select(capability,modality='image' if capability=='vision' else 'text',required_context=required_context,current_residency=None)
+                data=selection.to_dict();data['routing_time']=time.perf_counter()-route_start
+                if trace:trace.selection(data);trace.stages.append({'stage':'resource_recheck','reason':'Owned resident unloaded before resampling'})
+                route=selection.registry_key
             if route is None:
                 if trace:trace.failure_layer='resource_admission' if data.get('failure_category')=='RESOURCE_FAILURE' else 'candidate_filter'
                 raise WorkbenchError('model_unavailable',data['route_reason'])
@@ -338,6 +346,7 @@ class Workbench:
                             'task_id':uuid4().hex,'timings':{'total_seconds':time.perf_counter()-started},
                             'routing':{'capability':route,'model':'sovereign-text'}}
                 if intent['action']=='edit_code':
+                    route=self._lease('code')
                     if job:job.progress('Writing code')
                     generated=self.model.inline_code_answer(question,history,intent.get('target',''))
                     if job and job.cancel.is_set():raise WorkbenchError('cancelled','Task stopped during code generation')
@@ -921,6 +930,10 @@ Path('/output/project-sync.json').write_bytes(payload)
             else: self.tasks.fail(task,'workflow_failed')
             answer_text=(result.get('answer') or (f"{result.get('expression')} = {result.get('rounded')}" if 'rounded' in result else
                 f"{result.get('target','File')}: {result.get('state','finished')}. Validation: {result.get('validation','see checks')}."))
+            if result.get('state')=='failed':
+                detail=(result.get('error') or result.get('stderr') or '').strip()
+                if detail:
+                    answer_text=f"{result.get('target','Task')} failed validation: {detail[-800:]} No changes were applied."
             if action=='edit_code' and result.get('state')=='completed' and result.get('changes'):
                 changed=[change['path'] for change in result['changes'] if change['action'] in {'create','edit'}]
                 if changed:
@@ -930,7 +943,8 @@ Path('/output/project-sync.json').write_bytes(payload)
                                   'Docker is unavailable. Validation is required before these changes can be published.'))
             plan_model=getattr(self.registry,'specs',{}).get('text')
             return {'task_id':task['task_id'],'status':task['state'],'answer':answer_text,'plan':plan,
-                    'routing':{'capability':'text','model':plan_model.alias if plan_model else 'sovereign-text',
+                    'routing':{'capability':result.get('routing',{}).get('capability','text'),
+                               'model':result.get('routing',{}).get('model',plan_model.alias if plan_model else 'sovereign-text'),
                                'reason':'Text model planned the task; the selected action used its registered tool or workflow'},
                     'result':result,'downloads':result.get('downloads',{}),'workspace_id':workspace_id,'steps':task['steps']}
         except Exception as exc:

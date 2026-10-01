@@ -1,6 +1,6 @@
 param(
     [ValidateRange(1, 86400)]
-    [int]$IdleSeconds = 60,
+    [int]$IdleSeconds = 600,
     [switch]$NoBrowser
 )
 

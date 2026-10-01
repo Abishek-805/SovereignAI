@@ -104,7 +104,7 @@ class CodingFileOperationRequest(BaseModel):
 
 
 class ModelLoadRequest(BaseModel):
-    capability: str = Field(pattern='^(text|vision)$')
+    capability: str = Field(pattern='^(text|code|vision)$')
 
 
 class CodingTaskRequest(BaseModel):
@@ -457,7 +457,7 @@ def create_app(service=None):
         if not service.ask_lock.acquire(blocking=False):
             raise WorkbenchError('busy', 'Wait for the running task before changing models')
         try:
-            service.registry.acquire_lease(payload.capability)
+            service._lease(payload.capability)
             return service.workbench_info()
         finally:
             service.ask_lock.release()
@@ -821,10 +821,25 @@ def create_app(service=None):
                 return route_headers(JSONResponse({'code':'busy','message':'Another model task is running'},status_code=409))
         if locked:
             def acquire_proxy_model():
+                nonlocal capability
                 token=CURRENT_ROUTE.set(trace)
                 try:
                     if hasattr(service,'_lease'):selected=service._lease(capability)
                     else:service.registry.acquire_lease(capability)
+                    # Native Chat shares the same semantic planner for potential
+                    # code requests. This changes the generation model only;
+                    # Chat never executes the planned action or edits files.
+                    from router.tool_registry import explicit_operation_requested
+                    planner=getattr(service.model,'plan_task',None)
+                    if not image and callable(planner) and explicit_operation_requested(latest,'file_edit'):
+                        recent=[f"{item['role']}: {item['content']}" for item in messages[-7:-1]
+                                if isinstance(item,dict) and item.get('role') in {'user','assistant'} and isinstance(item.get('content'),str)]
+                        intent=planner(latest,[],[],recent)
+                        trace.stages.append({'stage':'intent','action':intent['action'],'source':'native_chat_planner'})
+                        if intent['action']=='edit_code':
+                            capability='code'
+                            trace.intent='edit_code'
+                            selected=service._lease(capability)
                     # Use the selected runtime's chat template and tokenizer, not a
                     # character estimate. Image patch-token expansion remains unknown.
                     if isinstance(service.model,LocalModel) and isinstance(payload,dict):

@@ -126,3 +126,23 @@ def test_stream_invalid_timings_remain_unknown(service,monkeypatch,value):
     trace=service.routing_decision(response.headers['x-sovereign-request-id'])
     assert trace['inference_time'] is None and trace['model_request_time']>=0
     assert not service.ask_lock.locked()
+
+def test_native_chat_code_generation_acquires_specialist_without_executing(service,monkeypatch):
+    from types import SimpleNamespace
+    from router.model_registry import ModelSpec
+    model=LocalModel()
+    monkeypatch.setattr(model,'plan_task',lambda *args:{'action':'edit_code','response':''})
+    monkeypatch.setattr(model,'count_messages',lambda *args:50)
+    service.model=model
+    service.registry.specs={'text':ModelSpec('text','sovereign-text','text.gguf',license_reviewed=True),
+                            'code':ModelSpec('code','sovereign-code','code.gguf',license_reviewed=True)}
+    leases=[]
+    service.registry.acquire_lease=lambda key:leases.append(key)
+    forwarded=upstream(monkeypatch)
+    with TestClient(create_app(service),base_url='http://127.0.0.1:8088') as client:
+        response=client.post('/v1/chat/completions',json={'model':'sovereign-text','messages':[{'role':'user','content':'Write a Python sorting function'}],'max_tokens':128})
+    assert response.status_code==200,response.text
+    assert leases==['text','code','code']
+    assert json.loads(forwarded[0]['content'])['model']=='sovereign-code'
+    assert service.coding.list()==[]
+    assert not service.ask_lock.locked()

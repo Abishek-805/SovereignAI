@@ -18,7 +18,7 @@ class _Markup(HTMLParser):
 
 
 def source_issue(path, content):
-    """Reject absent language content; syntax remains the sandbox's responsibility."""
+    """Reject unusable source before generation finishes; sandbox checks still follow."""
     suffix = Path(path).suffix.lower()
     if not content.strip():
         return 'The file is empty.'
@@ -31,8 +31,8 @@ def source_issue(path, content):
     if suffix == '.py':
         try:
             tree = ast.parse(content)
-        except SyntaxError:
-            return None  # Docker reports precise syntax diagnostics.
+        except SyntaxError as exc:
+            return f'Python syntax error on line {exc.lineno}: {exc.msg}.'
         statements = [node for node in tree.body if not (isinstance(node, ast.Expr)
                       and isinstance(node.value, ast.Constant) and isinstance(node.value.value, str))]
         return None if statements else 'Python requires statements beyond comments and documentation strings.'

@@ -159,7 +159,7 @@ def test_image_metadata_is_available_to_intent_planner_without_image_pixels():
         return httpx.Response(200,json={'choices':[{'finish_reason':'stop','message':{'content':json.dumps({'action':'analyze_image','target':'','expression':'','response':'Read the attached image','document_scope':'focused'})}}]})
     result=LocalModel(transport=httpx.MockTransport(handler)).plan_task('What is shown?',[],[],images=[{'name':'screenshot.png'}])
     assert result['action']=='analyze_image'
-    assert json.loads(seen[0]['messages'][1]['content'])['attached_images']==[{'name':'screenshot.png'}]
+    assert json.loads(seen[0]['messages'][-1]['content'])['attached_images']==[{'name':'screenshot.png'}]
     assert 'attachment alone does not turn greetings' in seen[0]['messages'][0]['content']
     assert 'image_url' not in seen[0]['messages'][-1]['content']
 
@@ -221,13 +221,14 @@ def test_conversational_plan_uses_compact_schema_without_document_routing_handle
     assert result=={'action':'answer','response':'I am SovereignAI, your local assistant.','target':'','expression':'','document_scope':'focused'}
     assert len(generated)==1
     from backend.model import TASK_PLAN_GRAMMAR
-    assert generated[0]['grammar']==TASK_PLAN_GRAMMAR
+    assert generated[0]['grammar'].splitlines()[0].endswith('generic ws "}"')
+    assert 'application_tools' not in generated[0]['grammar'].split('action ::=')[1].splitlines()[0]
     assert 'response_format' not in generated[0]
     assert 'reasoning_budget_tokens' not in generated[0]
     # No root branch permits a thinking prelude before the JSON object.
     assert TASK_PLAN_GRAMMAR.splitlines()[0].startswith('root ::= "{"')
-    assert document_id not in generated[0]['messages'][1]['content']
-    assert json.loads(generated[0]['messages'][1]['content'])['documents']==[{'name':'Inspection report.pdf'}]
+    assert document_id not in generated[0]['messages'][-1]['content']
+    assert json.loads(generated[0]['messages'][-1]['content'])['documents']==[{'name':'Inspection report.pdf'}]
 
 
 @pytest.mark.parametrize('tool_plan',[
@@ -259,3 +260,24 @@ def test_compact_plan_rejects_invalid_optional_tool_argument(field,value):
     with pytest.raises(WorkbenchError) as error:
         LocalModel(transport=httpx.MockTransport(handler)).plan_task('7*8',[],[])
     assert error.value.code=='generation_format'
+
+@pytest.mark.parametrize('goal,allowed',[
+ ('I have to do a project now but I do not have any idea in my mind',False),
+ ('What project should I choose?',False),
+ ('Explain how to create a Python program',False),
+ ('Create a Python webcam face detection program',True),
+ ('Add code in the existing file',True),
+])
+def test_planner_decoding_cannot_offer_file_edits_without_current_authority(goal,allowed):
+    sent=[]
+    def handler(request):
+        if request.url.path=='/props':return httpx.Response(200,json={'default_generation_settings':{'n_ctx':8192}})
+        if request.url.path=='/apply-template':return httpx.Response(200,json={'prompt':'formatted'})
+        if request.url.path=='/tokenize':return httpx.Response(200,json={'tokens':[1]})
+        sent.append(json.loads(request.content))
+        return httpx.Response(200,json={'choices':[{'finish_reason':'stop','message':{'content':json.dumps({'action':'answer','response':'Here are some project ideas.'})}}]})
+    result=LocalModel(transport=httpx.MockTransport(handler)).plan_task(goal,[],[{'name':'old.py'}],['Earlier user: Create old.py'])
+    assert result['action']=='answer'
+    root=sent[0]['grammar'].splitlines()[0]
+    assert ('(code | generic)' in root)==allowed
+    assert 'A selected project is optional context' in sent[0]['messages'][0]['content']

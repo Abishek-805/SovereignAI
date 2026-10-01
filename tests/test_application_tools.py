@@ -274,7 +274,7 @@ def test_execution_classifier_prompt_reasserts_current_request_after_history(mon
     goal='Run division.py and provide 12 then 3 as its input.'
     result=model.plan_task(goal,[],[{'name':'division.py'}],['User: Create division.py','Assistant: Created division.py'])
     assert result['action']=='application_tools'
-    assert payloads[0]['messages'][-1]['content'].endswith(goal)
+    assert json.loads(payloads[0]['messages'][-1]['content'])['request']==goal
     assert payloads[0]['chat_template_kwargs']=={'enable_thinking':False}
     assert 'never edit_code' in payloads[0]['messages'][0]['content']
     assert 'Change division.py to accept user input => edit_code' in payloads[0]['messages'][0]['content']
@@ -302,8 +302,8 @@ def test_classifier_examples_separate_compound_execution_and_literal_library_cre
     goal='Create a new Knowledge document named my_notes.txt containing exactly: My note.'
     model.plan_task(goal,[],[])
     messages=generated[0]['messages']
-    assert messages[-1]['content'].endswith(goal)
-    samples=[(messages[index]['content'],json.loads(messages[index+1]['content'])) for index in range(2,len(messages)-1,2)]
+    assert json.loads(messages[-1]['content'])['request']==goal
+    samples=[(messages[index]['content'],json.loads(messages[index+1]['content'])) for index in range(1,len(messages)-1,2)]
     assert samples[0][1]['action']=='application_tools' and 'then run it' in samples[0][0]
     assert samples[1][1]['action']=='application_tools' and 'containing exactly' in samples[1][0]
     assert samples[2][1]['action']=='edit_code'

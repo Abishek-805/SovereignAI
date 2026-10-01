@@ -228,7 +228,8 @@ def test_switch_rejects_unowned_model_port(tmp_path):
     model=tmp_path/'models'/'Qwen3-4B-Instruct-2507-Q4_K_M.gguf'
     model.parent.mkdir()
     model.write_bytes(b'test')
-    registry=ModelRegistry()
+    with patch('router.model_registry.ROOT',tmp_path):
+        registry=ModelRegistry()
     with patch('router.model_registry.ROOT',tmp_path), \
          patch.object(registry,'_get_current_alias',return_value='other-model'), \
          patch.object(registry,'_owns_server',return_value=False), \
@@ -242,7 +243,8 @@ def test_matching_alias_still_requires_owned_process(tmp_path):
     model=tmp_path/'models'/'Qwen3-4B-Instruct-2507-Q4_K_M.gguf'
     model.parent.mkdir()
     model.write_bytes(b'test')
-    registry=ModelRegistry()
+    with patch('router.model_registry.ROOT',tmp_path):
+        registry=ModelRegistry()
     with patch('router.model_registry.ROOT',tmp_path), \
          patch.object(registry,'_get_current_alias',return_value='sovereign-text'), \
          patch.object(registry,'_owns_server',return_value=False):
@@ -254,7 +256,7 @@ def test_registry_accepts_reviewed_entry_without_orchestrator_change(tmp_path):
     model=tmp_path/'models'/'small'/'code.gguf'
     model.parent.mkdir(parents=True)
     model.write_bytes(b'test')
-    registry=ModelRegistry()
+    registry=ModelRegistry(specs={})
     spec=ModelSpec('code-specialist','sovereign-code','small/code.gguf',
                    revision='reviewed-revision',license_reference='docs/license.md',license_id='fixture-license',license_reviewed=True)
     with patch('router.model_registry.ROOT',tmp_path):

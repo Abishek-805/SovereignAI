@@ -1,0 +1,23 @@
+[
+  {
+    "repository": "Qwen/Qwen2.5-Coder-3B-Instruct-GGUF",
+    "revision": "f74adce6aa16316c625447af059dbebe4983757c",
+    "file": "qwen2.5-coder-3b-instruct-q4_k_m.gguf",
+    "size": 2104932800,
+    "sha256": "724fb256bec1ff062b2f65e4569e871ad2e95ab2a3989723d1769c54294730b7"
+  },
+  {
+    "repository": "unsloth/Qwen3.5-4B-GGUF",
+    "revision": "e87f176479d0855a907a41277aca2f8ee7a09523",
+    "file": "Qwen3.5-4B-Q4_K_M.gguf",
+    "size": 2740937888,
+    "sha256": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4"
+  },
+  {
+    "repository": "unsloth/gemma-4-E2B-it-GGUF",
+    "revision": "0314792d7f1f7e229411f620751375812bb9faf2",
+    "file": "gemma-4-E2B-it-Q4_K_M.gguf",
+    "size": 3106738272,
+    "sha256": "740185b21d22ceb83a11c3aa62ad5842ef32c70f6096d756bbee85a1e4ec34b8"
+  }
+]

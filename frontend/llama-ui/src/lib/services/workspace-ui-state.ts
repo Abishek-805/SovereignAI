@@ -9,3 +9,8 @@ export function tableFindParams(q: string, matchCase: boolean, wholeCell: boolea
 export function workspaceDeletionBlocked(id: string, activeId: string | undefined, busy: boolean, dirty: boolean, staged: boolean) {
  return id === activeId && (busy || dirty || staged);
 }
+
+export function pendingFileChange<T extends { path: string; action: string }>(task: { state: string; publication_state?: string; changes?: T[] } | null | undefined, path: string): T | undefined {
+ if (task?.state !== 'completed' || task.publication_state !== 'staged') return undefined;
+ return task.changes?.find(change => change.path === path && !['mkdir', 'rmdir'].includes(change.action));
+}

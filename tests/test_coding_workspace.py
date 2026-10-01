@@ -301,3 +301,13 @@ def test_cancel_during_generation_preserves_original(tmp_path):
         work.run(wid,'solution.py','Fix add',CancelModel(),Sandbox(),TaskLedger(tmp_path),cancel=cancel)
     assert error.value.code=='cancelled'
     assert work.read(wid,'solution.py')['content'].endswith('return 0\n')
+
+
+def test_review_diff_separates_changes_without_final_newlines(tmp_path):
+    work, workspace_id = workspace(tmp_path)
+    work.write(workspace_id, 'solution.py', 'def add(a, b):\n    return 0')
+    result = work.run(workspace_id, 'solution.py', 'Fix add',
+                      Model('def add(a, b):\n    return a + b'), Sandbox(), TaskLedger(tmp_path))
+    assert result['state'] == 'completed'
+    assert '-    return 0\n\\ No newline at end of file\n+    return a + b' in result['diff']
+    assert work.read(workspace_id, 'solution.py')['content'].endswith('return 0')

@@ -1047,7 +1047,7 @@ class CodingWorkspace:
         task=ledger.create('coding_workspace',[])
         ledger.step(task,'plan',{'paths':[change['path'] for change in changes]})
         primary=next((change for change in changes if change['action'] in {'create','edit','delete'}),changes[0])
-        diff=''.join(''.join(difflib.unified_diff((change['before'] or '').splitlines(True),(change['after'] or '').splitlines(True),
+        diff=''.join(''.join(line if line.endswith('\n') else line+'\n\\ No newline at end of file\n' for line in difflib.unified_diff((change['before'] or '').splitlines(True),(change['after'] or '').splitlines(True),
              fromfile='a/'+change['path'],tofile='b/'+change['path'])) for change in changes if change['action'] not in {'mkdir','rmdir'})
         result={'task_id':task['task_id'],'workspace_id':workspace_id,'target':primary['path'],'state':'running',
                 'instruction':instruction,'changes':changes,'original_content':primary['before'] or '',
@@ -1177,7 +1177,7 @@ class CodingWorkspace:
                 ledger.step(task, f'test_{attempt + 1}', {'exit_code': execution.exit_code,
                                                            'executed': execution.executed})
                 result.update(attempts=attempt + 1, stdout=execution.stdout, stderr=safe_stderr,
-                              diff=''.join(difflib.unified_diff(original.splitlines(True),candidate.splitlines(True),
+                              diff=''.join(line if line.endswith('\n') else line+'\n\\ No newline at end of file\n' for line in difflib.unified_diff(original.splitlines(True),candidate.splitlines(True),
                                      fromfile='a/'+target,tofile='b/'+target)),
                               output_files=[])
                 if execution.executed and execution.exit_code == 0 and candidate != original and not source_error:

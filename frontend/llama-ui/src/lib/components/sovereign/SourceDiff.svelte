@@ -36,6 +36,7 @@
      readOnly: true, originalEditable: false, renderSideBySide: false,
      automaticLayout: true, minimap: { enabled: false }, fontSize: 13,
      scrollBeyondLastLine: false, diffWordWrap: 'on', padding: { top: 12 },
+     renderMarginRevertIcon: false,
      diffAlgorithm: 'advanced', ignoreTrimWhitespace: false,
      hideUnchangedRegions: { enabled: true, contextLineCount: 2, minimumLineCount: 4, revealLineCount: 5 }
     });
@@ -65,4 +66,4 @@
 
 <div class="source-diff" bind:this={container} aria-label="Inline code changes"></div>
 {#if failure}<p role="alert">Review could not load: {failure}</p><pre>{modified}</pre>{/if}
-<style>.source-diff{height:100%;min-height:320px;min-width:0}pre{white-space:pre-wrap}</style>
+<style>.source-diff{height:100%;min-height:320px;min-width:0}pre{white-space:pre-wrap}:global(.source-diff .line-insert){background:color-mix(in srgb,#3fb981 16%,transparent)!important}:global(.source-diff .line-delete){background:color-mix(in srgb,#ef6b73 16%,transparent)!important}</style>

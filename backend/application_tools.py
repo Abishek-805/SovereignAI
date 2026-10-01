@@ -270,10 +270,10 @@ class ApplicationTools:
                     sandbox.on_output=self.job.append
             result=self.service.coding.stage_file_operations(workspace,operations,sandbox,self.service.tasks,
                                                               cancel=self.job.cancel)
-            affected=[change['path'] for change in result.get('changes',[]) if change['action'] in {'create','delete'}]
-            paths=', '.join(affected) if len(affected)<=5 else f'{len(affected)} files'
+            affected=[change['path'] for change in result.get('changes',[]) if change['action'] in {'create','delete','mkdir','rmdir'}]
+            paths=', '.join(affected) if len(affected)<=5 else f'{len(affected)} items'
             answer=('The requested folder already exists; no project files were changed.' if result.get('already_exists') else
-                    ('Staged '+paths+' for review. Accept changes to save this deletion to the project.' if result['state']=='completed' else
+                    ('Staged '+paths+' for review. Accept changes to save these changes to the project.' if result['state']=='completed' else
                      'File organization did not pass validation; project files are unchanged.'))
             return {'state':result['state'],'answer':answer,'workspace_id':workspace,
                     'operations':[{'tool':'file_organization','target':result.get('target',''), 'result':result}]}

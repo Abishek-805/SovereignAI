@@ -389,8 +389,12 @@ class Workbench:
                     for attempt in range(2):
                         query=self.model.plan_table_query(question,catalog,history,**({'feedback':query_feedback} if query_feedback else {}))
                         if not query.get('_measure'):break
-                        from rag.tables import compile_outcome_query
+                        from rag.tables import compile_outcome_query,population_binding_catalog
                         try:
+                            binder=getattr(self.model,'bind_population_column',None)
+                            if callable(binder) and query['_measure'].get('entity_values'):
+                                query['_measure']['entity_column']=binder(question,query['_measure'],
+                                    population_binding_catalog(available,query['_measure']['entity_values']))
                             query=compile_outcome_query(query['_measure'],available,question,history)
                             break
                         except WorkbenchError as error:
@@ -407,17 +411,17 @@ class Workbench:
                         if not isinstance(extras,list) or len(extras)>12: raise WorkbenchError('invalid_query','Too many additional table queries')
                         if extras:
                             summaries=result.get('summaries') or [{'column':', '.join(result['columns']), 'value':result.get('value'),'numeric_rows':result.get('numeric_rows')}]
-                            summaries=[{'assessment':selected_table['name'],**item} for item in summaries]
-                            seen={selected}
+                            summaries=[{'assessment':selected_table['name'],**({'cohort':plan['cohort']} if 'cohort' in plan else {}),**item} for item in summaries]
+                            seen={(selected,plan.get('cohort'))}
                             for extra in extras:
-                                if not isinstance(extra,dict) or extra.get('table') not in available or extra['table'] in seen:
+                                if not isinstance(extra,dict) or extra.get('table') not in available or (extra['table'],extra.get('cohort')) in seen:
                                     raise WorkbenchError('invalid_query','Additional query must name a unique available table')
                                 extra_doc,extra_table=available[extra['table']]
                                 if extra_doc['document_id']!=selected_doc['document_id']: raise WorkbenchError('invalid_query','Additional assessments must belong to the same source document')
-                                seen.add(extra['table'])
+                                seen.add((extra['table'],extra.get('cohort')))
                                 calculated=execute_query(extra_table,{**extra,'operation':plan['operation']})
                                 items=calculated.get('summaries') or [{'column':', '.join(calculated['columns']),'value':calculated.get('value'),'numeric_rows':calculated.get('numeric_rows')}]
-                                summaries.extend({'assessment':extra_table['name'],**item} for item in items)
+                                summaries.extend({'assessment':extra_table['name'],**({'cohort':extra['cohort']} if 'cohort' in extra else {}),**item} for item in items)
                             result['summaries']=summaries
                         return selected_doc,result
                     if query.get('operation')!='none':
@@ -685,9 +689,26 @@ class Workbench:
             if job:
                 job.progress('Reading project structure')
                 if sandbox is not None:sandbox.on_output=job.append;sandbox.cancel_event=job.cancel
-            return self.coding.run_project(workspace_id,target,instruction,self.model,sandbox,self.tasks,
-                                           model_alias=alias,progress=job.progress if job else None,
-                                           cancel=job.cancel if job else None,history=history)
+            repair_history=list(history or [])
+            failures=set()
+            for attempt in range(3):
+                if job and job.cancel.is_set():raise WorkbenchError('cancelled','Task stopped before supervisor retry')
+                result=self.coding.run_project(workspace_id,target,instruction,self.model,sandbox,self.tasks,
+                                               model_alias=alias,progress=job.progress if job else None,
+                                               cancel=job.cancel if job else None,history=repair_history)
+                result['supervisor_attempts']=attempt+1
+                if result.get('state')!='failed' or not result.get('checks',{}).get('container_executed'):
+                    return result
+                feedback=(result.get('stderr') or result.get('stdout') or '')[-3000:]
+                if not feedback or feedback in failures or attempt==2:return result
+                failures.add(feedback)
+                # Only uncommitted drafts are retried. The original instruction
+                # remains controlling; observed test errors are reference data.
+                repair_history=[*(history or []),
+                    'assistant: Previous uncommitted candidate:\n'+json.dumps(result.get('changes',[]),ensure_ascii=False)[-10000:],
+                    'assistant: Actual sandbox validation failed:\n'+feedback]
+                if job:job.progress(f'Supervisor repairing failed validation ({attempt+2}/3)')
+            return result
         finally:
             self.ask_lock.release()
 

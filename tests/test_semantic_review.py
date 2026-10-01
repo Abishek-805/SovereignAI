@@ -9,7 +9,7 @@ def completion(value):
 
 
 def model_replies(monkeypatch, replies):
-    model=LocalModel(verify_semantics=True)
+    model=LocalModel(verify_semantics=True,review_attempts=2)
     calls=[]
     sequence=iter([{'task_interpretation':'Preserve the original task and its constraints'},*replies])
     def request(method,path,**kwargs):
@@ -45,6 +45,46 @@ def test_missing_information_clarifies_without_repair(monkeypatch):
     with pytest.raises(WorkbenchError):
         model._planned_completion({'messages':[{'role':'user','content':'Convert the measurement'}],'max_tokens':512})
     assert len(calls)==3
+
+
+def test_supervisor_continues_until_repaired_and_verified(monkeypatch):
+    model,calls=model_replies(monkeypatch,[{'action':'wrong'},
+        {'verdict':'revise','issues':['Missing requested implementation']},
+        {'action':'incomplete'},{'verdict':'revise','issues':['Missing required input handling']},
+        {'action':'complete'},{'verdict':'accept','issues':[]}])
+    model.review_attempts=4
+    result=model._planned_completion({'messages':[{'role':'user','content':'Implement the requested program'}]})
+    assert json.loads(result['choices'][0]['message']['content'])['action']=='complete'
+    assert len(calls)==7
+
+
+def test_supervisor_stops_identical_failed_attempts(monkeypatch):
+    model,calls=model_replies(monkeypatch,[{'answer':'unsupported'},
+        {'verdict':'revise','issues':['No source support']},
+        {'answer':'unsupported'},{'verdict':'revise','issues':['No source support']}])
+    model.review_attempts=4
+    with pytest.raises(WorkbenchError,match='No source support'):
+        model._planned_completion({'messages':[{'role':'user','content':'Use actual evidence'}]})
+    assert len(calls)==5
+
+
+def test_group_binding_is_resolved_without_source_identifier_expansion(monkeypatch):
+    model=LocalModel(verify_semantics=True)
+    intent={'operation':'percentage','outcome':'pass','followup':True,'threshold':None,
+        'threshold_operator':'none','rule_outcome':'other','score_columns':[],
+        'result_values':['Passed'],'entity_values':['YEARRED','YEARBLUE'],
+        'group_entities':True,'scope':'all','assessments':[]}
+    replies=iter([intent,{'entity_values':['red','blue'],'group_entities':True}])
+    payloads=[]
+    def complete(payload,**kwargs):
+        payloads.append(payload)
+        return completion(next(replies))
+    monkeypatch.setattr(model,'_planned_completion',complete)
+    result=model.plan_table_query('Compare red and blue pass percentages',
+        [{'id':'T1','sheet':'Exam','columns':['ID','Result'],'categorical_values':{'Result':['Passed']}}],
+        ['user: Previously passing percentage for YEARRED'])
+    assert result['_measure']['entity_values']==['red','blue']
+    assert 'assessment_fields' not in payloads[1]['messages'][-1]['content']
 
 
 def test_vision_reviewer_receives_actual_image(monkeypatch):

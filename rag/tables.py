@@ -118,6 +118,21 @@ def find_cells(path,q,sheet=None,match_case=False,whole_cell=False,offset=0,limi
                     total+=1
     return {'matches':matches,'total':total,'offset':offset,'limit':limit}
 
+def population_binding_catalog(available,entities):
+    """Observed source candidates for a separate semantic identity-field pass."""
+    candidates=[]
+    if not entities:return candidates
+    for identifier,(_,table) in available.items():
+        for column in table['columns']:
+            matches={str(entity):[str(row.get(column)).strip() for row in table['records']
+                if str(entity).casefold() in str(row.get(column)).strip().casefold()] for entity in entities}
+            if all(matches.values()):
+                candidates.append({'table':identifier,'column':column,
+                    'matching_records':{entity:len(values) for entity,values in matches.items()},
+                    'examples':{entity:[value[:160] for value in list(dict.fromkeys(values))[:2]] for entity,values in matches.items()}})
+    return candidates
+
+
 def compile_outcome_query(intent,available,question,history=None):
     """Bind a semantic cohort/outcome measure to complete source records.
 
@@ -133,6 +148,9 @@ def compile_outcome_query(intent,available,question,history=None):
             for row in table['records'] for column in table['columns']
             if str(row.get(column)).strip().casefold() in canonical[polarity]})
     entities=list(dict.fromkeys(intent.get('entity_values',[])))
+    grouped=bool(intent.get('group_entities'))
+    if grouped and len(entities)<2:
+        raise WorkbenchError('invalid_query','A cohort comparison requires every requested group, not a single inherited cohort')
     context=question+'\n'+'\n'.join(history or []) if intent.get('followup') else question
     # Bind literal identifiers/prefixes even when the semantic model omits
     # them. Only tokens present in one real source column qualify; ordinary
@@ -154,7 +172,7 @@ def compile_outcome_query(intent,available,question,history=None):
             raise WorkbenchError('invalid_query','Planned cohort does not match the source-bound user identifiers. Expected '+repr(inferred)+'; proposed '+repr(entities))
         entities=inferred
     if any(str(value).casefold() not in context.casefold() for value in entities):
-        raise WorkbenchError('invalid_query','Cohort identities must come from the current question')
+        raise WorkbenchError('invalid_query','Cohort identities must be literal names from the current question or explicitly referenced history; do not expand source prefixes. Proposed '+repr(entities))
     threshold=intent.get('threshold')
     applied_operator=intent.get('threshold_operator')
     if threshold is not None:
@@ -190,20 +208,31 @@ def compile_outcome_query(intent,available,question,history=None):
         filters=[]
         if entities:
             candidates=[]
+            bindings={}
             for column in table['columns']:
                 values={str(row.get(column)).strip().casefold() for row in table['records']}
                 exact=all(str(entity).casefold() in values for entity in entities)
                 partial=all(any(str(entity).casefold() in value for value in values) for entity in entities)
+                if exact or partial:
+                    bindings[column]={str(entity):sum(str(entity).casefold() in str(row.get(column)).strip().casefold() for row in table['records']) for entity in entities}
+                if intent.get('entity_column') is not None and column!=intent['entity_column']:continue
                 if exact or partial: candidates.append((column,exact))
             exact=[candidate for candidate in candidates if candidate[1]]
             candidates=exact or candidates
             if len(candidates)!=1:
-                raise WorkbenchError('needs_input','The cohort does not resolve to one identity column in '+table['name']+'. Specify the identity field.')
+                raise WorkbenchError('needs_input','The cohort does not resolve to one identity column in '+table['name']+
+                    '. Choose entity_column from the source-bound fields and observed matching record counts: '+repr(bindings)+
+                    '. Proposed field: '+repr(intent.get('entity_column')))
             column,is_exact=candidates[0]
             if is_exact: filters=[{'column':column,'operator':'in','value':entities}]
-            elif len(entities)==1: filters=[{'column':column,'operator':'contains','value':entities[0]}]
+            elif len(entities)==1 or grouped: filters=[{'column':column,'operator':'contains','value':entities[0]}]
             else: raise WorkbenchError('needs_input','Use complete identities or one cohort prefix for percentages')
-        queries.append({'table':identifier,'columns':[],'filters':filters,'criteria':criteria,'requested_outcome':polarity})
+        populations=entities if grouped else [None]
+        for population in populations:
+            population_filters=([{'column':column,'operator':'eq' if is_exact else 'contains','value':population}]
+                                if population is not None else filters)
+            queries.append({'table':identifier,'columns':[],'filters':population_filters,'criteria':criteria,'requested_outcome':polarity,
+                            **({'cohort':population} if population is not None else {})})
         documents.add(doc['document_id'])
     if len(documents)>1: raise WorkbenchError('needs_input','Connect one results document for this multi-assessment percentage')
     if not queries: raise WorkbenchError('needs_input','No explicit result values were found. Specify the numeric pass rule before calculating percentages.')
@@ -211,7 +240,7 @@ def compile_outcome_query(intent,available,question,history=None):
     # A consolidated score table already covers each assessment. Avoid counting
     # its duplicate weekly views as additional tests.
     consolidated=[query for query in queries if len(query['criteria'])>1]
-    if threshold is not None and len(consolidated)==1:
+    if threshold is not None and len({query['table'] for query in consolidated})==1:
         queries=consolidated;unavailable=[]
     first,*rest=queries
     return {**first,'operation':operation,'additional_queries':rest,'unavailable_assessments':unavailable}

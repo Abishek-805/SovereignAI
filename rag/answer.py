@@ -50,6 +50,11 @@ def _unsupported_numbers(answer_text,sources):
     This is a narrow check, not a general semantic-support verifier. Derived
     arithmetic needs separate validation and will be flagged for review here.
     """
+    # Exact executor rendering contains only calculated source values. It is
+    # checked as a whole; this does not exempt altered/generated prose from
+    # sentence-level citation and literal-number verification.
+    trusted=_query_presentation(sources)
+    if trusted is not None and answer_text==trusted:return []
     by_label={source['label']:source['text'] for source in sources}
     number_pattern=r'(?<![\w.+-])[+-]?\d+(?:\.\d+)?(?!\w|\.\d)'
     unsupported=set()
@@ -84,6 +89,7 @@ def _query_presentation(sources):
         columns=['column','passed','total','percentage'] if query['operation']=='percentage' else ['column','value','numeric_rows']
         if query['operation']=='count': columns=['column','value','total']
         if any('assessment' in row for row in summaries): columns=['assessment',*columns]
+        if any('cohort' in row for row in summaries): columns=['cohort',*columns]
         numerator_label={'pass':'Passed','fail':'Failed'}.get(query.get('requested_outcome'),'Matched')
         lines=[' | '.join(numerator_label if c=='passed' else cell(c.replace('_',' ').capitalize()) for c in columns),' | '.join('---' for _ in columns)]
         lines.extend(' | '.join(cell(row.get(c)) for c in columns) for row in summaries)

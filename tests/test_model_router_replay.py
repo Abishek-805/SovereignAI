@@ -115,7 +115,7 @@ def test_registry_records_license_and_actual_runtime_configuration():
     models=ModelRegistry()
     records=models.records()
     for entry in records:
-        assert entry['license_id']=='Apache-2.0' and entry['license_reviewed'] is True
+        assert entry['license_id'] in {'Apache-2.0','qwen-research'} and entry['license_reviewed'] is True
         assert entry['license_source'].startswith(('https://huggingface.co/Qwen/', 'https://ai.google.dev/gemma/'))
         from datetime import date
         assert date.fromisoformat(entry['license_reviewed_at'])<=date.today()

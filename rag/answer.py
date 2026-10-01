@@ -78,13 +78,14 @@ def _query_presentation(sources):
     if len(sources)!=1: return None
     source=sources[0]; query=source.get('query_result') or {}
     if not {'table','operation','scanned_rows','matched_rows'}<=query.keys(): return None
-    heading=f"Verified results from {cell(query['table'])}. [{source['label']}]"
+    heading=f"Calculated results from {cell(query['table'])}. [{source['label']}]"
     if isinstance(query.get('summaries'),list):
         summaries=query['summaries']
         columns=['column','passed','total','percentage'] if query['operation']=='percentage' else ['column','value','numeric_rows']
         if query['operation']=='count': columns=['column','value','total']
         if any('assessment' in row for row in summaries): columns=['assessment',*columns]
-        lines=[' | '.join(cell(c.replace('_',' ').capitalize()) for c in columns),' | '.join('---' for _ in columns)]
+        numerator_label={'pass':'Passed','fail':'Failed'}.get(query.get('requested_outcome'),'Matched')
+        lines=[' | '.join(numerator_label if c=='passed' else cell(c.replace('_',' ').capitalize()) for c in columns),' | '.join('---' for _ in columns)]
         lines.extend(' | '.join(cell(row.get(c)) for c in columns) for row in summaries)
         missing=query.get('unavailable_assessments',[])
         rules=list(dict.fromkeys((row.get('criterion',{}).get('operator'),str(row.get('criterion',{}).get('value'))) for row in summaries

@@ -87,8 +87,17 @@ def default_specs():
             revision='f74adce6aa16316c625447af059dbebe4983757c',
             provider_repository='Qwen/Qwen2.5-Coder-3B-Instruct-GGUF',display_name='Qwen2.5 Coder 3B',
             capabilities=('code',),kv_configuration='q8_0/q8_0',
-            license_reference='docs/model-and-runtime-notices.md',license_id='Apache-2.0',license_reviewed=True,
+            license_reference='docs/model-and-runtime-notices.md',license_id='qwen-research',license_reviewed=True,
             license_source='https://huggingface.co/Qwen/Qwen2.5-Coder-3B-Instruct',license_reviewed_at='2026-10-01')
+    if (ROOT/'models'/'Qwen3.5-4B-Q4_K_M.gguf').is_file():
+        from dataclasses import replace
+        specs['text-light']=replace(specs['text'],alias='sovereign-text-light')
+        specs['text']=ModelSpec('text','sovereign-text','Qwen3.5-4B-Q4_K_M.gguf',context=16384,
+            revision='e87f176479d0855a907a41277aca2f8ee7a09523',
+            provider_repository='unsloth/Qwen3.5-4B-GGUF',display_name='Qwen3.5 4B',
+            capabilities=('text','calculation'),kv_configuration='q8_0/q8_0',
+            license_reference='docs/model-and-runtime-notices.md',license_id='Apache-2.0',license_reviewed=True,
+            license_source='https://huggingface.co/Qwen/Qwen3.5-4B',license_reviewed_at='2026-10-01')
     return specs
 
 class ModelRegistry:

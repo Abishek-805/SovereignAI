@@ -121,15 +121,15 @@ def test_model_threshold_refinement_reuses_prior_measure_and_complements_rule(mo
     import json
     from backend.model import LocalModel
     model=LocalModel()
-    refinement={'operation':'select','outcome':'pass','followup':True,'threshold':25,'threshold_operator':'lt','rule_outcome':'fail','score_columns':['Score'],'result_values':['PASS'],'entity_values':[],'scope':'all','assessments':[]}
-    previous={**refinement,'operation':'percentage','followup':False,'threshold':None,'threshold_operator':'none','rule_outcome':'other','entity_values':['TEAM']}
-    replies=iter([previous,refinement])
+    refinement={'operation':'select','outcome':'pass','inherit_fields':['operation','outcome','result_values','entity_values','scope','assessments'],'followup':True,'threshold':25,'threshold_operator':'lt','rule_outcome':'fail','score_columns':['Score'],'result_values':['PASS'],'entity_values':[],'scope':'all','assessments':[]}
+    refinement.update(operation='percentage',entity_values=['TEAM'])
+    replies=iter([refinement])
     monkeypatch.setattr(model,'_request',lambda *args,**kwargs:{'choices':[{'finish_reason':'stop','message':{'content':json.dumps(next(replies))}}]})
     question='Below 25 fails; update the report'
     query=model.plan_table_query(question,[{'id':'T1','sheet':'Exam','columns':['ID','Score'],'categorical_values':{'Result':['PASS','FAIL']}}],['user: Pass percentage for TEAM in all tests','user: '+question])
     assert query['operation']=='percentage'
     assert query['_measure']['entity_values']==['TEAM']
-    assert query['_measure']['threshold_operator']=='gte'
+    assert query['_measure']['threshold_operator']=='lt'
 
 
 def test_literal_source_cohort_is_retained_when_model_omits_it():

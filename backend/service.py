@@ -56,7 +56,7 @@ class Workbench:
                     shutil.copy2(source, destination)
         self.store=store or Store(self.settings.data_dir/'index.sqlite',self.settings.max_chunks)
         self._embedder=embedder
-        self.model=model or LocalModel(self.settings.model_url)
+        self.model=model or LocalModel(self.settings.model_url,verify_semantics=True)
         self.registry=registry or ModelRegistry(8087)
         self.router=CapabilityRouter(self.registry)
         self.classifier=ConservativeCapabilityClassifier()
@@ -385,10 +385,18 @@ class Workbench:
                         available[key]=(doc,table)
                 if catalog:
                     if job:job.progress('Planning a read-only table query')
-                    query=self.model.plan_table_query(question,catalog,history)
-                    if query.get('_measure'):
+                    query_feedback=None
+                    for attempt in range(2):
+                        query=self.model.plan_table_query(question,catalog,history,**({'feedback':query_feedback} if query_feedback else {}))
+                        if not query.get('_measure'):break
                         from rag.tables import compile_outcome_query
-                        query=compile_outcome_query(query['_measure'],available,question,history)
+                        try:
+                            query=compile_outcome_query(query['_measure'],available,question,history)
+                            break
+                        except WorkbenchError as error:
+                            if attempt or error.code not in {'invalid_query','needs_input'}:raise
+                            query_feedback=str(error)
+                            if job:job.progress('Repairing the query against source validation feedback')
                     def run_table_query(plan):
                         selected=plan.get('table')
                         if selected not in available: raise WorkbenchError('invalid_query','Table query selected an unavailable table')
@@ -499,7 +507,7 @@ class Workbench:
             
             if job and job.cancel.is_set():raise WorkbenchError('cancelled','Image request stopped before inference')
             if job:job.progress('Analyzing attached image')
-            result = ask_vision(img, question, request=self.model._request) if isinstance(self.model,LocalModel) else ask_vision(img, question)
+            result = ask_vision(img, question, request=self.model.verified_request) if isinstance(self.model,LocalModel) else ask_vision(img, question)
             if job and job.cancel.is_set():raise WorkbenchError('cancelled','Image request stopped after inference')
             result['task_id']=uuid4().hex
             result['routing']={'capability':route,'model':self.registry.specs[route].alias if hasattr(self.registry,'specs') else 'sovereign-vision'}

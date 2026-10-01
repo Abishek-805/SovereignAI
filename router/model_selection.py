@@ -1,4 +1,4 @@
-"""Hard compatibility/admission, quality floor, then measured latency + switch."""
+"""Hard compatibility/admission, measured quality first, then latency + switch."""
 from dataclasses import dataclass, field
 import math
 import time
@@ -41,7 +41,7 @@ class ModelSelection:
     fallback: dict | None = None
     candidate_rejection_codes: dict = field(default_factory=dict)
     failure_category: str | None = None
-    selection_policy: str = 'hard_filter_quality_floor_latency_switch_residency_v1'
+    selection_policy: str = 'hard_filter_quality_first_latency_switch_residency_v2'
     selection_evidence: dict = field(default_factory=dict)
 
     def to_dict(self):
@@ -110,28 +110,39 @@ class ModelSelector:
                 decision.candidate_rejection_reasons[spec.identifier]=reasons
                 decision.candidate_rejection_codes[spec.identifier]=codes
             else:eligible.append((key,spec,candidate))
+        admissible_count=len(eligible)
         if not eligible:
             decision.route_reason='No model satisfies capability, modality, context, availability and observed resource policy; no implicit fallback.'
             decision.failure_category='RESOURCE_FAILURE' if resource_blocked_compatible else 'CANDIDATE_FAILURE'
             decision.resource_admission={'status':'rejected','observed':snapshot.to_dict(),
                                          'reason_codes':sorted({code for candidate in decision.candidate_models for code in candidate['admission']['reason_codes']})}
         else:
+            # Accuracy is the first objective. Runtime cost only breaks ties
+            # between equally capable candidates; unknown quality is not zero.
+            quality_comparable=all(item[2]['quality'] is not None for item in eligible)
+            if quality_comparable:
+                best_quality=max(item[2]['quality'] for item in eligible)
+                eligible=[item for item in eligible if item[2]['quality']==best_quality]
             if all(item[2]['measured_cost'] is not None for item in eligible):
                 chosen=min(eligible,key=lambda item:(item[2]['measured_cost'],
                     current_residency not in (item[1].identifier,item[1].alias),item[1].identifier))
-                reason='Lowest measured latency plus required switch cost among admissible candidates; no claim of global optimality.'
-                decision.selection_evidence={'status':'measured','cost_unit':'seconds','comparison':'latency_seconds + required_switch_seconds'}
+                reason=('Highest measured capability quality, then ' if quality_comparable else 'Quality evidence incomplete; ')+ 'lowest measured latency plus required switch cost; no claim of global optimality.'
+                decision.selection_evidence={'status':'measured','cost_unit':'seconds','comparison':('quality descending, then latency_seconds + required_switch_seconds' if quality_comparable else 'latency_seconds + required_switch_seconds; quality unknown')}
             else:
                 resident=[item for item in eligible if current_residency in (item[1].identifier,item[1].alias)]
                 chosen=resident[0] if resident else eligible[0]
                 reason=('Only admissible candidate.' if len(eligible)==1 else 'Retained admissible resident candidate.' if resident else 'Stable registry priority among admissible candidates.')+' Comparable quality/latency/switch measurements are incomplete; optimizer not established.'
                 decision.selection_evidence={'status':'incomplete','comparison':None}
+                if quality_comparable:
+                    reason='Highest measured capability quality. '+reason
+                    decision.selection_evidence['comparison']='quality descending; runtime cost incomplete'
+            decision.selection_evidence['quality_comparable']=quality_comparable
             key,spec,candidate=chosen
             decision.registry_key=key;decision.selected_model=spec.identifier;decision.route_reason=reason
             decision.available_context=spec.context;decision.resource_admission=candidate['admission']
             decision.switch_required=None if current_residency is None else current_residency not in (spec.identifier,spec.alias)
         decision.selection_evidence.update({'quality_threshold':self.policy.quality_threshold,
             'quality_threshold_source':self.policy.quality_threshold_source,
-            'registered_candidates':len(decision.candidate_models),'admissible_candidates':len(eligible)})
+            'registered_candidates':len(decision.candidate_models),'admissible_candidates':admissible_count})
         decision.routing_time=time.perf_counter()-started
         return decision

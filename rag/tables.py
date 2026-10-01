@@ -141,24 +141,37 @@ def compile_outcome_query(intent,available,question,history=None):
     if intent.get('followup'):
         user_context+='\n'+'\n'.join(item for item in (history or []) if not item.lower().startswith('assistant:'))
     inferred=[]
-    for token in dict.fromkeys(re.findall(r'\b[A-Za-z0-9]+\b',user_context)):
+    # Only the current request can introduce a literal source-bound cohort.
+    # Historical identifiers can belong to unrelated completed requests; the
+    # semantic resolver selects which antecedent entities remain active.
+    for token in dict.fromkeys(re.findall(r'\b[A-Za-z0-9]+\b',question)):
         if not (any(c.isalpha() for c in token) and any(c.isdigit() for c in token)): continue
         candidates={column for _,table in available.values() for column in table['columns']
             if any(str(row.get(column)).strip().casefold().startswith(token.casefold()) for row in table['records'])}
         if len(candidates)==1: inferred.append(token)
     if inferred:
         if entities and {v.casefold() for v in entities}!={v.casefold() for v in inferred}:
-            raise WorkbenchError('invalid_query','Planned cohort does not match the source-bound user identifiers')
+            raise WorkbenchError('invalid_query','Planned cohort does not match the source-bound user identifiers. Expected '+repr(inferred)+'; proposed '+repr(entities))
         entities=inferred
     if any(str(value).casefold() not in context.casefold() for value in entities):
         raise WorkbenchError('invalid_query','Cohort identities must come from the current question')
     threshold=intent.get('threshold')
+    applied_operator=intent.get('threshold_operator')
     if threshold is not None:
         if not isinstance(threshold,(int,float)) or not math.isfinite(threshold) or intent.get('threshold_operator') not in {'gte','gt','lt','lte'}:
             raise WorkbenchError('invalid_query','Invalid numeric outcome rule')
         supplied=[float(v) for v in re.findall(r'(?<![\w.])-?\d+(?:\.\d+)?(?![\w.])',user_context)]
         if threshold not in supplied: raise WorkbenchError('invalid_query','Outcome threshold must be supplied by the user')
         if not intent.get('score_columns'): raise WorkbenchError('needs_input','Specify the assessment score columns for the numeric rule')
+        # Keep the user's literal rule separate from the requested numerator.
+        # Derive its complement once, at the execution boundary, rather than
+        # mutating conversational intent that a later follow-up may reuse.
+        rule_outcome=intent.get('rule_outcome')
+        if rule_outcome in canonical:
+            if polarity not in canonical:
+                raise WorkbenchError('needs_input','Specify whether the numeric rule measures passing or failing records')
+            if rule_outcome!=polarity:
+                applied_operator={'lt':'gte','lte':'gt','gt':'lte','gte':'lt'}[applied_operator]
     queries=[]; documents=set(); unavailable=[]
     for identifier,(doc,table) in available.items():
         if intent.get('scope')!='all' and intent.get('assessments') and table['name'] not in intent['assessments']: continue
@@ -167,7 +180,7 @@ def compile_outcome_query(intent,available,question,history=None):
             values={str(row.get(column)).strip().casefold() for row in table['records']}
             if threshold is not None and column in intent['score_columns']:
                 if any(isinstance(row.get(column),(int,float)) and not isinstance(row.get(column),bool) for row in table['records']):
-                    criteria.append({'column':column,'operator':intent['threshold_operator'],'value':threshold})
+                    criteria.append({'column':column,'operator':applied_operator,'value':threshold})
             elif threshold is None and outcomes:
                 bound=[value for value in outcomes if str(value).casefold() in values]
                 if bound and (polarity in canonical or len(bound)==len(outcomes)):
@@ -190,7 +203,7 @@ def compile_outcome_query(intent,available,question,history=None):
             if is_exact: filters=[{'column':column,'operator':'in','value':entities}]
             elif len(entities)==1: filters=[{'column':column,'operator':'contains','value':entities[0]}]
             else: raise WorkbenchError('needs_input','Use complete identities or one cohort prefix for percentages')
-        queries.append({'table':identifier,'columns':[],'filters':filters,'criteria':criteria})
+        queries.append({'table':identifier,'columns':[],'filters':filters,'criteria':criteria,'requested_outcome':polarity})
         documents.add(doc['document_id'])
     if len(documents)>1: raise WorkbenchError('needs_input','Connect one results document for this multi-assessment percentage')
     if not queries: raise WorkbenchError('needs_input','No explicit result values were found. Specify the numeric pass rule before calculating percentages.')
@@ -234,6 +247,8 @@ def execute_query(table,plan):
         return {'gt':a>b,'gte':a>=b,'lt':a<b,'lte':a<=b}[op]
     rows=[r for r in table['records'] if all(match(r,f) for f in filters)]
     result={'table':table['name'],'operation':operation,'scanned_rows':len(table['records']),'matched_rows':len(rows),'columns':columns,'filters':filters}
+    if plan.get('requested_outcome') in {'pass','fail'}:
+        result['requested_outcome']=plan['requested_outcome']
     if operation=='select': result.update(records=[{c:r.get(c) for c in columns or table['columns']} for r in rows[:40]],truncated=len(rows)>40)
     elif operation=='count':
         criteria=plan.get('criteria',[])

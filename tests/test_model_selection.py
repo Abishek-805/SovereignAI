@@ -61,12 +61,27 @@ def test_missing_projector_and_no_text_fallback_for_image(tmp_path):
     assert 'unsupported_modality' in selected.candidate_rejection_reasons['a']
 
 
-def test_measured_cost_compares_latency_and_switch_not_size(tmp_path):
+def test_measured_quality_precedes_latency_and_switch(tmp_path):
     slow=spec('slow',measured_metrics=(('code.quality',0.95),('code.latency_seconds',10),('code.switch_seconds',4)))
     fast=spec('fast',measured_metrics=(('code.quality',0.92),('code.latency_seconds',2),('code.switch_seconds',1)))
     decision=select(tmp_path,[slow,fast],current_residency='slow')
-    assert decision.selected_model=='fast' and decision.switch_required is True
+    assert decision.selected_model=='slow' and decision.switch_required is False
     assert decision.routing_time>=0
+
+
+def test_equal_quality_compares_latency_and_switch(tmp_path):
+    slow=spec('slow',measured_metrics=(('code.quality',0.95),('code.latency_seconds',10),('code.switch_seconds',4)))
+    fast=spec('fast',measured_metrics=(('code.quality',0.95),('code.latency_seconds',2),('code.switch_seconds',1)))
+    decision=select(tmp_path,[slow,fast],current_residency='slow')
+    assert decision.selected_model=='fast' and decision.switch_required is True
+
+
+def test_quality_precedes_residency_even_without_latency_measurement(tmp_path):
+    better=spec('better',measured_metrics=(('code.quality',0.95),))
+    resident=spec('resident',measured_metrics=(('code.quality',0.80),))
+    decision=select(tmp_path,[resident,better],current_residency='resident')
+    assert decision.selected_model=='better' and decision.switch_required is True
+    assert decision.selection_evidence['quality_comparable'] is True
 
 
 def test_unknown_metrics_do_not_win_using_fake_zero(tmp_path):

@@ -65,11 +65,34 @@ def run_provenance(dataset, args, settings, registry):
             'compatibility_sha256': digest(compatibility), **compatibility}
 
 
-def resume_captures(report, dataset, provenance):
+def harness_repair_compatible(previous, current):
+    """Only evaluator/hash and Git HEAD may change under explicit repair authority."""
+    required = ('dataset_sha256','production_sha256','profiles','settings','timeout_seconds',
+                'strategies','categories','case_ids','limit','sample_resources','generation_policy')
+    if not all(key in previous and key in current for key in required):
+        return False
+    if not previous['production_sha256'] or not current['production_sha256']:
+        return False
+    for key in required:
+        old, new = previous[key], current[key]
+        if key == 'production_sha256':
+            excluded = 'benchmarks/evaluate-universal-agent.py'
+            old = {name: value for name, value in old.items() if name != excluded}
+            new = {name: value for name, value in new.items() if name != excluded}
+            if not old or not new:
+                return False
+        if old != new:
+            return False
+    return True
+
+
+def resume_captures(report, dataset, provenance, allow_harness_repair=False):
     if report.get('mode') != 'live' or report.get('dataset_sha256') != digest(dataset):
         raise ValueError('Resume requires the identical live dataset')
-    if (report.get('provenance') or {}).get('compatibility_sha256') != provenance['compatibility_sha256']:
-        raise ValueError('Resume rejected: production code, model profiles, settings or run scope changed')
+    previous = report.get('provenance') or {}
+    if previous.get('compatibility_sha256') != provenance['compatibility_sha256']:
+        if not allow_harness_repair or not harness_repair_compatible(previous, provenance):
+            raise ValueError('Resume rejected: production code, model profiles, settings or run scope changed')
     captured = {strategy: [row['capture'] for row in result['rows']]
                 for strategy, result in report['results'].items()}
     compare(dataset, captured, 'live')  # Validate every fixture hash and duplicate ID.
@@ -279,7 +302,8 @@ def inspect_result(case, result):
                     and str(term).casefold() in source_text.casefold() for term in oracle['terms'])
     elif kind == 'table_value':
         sources = next((item['sources'] for item in observed if item.get('sources')), [])
-        queries = [source.get('query_result', {}) for source in sources]
+        queries = [source['query_result'] for source in sources
+                   if isinstance(source, dict) and isinstance(source.get('query_result'), dict)]
         success = any(query.get('operation') == oracle['operation'] and query.get('value') == oracle['value']
                       and query.get('scanned_rows') == oracle['scanned_rows'] for query in queries)
     elif kind == 'cancelled':
@@ -407,7 +431,10 @@ def run_live(dataset, args):
     captured = {}
     if getattr(args, 'resume', None):
         previous = json.loads(args.resume.read_text(encoding='utf-8'))
-        captured = resume_captures(previous, dataset, provenance)
+        repair = getattr(args, 'resume_harness_repair', False)
+        captured = resume_captures(previous, dataset, provenance, allow_harness_repair=repair)
+        provenance['provenance_history'] = [previous['provenance']]
+        provenance['resumption_reason'] = 'harness-only repair' if repair else 'strict compatible resume'
         provenance['resumed_at_utc'] = provenance['started_at_utc']
         provenance['started_at_utc'] = previous['provenance']['started_at_utc']
     def report():
@@ -470,9 +497,12 @@ def main():
     parser.add_argument('--allow-model-lifecycle', action='store_true', help='Explicitly authorize existing Workbench broker to load/switch one installed worker; only run while production is idle/stopped')
     parser.add_argument('--sample-resources', action='store_true', help='Sample actual process RSS, total GPU VRAM and llama-server count approximately every second')
     parser.add_argument('--resume', type=Path, help='Resume a live report only with identical dataset, production hashes, profiles, settings and scope')
+    parser.add_argument('--resume-harness-repair', action='store_true', help='Explicitly permit evaluator-only repair on resume; production hashes, models, settings, fixtures and scope must remain identical')
     args = parser.parse_args()
     if args.timeout <= 0 or args.timeout > 3600 or args.limit < 0:
         parser.error('Invalid timeout or limit')
+    if args.resume_harness_repair and (args.mode != 'live' or not args.resume):
+        parser.error('--resume-harness-repair requires --mode live and --resume')
     dataset = json.loads(args.dataset.read_text(encoding='utf-8'))
     try:
         selected_cases(dataset, args)

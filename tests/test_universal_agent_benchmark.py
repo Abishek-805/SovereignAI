@@ -76,6 +76,48 @@ def test_case_id_selection_changes_run_provenance():
     assert first['compatibility_sha256'] != second['compatibility_sha256']
 
 
+@pytest.mark.parametrize('query', [None, [], ['bad'], 'bad'])
+def test_missing_table_query_is_failure_without_crashing(query):
+    case = fixture('table')
+    assert evaluation.inspect_result(case, {'sources': [{'query_result': query}]})['goal_satisfied'] is False
+
+
+def test_valid_table_query_keeps_narrow_oracle_success():
+    case = fixture('table')
+    oracle = case['oracle']
+    query = {key: oracle[key] for key in ('operation','value','scanned_rows')}
+    assert evaluation.inspect_result(case, {'sources': [{'query_result': None}, {'query_result': query}]})['goal_satisfied'] is True
+
+
+def test_harness_repair_resume_requires_explicit_flag_and_identical_production():
+    from copy import deepcopy
+    old = {'dataset_sha256': evaluation.digest(DATASET), 'production_sha256':
+           {'backend/service.py':'prod', 'benchmarks/evaluate-universal-agent.py':'old'},
+           'profiles':[{'model_id':'worker','context':2048}], 'settings':{'output_tokens':10},
+           'timeout_seconds':300,'strategies':['A','B','C'],'categories':None,'case_ids':None,
+           'limit':0,'sample_resources':True,'generation_policy':'workflow','git_head':'old-head',
+           'compatibility_sha256':'old-hash'}
+    new = deepcopy(old)
+    new.update(git_head='new-head', compatibility_sha256='new-hash')
+    new['production_sha256']['benchmarks/evaluate-universal-agent.py'] = 'repaired'
+    report = {**evaluation.compare(DATASET, {'A': []}, 'live'), 'provenance': old}
+    with pytest.raises(ValueError):
+        evaluation.resume_captures(report, DATASET, new)
+    assert evaluation.resume_captures(report, DATASET, new, True) == {'A': []}
+    for key, value in [('settings',{'output_tokens':11}), ('profiles',[{'model_id':'worker','context':4096}]),
+                       ('case_ids',['rag-02']), ('timeout_seconds',120), ('dataset_sha256','different')]:
+        changed = deepcopy(new)
+        changed[key] = value
+        with pytest.raises(ValueError):
+            evaluation.resume_captures(report, DATASET, changed, True)
+    changed = deepcopy(new)
+    changed['production_sha256']['backend/service.py'] = 'changed-production'
+    with pytest.raises(ValueError):
+        evaluation.resume_captures(report, DATASET, changed, True)
+    changed['production_sha256'] = {'benchmarks/evaluate-universal-agent.py':'only-harness'}
+    assert not evaluation.harness_repair_compatible(old, changed)
+
+
 def fixture(category):
     return next(case for case in DATASET['cases'] if case['category'] == category)
 

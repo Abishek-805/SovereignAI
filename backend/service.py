@@ -368,7 +368,7 @@ class Workbench:
             overview=overview_documents(active) if document_scope=='overview' else None
             table_evidence=None
             table_query=None
-            if overview is None and active and callable(getattr(self.model,'plan_table_query',None)):
+            if active and callable(getattr(self.model,'plan_table_query',None)):
                 from rag.tables import load_tables,execute_query,TABULAR
                 from rag.retrieve import document_scope_for_question
                 scoped=document_scope_for_question(self.documents(),question,document_ids)
@@ -388,7 +388,7 @@ class Workbench:
                     query=self.model.plan_table_query(question,catalog,history)
                     if query.get('_measure'):
                         from rag.tables import compile_outcome_query
-                        query=compile_outcome_query(query['_measure'],available,question)
+                        query=compile_outcome_query(query['_measure'],available,question,history)
                     def run_table_query(plan):
                         selected=plan.get('table')
                         if selected not in available: raise WorkbenchError('invalid_query','Table query selected an unavailable table')
@@ -413,6 +413,7 @@ class Workbench:
                             result['summaries']=summaries
                         return selected_doc,result
                     if query.get('operation')!='none':
+                        overview=None
                         if query.get('table') not in available: raise WorkbenchError('invalid_query','Table query selected an unavailable table')
                         doc,table=available[query['table']]
                         try:

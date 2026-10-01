@@ -21,3 +21,19 @@ Run `node tests/chat_opening_browser.cjs` against the running workbench to check
 streaming, manual history scrolling, repeated reopenings, and a full reload using
 an isolated browser profile with mocked generation. No real conversations change.
 
+
+
+## Model planning for assessment refinements
+
+The table planner supplies an explicit active mathematical measure, actual
+assessment fields, and contrasting examples to the model. The model decides
+whether a request refines that measure or starts a new task, and identifies the
+literal numeric rule separately from the requested outcome. The executor binds
+that plan to source records and performs arithmetic; there is no parser for user
+phrases such as "below ... fails". Model weights are unchanged.
+
+A generic report request no longer narrows the library to a document whose
+filename happens to contain "report". Outcome polarity prevents mixed PASS/FAIL
+numerators; literal source identifiers prevent an omitted cohort from silently
+expanding a calculation to the entire workbook. Numeric criteria and denominators
+are shown in the answer so the calculation can be checked.

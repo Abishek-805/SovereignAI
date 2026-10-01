@@ -87,7 +87,13 @@ def _query_presentation(sources):
         lines=[' | '.join(cell(c.replace('_',' ').capitalize()) for c in columns),' | '.join('---' for _ in columns)]
         lines.extend(' | '.join(cell(row.get(c)) for c in columns) for row in summaries)
         missing=query.get('unavailable_assessments',[])
-        return heading+'\n\n'+'\n'.join(lines)+ ('\n\nPercentages use all matching cohort records as the denominator.' if query['operation']=='percentage' else '')+ ('\n\nNo explicit pass/fail rule is available for: '+', '.join(cell(name) for name in missing)+'. Supply the pass threshold to calculate those assessments.' if missing else '')
+        rules=list(dict.fromkeys((row.get('criterion',{}).get('operator'),str(row.get('criterion',{}).get('value'))) for row in summaries
+            if row.get('criterion',{}).get('operator') in {'gte','gt','lte','lt'}))
+        rule_text=''
+        if rules:
+            comparisons={'gte':'at least','gt':'above','lte':'at most','lt':'below'}
+            rule_text='\n\nApplied numeric rule: '+', '.join(comparisons[operator]+' '+cell(value) for operator,value in rules)+'. Non-numeric or absent scores do not satisfy this numeric rule.'
+        return heading+'\n\n'+'\n'.join(lines)+rule_text+ ('\n\nPercentages use all matching cohort records as the denominator.' if query['operation']=='percentage' else '')+ ('\n\nNo explicit pass/fail rule is available for: '+', '.join(cell(name) for name in missing)+'. Supply the pass threshold to calculate those assessments.' if missing else '')
     if query['operation']=='select' and isinstance(query.get('records'),list):
         records=query['records']; columns=query.get('columns') or (list(records[0]) if records else [])
         if not records: return heading+'\n\nNo rows matched the query filters.'

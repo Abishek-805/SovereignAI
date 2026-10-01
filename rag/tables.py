@@ -118,24 +118,60 @@ def find_cells(path,q,sheet=None,match_case=False,whole_cell=False,offset=0,limi
                     total+=1
     return {'matches':matches,'total':total,'offset':offset,'limit':limit}
 
-def compile_outcome_query(intent,available,question):
+def compile_outcome_query(intent,available,question,history=None):
     """Bind a semantic cohort/outcome measure to complete source records.
 
     Exact identities and prefixes are resolved from actual records, and every
     compatible assessment is included without model-authored arithmetic.
     """
     outcomes=list(dict.fromkeys(intent.get('result_values',[])))
+    polarity=intent.get('outcome')
+    canonical={'pass':{'pass','passed'},'fail':{'fail','failed'}}
+    if polarity in canonical:
+        # The model chooses meaning, never an arbitrary union of outcome values.
+        outcomes=sorted({str(row.get(column)).strip() for _,table in available.values()
+            for row in table['records'] for column in table['columns']
+            if str(row.get(column)).strip().casefold() in canonical[polarity]})
     entities=list(dict.fromkeys(intent.get('entity_values',[])))
-    if any(str(value).casefold() not in question.casefold() for value in entities):
+    context=question+'\n'+'\n'.join(history or []) if intent.get('followup') else question
+    # Bind literal identifiers/prefixes even when the semantic model omits
+    # them. Only tokens present in one real source column qualify; ordinary
+    # words and standalone thresholds cannot silently become cohort filters.
+    user_context=question
+    if intent.get('followup'):
+        user_context+='\n'+'\n'.join(item for item in (history or []) if not item.lower().startswith('assistant:'))
+    inferred=[]
+    for token in dict.fromkeys(re.findall(r'\b[A-Za-z0-9]+\b',user_context)):
+        if not (any(c.isalpha() for c in token) and any(c.isdigit() for c in token)): continue
+        candidates={column for _,table in available.values() for column in table['columns']
+            if any(str(row.get(column)).strip().casefold().startswith(token.casefold()) for row in table['records'])}
+        if len(candidates)==1: inferred.append(token)
+    if inferred:
+        if entities and {v.casefold() for v in entities}!={v.casefold() for v in inferred}:
+            raise WorkbenchError('invalid_query','Planned cohort does not match the source-bound user identifiers')
+        entities=inferred
+    if any(str(value).casefold() not in context.casefold() for value in entities):
         raise WorkbenchError('invalid_query','Cohort identities must come from the current question')
+    threshold=intent.get('threshold')
+    if threshold is not None:
+        if not isinstance(threshold,(int,float)) or not math.isfinite(threshold) or intent.get('threshold_operator') not in {'gte','gt','lt','lte'}:
+            raise WorkbenchError('invalid_query','Invalid numeric outcome rule')
+        supplied=[float(v) for v in re.findall(r'(?<![\w.])-?\d+(?:\.\d+)?(?![\w.])',user_context)]
+        if threshold not in supplied: raise WorkbenchError('invalid_query','Outcome threshold must be supplied by the user')
+        if not intent.get('score_columns'): raise WorkbenchError('needs_input','Specify the assessment score columns for the numeric rule')
     queries=[]; documents=set(); unavailable=[]
     for identifier,(doc,table) in available.items():
         if intent.get('scope')!='all' and intent.get('assessments') and table['name'] not in intent['assessments']: continue
         criteria=[]
         for column in table['columns']:
             values={str(row.get(column)).strip().casefold() for row in table['records']}
-            if outcomes and all(str(value).casefold() in values for value in outcomes):
-                criteria.append({'column':column,'operator':'in','value':outcomes})
+            if threshold is not None and column in intent['score_columns']:
+                if any(isinstance(row.get(column),(int,float)) and not isinstance(row.get(column),bool) for row in table['records']):
+                    criteria.append({'column':column,'operator':intent['threshold_operator'],'value':threshold})
+            elif threshold is None and outcomes:
+                bound=[value for value in outcomes if str(value).casefold() in values]
+                if bound and (polarity in canonical or len(bound)==len(outcomes)):
+                    criteria.append({'column':column,'operator':'in','value':bound})
         if not criteria:
             unavailable.append(table['name']);continue
         filters=[]
@@ -159,6 +195,11 @@ def compile_outcome_query(intent,available,question):
     if len(documents)>1: raise WorkbenchError('needs_input','Connect one results document for this multi-assessment percentage')
     if not queries: raise WorkbenchError('needs_input','No explicit result values were found. Specify the numeric pass rule before calculating percentages.')
     operation=intent.get('operation','percentage')
+    # A consolidated score table already covers each assessment. Avoid counting
+    # its duplicate weekly views as additional tests.
+    consolidated=[query for query in queries if len(query['criteria'])>1]
+    if threshold is not None and len(consolidated)==1:
+        queries=consolidated;unavailable=[]
     first,*rest=queries
     return {**first,'operation':operation,'additional_queries':rest,'unavailable_assessments':unavailable}
 

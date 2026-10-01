@@ -35,10 +35,15 @@ def document_scope_for_question(documents, question, document_ids=None):
                        if len(piece) >= 5]
         # An entity ID in the question may also occur in a filename. Only
         # explicit file references or complete non-identifier names narrow scope.
-        file_reference=bool(re.search(r'\b(file|document|pdf|xlsx|report|sheet)\b',question,re.I))
+        file_reference=bool(re.search(r'\b(file|document|pdf|xlsx|sheet)\b',question,re.I))
+        # A generic request to "give a report" must not select a filename
+        # merely containing "report". Names are references, not keyword bags.
+        name_parts=re.findall(r'[^\W_]+',stem,re.UNICODE)
+        name_pattern=r'[\W_]+'.join(re.escape(part) for part in name_parts)
+        stem_named=bool(name_pattern and re.search(r'(?<!\w)'+name_pattern+r'(?!\w)',question,re.I))
         if (document['display_name'].casefold() in question.casefold() or
-            stem.casefold() in question.casefold() and (file_reference or not any(c.isdigit() for c in stem)) or
-            any(identifier in compact_question and (file_reference or not any(c.isdigit() for c in identifier)) for identifier in identifiers)):
+            stem_named and (file_reference or not any(c.isdigit() for c in stem)) or
+            any(identifier in compact_question and file_reference for identifier in identifiers)):
             matches.append(document['document_id'])
     return matches or document_ids
 

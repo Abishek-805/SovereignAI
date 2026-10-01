@@ -24,6 +24,37 @@ def test_atomic_report_preserves_old_report_when_serialization_fails(tmp_path):
     assert not path.with_name(path.name + '.tmp').exists()
 
 
+def test_atomic_report_retries_transient_windows_lock_without_reexecuting(tmp_path, monkeypatch):
+    path = tmp_path/'report.json'
+    original_replace = Path.replace
+    attempts = []
+    delays = []
+    def temporarily_locked(source, target):
+        attempts.append(json.loads(source.read_text()))
+        if len(attempts) < 3:
+            raise PermissionError('transient file lock')
+        return original_replace(source, target)
+    monkeypatch.setattr(Path, 'replace', temporarily_locked)
+    monkeypatch.setattr(evaluation.time, 'sleep', delays.append)
+    evaluation.atomic_report(path, {'completed_task': True})
+    assert attempts == [{'completed_task': True}] * 3
+    assert delays == [0.1, 0.2]
+    assert json.loads(path.read_text()) == {'completed_task': True}
+
+
+def test_atomic_report_persistent_lock_preserves_previous_and_pending(tmp_path, monkeypatch):
+    path = tmp_path/'report.json'
+    evaluation.atomic_report(path, {'previous': True})
+    def locked(source, target):
+        raise PermissionError('persistent file lock')
+    monkeypatch.setattr(Path, 'replace', locked)
+    monkeypatch.setattr(evaluation.time, 'sleep', lambda delay: None)
+    with pytest.raises(PermissionError):
+        evaluation.atomic_report(path, {'pending': True})
+    assert json.loads(path.read_text()) == {'previous': True}
+    assert json.loads(path.with_name(path.name + '.tmp').read_text()) == {'pending': True}
+
+
 def test_resume_rejects_changed_provenance_and_dataset():
     provenance = {'compatibility_sha256': 'frozen'}
     report = {**evaluation.compare(DATASET, {'A': []}, 'live'), 'provenance': provenance}

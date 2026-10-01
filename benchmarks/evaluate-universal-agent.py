@@ -30,7 +30,17 @@ def atomic_report(path, report):
         json.dump(report, handle, indent=2, default=str)
         handle.flush()
         os.fsync(handle.fileno())
-    temporary.replace(path)
+    # Windows scanners/readers can briefly deny replacement of a closed file.
+    # Preserve the fsynced temporary result and retry only this atomic commit;
+    # never repeat task execution or overwrite the old report in place.
+    for attempt in range(6):
+        try:
+            temporary.replace(path)
+            break
+        except PermissionError:
+            if attempt == 5:
+                raise
+            time.sleep(min(0.1 * (2 ** attempt), 1.0))
 
 
 def run_provenance(dataset, args, settings, registry):

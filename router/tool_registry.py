@@ -20,6 +20,10 @@ def explicit_operation_requested(goal, operation):
     Unsupported or ambiguous command wording must clarify rather than write.
     """
     if not isinstance(goal,str) or not goal.strip():return False
+    from router.request_normalization import normalize_request
+    # Corrections apply only to unquoted ordinary words, never paths/IDs. The
+    # original request is retained by the supervisor and all target validators.
+    goal=normalize_request(goal).normalized
     text=re.sub(r'"[^"\n]*"|\u201c[^\u201d\n]*\u201d','',goal)
     text=re.sub(r"(?<!\w)'[^'\n]+'(?!\w)",'',text)
     text=re.sub(r"\b(?:do\s+not|don't|don’t|without|never|no)\b[^.;,\n]*",'',text,flags=re.I)
@@ -77,7 +81,7 @@ class ToolRegistry:
         logger.info(f"Registered tool: {name}")
         
     def execute(self, name: str, kwargs: dict) -> Any:
-        from backend.task_supervisor import consume
+        from backend.task_supervisor import consume, operational_event
         consume('tool_calls')
         if name not in self.tools:
             raise WorkbenchError('tool_not_found', f"Tool {name} is not available")
@@ -90,11 +94,14 @@ class ToolRegistry:
                 raise WorkbenchError('resource_limit','Tool input exceeds its budget')
             
         try:
+            operational_event('TOOL_SELECTED',selected_tool=name)
+            operational_event('TOOL_STARTED',selected_tool=name)
             started=time.monotonic()
             result=self.tools[name](**kwargs)
             if contract and (time.monotonic()-started>contract.timeout_seconds or
                              len(json.dumps(result,default=str).encode('utf-8'))>contract.max_output_bytes):
                 raise WorkbenchError('resource_limit','Tool time or output budget exceeded')
+            operational_event('TOOL_COMPLETED',selected_tool=name,tool_results={'tool':name,'status':'returned'})
             return result
         except Exception as e:
             if isinstance(e, WorkbenchError):

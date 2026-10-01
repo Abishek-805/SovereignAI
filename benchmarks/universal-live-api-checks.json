@@ -1,0 +1,54 @@
+[
+  {
+    "stream": false,
+    "status": 200,
+    "seconds": 1.513,
+    "body": "{\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"Hi! How can I help you today? 😊\"}}],\"created\":1790870191,\"model\":\"sovereign-text-light\",\"system_fingerprint\":\"b11132-633733d0a\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":11,\"prompt_tokens\":10,\"total_tokens\":21,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"id\":\"chatcmpl-fnPqeWISCQHfHfb0irdHp70MIrPYbBmt\",\"timings\":{\"cache_n\":0,\"prompt_n\":10,\"prompt_ms\":325.311,\"prompt_per_token_ms\":32.531099999999995,\"prompt_per_second\":30.739815130751804,\"predicted_n\":11,\"predicted_ms\":251.97,\"predicted_per_token_ms\":25.197,\"predicted_per_second\":39.687264356867885}}",
+    "private_fields_absent": true,
+    "route": {
+      "selected_model": "google/gemma-4-E2B-it",
+      "is_warm": true,
+      "workflow": "CHAT",
+      "current_stage": "UNVERIFIED",
+      "completion_status": "unverified",
+      "worker_role": "lightweight"
+    }
+  },
+  {
+    "stream": true,
+    "status": 200,
+    "seconds": 1.403,
+    "body": "data: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":null}}],\"created\":1790870193,\"id\":\"chatcmpl-5QnHj14rnkaSblXszFZznasuRgp41SYy\",\"model\":\"sovereign-text-light\",\"system_fingerprint\":\"b11132-633733d0a\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\"Hi\"}}],\"created\":1790870193,\"id\":\"chatcmpl-5QnHj14rnkaSblXszFZznasuRgp41SYy\",\"model\":\"sovereign-text-light\",\"system_fingerprint\":\"b11132-633733d0a\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\"!\"}}],\"created\":1790870193,\"id\":\"chatcmpl-5QnHj14rnkaSblXszFZznasuRgp41SYy\",\"model\":\"sovereign-text-light\",\"system_fingerprint\":\"b11132-633733d0a\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\" How\"}}],\"created\":1790870193,\"id\":\"chatcmpl-5QnHj14rnkaSblXszFZznasuRgp41SYy\",\"model\":\"sovereign-text-light\",\"system_fingerprint\":\"b11132-633733d0a\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\" can\"}}],\"created\":1790870193,\"id\":\"chatcmpl-5QnHj14rnkaSblXszFZznasuRgp41SYy\",\"model\":\"sovereign-text-light\",\"system_fingerprint\":\"b11132-633733d0a\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\" I\"}}],\"created\":1790870193,\"id\":\"chatcmpl-5QnHj14rnkaSblXszFZznasuRgp41SYy\",\"model\":\"sovereign-text-light\",\"system_fingerprint\":\"b11132-633733d0a\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\" help\"}}],\"created\":1790870193,\"id\":\"chatcmpl-5QnHj14rnkaSblXszFZznasuRgp41SYy\",\"model\":\"sovereign-text-light\",\"system_fingerprint\":\"b11132-633733d0a\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\" you\"}}],\"created\":1790870193,\"id\":\"chatcmpl-5QnHj14rnkaSblXszFZznasuRgp41SYy\",\"model\":\"sovereign-text-light\",\"system_fingerprint\":\"b11132-633733d0a\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\" today\"}}],\"created\":1790870193,\"id\":\"chatcmpl-5QnHj14rnkaSblXszFZznasuRgp41SYy\",\"model\":\"sovereign-text-light\",\"system_fingerprint\":\"b11132-633733d0a\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\"?\"}}],\"created\":1790870193,\"id\":\"chatcmpl-5QnHj14rnkaSblXszFZznasuRgp41SYy\",\"model\":\"sovereign-text-light\",\"system_fingerprint\":\"b11132-633733d0a\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\" 😊\"}}],\"created\":1790870193,\"id\":\"chatcmpl-5QnHj14rnkaSblXszFZznasuRgp41SYy\",\"model\":\"sovereign-text-light\",\"system_fingerprint\":\"b11132-633733d0a\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"delta\":{}}],\"created\":1790870193,\"id\":\"chatcmpl-5QnHj14rnkaSblXszFZznasuRgp41SYy\",\"model\":\"sovereign-text-light\",\"system_fingerprint\":\"b11132-633733d0a\",\"object\":\"chat.completion.chunk\",\"timings\":{\"cache_n\":5,\"prompt_n\":5,\"prompt_ms\":118.0,\"prompt_per_token_ms\":23.6,\"prompt_per_second\":42.37288135593221,\"predicted_n\":11,\"predicted_ms\":242.582,\"predicted_per_token_ms\":24.2582,\"predicted_per_second\":41.22317401950681}}\n\ndata: [DONE]\n\n",
+    "private_fields_absent": true,
+    "route": {
+      "selected_model": "google/gemma-4-E2B-it",
+      "is_warm": true,
+      "workflow": "CHAT",
+      "current_stage": "UNVERIFIED",
+      "completion_status": "unverified",
+      "worker_role": "lightweight"
+    }
+  },
+  {
+    "kind": "calculator",
+    "status": 200,
+    "result": 60.0,
+    "counts": {
+      "model_calls": 0,
+      "tool_calls": 1,
+      "model_switches": 0
+    },
+    "workflow": "CALCULATE",
+    "completion": {
+      "state": "completed",
+      "achieved": true,
+      "response_delivered": true,
+      "checks": {
+        "calculation_evaluated": true
+      },
+      "limitations": [
+        "Completion establishes the observed executor contract, not universal semantic correctness."
+      ]
+    }
+  }
+]

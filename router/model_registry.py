@@ -47,6 +47,7 @@ class ModelSpec:
     resource_kv_configuration: str | None = None
     license_source: str | None = None
     license_reviewed_at: str | None = None
+    worker_roles: tuple[str, ...] = ()
 
     @property
     def identifier(self):
@@ -98,7 +99,15 @@ def default_specs():
             capabilities=('text','calculation'),kv_configuration='q8_0/q8_0',
             license_reference='docs/model-and-runtime-notices.md',license_id='Apache-2.0',license_reviewed=True,
             license_source='https://huggingface.co/Qwen/Qwen3.5-4B',license_reviewed_at='2026-10-01')
-    return specs
+    from dataclasses import replace
+    roles={'text':('reasoning',),'text-light':('lightweight',),'code':('code',),'vision':('vision',)}
+    identities={'Qwen3-4B-Instruct-2507-Q4_K_M.gguf':'Qwen/Qwen3-4B-Instruct-2507',
+        'gemma-4-E2B-it-Q4_K_M.gguf':'google/gemma-4-E2B-it',
+        'qwen2.5-coder-3b-instruct-q4_k_m.gguf':'Qwen/Qwen2.5-Coder-3B-Instruct',
+        'Qwen3.5-4B-Q4_K_M.gguf':'Qwen/Qwen3.5-4B',
+        'vision-qwen3.5-2b/Qwen3.5-2B-Q4_K_M.gguf':'Qwen/Qwen3.5-2B'}
+    return {key:replace(spec,worker_roles=roles.get(key,()),model_id=identities[spec.model_file])
+            for key,spec in specs.items()}
 
 class ModelRegistry:
     def __init__(self, port=8087, specs=None):
@@ -139,7 +148,8 @@ class ModelRegistry:
                  'benchmark_metrics':dict(spec.measured_metrics),
                  'license_id':spec.license_id,'license_reviewed':spec.license_reviewed,
                  'license_source':spec.license_source,'license_reviewed_at':spec.license_reviewed_at,
-                 'license_reference':spec.license_reference,'revision':spec.revision,'provider_repository':spec.provider_repository}
+                 'license_reference':spec.license_reference,'revision':spec.revision,'provider_repository':spec.provider_repository,
+                 'worker_roles':list(spec.worker_roles)}
                 for key,spec in self.specs.items()]
 
     def _model_paths(self, spec):
@@ -268,7 +278,34 @@ class ModelRegistry:
             except Exception as e:
                 raise WorkbenchError('model_ownership', f'Could not verify or stop saved model PID: {e}') from e
 
-    def acquire_lease(self, model_type: str):
+    def verified_residency(self):
+        """Return an identity only when owned model assets and runtime profile agree."""
+        alias=self._get_current_alias()
+        if alias is None or not self._owns_server():return None
+        for key,spec in self.specs.items():
+            if spec.alias==alias:
+                try:
+                    if self._runtime_profile_matches(self.launch_args(key)):return spec.identifier
+                except WorkbenchError:
+                    continue
+        return None
+
+    def release_for_admission(self, persist_before_release=None):
+        """Checkpoint and release only an owned runtime under the lease lock."""
+        with self._lock:
+            current=self._get_current_alias()
+            if current is None and not self._is_running():
+                return {'released':False,'current_residency':None}
+            if not self._owns_server():
+                raise WorkbenchError('model_ownership','Cannot release an unowned runtime for resource admission')
+            observation={'current_residency':current,'reason':'Resource admission recheck'}
+            if persist_before_release is not None:persist_before_release(observation)
+            self.kill_server()
+            self.runtime_state='Unloaded'
+            self.current_alias=None
+            return {'released':True,**observation}
+
+    def acquire_lease(self, model_type: str, *, persist_before_swap=None):
         """Acquire lease for 'text' or 'vision'."""
         with self._lock:
             args=self.launch_args(model_type)
@@ -282,12 +319,19 @@ class ModelRegistry:
                 if self._runtime_profile_matches(args):
                     self.current_alias = target_alias
                     self.runtime_state = 'Ready'
-                    return {'model_load_time':None,'switch_required':False,'current_residency':current,'selected_model':target_alias,'state':'Ready','available_context':self.specs[model_type].context}
+                    return {'model_load_time':None,'switch_required':False,'current_residency':current,'selected_model':target_alias,
+                            'selected_model_id':self.specs[model_type].identifier,'model_file':self.specs[model_type].model_file,
+                            'state':'Ready','available_context':self.specs[model_type].context}
 
             if (current is not None or self._is_running()) and not self._owns_server():
                 raise WorkbenchError('model_ownership','Model port is occupied by a process this workbench does not own')
             
             # Not running or wrong model running
+            # Persist task state under the same lock before destructive residency
+            # changes. A failed checkpoint must leave the resident model intact.
+            if persist_before_swap is not None:
+                persist_before_swap({'current_residency':current,'selected_model':self.specs[model_type].identifier,
+                                     'registry_key':model_type,'switch_required':True})
             logger.info(f"Switching model to {target_alias}")
             self.runtime_state = 'Unloading'
             self.kill_server()
@@ -327,4 +371,6 @@ class ModelRegistry:
                 
             self.current_alias = target_alias
             self.runtime_state = 'Ready'
-            return {'model_load_time':time.perf_counter()-load_started,'switch_required':True,'current_residency':current,'selected_model':target_alias,'state':'Ready','available_context':self.specs[model_type].context}
+            return {'model_load_time':time.perf_counter()-load_started,'switch_required':True,'current_residency':current,'selected_model':target_alias,
+                    'selected_model_id':self.specs[model_type].identifier,'model_file':self.specs[model_type].model_file,
+                    'state':'Ready','available_context':self.specs[model_type].context}

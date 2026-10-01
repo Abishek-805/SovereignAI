@@ -1,5 +1,7 @@
 # Sequential task supervision
 
+The extended architecture and current verification gates are documented in [Universal Task Agent](universal-task-agent.md). The tiny-controller evaluator and its original measurements are preserved under `experimental/benchmark` and `experimental/results`; the old benchmark command remains a compatibility wrapper.
+
 The application uses the resident local model sequentially as worker and reviewer. It does not start another heavyweight model or train model weights.
 
 Semantic planning runs a proposal, evidence review and repair cycle, with at most four reviewed candidates. The review checks the complete current request, follow-up references, selected workspace and requested deliverables. Task classification and application planning receive the actual conversation separately from demonstrations. Essential missing information, repeated identical failures, cancellation or the attempt limit stop the cycle without claiming completion.

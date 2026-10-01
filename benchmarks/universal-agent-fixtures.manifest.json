@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "fixture_file": "universal-agent-fixtures.json",
+  "file_sha256": "6ad981b41ec5e8e78ee98a245fc8dd226deccd8b1e6b5e389790111959339b11",
+  "semantic_sha256": "af943758778eb08de4d351611ab7488737c1a92a82c947e932c85be0c9da839a",
+  "cases": 128,
+  "categories": 16,
+  "dataset_kind": "engineer_authored_frozen_pilot",
+  "independent_held_out": false,
+  "live_results_recorded": false
+}

@@ -6,7 +6,7 @@ ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('micro_eval', ROOT / 'benchmarks/evaluate-micro-controller.py')
 evaluation = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(evaluation)
-DATASET = json.loads((ROOT / 'benchmarks/micro-controller-pilot.json').read_text(encoding='utf-8'))
+DATASET = json.loads((ROOT / 'experimental/benchmark/micro-controller-pilot.json').read_text(encoding='utf-8'))
 
 
 def case(category):

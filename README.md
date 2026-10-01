@@ -2,6 +2,8 @@
 
 SovereignAI is a local Windows AI workbench with Chat, Agent, Code, Knowledge, and Control Center. The backend serves the built Svelte interface on `http://127.0.0.1:8088`; a local llama.cpp server listens on `127.0.0.1:8087`. Indexed documents stay in `data/` and support cited answers. Code execution uses a separately verified Docker sandbox.
 
+The [Universal Task Agent report](docs/universal-task-agent.md) describes the persistent software supervisor, four worker roles, one-model broker, bounded recovery and measured verification gates. Staged changes still require Docker validation and user Accept before publication.
+
 Code projects use live files under `Documents\SovereignAI\Projects` on the default installation. Existing projects migrate without deleting their initial internal snapshots. Set `SOVEREIGN_PROJECT_DIR` before starting the backend to choose another managed project root. Code's File menu opens the current project in File Explorer or an installed Visual Studio Code; external changes appear through Refresh while unsaved editor drafts are preserved. Docker terminal paths refer to an isolated execution copy, rather than the Windows host path. Embedded Git, debugger adapters, extensions and persistent PTY sessions remain outside the internal editor's implemented feature set.
 
 Chat and Agent default to Knowledge connected with all documents available. Switching Knowledge off persists; the model decides whether a connected question requires evidence retrieval. Availability does not force greetings and unrelated questions to search files. The library exposes Rename, Move, Copy and Delete; Move organizes the library and Delete removes its indexed records, leaving original files/source snapshots on disk.

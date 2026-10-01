@@ -64,11 +64,13 @@ def observe_completion(result, workflow=None):
         computed_table=any(item.get('checks',{}).get('presentation')=='verified_query_result' and
                            item.get('checks',{}).get('numeric_claims_supported') is True
                            for item in observations if isinstance(item.get('checks',{}),dict))
+        simple=delivered and result.get('completion_contract')=='simple_conversation'
         for name,value in {'runtime_exit_success':executed,'runtime_checks_passed':tested,
                            'published_revision_observed':published,'calculation_evaluated':calculation,
                            'verified_table_presentation':computed_table}.items():
             if value:checks[name]=True
-        if executed or tested or published or calculation or computed_table:
+        if simple:checks['simple_response_delivered']=True
+        if executed or tested or published or calculation or computed_table or simple:
             state='completed'
             limitations.append('Completion establishes the observed executor contract, not universal semantic correctness.')
         elif any(item.get('checks',{}).get('syntax_or_format_checked') is True

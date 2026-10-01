@@ -42,10 +42,14 @@ class ResourceSampler:
         self._cached = None
         self._cached_at = 0.0
 
-    def sample(self):
+    def refresh(self):
+        """Observe post-unload headroom without reusing a pre-unload snapshot."""
+        return self.sample(force=True)
+
+    def sample(self, *, force=False):
         with self._lock:
             now = time.monotonic()
-            if self._cached and now-self._cached_at < self.ttl:
+            if not force and self._cached and now-self._cached_at < self.ttl:
                 return self._cached
             errors=[]
             available=None

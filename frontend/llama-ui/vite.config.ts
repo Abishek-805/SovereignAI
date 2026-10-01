@@ -19,6 +19,7 @@ const browserBaseConfig: any = {
 	instances: [{ browser: 'chromium' }],
 	provider: playwright({
 		launchOptions: {
+			...(process.env.SOVEREIGN_TEST_BROWSER ? { executablePath: process.env.SOVEREIGN_TEST_BROWSER } : {}),
 			args: ['--no-sandbox']
 		}
 	})

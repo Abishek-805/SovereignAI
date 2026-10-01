@@ -22,7 +22,8 @@ function resource(value:unknown):string {
 export function routeFacts(routing?: RoutingTelemetry | null):RouteFact[] {
  const decision=record(routing?.decision);if(!decision)return [];
  const facts:RouteFact[]=[];const add=(label:string,value:string)=>{if(value)facts.push({label,value});};
- for(const [key,label] of [['request_id','Request'],['intent','Intent'],['capability','Capability'],['modality','Modality']] as const)add(label,text(decision[key]));
+ for(const [key,label] of [['request_id','Request'],['intent','Intent'],['workflow','Workflow'],['worker_role','Worker role'],['current_stage','Task stage'],['completion_status','Completion'],['selected_tool','Selected tool'],['capability','Capability'],['modality','Modality']] as const)add(label,text(decision[key]));
+ add('Worker already warm',boolean(decision.is_warm));
  add('Evidence required',boolean(decision.evidence_required));add('Evidence used',typeof decision.evidence_used==='boolean'?(decision.evidence_used?'Used':'Not used'):'');
  const scope=record(decision.knowledge_scope);if(scope){const rows:string[]=[];if(typeof scope.connected==='boolean')rows.push(scope.connected?'Connected':'Off');if(text(scope.mode))rows.push(text(scope.mode));if(count(scope.permitted_document_count))rows.push(`${scope.permitted_document_count} permitted documents`);add('Knowledge permission',rows.join(' · '));}
  const retrieval=record(decision.retrieval);if(retrieval){add('Retrieval',text(retrieval.status));const rows:string[]=[];if(count(retrieval.document_count))rows.push(`${retrieval.document_count} documents`);if(count(retrieval.passage_count))rows.push(`${retrieval.passage_count} passages`);add('Retrieved',rows.join(' · '));if(count(retrieval.candidate_count))add('Retrieval candidates',String(retrieval.candidate_count));}

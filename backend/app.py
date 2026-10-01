@@ -1,5 +1,5 @@
 from pathlib import Path
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, contextmanager
 import hashlib
 import json
 import re
@@ -21,6 +21,36 @@ from rag.ingest import SUPPORTED, extract
 from rag.retrieve import retrieve
 from rag.pdf_visuals import enrich_pdf_chunks
 from workflows.coding_workspace import MAX_IMPORT_BYTES
+
+
+_PRIVATE_COMPLETION_FIELDS = frozenset({'reasoning_content', 'reasoning', 'reasoningContent', 'thinking', 'thoughts'})
+
+def _public_completion(value):
+    """Never transport private model reasoning, including nested deltas."""
+    if isinstance(value, dict):
+        return {key: _public_completion(item) for key, item in value.items() if key not in _PRIVATE_COMPLETION_FIELDS}
+    if isinstance(value, list):
+        return [_public_completion(item) for item in value]
+    return value
+
+def _public_sse_line(line):
+    if not line.startswith(b'data:'):
+        return line
+    raw = line[5:].strip()
+    if raw == b'[DONE]':
+        return line
+    try:
+        event = json.loads(raw)
+    except (ValueError, UnicodeDecodeError):
+        # Malformed private payloads must not bypass sanitization.
+        if any(key.encode() in raw for key in _PRIVATE_COMPLETION_FIELDS):
+            return b'data: {}' + (b'\r\n' if line.endswith(b'\r\n') else b'\n' if line.endswith(b'\n') else b'')
+        return line
+    public = _public_completion(event)
+    if public == event:
+        return line
+    ending = b'\r\n' if line.endswith(b'\r\n') else b'\n' if line.endswith(b'\n') else b''
+    return b'data: ' + json.dumps(public, ensure_ascii=False).encode('utf-8') + ending
 
 
 class AskRequest(BaseModel):
@@ -754,13 +784,45 @@ def create_app(service=None):
             return JSONResponse({'code':'invalid_stream','message':'Invalid conversation identity'},status_code=400)
         locked=False
         trace=None
+        supervisor=None
         model_started=None
         body=await request.body()
         payload=None
         if path=='v1/chat/completions' and body:
             try:payload=json.loads(body)
             except (ValueError,TypeError):pass
+        @contextmanager
+        def proxy_context():
+            from backend.task_supervisor import CURRENT_SUPERVISOR
+            supervisor_token=CURRENT_SUPERVISOR.set(supervisor)
+            route_token=CURRENT_ROUTE.set(trace)
+            try:yield
+            finally:
+                CURRENT_ROUTE.reset(route_token)
+                CURRENT_SUPERVISOR.reset(supervisor_token)
+        def finish_proxy(result=None,error=None,code=None):
+            if supervisor is None:return
+            from router.task_completion import observe_completion as check_task_completion
+            from backend.task_supervisor import TERMINAL_STAGES,_persist
+            if supervisor.task_state['current_stage'] in TERMINAL_STAGES:return
+            completion=check_task_completion(result or {})
+            if error is not None:
+                failure=code or getattr(error,'code','model_unavailable')
+                completion={'state':'cancelled' if failure in {'cancelled','stream_cancelled'} else 'failed',
+                            'achieved':False,'response_delivered':False,'checks':{},'limitations':[str(error)[:2000]]}
+            supervisor.finish(completion,error if isinstance(error,Exception) else None)
+            snapshot=supervisor.snapshot(completion)
+            # Operational recording must not conceal the upstream/cancel error.
+            try:_persist(service,snapshot)
+            except OSError:pass
+            if trace:
+                trace.current_stage=snapshot['task_state']['current_stage']
+                trace.completion_status=completion['state']
+                trace.workflow=snapshot['task_state'].get('workflow')
+                trace.worker_role=snapshot['task_state'].get('worker_role')
+                trace.selected_tool=snapshot['task_state'].get('selected_tool')
         def record_error(error,code=None):
+            finish_proxy(error=error,code=code)
             if trace:
                 trace.errors.append({'code':code or getattr(error,'code','model_unavailable'),'message':str(error)})
                 if model_started is not None:trace.model_request_time=perf_counter()-model_started
@@ -782,6 +844,30 @@ def create_app(service=None):
             trace.event('REQUEST_RECEIVED')
             latest=next((m.get('content','') for m in reversed(messages) if isinstance(m,dict) and m.get('role')=='user'),'')
             if isinstance(latest,list):latest=' '.join(item.get('text','') for item in latest if isinstance(item,dict) and item.get('type')=='text')
+            from router.request_normalization import worker_role, normalize_request
+            recent=[f"{item['role']}: {item['content']}" for item in messages[:-1]
+                    if isinstance(item,dict) and item.get('role') in {'user','assistant'} and isinstance(item.get('content'),str)][-16:]
+            trace.worker_role=worker_role(latest,image=image,history=recent)
+            from backend.task_supervisor import TaskSupervisor,SupervisorLimits,_persist
+            limits=getattr(service,'supervisor_limits',None) or SupervisorLimits()
+            if isinstance(limits,dict):limits=SupervisorLimits(**limits)
+            supervisor=TaskSupervisor(latest,{'workspace_id':None,'document_ids':[],
+                                      'reference_history':[item[:1000] for item in recent]},limits)
+            supervisor.worker_role=trace.worker_role
+            supervisor.task_state['normalized_request']=normalize_request(latest).normalized
+            supervisor.on_change=lambda current:_persist(service,current.snapshot())
+            with proxy_context():
+                supervisor.record_event('REQUEST_NORMALIZED',normalized_request=normalize_request(latest).normalized)
+                supervisor.record_event('CAPABILITY_CLASSIFIED',intent='VISION' if image else 'GENERAL',
+                                        workflow='CHAT',modality='image' if image else 'text',worker_role=trace.worker_role)
+            trace.stages.append({'stage':'normalization','original_request':latest,'normalized_request':normalize_request(latest).normalized})
+            trace.event('REQUEST_NORMALIZED')
+            trace.event('CAPABILITY_CLASSIFIED')
+            if isinstance(payload,dict):
+                template_kwargs=payload.get('chat_template_kwargs')
+                template_kwargs=dict(template_kwargs) if isinstance(template_kwargs,dict) else {}
+                if not isinstance(template_kwargs.get('enable_thinking'),bool):template_kwargs['enable_thinking']=False
+                payload['chat_template_kwargs']=template_kwargs
             classifier=getattr(service,'classifier',None)
             if classifier is not None:
                 if isinstance(latest,str):
@@ -790,19 +876,19 @@ def create_app(service=None):
                     trace.classifier_time=prediction.classifier_time_ms/1000
                     trace.event('CLASSIFICATION_COMPLETED')
             from rag.calculator import literal_expression
-            expression=literal_expression(latest) if not image else None
+            expression=literal_expression(normalize_request(latest).normalized) if not image else None
             if expression is not None and callable(getattr(service,'calculate',None)):
-                token=CURRENT_ROUTE.set(trace)
                 try:
-                    result=service.calculate(expression)
+                    with proxy_context():result=service.calculate(expression)
                 except WorkbenchError as error:
+                    finish_proxy(error=error)
                     trace.intent='calculate'
                     trace.failure_layer='tool_execution'
                     trace.errors.append({'code':error.code,'message':str(error)})
                     trace.total_time=perf_counter()-trace._started
                     if hasattr(service,'remember_route'):service.remember_route(trace.snapshot())
                     return route_headers(JSONResponse({'code':error.code,'message':str(error)},status_code=400))
-                finally:CURRENT_ROUTE.reset(token)
+                finish_proxy(result)
                 trace.intent='calculate'
                 trace.capability='calculation'
                 trace.tool_candidates=[{'name':'calculator','status':'executed','reason':'Validated arithmetic syntax'}]
@@ -822,8 +908,8 @@ def create_app(service=None):
         if locked:
             def acquire_proxy_model():
                 nonlocal capability
-                token=CURRENT_ROUTE.set(trace)
-                try:
+                with proxy_context():
+                    supervisor.checkpoint()
                     if hasattr(service,'_lease'):selected=service._lease(capability)
                     else:service.registry.acquire_lease(capability)
                     # Native Chat shares the same semantic planner for potential
@@ -839,6 +925,8 @@ def create_app(service=None):
                         if intent['action']=='edit_code':
                             capability='code'
                             trace.intent='edit_code'
+                            supervisor.record_event('CAPABILITY_CLASSIFIED',intent='CODE',workflow='CHAT',
+                                                    current_action='generate_inline_code',worker_role='code')
                             selected=service._lease(capability)
                     # Use the selected runtime's chat template and tokenizer, not a
                     # character estimate. Image patch-token expansion remains unknown.
@@ -864,14 +952,13 @@ def create_app(service=None):
                         else:payload['max_tokens']=budget
                         if 'max_tokens' in payload:payload['max_tokens']=budget
                         if trace.runtime_alias:payload['model']=trace.runtime_alias
-                finally:CURRENT_ROUTE.reset(token)
             try:await run_in_threadpool(acquire_proxy_model)
-            except Exception as error:
+            except BaseException as error:
                 service.ask_lock.release()
-                record_error(error)
+                record_error(error,'stream_cancelled' if type(error).__name__=='CancelledError' else None)
                 if isinstance(error,WorkbenchError):error.routing=trace.snapshot()
                 raise
-            if isinstance(service.model,LocalModel) and isinstance(payload,dict):body=json.dumps(payload,ensure_ascii=False).encode()
+            if isinstance(payload,dict):body=json.dumps(payload,ensure_ascii=False).encode()
         url=f'http://127.0.0.1:8087/{path}'
         if request.url.query: url+='?'+request.url.query
         headers={'content-type':request.headers.get('content-type','application/json')}
@@ -893,19 +980,26 @@ def create_app(service=None):
             model_started=perf_counter()
             client=httpx.AsyncClient(timeout=httpx.Timeout(120,connect=5))
             try:
-                upstream=await client.send(client.build_request(request.method,url,content=body,headers=headers),stream=True)
+                with proxy_context():
+                    if supervisor:
+                        supervisor.consume('model_calls')
+                        supervisor.record_event('GENERATION_STARTED')
+                    upstream=await client.send(client.build_request(request.method,url,content=body,headers=headers),stream=True)
             except httpx.HTTPError as error:
                 await client.aclose()
                 if locked: service.ask_lock.release()
                 record_error(error)
                 return route_headers(JSONResponse({'code':'model_unavailable'},status_code=503))
-            except Exception as error:
+            except BaseException as error:
                 await client.aclose()
                 if locked: service.ask_lock.release()
-                record_error(error)
+                record_error(error,'stream_cancelled' if type(error).__name__=='CancelledError' else None)
                 raise
             if upstream.status_code>=400:
                 content=await upstream.aread()
+                try:content=json.dumps(_public_completion(json.loads(content)),ensure_ascii=False).encode('utf-8')
+                except (ValueError,TypeError):
+                    if any(key.encode() in content for key in _PRIVATE_COMPLETION_FIELDS):content=b'{"error":{"message":"Invalid model response"}}'
                 await upstream.aclose()
                 await client.aclose()
                 if locked: service.ask_lock.release()
@@ -914,21 +1008,42 @@ def create_app(service=None):
                                             upstream.headers.get('content-type','application/json')))
             async def chunks():
                 pending=''
+                transport_pending=b''
+                finished=False
+                delivered=False
+                incomplete=False
                 try:
-                    async for chunk in upstream.aiter_bytes():
-                        if trace:
-                            pending+=chunk.decode('utf-8',errors='replace')
-                            lines=pending.split('\n');pending=lines.pop()
-                            for line in lines:
-                                if line.startswith('data:'):
-                                    try:
-                                        event=json.loads(line[5:])
-                                        timings=event.get('timings',{})
-                                        inference_seconds=runtime_inference_seconds(timings)
-                                        if inference_seconds is not None:
-                                            trace.inference_time=inference_seconds
-                                    except (ValueError,AttributeError):pass
-                        yield chunk
+                    with proxy_context():
+                        async for chunk in upstream.aiter_bytes():
+                            if supervisor:supervisor.checkpoint()
+                            if trace:
+                                pending+=chunk.decode('utf-8',errors='replace')
+                                lines=pending.split('\n');pending=lines.pop()
+                                for line in lines:
+                                    if line.startswith('data:'):
+                                        if line[5:].strip()=='[DONE]':finished=True
+                                        try:
+                                            event=json.loads(line[5:])
+                                            if any(choice.get('finish_reason')=='stop' for choice in event.get('choices',[]) if isinstance(choice,dict)):finished=True
+                                            if event.get('error'):incomplete=True
+                                            for choice in event.get('choices',[]):
+                                                if not isinstance(choice,dict):continue
+                                                if choice.get('finish_reason') not in (None,'stop'):incomplete=True
+                                                delta=choice.get('delta',{})
+                                                if isinstance(delta,dict) and isinstance(delta.get('content'),str) and delta['content']:delivered=True
+                                            timings=event.get('timings',{})
+                                            inference_seconds=runtime_inference_seconds(timings)
+                                            if inference_seconds is not None:trace.inference_time=inference_seconds
+                                        except (ValueError,AttributeError):pass
+                            transport_pending+=chunk
+                            while b'\n' in transport_pending:
+                                line,transport_pending=transport_pending.split(b'\n',1)
+                                yield _public_sse_line(line+b'\n')
+                            if len(transport_pending)>1048576:
+                                raise WorkbenchError('generation_format','Model stream event exceeded the supported size')
+                        if transport_pending:yield _public_sse_line(transport_pending)
+                    if supervisor:
+                        finish_proxy({'status':'answered','answer':'Stream response delivered' if delivered else ''}) if finished and not incomplete else record_error('The model stream ended without a complete response','generation_format')
                 except BaseException as error:
                     record_error(error,'stream_cancelled' if type(error).__name__=='CancelledError' else 'stream_error')
                     raise
@@ -946,7 +1061,11 @@ def create_app(service=None):
         model_started=perf_counter()
         try:
             async with httpx.AsyncClient(timeout=httpx.Timeout(120,connect=5)) as client:
-                upstream=await client.request(request.method,url,content=body,headers=headers)
+                with proxy_context():
+                    if supervisor:
+                        supervisor.consume('model_calls')
+                        supervisor.record_event('GENERATION_STARTED')
+                    upstream=await client.request(request.method,url,content=body,headers=headers)
         except httpx.HTTPError as error:
             if locked: service.ask_lock.release()
             record_error(error)
@@ -955,20 +1074,37 @@ def create_app(service=None):
                 content,media_type=model_metadata_cache[path]
                 return Response(content,media_type=media_type)
             return route_headers(JSONResponse({'code':'model_unavailable'},status_code=503))
-        except Exception as error:
+        except BaseException as error:
             if locked: service.ask_lock.release()
-            record_error(error)
+            record_error(error,'stream_cancelled' if type(error).__name__=='CancelledError' else None)
             raise
         if locked: service.ask_lock.release()
+        response_content=upstream.content
+        if path=='v1/chat/completions':
+            try:
+                raw_completion=upstream.json()
+                public_completion=_public_completion(raw_completion)
+                if public_completion!=raw_completion:response_content=json.dumps(public_completion,ensure_ascii=False).encode('utf-8')
+            except (ValueError,TypeError):
+                if any(key.encode() in response_content for key in _PRIVATE_COMPLETION_FIELDS):response_content=b'{"error":{"message":"Invalid model response"}}'
         if trace:
-            if upstream.status_code>=400:trace.errors.append({'code':'upstream_'+str(upstream.status_code),'message':upstream.content.decode(errors='replace')[:2000]})
+            if upstream.status_code>=400:trace.errors.append({'code':'upstream_'+str(upstream.status_code),'message':response_content.decode(errors='replace')[:2000]})
             token=CURRENT_ROUTE.set(trace)
             try:
-                try:completion=upstream.json()
+                try:completion=json.loads(response_content)
                 except (ValueError,TypeError):completion={}
                 observe_completion(completion,perf_counter()-model_started)
             finally:CURRENT_ROUTE.reset(token)
             trace.total_time=perf_counter()-trace._started
+            if upstream.status_code>=400:
+                finish_proxy(error=response_content.decode(errors='replace'),code='upstream_'+str(upstream.status_code))
+            else:
+                choices=completion.get('choices',[]) if isinstance(completion,dict) else []
+                text=next((choice.get('message',{}).get('content') for choice in choices if isinstance(choice,dict) and isinstance(choice.get('message'),dict)),'')
+                if isinstance(completion,dict) and completion.get('error') or any(
+                        choice.get('finish_reason') not in (None,'stop') for choice in choices if isinstance(choice,dict)):
+                    finish_proxy(error='The model response was incomplete',code='generation_format')
+                else:finish_proxy({'status':'answered','answer':text if isinstance(text,str) else ''})
             if hasattr(service,'remember_route'):service.remember_route(trace.snapshot())
         if path=='v1/streams/lookup' and upstream.status_code==503:
             return JSONResponse([])
@@ -978,7 +1114,7 @@ def create_app(service=None):
             elif upstream.status_code==503 and path in model_metadata_cache:
                 content,media_type=model_metadata_cache[path]
                 return Response(content,media_type=media_type)
-        response=model_error_response(upstream.content,upstream.status_code,
+        response=model_error_response(response_content,upstream.status_code,
                                     upstream.headers.get('content-type','application/json'))
         if trace:response.headers['x-sovereign-request-id']=trace.request_id
         return response

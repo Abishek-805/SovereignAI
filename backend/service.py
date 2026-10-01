@@ -64,6 +64,9 @@ class Workbench:
         self.model=model or LocalModel(self.settings.model_url,verify_semantics=True)
         self.registry=registry or ModelRegistry(8087)
         self.router=CapabilityRouter(self.registry)
+        from router.model_broker import ModelBroker
+        self.broker=ModelBroker(self.registry,sampler=self.router.selector.sampler,policy=self.router.selector.policy)
+        self.routing_strategy='universal'
         self.classifier=ConservativeCapabilityClassifier()
         self.tasks=TaskLedger(self.settings.data_dir)
         project_root = self.settings.project_dir or (Path.home() / 'Documents' / 'SovereignAI' / 'Projects'
@@ -105,13 +108,61 @@ class Workbench:
         response=self.model.conversation_answer(request,history) if action=='answer' else ''
         return {'action':action,'response':response,'target':'','document_scope':'focused'}
 
-    def _lease(self,capability,required_context=None):
+    def _request_plan(self, request, documents, files, history=None):
+        from router.request_normalization import normalize_request, worker_role
+        from backend.task_supervisor import CURRENT_SUPERVISOR, operational_event
+        normalized=normalize_request(request)
+        role=worker_role(request,documents=bool(documents),history=[item for item in (history or [])
+            if not isinstance(item,str) or not re.match(r'^\d+ indexed documents selected;',item)])
+        supervisor=CURRENT_SUPERVISOR.get()
+        if supervisor is not None:supervisor.worker_role=role
+        operational_event('CAPABILITY_CLASSIFIED',worker_role=role,
+                          intent='GENERAL' if role=='lightweight' else 'CODE' if role=='code' else None)
+        route=self._lease('code' if role=='code' else 'text',worker_role=role)
+        simple=getattr(self.model,'simple_answer',None)
+        if role=='lightweight' and callable(simple) and getattr(self,'routing_strategy','universal')=='universal':
+            from router.request_normalization import is_greeting
+            operational_event('PLAN_CREATED',workflow='GENERAL',intent='GENERAL',plan={'action':'answer'})
+            return {'action':'answer','response':simple(request,history),'target':'','document_scope':'focused',
+                    'completion_contract':'simple_conversation' if is_greeting(request) else None,'_worker_route':route}
+        # Both literal and normalized request are supplied. Normalization is a
+        # hypothesis for interpretation, never a replacement for user authority.
+        context=list(history or [])
+        prior=(supervisor.task_state.get('follow_up_context') or {}).get('previous_operational_state') if supervisor is not None else None
+        if isinstance(prior,dict):
+            observed={key:prior.get(key) for key in ('original_request','workflow','plan','current_action','tool_observations','blockers','evidence_references') if prior.get(key) is not None}
+            context.append('Previous operational observations (reference only; the current request and supplied scope control authority): '+json.dumps(observed,ensure_ascii=False)[:6000])
+        if normalized.normalized!=request:context.append('Spelling normalization (original request remains controlling): '+normalized.normalized)
+        operational_event('MODEL_SELECTED',worker_role=role)
+        plan=self._cpu_readonly_plan(request,context,mode='agent' if files else 'chat') or self.model.plan_task(request,documents,files,context)
+        plan['_worker_route']=route
+        workflow={'answer':'GENERAL','search_documents':'KNOWLEDGE_QUERY','edit_code':'CODE',
+                  'inspect_code':'CODE','analyze_image':'VISION','calculate':'CALCULATE',
+                  'application_tools':'MULTI_STEP','create_report':'KNOWLEDGE_QUERY'}.get(plan.get('action'))
+        operational_event('PLAN_CREATED',plan={key:plan.get(key) for key in ('action','target','document_scope')},workflow=workflow,intent=plan.get('action'))
+        operational_event('POLICY_CHECKED')
+        return plan
+
+    def _lease(self,capability,required_context=None,worker_role=None):
         trace=CURRENT_ROUTE.get()
         select=getattr(self.router,'select_model',None)
         if callable(select) and callable(getattr(self.registry,'installed',None)):
             route_start=time.perf_counter()
-            current=self.registry._get_current_alias()
-            selection=select(capability,modality='image' if capability=='vision' else 'text',required_context=required_context,current_residency=current)
+            verified=getattr(self.registry,'verified_residency',None)
+            current=verified() if callable(verified) else self.registry._get_current_alias()
+            from backend.task_supervisor import CURRENT_SUPERVISOR
+            supervisor=CURRENT_SUPERVISOR.get()
+            role=worker_role or ('lightweight' if capability=='text-light' else 'code' if capability=='code' else 'vision' if capability=='vision' else
+                                getattr(supervisor,'worker_role',None) or getattr(trace,'worker_role',None) or 'reasoning')
+            strategy=getattr(self,'routing_strategy','universal')
+            if strategy=='always_reasoning' and capability!='vision':role='reasoning'
+            elif strategy=='fixed' and capability=='text':role='reasoning'
+            if callable(verified):
+                from router.model_broker import ModelBroker
+                broker=self.broker
+                selection=broker.select(role,modality='image' if capability=='vision' else 'text',required_context=required_context,current_residency=current,task_affinity=getattr(supervisor,'model_identity',None))
+            else:
+                selection=select(capability,modality='image' if capability=='vision' else 'text',required_context=required_context,current_residency=current)
             data=selection.to_dict()
             data['routing_time']=time.perf_counter()-route_start
             if trace:trace.selection(data)
@@ -119,8 +170,19 @@ class Workbench:
             if route is None and data.get('failure_category')=='RESOURCE_FAILURE' and current and self.registry._owns_server():
                 # The resident model's allocations are not free capacity. Release
                 # the owned runtime, then measure real headroom for the new load.
-                self.registry.kill_server()
-                selection=select(capability,modality='image' if capability=='vision' else 'text',required_context=required_context,current_residency=None)
+                from backend.task_supervisor import operational_event, checkpoint
+                def save_release(observation):
+                    checkpoint()
+                    operational_event('MODEL_RELEASE_PENDING',observations=observation)
+                release=getattr(self.registry,'release_for_admission',None)
+                if callable(release):
+                    released=release(persist_before_release=save_release)
+                    if released.get('released'):operational_event('MODEL_RELEASED',observations=released)
+                else:
+                    save_release({'previous_worker':current});self.registry.kill_server()
+                    operational_event('MODEL_RELEASED',observations={'previous_worker':current})
+                refreshed=broker.selector.sampler.refresh() if 'broker' in locals() else None
+                selection=broker.select(role,modality='image' if capability=='vision' else 'text',required_context=required_context,current_residency=None,resource_snapshot=refreshed) if 'broker' in locals() else select(capability,modality='image' if capability=='vision' else 'text',required_context=required_context,current_residency=None)
                 data=selection.to_dict();data['routing_time']=time.perf_counter()-route_start
                 if trace:trace.selection(data);trace.stages.append({'stage':'resource_recheck','reason':'Owned resident unloaded before resampling'})
                 route=selection.registry_key
@@ -131,10 +193,22 @@ class Workbench:
             route=self.router.route_request(capability)
         if trace:
             trace.runtime_alias=getattr(getattr(self.registry,'specs',{}).get(route),'alias',None)
-            trace._context_admit=lambda required:self._lease(capability,required)
+            trace._context_admit=lambda required:self._lease(capability,required,worker_role)
         started=time.perf_counter()
-        consume('model_switches',identity=getattr(getattr(self.registry,'specs',{}).get(route),'alias',route))
-        lease=self.registry.acquire_lease(route)
+        from backend.task_supervisor import operational_event, CURRENT_SUPERVISOR
+        spec=getattr(self.registry,'specs',{}).get(route)
+        identity=getattr(spec,'identifier',route)
+        operational_event('MODEL_CANDIDATES_FILTERED',selected_model=identity)
+        operational_event('RESOURCE_ADMITTED',resource_admission=data.get('resource_admission') if 'data' in locals() else None)
+        operational_event('MODEL_SELECTED',selected_model=identity,worker_role=role if 'role' in locals() else capability)
+        def save_before_swap(observation):
+            operational_event('MODEL_LOADING',observations=observation)
+            consume('model_switches',identity=identity)
+            # on_change synchronously persists state before the registry unloads.
+            supervisor=CURRENT_SUPERVISOR.get()
+            if supervisor is not None:supervisor.checkpoint()
+        lease=broker.acquire(selection,persist_before_swap=save_before_swap) if 'broker' in locals() else self.registry.acquire_lease(route)
+        operational_event('MODEL_READY',selected_model=identity)
         if trace:
             trace.event('MODEL_READY')
             trace.add_time('lease_time',time.perf_counter()-started)
@@ -299,7 +373,8 @@ class Workbench:
         if len(question)>8000:
             raise WorkbenchError('question_too_long','Question exceeds 8000 characters')
         from rag.calculator import literal_expression
-        expression=literal_expression(question) if not force_documents else None
+        from router.request_normalization import normalize_request
+        expression=literal_expression(normalize_request(question).normalized) if not force_documents else None
         if expression is not None:
             if job and job.cancel.is_set():raise WorkbenchError('cancelled','Task stopped')
             if job:job.progress('Calculating locally')
@@ -323,13 +398,16 @@ class Workbench:
             if job and job.cancel.is_set():
                 raise WorkbenchError('cancelled', 'Task stopped')
             lease_start=time.perf_counter()
-            route=self._lease('text')
+            from router.request_normalization import worker_role
+            role=worker_role(question,documents=bool(document_ids),history=history)
+            route=self._lease('text',worker_role=role) if force_documents else None
             lease_seconds=time.perf_counter()-lease_start
             if job:job.progress('Preparing document answer' if force_documents else 'Understanding the request')
             report_requested=False
             if not force_documents:
                 selected_metadata=[{'document_id':doc['document_id'],'name':doc['display_name']} for doc in self.documents() if doc['document_id'] in document_ids] if document_ids else []
-                intent=self._cpu_readonly_plan(question,history) or self.model.plan_task(question,selected_metadata,[],[*history,f'{len(document_ids or [])} indexed documents selected; search them only if the request needs their contents'])
+                intent=self._request_plan(question,selected_metadata,[],[*history,f'{len(document_ids or [])} indexed documents selected; search them only if the request needs their contents'])
+                route=intent.pop('_worker_route',route)
                 if (re.search(r'\b(?:create|make|build|generate)\b',question,re.I) and
                         re.search(r'\bhtml\b[^.]{0,60}\b(?:and|with)\b[^.]{0,24}\bcss\b|\bcss\b[^.]{0,24}\band\b[^.]{0,60}\bhtml\b',question,re.I)):
                     intent={'action':'edit_code','target':'','response':''}
@@ -344,6 +422,7 @@ class Workbench:
                     raise WorkbenchError('cancelled', 'Task stopped during request interpretation')
                 if intent['action']=='answer':
                     return {'status':'conversation','answer':intent['response'],'sources':[],
+                            'completion_contract':intent.get('completion_contract'),
                             'task_id':uuid4().hex,'timings':{'total_seconds':time.perf_counter()-started},
                             'routing':{'capability':route,'model':getattr(getattr(self.registry,'specs',{}).get(route),'alias','sovereign-text')}}
                 if intent['action'] in {'application_tools','inspect_code','analyze_image'}:
@@ -368,6 +447,10 @@ class Workbench:
             if document_ids == []:
                 raise WorkbenchError('needs_input','Connect Knowledge to answer questions about your documents')
             # Validate filters even for an empty collection, without loading embeddings.
+            from backend.task_supervisor import operational_event
+            operational_event('EVIDENCE_DECIDED',workflow='KNOWLEDGE_QUERY',intent='KNOWLEDGE_QUERY')
+            operational_event('KNOWLEDGE_SCOPE_RESOLVED',observations={'document_ids':document_ids,'mode':document_scope})
+            operational_event('RETRIEVAL_STARTED')
             retrieval_start=time.perf_counter()
             if job:job.progress('Retrieving selected document passages')
             active=self.store.active_chunks(document_ids)
@@ -409,10 +492,17 @@ class Workbench:
                             query_feedback=str(error)
                             if job:job.progress('Repairing the query against source validation feedback')
                     def run_table_query(plan):
+                        operational_event('TOOL_SELECTED',tool='table_query',workflow='TABLE_QUERY',intent='TABLE_QUERY')
                         selected=plan.get('table')
                         if selected not in available: raise WorkbenchError('invalid_query','Table query selected an unavailable table')
                         selected_doc,selected_table=available[selected]
-                        result=execute_query(selected_table,plan)
+                        def execute_observed(table,query):
+                            consume('tool_calls')
+                            operational_event('TOOL_STARTED',tool='table_query',workflow='TABLE_QUERY')
+                            calculated=execute_query(table,query)
+                            operational_event('TOOL_COMPLETED',tool='table_query',workflow='TABLE_QUERY',status='returned')
+                            return calculated
+                        result=execute_observed(selected_table,plan)
                         if plan.get('unavailable_assessments'): result['unavailable_assessments']=plan['unavailable_assessments']
                         extras=plan.get('additional_queries',[])
                         if not isinstance(extras,list) or len(extras)>12: raise WorkbenchError('invalid_query','Too many additional table queries')
@@ -426,7 +516,7 @@ class Workbench:
                                 extra_doc,extra_table=available[extra['table']]
                                 if extra_doc['document_id']!=selected_doc['document_id']: raise WorkbenchError('invalid_query','Additional assessments must belong to the same source document')
                                 seen.add((extra['table'],extra.get('cohort')))
-                                calculated=execute_query(extra_table,{**extra,'operation':plan['operation']})
+                                calculated=execute_observed(extra_table,{**extra,'operation':plan['operation']})
                                 items=calculated.get('summaries') or [{'column':', '.join(calculated['columns']),'value':calculated.get('value'),'numeric_rows':calculated.get('numeric_rows')}]
                                 summaries.extend({'assessment':extra_table['name'],**({'cohort':extra['cohort']} if 'cohort' in extra else {}),**item} for item in items)
                             result['summaries']=summaries
@@ -732,11 +822,21 @@ class Workbench:
                 feedback=(result.get('stderr') or result.get('stdout') or '')[-3000:]
                 if not feedback or feedback in failures or attempt==2:return result
                 failures.add(feedback)
+                from backend.task_supervisor import operational_event
+                operational_event('REPAIR_STARTED',observations={'attempt':attempt+2,'validation_error':feedback},workflow='CODE')
                 # Only uncommitted drafts are retried. The original instruction
                 # remains controlling; observed test errors are reference data.
                 repair_history=[*(history or []),
                     'assistant: Previous uncommitted candidate:\n'+json.dumps(result.get('changes',[]),ensure_ascii=False)[-10000:],
                     'assistant: Actual sandbox validation failed:\n'+feedback]
+                replan=getattr(self.model,'replan_code',None)
+                if attempt==1 and callable(replan):
+                    operational_event('REPLAN_STARTED',observations={'reason':'Two distinct failed Docker validations'},workflow='CODE')
+                    self._lease('text',worker_role='reasoning')
+                    repair_strategy=replan(instruction,feedback,result.get('changes',[]))
+                    operational_event('PLAN_CREATED',plan={'action':'repair_code','strategy':repair_strategy},workflow='CODE')
+                    self._lease('code',worker_role='code')
+                    repair_history.append('assistant: Repair strategy proposal (original instruction and workspace remain controlling): '+repair_strategy)
                 if job:job.progress(f'Supervisor repairing failed validation ({attempt+2}/3)')
             return result
         finally:
@@ -819,6 +919,10 @@ Path('/output/project-sync.json').write_bytes(payload)
 
     @supervised_task
     def calculate(self,expression):
+        from backend.task_supervisor import operational_event
+        consume('tool_calls')
+        operational_event('TOOL_SELECTED',selected_tool='calculator',intent='CALCULATE',workflow='CALCULATE')
+        operational_event('TOOL_STARTED',selected_tool='calculator')
         from rag.calculator import evaluate_expression
         if not isinstance(expression,str) or len(expression)>100:
             raise WorkbenchError('invalid_calculation','Use an arithmetic expression under 100 characters')
@@ -831,6 +935,7 @@ Path('/output/project-sync.json').write_bytes(payload)
             value=evaluate_expression(expression)
             checks={'finite_result':True,'steps_recorded':bool(value.steps)}
             self.tasks.complete(task,checks)
+            operational_event('TOOL_COMPLETED',selected_tool='calculator',tool_results={'result':value.result})
             return {'status':'completed','task_id':task['task_id'],'expression':value.expression,
                     'result':value.result,'rounded':value.rounded,'steps':value.steps}
         except Exception as exc:
@@ -877,7 +982,8 @@ Path('/output/project-sync.json').write_bytes(payload)
             else:
                 raise WorkbenchError('needs_input','Tell me which task to retry; the last task was not marked as failed')
         from rag.calculator import literal_expression
-        expression=literal_expression(goal)
+        from router.request_normalization import normalize_request
+        expression=literal_expression(normalize_request(goal).normalized)
         if expression is not None:
             if job and job.cancel.is_set():raise WorkbenchError('cancelled','Task stopped')
             if job:job.progress('Calculating locally')
@@ -902,7 +1008,6 @@ Path('/output/project-sync.json').write_bytes(payload)
         try:
             if not self.ask_lock.acquire(blocking=False): raise WorkbenchError('busy','Another model task is running')
             try:
-                self._lease('text')
                 selected_metadata=[{'document_id':doc['document_id'],'name':doc['display_name']} for doc in self.documents() if doc['document_id'] in document_ids] if document_ids else []
                 try:
                     workspace_snapshot=self.coding.get(workspace_id) if workspace_id else {'files':[],'folders':[]}
@@ -911,7 +1016,7 @@ Path('/output/project-sync.json').write_bytes(payload)
                     if error.code!='invalid_workspace':raise
                     workspace_metadata=[]
                     workspace_snapshot={'files':[],'folders':[]}
-                plan=self._cpu_readonly_plan(goal,history,mode='agent') or self.model.plan_task(goal,selected_metadata,workspace_metadata,[item[:1000] for item in (history or [])[-16:] if isinstance(item,str)]+
+                plan=self._request_plan(goal,selected_metadata,workspace_metadata,[item[:1000] for item in (history or [])[-16:] if isinstance(item,str)]+
                                           [f'{len(document_ids or [])} indexed documents selected; workspace selected: {bool(workspace_id)}'])
                 # The model receives the whole current request, project tree and
                 # recent conversation. No topic-specific routing overrides it.
@@ -955,6 +1060,7 @@ Path('/output/project-sync.json').write_bytes(payload)
                 spec=getattr(self.registry,'specs',{}).get('text')
                 return {'task_id':task['task_id'],'status':'completed','answer':plan['response'],'plan':plan,
                         'result':result,'downloads':{},'workspace_id':workspace_id,'steps':task['steps'],
+                        'completion_contract':plan.get('completion_contract'),
                         'routing':{'capability':'text','model':spec.alias if spec else 'sovereign-text',
                                    'reason':'The text model answered without opening project or document files'}}
             if plan['action']=='analyze_image':raise WorkbenchError('needs_input','Attach an image to analyze')
@@ -1194,6 +1300,7 @@ Path('/output/project-sync.json').write_bytes(payload)
         models=[{'capability':key,'alias':spec.alias,'model_id':Path(spec.model_file).stem,
                  'quantization':spec.quantization,'context':spec.context,
                  'runtime':spec.runtime_adapter,'observed_gpu_mib':spec.observed_gpu_mib,
+                 'worker_roles':list(getattr(spec,'worker_roles',())),
                  'enabled':spec.enabled,
                  'assets_present':all(path.is_file() for path in self.registry._model_paths(spec))
                     if hasattr(self.registry,'_model_paths') else False}
@@ -1201,7 +1308,10 @@ Path('/output/project-sync.json').write_bytes(payload)
         routes={}
         for task_type in ('text','code','vision'):
             try:
-                if callable(getattr(self.registry,'installed',None)):
+                if callable(getattr(self.registry,'verified_residency',None)):
+                    choice=self.broker.select('reasoning' if task_type=='text' else task_type,modality='image' if task_type=='vision' else 'text')
+                    routes[task_type]={'capability':task_type,'model':choice.selected_model,'decision':choice.to_dict()}
+                elif callable(getattr(self.registry,'installed',None)):
                     choice=self.router.select_model(task_type,modality='image' if task_type=='vision' else 'text',current_residency=runtime['generator'].get('alias'))
                     routes[task_type]={'capability':task_type,'model':choice.selected_model,'decision':choice.to_dict()}
                 else:

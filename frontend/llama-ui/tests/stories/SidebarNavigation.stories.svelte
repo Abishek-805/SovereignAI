@@ -1,11 +1,19 @@
 <script lang="ts" module>
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 	import SidebarNavigation from '$lib/components/app/navigation/SidebarNavigation/SidebarNavigation.svelte';
-	import { waitFor } from 'storybook/test';
-	import { screen } from 'storybook/test';
+	import { expect, waitFor } from 'storybook/test';
+	import { uiStore, settingsStore } from '$lib/stores';
+	import { tick } from 'svelte';
 
 	const { Story } = defineMeta({
 		component: SidebarNavigation,
+		beforeEach: async () => {
+			settingsStore.config.alwaysShowSidebarOnDesktop = false;
+			uiStore.isSidebarExpanded = false;
+			// WorkbenchNavigation restores this preference on mount; absence means expanded.
+			localStorage.setItem('sovereign-navigation-expanded', 'false');
+			await tick();
+		},
 		parameters: {
 			layout: 'centered'
 		},
@@ -55,11 +63,8 @@
 	play={async () => {
 		const { conversationsStore } = await import('$lib/stores/conversations/index.svelte');
 
-		waitFor(() =>
-			setTimeout(() => {
-				conversationsStore.conversations = mockConversations;
-			}, 0)
-		);
+		conversationsStore.conversations = mockConversations;
+		await tick();
 	}}
 >
 	<div class="flex-column h-screen w-72 bg-background">
@@ -70,22 +75,22 @@
 <Story
 	asChild
 	name="SearchActive"
-	play={async ({ userEvent }) => {
+	play={async ({ canvas, userEvent }) => {
 		const { conversationsStore } = await import('$lib/stores/conversations/index.svelte');
 
-		waitFor(() =>
-			setTimeout(() => {
-				conversationsStore.conversations = mockConversations;
-			}, 0)
-		);
+		conversationsStore.conversations = mockConversations;
+		await tick();
 
 		// Expand sidebar first, then click Search in the expanded button list
-		const logoTrigger = screen.getByRole('button', { name: /expand navigation/i });
+		const logoTrigger = await canvas.findByRole('button', { name: /expand navigation/i });
 
 		await userEvent.click(logoTrigger);
-		const searchTrigger = screen.getByText('Search');
+		const searchTrigger = canvas.getByText('Search');
 
-		userEvent.click(searchTrigger);
+		await userEvent.click(searchTrigger);
+		await waitFor(() =>
+			expect(canvas.getByPlaceholderText('Search conversations...')).toHaveFocus()
+		);
 	}}
 >
 	<div class="flex-column h-screen w-72 bg-background">

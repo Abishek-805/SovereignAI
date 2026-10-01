@@ -87,7 +87,12 @@ for ($attempt = 0; $attempt -lt 60; $attempt++) {
             throw 'Port 8087 is serving a model that this SovereignAI launcher does not own. Stop it in the application that started it before launching SovereignAI.'
         }
         $models = Invoke-RestMethod -Uri "$model/v1/models" -TimeoutSec 3
-        if ($models.data.Count -eq 1 -and $models.data[0].id -eq 'sovereign-text') {
+        Push-Location $PSScriptRoot
+        try {
+            & $pythonPath -c "from router.model_registry import ModelRegistry; import sys; sys.exit(0 if ModelRegistry().verified_residency() else 1)"
+            $registeredResident = $LASTEXITCODE -eq 0
+        } finally { Pop-Location }
+        if ($models.data.Count -eq 1 -and $registeredResident) {
             Write-Output "SovereignAI is ready: $app"
             if (!$NoBrowser) {
                 $chromeCandidates = @("$env:ProgramFiles\Google\Chrome\Application\chrome.exe", "$env:LOCALAPPDATA\Google\Chrome\Application\chrome.exe")
@@ -97,7 +102,7 @@ for ($attempt = 0; $attempt -lt 60; $attempt++) {
             }
             exit 0
         }
-        throw 'A different model is active on port 8087. Finish the current task or switch back to sovereign-text before starting general chat.'
+        throw 'The resident model does not match an owned, registered worker profile. Inspect the active process before starting SovereignAI.'
     }
     Start-Sleep -Seconds 1
 }

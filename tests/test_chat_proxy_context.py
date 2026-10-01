@@ -41,7 +41,9 @@ def test_plain_chat_never_initializes_embedder_or_reads_library(service, monkeyp
         response = client.post('/v1/chat/completions', content=body,
                                headers={'content-type': 'application/json'})
     assert response.status_code == 200
-    assert forwarded == [('POST', 'http://127.0.0.1:8087/v1/chat/completions', body)]
+    assert len(forwarded)==1
+    assert forwarded[0][:2]==('POST','http://127.0.0.1:8087/v1/chat/completions')
+    assert json.loads(forwarded[0][2])=={**json.loads(body),'chat_template_kwargs':{'enable_thinking':False}}
     assert not service.ask_lock.locked()
 
 
@@ -68,7 +70,8 @@ def test_multimodal_proxy_keeps_image_and_caller_messages_unchanged(service, mon
         response = client.post('/v1/chat/completions', content=body,
                                headers={'content-type': 'application/json'})
     assert response.status_code == 200
-    assert forwarded == [body]
+    assert len(forwarded)==1
+    assert json.loads(forwarded[0])=={**json.loads(body),'chat_template_kwargs':{'enable_thinking':False}}
     assert not service.ask_lock.locked()
 
 

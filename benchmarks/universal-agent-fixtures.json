@@ -1,0 +1,3366 @@
+{
+  "version": 1,
+  "kind": "engineer_authored_frozen_pilot",
+  "independent_held_out": false,
+  "notes": "128 distinct realistic tasks, not captured user evaluation results. Freeze before live comparison. All sources/projects are fixture-owned. Unknown outcomes remain unknown. No automatic publication.",
+  "sources": [
+    {
+      "name": "maintenance.txt",
+      "content": "Pump maintenance interval is 120 hours. Supervisor is Mira. Workshop opens at 08:00 and closes at 18:00. Permitted coolant temperature is 65 C. Compressor inspection interval is 40 hours. Filter replacement interval is 200 hours. Required safety equipment is goggles and gloves."
+    },
+    {
+      "name": "students.csv",
+      "content": "Member Id,Group,CAT1\nRED001,RED,10\nRED002,RED,25\nRED003,RED,30\nRED004,RED,40\nBLUE001,BLUE,15\nBLUE002,BLUE,24\nBLUE003,BLUE,30\nBLUE004,BLUE,42\n"
+    }
+  ],
+  "cases": [
+    {
+      "id": "simple-01",
+      "category": "simple",
+      "request": "Hi",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "GENERAL",
+          "answer"
+        ],
+        "workflow": [
+          "GENERAL",
+          "answer"
+        ],
+        "worker": [
+          "lightweight"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "simple-02",
+      "category": "simple",
+      "request": "Hello",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "GENERAL",
+          "answer"
+        ],
+        "workflow": [
+          "GENERAL",
+          "answer"
+        ],
+        "worker": [
+          "lightweight"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "simple-03",
+      "category": "simple",
+      "request": "Good morning",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "GENERAL",
+          "answer"
+        ],
+        "workflow": [
+          "GENERAL",
+          "answer"
+        ],
+        "worker": [
+          "lightweight"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "simple-04",
+      "category": "simple",
+      "request": "Thanks",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "GENERAL",
+          "answer"
+        ],
+        "workflow": [
+          "GENERAL",
+          "answer"
+        ],
+        "worker": [
+          "lightweight"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "simple-05",
+      "category": "simple",
+      "request": "What can you do?",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "GENERAL",
+          "answer"
+        ],
+        "workflow": [
+          "GENERAL",
+          "answer"
+        ],
+        "worker": [
+          "lightweight"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "simple-06",
+      "category": "simple",
+      "request": "Tell me a short joke",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "GENERAL",
+          "answer"
+        ],
+        "workflow": [
+          "GENERAL",
+          "answer"
+        ],
+        "worker": [
+          "lightweight"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "simple-07",
+      "category": "simple",
+      "request": "Explain what a variable is",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "GENERAL",
+          "answer"
+        ],
+        "workflow": [
+          "GENERAL",
+          "answer"
+        ],
+        "worker": [
+          "lightweight"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "simple-08",
+      "category": "simple",
+      "request": "What is a prime number?",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "GENERAL",
+          "answer"
+        ],
+        "workflow": [
+          "GENERAL",
+          "answer"
+        ],
+        "worker": [
+          "lightweight"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "typo_noisy-01",
+      "category": "typo_noisy",
+      "request": "creat a python file",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      }
+    },
+    {
+      "id": "typo_noisy-02",
+      "category": "typo_noisy",
+      "request": "show maintanance interval",
+      "history": [],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "typo_noisy-03",
+      "category": "typo_noisy",
+      "request": "calcluate 12 * 5",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "CALCULATE",
+          "calculate"
+        ],
+        "workflow": [
+          "CALCULATE",
+          "calculate"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": [
+          "calculator"
+        ],
+        "achieved": null
+      }
+    },
+    {
+      "id": "typo_noisy-04",
+      "category": "typo_noisy",
+      "request": "shwo report about pump inspection",
+      "history": [],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "typo_noisy-05",
+      "category": "typo_noisy",
+      "request": "how many passd cat1 when 25 is pass",
+      "history": [],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "typo_noisy-06",
+      "category": "typo_noisy",
+      "request": "explane binary serch",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "GENERAL",
+          "answer"
+        ],
+        "workflow": [
+          "GENERAL",
+          "answer"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "typo_noisy-07",
+      "category": "typo_noisy",
+      "request": "fix maim.py syntax",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      }
+    },
+    {
+      "id": "typo_noisy-08",
+      "category": "typo_noisy",
+      "request": "compre RED and BLUE marks",
+      "history": [],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "general-01",
+      "category": "general",
+      "request": "Explain binary search with an example",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "GENERAL",
+          "answer"
+        ],
+        "workflow": [
+          "GENERAL",
+          "answer"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "general-02",
+      "category": "general",
+      "request": "Compare recursion and iteration",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "GENERAL",
+          "answer"
+        ],
+        "workflow": [
+          "GENERAL",
+          "answer"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "general-03",
+      "category": "general",
+      "request": "Explain why unit tests help",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "GENERAL",
+          "answer"
+        ],
+        "workflow": [
+          "GENERAL",
+          "answer"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "general-04",
+      "category": "general",
+      "request": "Suggest three beginner software projects",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "GENERAL",
+          "answer"
+        ],
+        "workflow": [
+          "GENERAL",
+          "answer"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "general-05",
+      "category": "general",
+      "request": "Explain the difference between RAM and storage",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "GENERAL",
+          "answer"
+        ],
+        "workflow": [
+          "GENERAL",
+          "answer"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "general-06",
+      "category": "general",
+      "request": "Give a plan for learning Python",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "GENERAL",
+          "answer"
+        ],
+        "workflow": [
+          "GENERAL",
+          "answer"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "general-07",
+      "category": "general",
+      "request": "Explain how citations support an answer",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "GENERAL",
+          "answer"
+        ],
+        "workflow": [
+          "GENERAL",
+          "answer"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "general-08",
+      "category": "general",
+      "request": "Explain why a sandbox protects host files",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "GENERAL",
+          "answer"
+        ],
+        "workflow": [
+          "GENERAL",
+          "answer"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "rag-01",
+      "category": "rag",
+      "request": "What is the pump maintenance interval?",
+      "history": [],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {
+        "kind": "source_fact",
+        "terms": [
+          "120",
+          "hours"
+        ]
+      }
+    },
+    {
+      "id": "rag-02",
+      "category": "rag",
+      "request": "Who is the pump inspection supervisor?",
+      "history": [],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {
+        "kind": "source_fact",
+        "terms": [
+          "Mira"
+        ]
+      }
+    },
+    {
+      "id": "rag-03",
+      "category": "rag",
+      "request": "What is the workshop opening time?",
+      "history": [],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {
+        "kind": "source_fact",
+        "terms": [
+          "08:00"
+        ]
+      }
+    },
+    {
+      "id": "rag-04",
+      "category": "rag",
+      "request": "When does the workshop close?",
+      "history": [],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {
+        "kind": "source_fact",
+        "terms": [
+          "18:00"
+        ]
+      }
+    },
+    {
+      "id": "rag-05",
+      "category": "rag",
+      "request": "What is the permitted coolant temperature?",
+      "history": [],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {
+        "kind": "source_fact",
+        "terms": [
+          "65"
+        ]
+      }
+    },
+    {
+      "id": "rag-06",
+      "category": "rag",
+      "request": "What is the compressor inspection interval?",
+      "history": [],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {
+        "kind": "source_fact",
+        "terms": [
+          "40",
+          "hours"
+        ]
+      }
+    },
+    {
+      "id": "rag-07",
+      "category": "rag",
+      "request": "What is the filter replacement interval?",
+      "history": [],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {
+        "kind": "source_fact",
+        "terms": [
+          "200",
+          "hours"
+        ]
+      }
+    },
+    {
+      "id": "rag-08",
+      "category": "rag",
+      "request": "Which safety equipment is required?",
+      "history": [],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {
+        "kind": "source_fact",
+        "terms": [
+          "goggles",
+          "gloves"
+        ]
+      }
+    },
+    {
+      "id": "table-01",
+      "category": "table",
+      "request": "How many students are in the table?",
+      "history": [],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {
+        "kind": "table_value",
+        "operation": "count",
+        "value": 8,
+        "scanned_rows": 8
+      }
+    },
+    {
+      "id": "table-02",
+      "category": "table",
+      "request": "What is the sum of CAT1 scores?",
+      "history": [],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {
+        "kind": "table_value",
+        "operation": "sum",
+        "value": 216,
+        "scanned_rows": 8
+      }
+    },
+    {
+      "id": "table-03",
+      "category": "table",
+      "request": "What is the average CAT1 score?",
+      "history": [],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {
+        "kind": "table_value",
+        "operation": "average",
+        "value": 27,
+        "scanned_rows": 8
+      }
+    },
+    {
+      "id": "table-04",
+      "category": "table",
+      "request": "What is the minimum CAT1 score?",
+      "history": [],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {
+        "kind": "table_value",
+        "operation": "min",
+        "value": 10,
+        "scanned_rows": 8
+      }
+    },
+    {
+      "id": "table-05",
+      "category": "table",
+      "request": "What is the maximum CAT1 score?",
+      "history": [],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {
+        "kind": "table_value",
+        "operation": "max",
+        "value": 42,
+        "scanned_rows": 8
+      }
+    },
+    {
+      "id": "table-06",
+      "category": "table",
+      "request": "How many CAT1 marks are at least 25?",
+      "history": [],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {
+        "kind": "table_value",
+        "operation": "count",
+        "value": 5,
+        "scanned_rows": 8
+      }
+    },
+    {
+      "id": "table-07",
+      "category": "table",
+      "request": "Show scores for RED001",
+      "history": [],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {}
+    },
+    {
+      "id": "table-08",
+      "category": "table",
+      "request": "Compare RED and BLUE passing percentages, passing is at least 25",
+      "history": [],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {}
+    },
+    {
+      "id": "calculator-01",
+      "category": "calculator",
+      "request": "12 * 5",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "CALCULATE",
+          "calculate"
+        ],
+        "workflow": [
+          "CALCULATE",
+          "calculate"
+        ],
+        "tools": [
+          "calculator"
+        ],
+        "worker": [
+          "none"
+        ],
+        "achieved": true
+      },
+      "oracle": {
+        "kind": "calculation",
+        "value": 60
+      }
+    },
+    {
+      "id": "calculator-02",
+      "category": "calculator",
+      "request": "23 / 64 * 100",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "CALCULATE",
+          "calculate"
+        ],
+        "workflow": [
+          "CALCULATE",
+          "calculate"
+        ],
+        "tools": [
+          "calculator"
+        ],
+        "worker": [
+          "none"
+        ],
+        "achieved": true
+      },
+      "oracle": {
+        "kind": "calculation",
+        "value": 35.9375
+      }
+    },
+    {
+      "id": "calculator-03",
+      "category": "calculator",
+      "request": "14 + 19",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "CALCULATE",
+          "calculate"
+        ],
+        "workflow": [
+          "CALCULATE",
+          "calculate"
+        ],
+        "tools": [
+          "calculator"
+        ],
+        "worker": [
+          "none"
+        ],
+        "achieved": true
+      },
+      "oracle": {
+        "kind": "calculation",
+        "value": 33
+      }
+    },
+    {
+      "id": "calculator-04",
+      "category": "calculator",
+      "request": "100 - 35",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "CALCULATE",
+          "calculate"
+        ],
+        "workflow": [
+          "CALCULATE",
+          "calculate"
+        ],
+        "tools": [
+          "calculator"
+        ],
+        "worker": [
+          "none"
+        ],
+        "achieved": true
+      },
+      "oracle": {
+        "kind": "calculation",
+        "value": 65
+      }
+    },
+    {
+      "id": "calculator-05",
+      "category": "calculator",
+      "request": "7 * 8",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "CALCULATE",
+          "calculate"
+        ],
+        "workflow": [
+          "CALCULATE",
+          "calculate"
+        ],
+        "tools": [
+          "calculator"
+        ],
+        "worker": [
+          "none"
+        ],
+        "achieved": true
+      },
+      "oracle": {
+        "kind": "calculation",
+        "value": 56
+      }
+    },
+    {
+      "id": "calculator-06",
+      "category": "calculator",
+      "request": "81 / 9",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "CALCULATE",
+          "calculate"
+        ],
+        "workflow": [
+          "CALCULATE",
+          "calculate"
+        ],
+        "tools": [
+          "calculator"
+        ],
+        "worker": [
+          "none"
+        ],
+        "achieved": true
+      },
+      "oracle": {
+        "kind": "calculation",
+        "value": 9
+      }
+    },
+    {
+      "id": "calculator-07",
+      "category": "calculator",
+      "request": "16 * 2",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "CALCULATE",
+          "calculate"
+        ],
+        "workflow": [
+          "CALCULATE",
+          "calculate"
+        ],
+        "tools": [
+          "calculator"
+        ],
+        "worker": [
+          "none"
+        ],
+        "achieved": true
+      },
+      "oracle": {
+        "kind": "calculation",
+        "value": 32
+      }
+    },
+    {
+      "id": "calculator-08",
+      "category": "calculator",
+      "request": "(3 + 4) * 5",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "CALCULATE",
+          "calculate"
+        ],
+        "workflow": [
+          "CALCULATE",
+          "calculate"
+        ],
+        "tools": [
+          "calculator"
+        ],
+        "worker": [
+          "none"
+        ],
+        "achieved": true
+      },
+      "oracle": {
+        "kind": "calculation",
+        "value": 35
+      }
+    },
+    {
+      "id": "coding-01",
+      "category": "coding",
+      "request": "Update main.py to implement double(x) as x*2. Preserve test_main.py and run checks.",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      },
+      "initial_files": {
+        "main.py": "def double(x):\n    return None\n",
+        "test_main.py": "import unittest\nfrom main import double\nclass FixtureTest(unittest.TestCase):\n def test_values(self):\n  self.assertEqual(double(-5), -10)\n  self.assertEqual(double(0), 0)\n  self.assertEqual(double(2), 4)\n  self.assertEqual(double(5), 10)\n"
+      },
+      "oracle": {
+        "kind": "trusted_tests"
+      }
+    },
+    {
+      "id": "coding-02",
+      "category": "coding",
+      "request": "Update main.py to implement triple(x) as x*3. Preserve test_main.py and run checks.",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      },
+      "initial_files": {
+        "main.py": "def triple(x):\n    return None\n",
+        "test_main.py": "import unittest\nfrom main import triple\nclass FixtureTest(unittest.TestCase):\n def test_values(self):\n  self.assertEqual(triple(-5), -15)\n  self.assertEqual(triple(0), 0)\n  self.assertEqual(triple(2), 6)\n  self.assertEqual(triple(5), 15)\n"
+      },
+      "oracle": {
+        "kind": "trusted_tests"
+      }
+    },
+    {
+      "id": "coding-03",
+      "category": "coding",
+      "request": "Update main.py to implement square(x) as x*x. Preserve test_main.py and run checks.",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      },
+      "initial_files": {
+        "main.py": "def square(x):\n    return None\n",
+        "test_main.py": "import unittest\nfrom main import square\nclass FixtureTest(unittest.TestCase):\n def test_values(self):\n  self.assertEqual(square(-5), 25)\n  self.assertEqual(square(0), 0)\n  self.assertEqual(square(2), 4)\n  self.assertEqual(square(5), 25)\n"
+      },
+      "oracle": {
+        "kind": "trusted_tests"
+      }
+    },
+    {
+      "id": "coding-04",
+      "category": "coding",
+      "request": "Update main.py to implement increment(x) as x+1. Preserve test_main.py and run checks.",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      },
+      "initial_files": {
+        "main.py": "def increment(x):\n    return None\n",
+        "test_main.py": "import unittest\nfrom main import increment\nclass FixtureTest(unittest.TestCase):\n def test_values(self):\n  self.assertEqual(increment(-5), -4)\n  self.assertEqual(increment(0), 1)\n  self.assertEqual(increment(2), 3)\n  self.assertEqual(increment(5), 6)\n"
+      },
+      "oracle": {
+        "kind": "trusted_tests"
+      }
+    },
+    {
+      "id": "coding-05",
+      "category": "coding",
+      "request": "Update main.py to implement decrement(x) as x-1. Preserve test_main.py and run checks.",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      },
+      "initial_files": {
+        "main.py": "def decrement(x):\n    return None\n",
+        "test_main.py": "import unittest\nfrom main import decrement\nclass FixtureTest(unittest.TestCase):\n def test_values(self):\n  self.assertEqual(decrement(-5), -6)\n  self.assertEqual(decrement(0), -1)\n  self.assertEqual(decrement(2), 1)\n  self.assertEqual(decrement(5), 4)\n"
+      },
+      "oracle": {
+        "kind": "trusted_tests"
+      }
+    },
+    {
+      "id": "coding-06",
+      "category": "coding",
+      "request": "Update main.py to implement negate(x) as -x. Preserve test_main.py and run checks.",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      },
+      "initial_files": {
+        "main.py": "def negate(x):\n    return None\n",
+        "test_main.py": "import unittest\nfrom main import negate\nclass FixtureTest(unittest.TestCase):\n def test_values(self):\n  self.assertEqual(negate(-5), 5)\n  self.assertEqual(negate(0), 0)\n  self.assertEqual(negate(2), -2)\n  self.assertEqual(negate(5), -5)\n"
+      },
+      "oracle": {
+        "kind": "trusted_tests"
+      }
+    },
+    {
+      "id": "coding-07",
+      "category": "coding",
+      "request": "Update main.py to implement absolute(x) as abs(x). Preserve test_main.py and run checks.",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      },
+      "initial_files": {
+        "main.py": "def absolute(x):\n    return None\n",
+        "test_main.py": "import unittest\nfrom main import absolute\nclass FixtureTest(unittest.TestCase):\n def test_values(self):\n  self.assertEqual(absolute(-5), 5)\n  self.assertEqual(absolute(0), 0)\n  self.assertEqual(absolute(2), 2)\n  self.assertEqual(absolute(5), 5)\n"
+      },
+      "oracle": {
+        "kind": "trusted_tests"
+      }
+    },
+    {
+      "id": "coding-08",
+      "category": "coding",
+      "request": "Update main.py to implement half(x) as x/2. Preserve test_main.py and run checks.",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      },
+      "initial_files": {
+        "main.py": "def half(x):\n    return None\n",
+        "test_main.py": "import unittest\nfrom main import half\nclass FixtureTest(unittest.TestCase):\n def test_values(self):\n  self.assertEqual(half(-5), -2.5)\n  self.assertEqual(half(0), 0.0)\n  self.assertEqual(half(2), 1.0)\n  self.assertEqual(half(5), 2.5)\n"
+      },
+      "oracle": {
+        "kind": "trusted_tests"
+      }
+    },
+    {
+      "id": "vision-01",
+      "category": "vision",
+      "request": "What colors are the two shapes?",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "VISION",
+          "analyze_image"
+        ],
+        "workflow": [
+          "VISION",
+          "analyze_image"
+        ],
+        "worker": [
+          "vision"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "image": true,
+      "oracle": {}
+    },
+    {
+      "id": "vision-02",
+      "category": "vision",
+      "request": "Which shape is blue?",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "VISION",
+          "analyze_image"
+        ],
+        "workflow": [
+          "VISION",
+          "analyze_image"
+        ],
+        "worker": [
+          "vision"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "image": true,
+      "oracle": {}
+    },
+    {
+      "id": "vision-03",
+      "category": "vision",
+      "request": "Which shape is red?",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "VISION",
+          "analyze_image"
+        ],
+        "workflow": [
+          "VISION",
+          "analyze_image"
+        ],
+        "worker": [
+          "vision"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "image": true,
+      "oracle": {}
+    },
+    {
+      "id": "vision-04",
+      "category": "vision",
+      "request": "Is the rectangle left of the circle?",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "VISION",
+          "analyze_image"
+        ],
+        "workflow": [
+          "VISION",
+          "analyze_image"
+        ],
+        "worker": [
+          "vision"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "image": true,
+      "oracle": {}
+    },
+    {
+      "id": "vision-05",
+      "category": "vision",
+      "request": "How many shapes are visible?",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "VISION",
+          "analyze_image"
+        ],
+        "workflow": [
+          "VISION",
+          "analyze_image"
+        ],
+        "worker": [
+          "vision"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "image": true,
+      "oracle": {}
+    },
+    {
+      "id": "vision-06",
+      "category": "vision",
+      "request": "Describe the image without inventing text",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "VISION",
+          "analyze_image"
+        ],
+        "workflow": [
+          "VISION",
+          "analyze_image"
+        ],
+        "worker": [
+          "vision"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "image": true,
+      "oracle": {}
+    },
+    {
+      "id": "vision-07",
+      "category": "vision",
+      "request": "Is there any person visible?",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "VISION",
+          "analyze_image"
+        ],
+        "workflow": [
+          "VISION",
+          "analyze_image"
+        ],
+        "worker": [
+          "vision"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "image": true,
+      "oracle": {}
+    },
+    {
+      "id": "vision-08",
+      "category": "vision",
+      "request": "What is the background color?",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "VISION",
+          "analyze_image"
+        ],
+        "workflow": [
+          "VISION",
+          "analyze_image"
+        ],
+        "worker": [
+          "vision"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "image": true,
+      "oracle": {}
+    },
+    {
+      "id": "followups-01",
+      "category": "followups",
+      "request": "Show failures instead",
+      "history": [
+        "User: Show passes; students below 25 failed."
+      ],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "followups-02",
+      "category": "followups",
+      "request": "Do the same for BLUE",
+      "history": [
+        "User: Show RED marks."
+      ],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "followups-03",
+      "category": "followups",
+      "request": "Compare both",
+      "history": [
+        "User: Compare RED and BLUE CAT1 marks."
+      ],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "followups-04",
+      "category": "followups",
+      "request": "Explain that interval",
+      "history": [
+        "User: What is the pump maintenance interval?"
+      ],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "followups-05",
+      "category": "followups",
+      "request": "Why did the test fail?",
+      "history": [
+        "User: main.py has a SyntaxError."
+      ],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      }
+    },
+    {
+      "id": "followups-06",
+      "category": "followups",
+      "request": "Continue",
+      "history": [
+        "User: Explain binary search."
+      ],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "GENERAL",
+          "answer"
+        ],
+        "workflow": [
+          "GENERAL",
+          "answer"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "followups-07",
+      "category": "followups",
+      "request": "Now show only RED001",
+      "history": [
+        "User: Show student scores."
+      ],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "followups-08",
+      "category": "followups",
+      "request": "Use the same source for the supervisor name",
+      "history": [
+        "User: Explain pump maintenance."
+      ],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "task_changes-01",
+      "category": "task_changes",
+      "request": "Actually explain it without editing",
+      "history": [
+        "User: Create binary search code."
+      ],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "GENERAL",
+          "answer"
+        ],
+        "workflow": [
+          "GENERAL",
+          "answer"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "task_changes-02",
+      "category": "task_changes",
+      "request": "Use BLUE instead of RED",
+      "history": [
+        "User: Show RED scores."
+      ],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "task_changes-03",
+      "category": "task_changes",
+      "request": "Show failures, not passes",
+      "history": [
+        "User: Passing is at least 25."
+      ],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "task_changes-04",
+      "category": "task_changes",
+      "request": "Only use the maintenance source now",
+      "history": [
+        "User: Compare student marks."
+      ],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "task_changes-05",
+      "category": "task_changes",
+      "request": "Stop the coding task and calculate 12 * 5",
+      "history": [
+        "User: Create main.py."
+      ],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "CALCULATE",
+          "calculate"
+        ],
+        "workflow": [
+          "CALCULATE",
+          "calculate"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": [
+          "calculator"
+        ],
+        "achieved": null
+      }
+    },
+    {
+      "id": "task_changes-06",
+      "category": "task_changes",
+      "request": "Now create main.py instead of a report",
+      "history": [
+        "User: Draft maintenance report."
+      ],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      }
+    },
+    {
+      "id": "task_changes-07",
+      "category": "task_changes",
+      "request": "Do not delete anything; list the files",
+      "history": [
+        "User: Delete main.py."
+      ],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      }
+    },
+    {
+      "id": "task_changes-08",
+      "category": "task_changes",
+      "request": "Summarize the compressor instead",
+      "history": [
+        "User: Explain pump inspection."
+      ],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      }
+    },
+    {
+      "id": "ambiguous-01",
+      "category": "ambiguous",
+      "request": "Fix that",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "CLARIFICATION",
+          "clarify"
+        ],
+        "workflow": [
+          "CLARIFICATION",
+          "clarify"
+        ],
+        "worker": null,
+        "tools": null,
+        "achieved": false
+      },
+      "authorized_actions": []
+    },
+    {
+      "id": "ambiguous-02",
+      "category": "ambiguous",
+      "request": "Delete the old one",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "CLARIFICATION",
+          "clarify"
+        ],
+        "workflow": [
+          "CLARIFICATION",
+          "clarify"
+        ],
+        "worker": null,
+        "tools": null,
+        "achieved": false
+      },
+      "authorized_actions": []
+    },
+    {
+      "id": "ambiguous-03",
+      "category": "ambiguous",
+      "request": "Show the pass percentage without a threshold",
+      "history": [],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "CLARIFICATION",
+          "clarify"
+        ],
+        "workflow": [
+          "CLARIFICATION",
+          "clarify"
+        ],
+        "worker": null,
+        "tools": null,
+        "achieved": false
+      },
+      "authorized_actions": []
+    },
+    {
+      "id": "ambiguous-04",
+      "category": "ambiguous",
+      "request": "Update the file",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "CLARIFICATION",
+          "clarify"
+        ],
+        "workflow": [
+          "CLARIFICATION",
+          "clarify"
+        ],
+        "worker": null,
+        "tools": null,
+        "achieved": false
+      },
+      "authorized_actions": []
+    },
+    {
+      "id": "ambiguous-05",
+      "category": "ambiguous",
+      "request": "Compare them",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "CLARIFICATION",
+          "clarify"
+        ],
+        "workflow": [
+          "CLARIFICATION",
+          "clarify"
+        ],
+        "worker": null,
+        "tools": null,
+        "achieved": false
+      },
+      "authorized_actions": []
+    },
+    {
+      "id": "ambiguous-06",
+      "category": "ambiguous",
+      "request": "Make it better",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "CLARIFICATION",
+          "clarify"
+        ],
+        "workflow": [
+          "CLARIFICATION",
+          "clarify"
+        ],
+        "worker": null,
+        "tools": null,
+        "achieved": false
+      },
+      "authorized_actions": []
+    },
+    {
+      "id": "ambiguous-07",
+      "category": "ambiguous",
+      "request": "Run the thing",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "CLARIFICATION",
+          "clarify"
+        ],
+        "workflow": [
+          "CLARIFICATION",
+          "clarify"
+        ],
+        "worker": null,
+        "tools": null,
+        "achieved": false
+      },
+      "authorized_actions": []
+    },
+    {
+      "id": "ambiguous-08",
+      "category": "ambiguous",
+      "request": "Use the other source",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "CLARIFICATION",
+          "clarify"
+        ],
+        "workflow": [
+          "CLARIFICATION",
+          "clarify"
+        ],
+        "worker": null,
+        "tools": null,
+        "achieved": false
+      },
+      "authorized_actions": []
+    },
+    {
+      "id": "docker_failures-01",
+      "category": "docker_failures",
+      "request": "Run main.py with its syntax error",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      },
+      "initial_files": {
+        "main.py": "def broken(:\n pass\n",
+        "test_main.py": "import unittest\nclass T(unittest.TestCase):\n def test_failure(self): self.assertTrue(False)\n"
+      },
+      "oracle": {}
+    },
+    {
+      "id": "docker_failures-02",
+      "category": "docker_failures",
+      "request": "Why did the Docker check fail?",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      },
+      "initial_files": {
+        "main.py": "def broken(:\n pass\n",
+        "test_main.py": "import unittest\nclass T(unittest.TestCase):\n def test_failure(self): self.assertTrue(False)\n"
+      },
+      "oracle": {}
+    },
+    {
+      "id": "docker_failures-03",
+      "category": "docker_failures",
+      "request": "Repair the missing import in main.py",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      },
+      "initial_files": {
+        "main.py": "def broken(:\n pass\n",
+        "test_main.py": "import unittest\nclass T(unittest.TestCase):\n def test_failure(self): self.assertTrue(False)\n"
+      },
+      "oracle": {}
+    },
+    {
+      "id": "docker_failures-04",
+      "category": "docker_failures",
+      "request": "Explain the missing package error",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      },
+      "initial_files": {
+        "main.py": "def broken(:\n pass\n",
+        "test_main.py": "import unittest\nclass T(unittest.TestCase):\n def test_failure(self): self.assertTrue(False)\n"
+      },
+      "oracle": {}
+    },
+    {
+      "id": "docker_failures-05",
+      "category": "docker_failures",
+      "request": "Run the failing unit test",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      },
+      "initial_files": {
+        "main.py": "def broken(:\n pass\n",
+        "test_main.py": "import unittest\nclass T(unittest.TestCase):\n def test_failure(self): self.assertTrue(False)\n"
+      },
+      "oracle": {}
+    },
+    {
+      "id": "docker_failures-06",
+      "category": "docker_failures",
+      "request": "Fix an assertion failure in main.py",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      },
+      "initial_files": {
+        "main.py": "def broken(:\n pass\n",
+        "test_main.py": "import unittest\nclass T(unittest.TestCase):\n def test_failure(self): self.assertTrue(False)\n"
+      },
+      "oracle": {}
+    },
+    {
+      "id": "docker_failures-07",
+      "category": "docker_failures",
+      "request": "Check whether Docker is available",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      },
+      "initial_files": {
+        "main.py": "def broken(:\n pass\n",
+        "test_main.py": "import unittest\nclass T(unittest.TestCase):\n def test_failure(self): self.assertTrue(False)\n"
+      },
+      "oracle": {}
+    },
+    {
+      "id": "docker_failures-08",
+      "category": "docker_failures",
+      "request": "Do not call a failed check a success",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      },
+      "initial_files": {
+        "main.py": "def broken(:\n pass\n",
+        "test_main.py": "import unittest\nclass T(unittest.TestCase):\n def test_failure(self): self.assertTrue(False)\n"
+      },
+      "oracle": {}
+    },
+    {
+      "id": "repair_tasks-01",
+      "category": "repair_tasks",
+      "request": "Fix main.py to return 7 from value()",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      },
+      "repair_required": true,
+      "initial_files": {
+        "main.py": "def value():\n return 6\n",
+        "test_main.py": "import unittest\nfrom main import value\nclass T(unittest.TestCase):\n def test_value(self): self.assertEqual(value(),7)\n"
+      },
+      "oracle": {
+        "kind": "trusted_tests"
+      }
+    },
+    {
+      "id": "repair_tasks-02",
+      "category": "repair_tasks",
+      "request": "Repair the syntax error in main.py",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      },
+      "repair_required": true,
+      "initial_files": {
+        "main.py": "def value():\n return 6\n",
+        "test_main.py": "import unittest\nfrom main import value\nclass T(unittest.TestCase):\n def test_value(self): self.assertEqual(value(),7)\n"
+      },
+      "oracle": {
+        "kind": "trusted_tests"
+      }
+    },
+    {
+      "id": "repair_tasks-03",
+      "category": "repair_tasks",
+      "request": "Fix value() so the provided test passes",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      },
+      "repair_required": true,
+      "initial_files": {
+        "main.py": "def value():\n return 6\n",
+        "test_main.py": "import unittest\nfrom main import value\nclass T(unittest.TestCase):\n def test_value(self): self.assertEqual(value(),7)\n"
+      },
+      "oracle": {
+        "kind": "trusted_tests"
+      }
+    },
+    {
+      "id": "repair_tasks-04",
+      "category": "repair_tasks",
+      "request": "Find and fix the off by one in main.py",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      },
+      "repair_required": true,
+      "initial_files": {
+        "main.py": "def value():\n return 6\n",
+        "test_main.py": "import unittest\nfrom main import value\nclass T(unittest.TestCase):\n def test_value(self): self.assertEqual(value(),7)\n"
+      },
+      "oracle": {
+        "kind": "trusted_tests"
+      }
+    },
+    {
+      "id": "repair_tasks-05",
+      "category": "repair_tasks",
+      "request": "Correct the broken return statement",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      },
+      "repair_required": true,
+      "initial_files": {
+        "main.py": "def value():\n return 6\n",
+        "test_main.py": "import unittest\nfrom main import value\nclass T(unittest.TestCase):\n def test_value(self): self.assertEqual(value(),7)\n"
+      },
+      "oracle": {
+        "kind": "trusted_tests"
+      }
+    },
+    {
+      "id": "repair_tasks-06",
+      "category": "repair_tasks",
+      "request": "Repair the failing assertion without changing tests",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      },
+      "repair_required": true,
+      "initial_files": {
+        "main.py": "def value():\n return 6\n",
+        "test_main.py": "import unittest\nfrom main import value\nclass T(unittest.TestCase):\n def test_value(self): self.assertEqual(value(),7)\n"
+      },
+      "oracle": {
+        "kind": "trusted_tests"
+      }
+    },
+    {
+      "id": "repair_tasks-07",
+      "category": "repair_tasks",
+      "request": "Inspect and repair this project",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      },
+      "repair_required": true,
+      "initial_files": {
+        "main.py": "def value():\n return 6\n",
+        "test_main.py": "import unittest\nfrom main import value\nclass T(unittest.TestCase):\n def test_value(self): self.assertEqual(value(),7)\n"
+      },
+      "oracle": {
+        "kind": "trusted_tests"
+      }
+    },
+    {
+      "id": "repair_tasks-08",
+      "category": "repair_tasks",
+      "request": "Run checks and repair main.py",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      },
+      "repair_required": true,
+      "initial_files": {
+        "main.py": "def value():\n return 6\n",
+        "test_main.py": "import unittest\nfrom main import value\nclass T(unittest.TestCase):\n def test_value(self): self.assertEqual(value(),7)\n"
+      },
+      "oracle": {
+        "kind": "trusted_tests"
+      }
+    },
+    {
+      "id": "completion_checks-01",
+      "category": "completion_checks",
+      "request": "Is the task done?",
+      "history": [
+        "User: Changes are staged and not accepted."
+      ],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "GENERAL",
+          "answer"
+        ],
+        "workflow": [
+          "GENERAL",
+          "answer"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {}
+    },
+    {
+      "id": "completion_checks-02",
+      "category": "completion_checks",
+      "request": "Can a staged draft be called published?",
+      "history": [
+        "User: Changes are staged and not accepted."
+      ],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "GENERAL",
+          "answer"
+        ],
+        "workflow": [
+          "GENERAL",
+          "answer"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {}
+    },
+    {
+      "id": "completion_checks-03",
+      "category": "completion_checks",
+      "request": "Does a syntax check prove runtime behavior?",
+      "history": [
+        "User: Changes are staged and not accepted."
+      ],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "GENERAL",
+          "answer"
+        ],
+        "workflow": [
+          "GENERAL",
+          "answer"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {}
+    },
+    {
+      "id": "completion_checks-04",
+      "category": "completion_checks",
+      "request": "Does failed Docker validation mean success?",
+      "history": [
+        "User: Changes are staged and not accepted."
+      ],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "GENERAL",
+          "answer"
+        ],
+        "workflow": [
+          "GENERAL",
+          "answer"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {}
+    },
+    {
+      "id": "completion_checks-05",
+      "category": "completion_checks",
+      "request": "Can I accept a stale revision?",
+      "history": [
+        "User: Changes are staged and not accepted."
+      ],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "GENERAL",
+          "answer"
+        ],
+        "workflow": [
+          "GENERAL",
+          "answer"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {}
+    },
+    {
+      "id": "completion_checks-06",
+      "category": "completion_checks",
+      "request": "Does an answer prove complete source coverage?",
+      "history": [
+        "User: Changes are staged and not accepted."
+      ],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "GENERAL",
+          "answer"
+        ],
+        "workflow": [
+          "GENERAL",
+          "answer"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {}
+    },
+    {
+      "id": "completion_checks-07",
+      "category": "completion_checks",
+      "request": "Are tests enough to claim all behavior works?",
+      "history": [
+        "User: Changes are staged and not accepted."
+      ],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "GENERAL",
+          "answer"
+        ],
+        "workflow": [
+          "GENERAL",
+          "answer"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {}
+    },
+    {
+      "id": "completion_checks-08",
+      "category": "completion_checks",
+      "request": "Can a cancelled task publish changes?",
+      "history": [
+        "User: Changes are staged and not accepted."
+      ],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "GENERAL",
+          "answer"
+        ],
+        "workflow": [
+          "GENERAL",
+          "answer"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {}
+    },
+    {
+      "id": "cancellation-01",
+      "category": "cancellation",
+      "request": "Create main.py",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": null,
+        "workflow": null,
+        "tools": null,
+        "worker": null,
+        "achieved": false
+      },
+      "cancelled": true,
+      "oracle": {
+        "kind": "cancelled"
+      }
+    },
+    {
+      "id": "cancellation-02",
+      "category": "cancellation",
+      "request": "Update main.py",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": null,
+        "workflow": null,
+        "tools": null,
+        "worker": null,
+        "achieved": false
+      },
+      "cancelled": true,
+      "oracle": {
+        "kind": "cancelled"
+      }
+    },
+    {
+      "id": "cancellation-03",
+      "category": "cancellation",
+      "request": "Delete old.txt",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": null,
+        "workflow": null,
+        "tools": null,
+        "worker": null,
+        "achieved": false
+      },
+      "cancelled": true,
+      "oracle": {
+        "kind": "cancelled"
+      }
+    },
+    {
+      "id": "cancellation-04",
+      "category": "cancellation",
+      "request": "Show all scores",
+      "history": [],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": null,
+        "workflow": null,
+        "tools": null,
+        "worker": null,
+        "achieved": false
+      },
+      "cancelled": true,
+      "oracle": {
+        "kind": "cancelled"
+      }
+    },
+    {
+      "id": "cancellation-05",
+      "category": "cancellation",
+      "request": "Explain pump maintenance",
+      "history": [],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": null,
+        "workflow": null,
+        "tools": null,
+        "worker": null,
+        "achieved": false
+      },
+      "cancelled": true,
+      "oracle": {
+        "kind": "cancelled"
+      }
+    },
+    {
+      "id": "cancellation-06",
+      "category": "cancellation",
+      "request": "Calculate 12 * 5",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": null,
+        "workflow": null,
+        "tools": null,
+        "worker": null,
+        "achieved": false
+      },
+      "cancelled": true,
+      "oracle": {
+        "kind": "cancelled"
+      }
+    },
+    {
+      "id": "cancellation-07",
+      "category": "cancellation",
+      "request": "Inspect the project",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": null,
+        "workflow": null,
+        "tools": null,
+        "worker": null,
+        "achieved": false
+      },
+      "cancelled": true,
+      "oracle": {
+        "kind": "cancelled"
+      }
+    },
+    {
+      "id": "cancellation-08",
+      "category": "cancellation",
+      "request": "Generate a student report",
+      "history": [],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": null,
+        "workflow": null,
+        "tools": null,
+        "worker": null,
+        "achieved": false
+      },
+      "cancelled": true,
+      "oracle": {
+        "kind": "cancelled"
+      }
+    },
+    {
+      "id": "resource_switching-01",
+      "category": "resource_switching",
+      "request": "Hi",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "GENERAL",
+          "answer"
+        ],
+        "workflow": [
+          "GENERAL",
+          "answer"
+        ],
+        "worker": [
+          "lightweight"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "image": false
+    },
+    {
+      "id": "resource_switching-02",
+      "category": "resource_switching",
+      "request": "Explain a complex maintenance discrepancy",
+      "history": [],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "image": false
+    },
+    {
+      "id": "resource_switching-03",
+      "category": "resource_switching",
+      "request": "Implement a tested Python function",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      },
+      "image": false
+    },
+    {
+      "id": "resource_switching-04",
+      "category": "resource_switching",
+      "request": "Read this image",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "VISION",
+          "analyze_image"
+        ],
+        "workflow": [
+          "VISION",
+          "analyze_image"
+        ],
+        "worker": [
+          "vision"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "image": true
+    },
+    {
+      "id": "resource_switching-05",
+      "category": "resource_switching",
+      "request": "Calculate 8 * 9",
+      "history": [],
+      "documents": false,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "CALCULATE",
+          "calculate"
+        ],
+        "workflow": [
+          "CALCULATE",
+          "calculate"
+        ],
+        "worker": null,
+        "tools": [
+          "calculator"
+        ],
+        "achieved": null
+      },
+      "image": false
+    },
+    {
+      "id": "resource_switching-06",
+      "category": "resource_switching",
+      "request": "Explain why code validation failed",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "workflow": [
+          "CODE",
+          "edit_code",
+          "inspect_code"
+        ],
+        "worker": [
+          "code"
+        ],
+        "tools": null,
+        "achieved": false
+      },
+      "image": false
+    },
+    {
+      "id": "resource_switching-07",
+      "category": "resource_switching",
+      "request": "Compare RED and BLUE",
+      "history": [],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "TABLE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "image": false
+    },
+    {
+      "id": "resource_switching-08",
+      "category": "resource_switching",
+      "request": "Summarize the workshop opening hours",
+      "history": [],
+      "documents": true,
+      "workspace": false,
+      "expected": {
+        "intent": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "workflow": [
+          "KNOWLEDGE_QUERY",
+          "search_documents"
+        ],
+        "worker": [
+          "reasoning"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "image": false
+    }
+  ]
+}

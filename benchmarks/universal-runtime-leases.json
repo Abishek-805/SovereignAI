@@ -1,0 +1,491 @@
+{
+  "rows": [
+    {
+      "role": "lightweight",
+      "alias": "text-light",
+      "identity": "google/gemma-4-E2B-it",
+      "process_ids": [
+        14452
+      ],
+      "heavy_process_count": 1,
+      "task_id_preserved": true,
+      "original_goal_preserved": true,
+      "seconds": 0.286,
+      "counts": {
+        "model_calls": 0,
+        "tool_calls": 0,
+        "model_switches": 0
+      },
+      "state": {
+        "task_id": "e641344cc71440f79562b8a474ed86d2",
+        "original_request": "Verify sequential registered worker leases",
+        "normalized_request": "Verify sequential registered worker leases",
+        "conversation_context": [],
+        "follow_up_context": null,
+        "intent": null,
+        "workflow": null,
+        "modality": null,
+        "workspace": null,
+        "knowledge_scope": [],
+        "requested_deliverables": [],
+        "success_conditions": [],
+        "current_stage": "EXECUTING",
+        "current_action": null,
+        "active_worker": "google/gemma-4-E2B-it",
+        "plan": null,
+        "observations": [],
+        "tool_results": [],
+        "evidence": [],
+        "repair_count": 0,
+        "replan_count": 0,
+        "completion_status": "running",
+        "blockers": [],
+        "cancellation_state": false,
+        "timestamps": {
+          "received": 1790869992.3848908,
+          "updated": 1790870038.6170866
+        },
+        "resource_admission": {
+          "status": "conditional",
+          "reasons": [],
+          "reason_codes": [],
+          "conditions": [
+            "Model peak system-memory requirement is not measured",
+            "Model peak GPU-memory requirement is not measured",
+            "Incremental context/KV allocation for the resident model is not measured",
+            "Peak resource measurements do not cover the configured context/KV settings",
+            "Peak resource measurements do not cover the configured KV types"
+          ],
+          "condition_codes": [
+            "peak_ram_unmeasured",
+            "peak_gpu_unmeasured",
+            "resident_incremental_kv_unmeasured",
+            "context_profile_unmeasured",
+            "kv_profile_unmeasured"
+          ],
+          "observed": {
+            "sampled_at": 1790869992.4881485,
+            "available_memory_mib": 7496.80078125,
+            "gpu_free_mib": 2673.0,
+            "gpu_total_mib": 4094.0,
+            "gpu_device": "0",
+            "source": "psutil+nvidia-smi",
+            "errors": []
+          },
+          "requirements": {
+            "system_memory_mib": null,
+            "gpu_memory_mib": null,
+            "measured_context": null,
+            "configured_context": 16384,
+            "required_context": null,
+            "kv_configuration": "q8_0/q8_0",
+            "measured_kv_configuration": null,
+            "memory_reserve_mib": 256,
+            "gpu_reserve_mib": 256
+          }
+        }
+      }
+    },
+    {
+      "role": "code",
+      "alias": "code",
+      "identity": "Qwen/Qwen2.5-Coder-3B-Instruct",
+      "process_ids": [
+        8028
+      ],
+      "heavy_process_count": 1,
+      "task_id_preserved": true,
+      "original_goal_preserved": true,
+      "seconds": 5.185,
+      "counts": {
+        "model_calls": 0,
+        "tool_calls": 0,
+        "model_switches": 1
+      },
+      "state": {
+        "task_id": "e641344cc71440f79562b8a474ed86d2",
+        "original_request": "Verify sequential registered worker leases",
+        "normalized_request": "Verify sequential registered worker leases",
+        "conversation_context": [],
+        "follow_up_context": null,
+        "intent": null,
+        "workflow": null,
+        "modality": null,
+        "workspace": null,
+        "knowledge_scope": [],
+        "requested_deliverables": [],
+        "success_conditions": [],
+        "current_stage": "EXECUTING",
+        "current_action": null,
+        "active_worker": "Qwen/Qwen2.5-Coder-3B-Instruct",
+        "plan": null,
+        "observations": [
+          {
+            "current_residency": "sovereign-text-light",
+            "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+            "registry_key": "code",
+            "switch_required": true
+          }
+        ],
+        "tool_results": [],
+        "evidence": [],
+        "repair_count": 0,
+        "replan_count": 0,
+        "completion_status": "running",
+        "blockers": [],
+        "cancellation_state": false,
+        "timestamps": {
+          "received": 1790869992.3848908,
+          "updated": 1790870038.6170866
+        },
+        "resource_admission": {
+          "status": "conditional",
+          "reasons": [],
+          "reason_codes": [],
+          "conditions": [
+            "Model peak system-memory requirement is not measured",
+            "Model peak GPU-memory requirement is not measured",
+            "Peak resource measurements do not cover the configured context/KV settings",
+            "Peak resource measurements do not cover the configured KV types"
+          ],
+          "condition_codes": [
+            "peak_ram_unmeasured",
+            "peak_gpu_unmeasured",
+            "context_profile_unmeasured",
+            "kv_profile_unmeasured"
+          ],
+          "observed": {
+            "sampled_at": 1790869992.4881485,
+            "available_memory_mib": 7496.80078125,
+            "gpu_free_mib": 2673.0,
+            "gpu_total_mib": 4094.0,
+            "gpu_device": "0",
+            "source": "psutil+nvidia-smi",
+            "errors": []
+          },
+          "requirements": {
+            "system_memory_mib": null,
+            "gpu_memory_mib": null,
+            "measured_context": null,
+            "configured_context": 16384,
+            "required_context": null,
+            "kv_configuration": "q8_0/q8_0",
+            "measured_kv_configuration": null,
+            "memory_reserve_mib": 256,
+            "gpu_reserve_mib": 256
+          }
+        }
+      }
+    },
+    {
+      "role": "reasoning",
+      "alias": "text",
+      "identity": "Qwen/Qwen3.5-4B",
+      "process_ids": [
+        29108
+      ],
+      "heavy_process_count": 1,
+      "task_id_preserved": true,
+      "original_goal_preserved": true,
+      "seconds": 17.327,
+      "counts": {
+        "model_calls": 0,
+        "tool_calls": 0,
+        "model_switches": 2
+      },
+      "state": {
+        "task_id": "e641344cc71440f79562b8a474ed86d2",
+        "original_request": "Verify sequential registered worker leases",
+        "normalized_request": "Verify sequential registered worker leases",
+        "conversation_context": [],
+        "follow_up_context": null,
+        "intent": null,
+        "workflow": null,
+        "modality": null,
+        "workspace": null,
+        "knowledge_scope": [],
+        "requested_deliverables": [],
+        "success_conditions": [],
+        "current_stage": "EXECUTING",
+        "current_action": null,
+        "active_worker": "Qwen/Qwen3.5-4B",
+        "plan": null,
+        "observations": [
+          {
+            "current_residency": "sovereign-text-light",
+            "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+            "registry_key": "code",
+            "switch_required": true
+          },
+          {
+            "current_residency": "sovereign-code",
+            "selected_model": "Qwen/Qwen3.5-4B",
+            "registry_key": "text",
+            "switch_required": true
+          }
+        ],
+        "tool_results": [],
+        "evidence": [],
+        "repair_count": 0,
+        "replan_count": 0,
+        "completion_status": "running",
+        "blockers": [],
+        "cancellation_state": false,
+        "timestamps": {
+          "received": 1790869992.3848908,
+          "updated": 1790870038.6170866
+        },
+        "resource_admission": {
+          "status": "conditional",
+          "reasons": [],
+          "reason_codes": [],
+          "conditions": [
+            "Model peak system-memory requirement is not measured",
+            "Model peak GPU-memory requirement is not measured",
+            "Peak resource measurements do not cover the configured context/KV settings",
+            "Peak resource measurements do not cover the configured KV types"
+          ],
+          "condition_codes": [
+            "peak_ram_unmeasured",
+            "peak_gpu_unmeasured",
+            "context_profile_unmeasured",
+            "kv_profile_unmeasured"
+          ],
+          "observed": {
+            "sampled_at": 1790869998.1503985,
+            "available_memory_mib": 5589.84375,
+            "gpu_free_mib": 501.0,
+            "gpu_total_mib": 4094.0,
+            "gpu_device": "0",
+            "source": "psutil+nvidia-smi",
+            "errors": []
+          },
+          "requirements": {
+            "system_memory_mib": null,
+            "gpu_memory_mib": null,
+            "measured_context": null,
+            "configured_context": 16384,
+            "required_context": null,
+            "kv_configuration": "q8_0/q8_0",
+            "measured_kv_configuration": null,
+            "memory_reserve_mib": 256,
+            "gpu_reserve_mib": 256
+          }
+        }
+      }
+    },
+    {
+      "role": "vision",
+      "alias": "vision",
+      "identity": "Qwen/Qwen3.5-2B",
+      "process_ids": [
+        17928
+      ],
+      "heavy_process_count": 1,
+      "task_id_preserved": true,
+      "original_goal_preserved": true,
+      "seconds": 14.385,
+      "counts": {
+        "model_calls": 0,
+        "tool_calls": 0,
+        "model_switches": 3
+      },
+      "state": {
+        "task_id": "e641344cc71440f79562b8a474ed86d2",
+        "original_request": "Verify sequential registered worker leases",
+        "normalized_request": "Verify sequential registered worker leases",
+        "conversation_context": [],
+        "follow_up_context": null,
+        "intent": null,
+        "workflow": null,
+        "modality": null,
+        "workspace": null,
+        "knowledge_scope": [],
+        "requested_deliverables": [],
+        "success_conditions": [],
+        "current_stage": "EXECUTING",
+        "current_action": null,
+        "active_worker": "Qwen/Qwen3.5-2B",
+        "plan": null,
+        "observations": [
+          {
+            "current_residency": "sovereign-text-light",
+            "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+            "registry_key": "code",
+            "switch_required": true
+          },
+          {
+            "current_residency": "sovereign-code",
+            "selected_model": "Qwen/Qwen3.5-4B",
+            "registry_key": "text",
+            "switch_required": true
+          },
+          {
+            "current_residency": "sovereign-text",
+            "selected_model": "Qwen/Qwen3.5-2B",
+            "registry_key": "vision",
+            "switch_required": true
+          }
+        ],
+        "tool_results": [],
+        "evidence": [],
+        "repair_count": 0,
+        "replan_count": 0,
+        "completion_status": "running",
+        "blockers": [],
+        "cancellation_state": false,
+        "timestamps": {
+          "received": 1790869992.3848908,
+          "updated": 1790870038.6170866
+        },
+        "resource_admission": {
+          "status": "conditional",
+          "reasons": [],
+          "reason_codes": [],
+          "conditions": [
+            "Model peak system-memory requirement is not measured",
+            "Model peak GPU-memory requirement is not measured",
+            "Peak resource measurements do not cover the configured context/KV settings",
+            "Peak resource measurements do not cover the configured KV types"
+          ],
+          "condition_codes": [
+            "peak_ram_unmeasured",
+            "peak_gpu_unmeasured",
+            "context_profile_unmeasured",
+            "kv_profile_unmeasured"
+          ],
+          "observed": {
+            "sampled_at": 1790870015.4789531,
+            "available_memory_mib": 4669.2421875,
+            "gpu_free_mib": 557.0,
+            "gpu_total_mib": 4094.0,
+            "gpu_device": "0",
+            "source": "psutil+nvidia-smi",
+            "errors": []
+          },
+          "requirements": {
+            "system_memory_mib": null,
+            "gpu_memory_mib": null,
+            "measured_context": null,
+            "configured_context": 16384,
+            "required_context": null,
+            "kv_configuration": "f16/f16",
+            "measured_kv_configuration": null,
+            "memory_reserve_mib": 256,
+            "gpu_reserve_mib": 256
+          }
+        }
+      }
+    },
+    {
+      "role": "lightweight",
+      "alias": "text-light",
+      "identity": "google/gemma-4-E2B-it",
+      "process_ids": [
+        32348
+      ],
+      "heavy_process_count": 1,
+      "task_id_preserved": true,
+      "original_goal_preserved": true,
+      "seconds": 9.171,
+      "counts": {
+        "model_calls": 0,
+        "tool_calls": 0,
+        "model_switches": 4
+      },
+      "state": {
+        "task_id": "e641344cc71440f79562b8a474ed86d2",
+        "original_request": "Verify sequential registered worker leases",
+        "normalized_request": "Verify sequential registered worker leases",
+        "conversation_context": [],
+        "follow_up_context": null,
+        "intent": null,
+        "workflow": null,
+        "modality": null,
+        "workspace": null,
+        "knowledge_scope": [],
+        "requested_deliverables": [],
+        "success_conditions": [],
+        "current_stage": "EXECUTING",
+        "current_action": null,
+        "active_worker": "google/gemma-4-E2B-it",
+        "plan": null,
+        "observations": [
+          {
+            "current_residency": "sovereign-text-light",
+            "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+            "registry_key": "code",
+            "switch_required": true
+          },
+          {
+            "current_residency": "sovereign-code",
+            "selected_model": "Qwen/Qwen3.5-4B",
+            "registry_key": "text",
+            "switch_required": true
+          },
+          {
+            "current_residency": "sovereign-text",
+            "selected_model": "Qwen/Qwen3.5-2B",
+            "registry_key": "vision",
+            "switch_required": true
+          },
+          {
+            "current_residency": "sovereign-vision",
+            "selected_model": "google/gemma-4-E2B-it",
+            "registry_key": "text-light",
+            "switch_required": true
+          }
+        ],
+        "tool_results": [],
+        "evidence": [],
+        "repair_count": 0,
+        "replan_count": 0,
+        "completion_status": "running",
+        "blockers": [],
+        "cancellation_state": false,
+        "timestamps": {
+          "received": 1790869992.3848908,
+          "updated": 1790870038.6170866
+        },
+        "resource_admission": {
+          "status": "conditional",
+          "reasons": [],
+          "reason_codes": [],
+          "conditions": [
+            "Model peak system-memory requirement is not measured",
+            "Model peak GPU-memory requirement is not measured",
+            "Peak resource measurements do not cover the configured context/KV settings",
+            "Peak resource measurements do not cover the configured KV types"
+          ],
+          "condition_codes": [
+            "peak_ram_unmeasured",
+            "peak_gpu_unmeasured",
+            "context_profile_unmeasured",
+            "kv_profile_unmeasured"
+          ],
+          "observed": {
+            "sampled_at": 1790870029.882114,
+            "available_memory_mib": 6187.8046875,
+            "gpu_free_mib": 507.0,
+            "gpu_total_mib": 4094.0,
+            "gpu_device": "0",
+            "source": "psutil+nvidia-smi",
+            "errors": []
+          },
+          "requirements": {
+            "system_memory_mib": null,
+            "gpu_memory_mib": null,
+            "measured_context": null,
+            "configured_context": 16384,
+            "required_context": null,
+            "kv_configuration": "q8_0/q8_0",
+            "measured_kv_configuration": null,
+            "memory_reserve_mib": 256,
+            "gpu_reserve_mib": 256
+          }
+        }
+      }
+    }
+  ],
+  "note": "Actual sequential leases; no generated task or Docker publication proof"
+}

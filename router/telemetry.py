@@ -49,6 +49,12 @@ class RoutingDecision:
     events: list = field(default_factory=list)
     selection_policy: str | None = None
     selection_evidence: dict | None = None
+    workflow: str | None = None
+    worker_role: str | None = None
+    is_warm: bool | None = None
+    current_stage: str | None = None
+    completion_status: str | None = None
+    selected_tool: str | None = None
     candidate_rejection_codes: dict = field(default_factory=dict)
     prefill_time: float | None = None
     generation_time: float | None = None
@@ -70,6 +76,18 @@ class RoutingDecision:
 
     def event(self, name):
         self.events.append({'event': name, 'elapsed_ms': (perf_counter()-self._started)*1000})
+        from backend.task_supervisor import operational_event, CURRENT_SUPERVISOR
+        # Error reporting must never re-enter admission and mask cancellation,
+        # timeout or budget errors. The outer supervisor records terminal state.
+        if name not in {'REQUEST_CANCELLED','REQUEST_FAILED','REQUEST_COMPLETED'}:
+            operational_event(name,intent=self.intent,workflow=self.workflow,selected_model=self.selected_model,
+                              selected_tool=self.selected_tool)
+        supervisor=CURRENT_SUPERVISOR.get()
+        if supervisor is not None:
+            self.current_stage=supervisor.task_state['current_stage']
+            self.workflow=supervisor.task_state['workflow']
+            self.worker_role=supervisor.worker_role
+            self.selected_tool=supervisor.task_state['current_action']
 
     def add_time(self, field_name, seconds):
         if not isinstance(seconds, bool) and isinstance(seconds, (float, int)) and isfinite(seconds) and seconds >= 0:
@@ -81,7 +99,7 @@ class RoutingDecision:
         for key in ('capability', 'modality', 'candidate_models', 'candidate_rejection_reasons',
                     'selected_model', 'route_reason', 'required_context', 'available_context',
                     'resource_admission', 'current_residency', 'switch_required', 'fallback',
-                    'selection_policy', 'selection_evidence', 'candidate_rejection_codes'):
+                    'selection_policy', 'selection_evidence', 'candidate_rejection_codes','worker_role','is_warm'):
             if key in data:
                 setattr(self, key, self.switch_required is True or data[key] if key=='switch_required' else data[key])
         self.add_time('routing_time', data.get('routing_time'))

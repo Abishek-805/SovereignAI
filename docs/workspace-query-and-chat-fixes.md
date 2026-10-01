@@ -9,3 +9,15 @@ Chat distinguishes wheel, touch, keyboard and scrollbar input from scroll change
 Python programs needing a camera or desktop window cannot run inside the existing isolated Docker environment. Run reports that requirement and provides a command for `scripts/run-workspace-python.ps1`. The user launches that command on Windows; it creates a separate project environment outside the source tree, installs the project's requirements, and supplies the OpenCV desktop package for older projects missing that dependency. Generated programs are never automatically launched on the host. The launcher was tested with OpenCV import and the bundled face cascade; physical camera capture was not tested.
 
 Validation includes the exact original OpenCV request in a temporary selected workspace, a live multi-assessment percentage query, the existing student comparison, a browser scroll regression, frontend build/type checks and backend tests. Private workbook records and live request results remain outside version control.
+# Reopening conversations
+
+The Chat composer is fixed to the viewport and measured against the chat content
+column, including sidebar resizing. Route scroll restoration is disabled inside
+Chat so it cannot overwrite the latest-message landing position. The latest user
+and assistant rows mount immediately; page height changes keep the bottom pinned
+until the user scrolls through history.
+
+Run `node tests/chat_opening_browser.cjs` against the running workbench to check
+streaming, manual history scrolling, repeated reopenings, and a full reload using
+an isolated browser profile with mocked generation. No real conversations change.
+

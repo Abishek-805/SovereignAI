@@ -18,6 +18,7 @@ export class AutoScrollController {
 	private _disabled: boolean;
 	private _lastScrollTop = $state(0);
 	private _mutationObserver: MutationObserver | null = null;
+	private _resizeObserver: ResizeObserver | null = null;
 	private _observerEnabled = false;
 	private _rafPending = false;
 	private _scrollInterval: ReturnType<typeof setInterval> | undefined;
@@ -82,6 +83,7 @@ export class AutoScrollController {
 	 * Resets scroll state when switching conversations.
 	 */
 	resetScrollState(): void {
+		this._userScrollIntentUntil = 0;
 		this._userScrolledUp = false;
 		this._autoScrollEnabled = !this._disabled;
 
@@ -211,9 +213,23 @@ export class AutoScrollController {
 			childList: true,
 			subtree: true
 		});
+		// Lazy message layout and composer measurements can change page height
+		// without adding DOM nodes. Keep following until the user reads history.
+		this._resizeObserver = new ResizeObserver(() => {
+			if (this._autoScrollEnabled && !this._rafPending) {
+				this._rafPending = true;
+				requestAnimationFrame(() => {
+					this._rafPending = false;
+					if (this._autoScrollEnabled) this.scrollToBottom();
+				});
+			}
+		});
+		this._resizeObserver.observe(this._container === document.documentElement ? document.body : this._container);
 	}
 
 	private _doStopObserving(): void {
+		this._resizeObserver?.disconnect();
+		this._resizeObserver = null;
 		if (this._mutationObserver) {
 			this._mutationObserver.disconnect();
 			this._mutationObserver = null;

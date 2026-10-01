@@ -32,6 +32,9 @@
 	// approaches the viewport; until then the row is an empty placeholder
 	// that reserves its size through content-visibility.
 	let mounted = $state(false);
+	$effect(() => {
+		if (isLastAssistantMessage || isLastUserMessage) mounted = true;
+	});
 	let wrapperEl: HTMLDivElement | undefined = $state();
 
 	$effect(() => {

@@ -8,7 +8,7 @@
  */
 
 import type { AutoScrollController } from './use-auto-scroll.svelte';
-import { afterNavigate, beforeNavigate } from '$app/navigation';
+import { afterNavigate, beforeNavigate, disableScrollHandling } from '$app/navigation';
 
 export function useChatScreenScroll(autoScroll: AutoScrollController) {
 	let chatScrollContainer: HTMLElement | undefined = $state();
@@ -28,6 +28,9 @@ export function useChatScreenScroll(autoScroll: AutoScrollController) {
 	});
 
 	afterNavigate(() => {
+		// Chat owns its landing position; route restoration must not overwrite
+		// the bottom pin after messages have rendered.
+		disableScrollHandling();
 		setTimeout(() => {
 			isNavigating = false;
 			autoScroll.resetScrollState();

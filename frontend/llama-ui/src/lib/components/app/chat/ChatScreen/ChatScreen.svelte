@@ -41,6 +41,23 @@
 	let mobileScrollDownHintLockedUntil = $state(0);
 	let emptyFileNames = $state<string[]>([]);
 	let initialMessage = $state('');
+	let screenEl: HTMLDivElement | undefined = $state();
+	let composerLeft = $state(0);
+	let composerWidth = $state(0);
+	$effect(() => {
+		if (!screenEl) return;
+		const element = screenEl;
+		const measure = () => {
+			const bounds = element.getBoundingClientRect();
+			composerLeft = bounds.left + 16;
+			composerWidth = Math.max(0, bounds.width - 32);
+		};
+		const observer = new ResizeObserver(measure);
+		observer.observe(element);
+		measure();
+		window.addEventListener('resize', measure);
+		return () => { observer.disconnect(); window.removeEventListener('resize', measure); };
+	});
 	let showDeleteDialog = $state(false);
 	let showEmptyFileDialog = $state(false);
 	let isEmpty = $derived(
@@ -206,6 +223,7 @@
 		if (!id || id === lastScrolledConversationId) return;
 
 		lastScrolledConversationId = id;
+		autoScroll.resetScrollState();
 		await tick();
 		autoScroll.scrollToBottom();
 
@@ -355,6 +373,7 @@
 	<ServerLoadingSplash />
 {:else}
 	<div
+		bind:this={screenEl}
 		style:--chat-form-bottom-position={chatFormBottomPosition}
 		class={[
 			'chat-screen flex grow flex-col min-h-[calc(100dvh-1rem)] md:min-h-[calc(100dvh-1rem-var(--chat-tabs-offset,0px))] px-4 md:py-0 pt-12 pb-48',
@@ -377,6 +396,8 @@
 		{/if}
 
 		<div
+			style:--composer-left={`${composerLeft}px`}
+			style:--composer-width={`${composerWidth}px`}
 			style:padding-top={!isEmpty ? 'var(--chat-form-padding-top)' : undefined}
 			class:empty-chat-composer={isEmpty}
 			class={[
@@ -384,7 +405,7 @@
 				// layout-property transitions need the main thread every frame and
 				// stutter while a long conversation loads; transform transitions
 				// run on the compositor and stay smooth
-				'pointer-events-none md:sticky fixed mt-auto transition-transform duration-200',
+				'chat-composer pointer-events-none fixed transition-transform duration-200',
 				deviceStore.isStandalone
 					? 'bottom-6 right-4 left-4'
 					: deviceStore.isIOSSafari
@@ -443,6 +464,9 @@
 />
 
 <style>
+	@media (min-width: 768px) {
+		.chat-composer { left: var(--composer-left); right: auto; width: var(--composer-width); z-index: 20; }
+	}
 	:global(.conversation-chat-form) {
 		background: var(--background);
 	}

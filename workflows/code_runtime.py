@@ -1,5 +1,6 @@
 """Fixed entry-point commands, always executed by the Docker sandbox."""
 import json
+import ast
 from pathlib import PurePosixPath
 
 from backend.contracts import WorkbenchError
@@ -9,6 +10,20 @@ LANGUAGES = {'.py':'Python', '.js':'JavaScript', '.mjs':'JavaScript', '.cjs':'Ja
              '.go':'Go', '.rs':'Rust', '.php':'PHP', '.sh':'Shell',
              '.sql':'SQL', '.cxx':'C++', '.bash':'Shell',
              '.html':'HTML', '.htm':'HTML', '.css':'CSS', '.json':'JSON', '.md':'Markdown', '.txt':'Text'}
+
+
+def desktop_requirements(source):
+    """Detect actual device/window calls, rather than guessing from filenames."""
+    try: tree=ast.parse(source)
+    except SyntaxError: return []
+    requirements=set()
+    for node in ast.walk(tree):
+        if not isinstance(node,ast.Call): continue
+        name=node.func.attr if isinstance(node.func,ast.Attribute) else node.func.id if isinstance(node.func,ast.Name) else ''
+        if name=='VideoCapture' and (not node.args or isinstance(node.args[0],ast.Constant) and isinstance(node.args[0].value,int)):
+            requirements.add('camera')
+        if name in {'imshow','namedWindow','Tk','mainloop'}: requirements.add('desktop window')
+    return sorted(requirements)
 
 
 def runner(target, mode='check', tests=False):

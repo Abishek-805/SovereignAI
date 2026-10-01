@@ -44,7 +44,7 @@
 		if (!formEl) return;
 
 		const updateHeight = () => {
-			const height = Math.round(formEl.getBoundingClientRect().height);
+			const height = Math.round(formWrapperEl!.getBoundingClientRect().height);
 
 			document.documentElement.style.setProperty('--chat-form-height', `${height}px`);
 		};
@@ -53,7 +53,7 @@
 
 		const resizeObserver = new ResizeObserver(updateHeight);
 
-		resizeObserver.observe(formEl);
+		resizeObserver.observe(formWrapperEl);
 
 		return () => {
 			resizeObserver.disconnect();

@@ -70,6 +70,9 @@ class ApplicationTools:
         if self.job.cancel.is_set():
             raise WorkbenchError('cancelled', 'Task stopped before application operation')
         if operation == 'project_create':
+            from router.tool_registry import new_workspace_requested
+            if self.workspace_id and not new_workspace_requested(self.goal):
+                return self.service.coding.get(self.workspace_id)
             result=self.service.coding.create(target)
             self.workspace_id=result['workspace_id']
             self.created_project_id=self.workspace_id
@@ -209,7 +212,15 @@ class ApplicationTools:
             if not isinstance(operation, dict) or set(operation) != {'tool', 'target', 'value', 'input'} or \
                     operation['tool'] not in OPERATIONS or any(not isinstance(value, str) for value in operation.values()):
                 raise WorkbenchError('tool_input', 'Invalid application operation')
-        from router.tool_registry import explicit_operation_requested
+        from router.tool_registry import explicit_operation_requested, new_workspace_requested
+        if self.workspace_id and not new_workspace_requested(self.goal):
+            # A generated project_create cannot override the selected workspace.
+            # Remove it before authorization as it is not a requested operation.
+            operations=[operation for operation in operations if operation['tool']!='project_create']
+            if not operations:
+                if explicit_operation_requested(self.goal,'file_edit'):
+                    operations=[{'tool':'file_edit','target':'','value':self.goal,'input':''}]
+                else: raise WorkbenchError('needs_input','Specify the change to make in the selected workspace')
         from router.telemetry import CURRENT_ROUTE
         trace=CURRENT_ROUTE.get()
         for operation in operations:
@@ -278,7 +289,8 @@ class ApplicationTools:
             self.service.tasks.step(task, operation['tool'], {'target':operation['target']})
             results.append({'tool':operation['tool'], 'target':operation['target'], 'result':result})
             if result.get('state', result.get('status')) == 'failed':
-                return {'state':'failed', 'answer':'The operation failed; later operations were not run.', 'operations':results}
+                detail=result.get('stderr') or result.get('error') or result.get('validation_error') or 'The check did not pass.'
+                return {'state':'failed', 'answer':'The operation failed: '+str(detail)[-2000:]+' Later operations were not run.', 'operations':results}
         def summary(result):
             actual_target=(result['result'].get('display_name',result['target'])
                            if result['tool']=='document_create' else result['target'])

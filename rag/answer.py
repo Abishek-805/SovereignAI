@@ -79,6 +79,15 @@ def _query_presentation(sources):
     source=sources[0]; query=source.get('query_result') or {}
     if not {'table','operation','scanned_rows','matched_rows'}<=query.keys(): return None
     heading=f"Verified results from {cell(query['table'])}. [{source['label']}]"
+    if isinstance(query.get('summaries'),list):
+        summaries=query['summaries']
+        columns=['column','passed','total','percentage'] if query['operation']=='percentage' else ['column','value','numeric_rows']
+        if query['operation']=='count': columns=['column','value','total']
+        if any('assessment' in row for row in summaries): columns=['assessment',*columns]
+        lines=[' | '.join(cell(c.replace('_',' ').capitalize()) for c in columns),' | '.join('---' for _ in columns)]
+        lines.extend(' | '.join(cell(row.get(c)) for c in columns) for row in summaries)
+        missing=query.get('unavailable_assessments',[])
+        return heading+'\n\n'+'\n'.join(lines)+ ('\n\nPercentages use all matching cohort records as the denominator.' if query['operation']=='percentage' else '')+ ('\n\nNo explicit pass/fail rule is available for: '+', '.join(cell(name) for name in missing)+'. Supply the pass threshold to calculate those assessments.' if missing else '')
     if query['operation']=='select' and isinstance(query.get('records'),list):
         records=query['records']; columns=query.get('columns') or (list(records[0]) if records else [])
         if not records: return heading+'\n\nNo rows matched the query filters.'
@@ -188,6 +197,15 @@ def answer(question,passages,model,context=4096,output_tokens=512,safety_tokens=
             prompt_tokens=count
     if not sources:
         raise WorkbenchError('context_budget','No complete evidence passage fits; shorten the question')
+    if len(sources)==1 and (sources[0].get('query_result') or {}).get('operation')=='percentage':
+        presentation=_query_presentation(sources)
+        if presentation is not None:
+            result={'status':'answered','answer':presentation}
+            checks=_validate_result(result,sources,0)
+            checks.update(presentation='verified_query_result',generated_prose_accepted=False)
+            return {**result,'sources':sources,'checks':checks,
+                'timings':{'answer_seconds':time.perf_counter()-started,'estimated_prompt_tokens':prompt_tokens,'model_attempt_timings':[]},
+                'usage':{},'model':None}
     messages=_messages(question,sources,history,overview_documents,report_generation)
     response=model.complete(messages,max_tokens=output_tokens)
     runtime_attempts=[response.get('timings',{})]

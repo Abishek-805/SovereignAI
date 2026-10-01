@@ -118,9 +118,54 @@ def find_cells(path,q,sheet=None,match_case=False,whole_cell=False,offset=0,limi
                     total+=1
     return {'matches':matches,'total':total,'offset':offset,'limit':limit}
 
+def compile_outcome_query(intent,available,question):
+    """Bind a semantic cohort/outcome measure to complete source records.
+
+    Exact identities and prefixes are resolved from actual records, and every
+    compatible assessment is included without model-authored arithmetic.
+    """
+    outcomes=list(dict.fromkeys(intent.get('result_values',[])))
+    entities=list(dict.fromkeys(intent.get('entity_values',[])))
+    if any(str(value).casefold() not in question.casefold() for value in entities):
+        raise WorkbenchError('invalid_query','Cohort identities must come from the current question')
+    queries=[]; documents=set(); unavailable=[]
+    for identifier,(doc,table) in available.items():
+        if intent.get('scope')!='all' and intent.get('assessments') and table['name'] not in intent['assessments']: continue
+        criteria=[]
+        for column in table['columns']:
+            values={str(row.get(column)).strip().casefold() for row in table['records']}
+            if outcomes and all(str(value).casefold() in values for value in outcomes):
+                criteria.append({'column':column,'operator':'in','value':outcomes})
+        if not criteria:
+            unavailable.append(table['name']);continue
+        filters=[]
+        if entities:
+            candidates=[]
+            for column in table['columns']:
+                values={str(row.get(column)).strip().casefold() for row in table['records']}
+                exact=all(str(entity).casefold() in values for entity in entities)
+                partial=all(any(str(entity).casefold() in value for value in values) for entity in entities)
+                if exact or partial: candidates.append((column,exact))
+            exact=[candidate for candidate in candidates if candidate[1]]
+            candidates=exact or candidates
+            if len(candidates)!=1:
+                raise WorkbenchError('needs_input','The cohort does not resolve to one identity column in '+table['name']+'. Specify the identity field.')
+            column,is_exact=candidates[0]
+            if is_exact: filters=[{'column':column,'operator':'in','value':entities}]
+            elif len(entities)==1: filters=[{'column':column,'operator':'contains','value':entities[0]}]
+            else: raise WorkbenchError('needs_input','Use complete identities or one cohort prefix for percentages')
+        queries.append({'table':identifier,'columns':[],'filters':filters,'criteria':criteria})
+        documents.add(doc['document_id'])
+    if len(documents)>1: raise WorkbenchError('needs_input','Connect one results document for this multi-assessment percentage')
+    if not queries: raise WorkbenchError('needs_input','No explicit result values were found. Specify the numeric pass rule before calculating percentages.')
+    operation=intent.get('operation','percentage')
+    first,*rest=queries
+    return {**first,'operation':operation,'additional_queries':rest,'unavailable_assessments':unavailable}
+
+
 def execute_query(table,plan):
     operation=plan.get('operation'); columns=plan.get('columns',[]); filters=plan.get('filters',[])
-    if operation not in {'select','count','sum','average','min','max'} or not isinstance(columns,list) or not isinstance(filters,list) or len(columns)>12 or len(filters)>8:
+    if operation not in {'select','count','sum','average','min','max','percentage'} or not isinstance(columns,list) or not isinstance(filters,list) or len(columns)>12 or len(filters)>8:
         raise WorkbenchError('invalid_query','Unsupported table query')
     if any(c not in table['columns'] for c in columns): raise WorkbenchError('invalid_query','Query refers to an unknown column')
     for f in filters:
@@ -149,9 +194,35 @@ def execute_query(table,plan):
     rows=[r for r in table['records'] if all(match(r,f) for f in filters)]
     result={'table':table['name'],'operation':operation,'scanned_rows':len(table['records']),'matched_rows':len(rows),'columns':columns,'filters':filters}
     if operation=='select': result.update(records=[{c:r.get(c) for c in columns or table['columns']} for r in rows[:40]],truncated=len(rows)>40)
-    elif operation=='count': result['value']=len(rows)
+    elif operation=='count':
+        criteria=plan.get('criteria',[])
+        if criteria:
+            if not isinstance(criteria,list) or len(criteria)>12: raise WorkbenchError('invalid_query','Too many result count criteria')
+            result['summaries']=[{'column':criterion.get('column'),'value':execute_query({**table,'records':rows},
+                {'operation':'count','columns':[],'filters':[criterion]})['value'],'total':len(rows)} for criterion in criteria]
+            if len(criteria)==1: result['value']=result['summaries'][0]['value']
+        else: result['value']=len(rows)
+    elif operation=='percentage':
+        criteria=plan.get('criteria',[])
+        if not criteria or len(criteria)>12:
+            raise WorkbenchError('invalid_query','A percentage requires an explicit result value or a source/user supplied threshold for each assessment')
+        # Reuse the same validated comparison contract for numerator predicates.
+        summaries=[]
+        for criterion in criteria:
+            if criterion.get('operator')=='in':
+                existing={str(row.get(criterion.get('column'))).strip().casefold() for row in table['records']}
+                values=criterion.get('value',[])
+                if isinstance(values,list) and any(str(value).strip().casefold() not in existing for value in values):
+                    raise WorkbenchError('invalid_query','Percentage criterion values do not exist in '+table['name']+'. Choose a result column from categorical_values in the catalog; numeric mark columns do not contain PASS.')
+            probe=execute_query({**table,'records':rows},{'operation':'count','columns':[], 'filters':[criterion]})
+            summaries.append({'column':criterion['column'],'passed':probe['value'],'total':len(rows),
+                'percentage':round(100*probe['value']/len(rows),2) if rows else None,'criterion':criterion})
+        result['summaries']=summaries
     else:
-        if len(columns)!=1: raise WorkbenchError('invalid_query','Numeric aggregation requires one column')
+        if not columns: raise WorkbenchError('invalid_query','Numeric aggregation requires at least one column')
+        if len(columns)>1:
+            result['summaries']=[{'column':column, **{k:v for k,v in execute_query(table,{**plan,'columns':[column]}).items() if k in {'value','numeric_rows'}}} for column in columns]
+            return result
         numbers=[]
         for row in rows:
             value=row.get(columns[0])

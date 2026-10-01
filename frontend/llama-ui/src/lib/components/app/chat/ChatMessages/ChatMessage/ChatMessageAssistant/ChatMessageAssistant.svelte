@@ -210,6 +210,7 @@
 		min-height: calc(100dvh - var(--assistant-min-height-offset));
 
 		@media (width > 768px) {
+			min-height: 0;
 			--assistant-min-height-offset: calc(
 				var(--last-user-message-height, 18rem) + var(--chat-form-height, 6rem) +
 					var(--chat-form-bottom-position, 1rem) + var(--chat-form-padding-top, 6rem) +

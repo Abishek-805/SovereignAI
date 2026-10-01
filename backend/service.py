@@ -379,23 +379,51 @@ class Workbench:
                         key='T'+str(len(catalog)+1)
                         catalog.append({'id':key,'document':doc['display_name'],'sheet':table['name'],
                             'title_rows':table['rows'][:min(3,table['header_row'])],
-                            'columns':table['columns'],'row_count':len(table['records']),'sample':table['records'][:2]})
+                            'columns':table['columns'],'row_count':len(table['records']),'sample':table['records'][:2],
+                            'categorical_values':{column:sorted({str(r.get(column)) for r in table['records'] if isinstance(r.get(column),str)})
+                                for column in table['columns'] if 0<len({str(r.get(column)) for r in table['records'] if isinstance(r.get(column),str)})<=12}})
                         available[key]=(doc,table)
                 if catalog:
                     if job:job.progress('Planning a read-only table query')
                     query=self.model.plan_table_query(question,catalog,history)
+                    if query.get('_measure'):
+                        from rag.tables import compile_outcome_query
+                        query=compile_outcome_query(query['_measure'],available,question)
+                    def run_table_query(plan):
+                        selected=plan.get('table')
+                        if selected not in available: raise WorkbenchError('invalid_query','Table query selected an unavailable table')
+                        selected_doc,selected_table=available[selected]
+                        result=execute_query(selected_table,plan)
+                        if plan.get('unavailable_assessments'): result['unavailable_assessments']=plan['unavailable_assessments']
+                        extras=plan.get('additional_queries',[])
+                        if not isinstance(extras,list) or len(extras)>12: raise WorkbenchError('invalid_query','Too many additional table queries')
+                        if extras:
+                            summaries=result.get('summaries') or [{'column':', '.join(result['columns']), 'value':result.get('value'),'numeric_rows':result.get('numeric_rows')}]
+                            summaries=[{'assessment':selected_table['name'],**item} for item in summaries]
+                            seen={selected}
+                            for extra in extras:
+                                if not isinstance(extra,dict) or extra.get('table') not in available or extra['table'] in seen:
+                                    raise WorkbenchError('invalid_query','Additional query must name a unique available table')
+                                extra_doc,extra_table=available[extra['table']]
+                                if extra_doc['document_id']!=selected_doc['document_id']: raise WorkbenchError('invalid_query','Additional assessments must belong to the same source document')
+                                seen.add(extra['table'])
+                                calculated=execute_query(extra_table,{**extra,'operation':plan['operation']})
+                                items=calculated.get('summaries') or [{'column':', '.join(calculated['columns']),'value':calculated.get('value'),'numeric_rows':calculated.get('numeric_rows')}]
+                                summaries.extend({'assessment':extra_table['name'],**item} for item in items)
+                            result['summaries']=summaries
+                        return selected_doc,result
                     if query.get('operation')!='none':
                         if query.get('table') not in available: raise WorkbenchError('invalid_query','Table query selected an unavailable table')
                         doc,table=available[query['table']]
                         try:
-                            table_query=execute_query(table,query)
+                            doc,table_query=run_table_query(query)
                         except WorkbenchError as exc:
                             if exc.code!='invalid_query': raise
                             query=self.model.plan_table_query(question,catalog,history,feedback=str(exc))
                             if query.get('operation')=='none' or query.get('table') not in available:
                                 raise WorkbenchError('invalid_query','The requested table query needs clarification; no result was inferred')
                             doc,table=available[query['table']]
-                            table_query=execute_query(table,query)
+                            doc,table_query=run_table_query(query)
                         source=next((c for c,_ in active if c.document_id==doc['document_id'] and c.retrieval_kind=='schema'),None)
                         if source:
                             table_evidence=replace(source,query_result=table_query,text='Verified read-only table query over the complete source.\nDocument: '+doc['display_name']+'\n'+json.dumps(table_query,ensure_ascii=False))
@@ -655,13 +683,21 @@ class Workbench:
             self.ask_lock.release()
 
     def execute_coding_file(self, workspace_id, target, job=None):
-        from workflows.code_runtime import runner
+        from workflows.code_runtime import runner, desktop_requirements
         if not self.ask_lock.acquire(blocking=False):
             raise WorkbenchError('busy','Another task is running')
         task = None
         try:
+            source=self.coding.read(workspace_id, target)
+            requirements=desktop_requirements(source['content']) if target.lower().endswith('.py') else []
+            if requirements:
+                import subprocess
+                workspace=self.coding.get(workspace_id)
+                command=subprocess.list2cmdline(['powershell','-NoProfile','-ExecutionPolicy','Bypass','-File',
+                    str(self.settings.root/'scripts'/'run-workspace-python.ps1'),'-Workspace',workspace['host_path'],'-Target',target])
+                raise WorkbenchError('desktop_required','This program needs '+', '.join(requirements)+
+                    '. Docker has no access to the Windows camera or desktop. Run it locally with dependencies in a project virtual environment:\n'+command)
             sandbox = self._verified_coding_sandbox()
-            self.coding.read(workspace_id, target)
             files = self.coding.raw_files(workspace_id)
             if job:
                 job.progress('Starting isolated program');sandbox.on_output=job.append;sandbox.cancel_event=job.cancel;sandbox.stdin_queue=job.input

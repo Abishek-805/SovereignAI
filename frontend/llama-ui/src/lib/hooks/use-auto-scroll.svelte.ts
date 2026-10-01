@@ -22,6 +22,10 @@ export class AutoScrollController {
 	private _rafPending = false;
 	private _scrollInterval: ReturnType<typeof setInterval> | undefined;
 	private _userScrolledUp = $state(false);
+	private _userScrollIntentUntil = 0;
+	markUserScroll(): void {
+		this._userScrollIntentUntil = Date.now() + 500;
+	}
 	get autoScrollEnabled(): boolean {
 		return this._autoScrollEnabled;
 	}
@@ -63,7 +67,7 @@ export class AutoScrollController {
 		const isScrollingUp = scrollTop < this._lastScrollTop;
 		const isAtBottom = distanceFromBottom < AUTO_SCROLL_AT_BOTTOM_THRESHOLD;
 
-		if (isScrollingUp && !isAtBottom) {
+		if (isScrollingUp && !isAtBottom && Date.now() < this._userScrollIntentUntil) {
 			this._userScrolledUp = true;
 			this._autoScrollEnabled = false;
 		} else if (isAtBottom && this._userScrolledUp) {
@@ -93,6 +97,7 @@ export class AutoScrollController {
 		if (this._disabled || !this._container) return;
 
 		this._container.scrollTop = this._container.scrollHeight;
+		this._lastScrollTop = this._container.scrollTop;
 	}
 
 	/**
@@ -196,7 +201,7 @@ export class AutoScrollController {
 				this._rafPending = false;
 
 				if (this._autoScrollEnabled && this._container) {
-					this._container.scrollTop = this._container.scrollHeight;
+					this.scrollToBottom();
 				}
 			});
 		});

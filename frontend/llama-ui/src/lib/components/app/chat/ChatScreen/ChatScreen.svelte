@@ -332,7 +332,15 @@
 {/if}
 
 <svelte:window
-	onkeydown={handleKeydown}
+	onwheel={() => autoScroll.markUserScroll()}
+	ontouchmove={() => autoScroll.markUserScroll()}
+	onpointerdown={() => autoScroll.markUserScroll()}
+	onpointermove={(e) => { if (e.buttons) autoScroll.markUserScroll(); }}
+	onkeydown={(e) => {
+		if (['PageUp', 'PageDown', 'Home', 'End', 'ArrowUp', 'ArrowDown'].includes(e.key) &&
+			!(e.target instanceof HTMLElement && (e.target.isContentEditable || ['INPUT', 'TEXTAREA'].includes(e.target.tagName)))) autoScroll.markUserScroll();
+		handleKeydown(e);
+	}}
 	onscroll={(e) => {
 		scroll.handleScroll(e);
 		handleMobileScroll();
@@ -376,7 +384,7 @@
 				// layout-property transitions need the main thread every frame and
 				// stutter while a long conversation loads; transform transitions
 				// run on the compositor and stay smooth
-				'pointer-events-none md:sticky fixed  mt-auto transition-transform duration-200',
+				'pointer-events-none md:sticky fixed mt-auto transition-transform duration-200',
 				deviceStore.isStandalone
 					? 'bottom-6 right-4 left-4'
 					: deviceStore.isIOSSafari
@@ -435,6 +443,9 @@
 />
 
 <style>
+	:global(.conversation-chat-form) {
+		background: var(--background);
+	}
 	@media (min-width: 768px) and (max-height: 760px) {
 		.chat-screen .empty-chat-composer {
 			transform: translateY(calc(-50dvh + 23rem));

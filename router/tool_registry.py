@@ -8,6 +8,10 @@ from backend.contracts import WorkbenchError
 
 logger = logging.getLogger(__name__)
 
+def new_workspace_requested(goal):
+    """Creating a program/project is distinct from creating its managed workspace."""
+    return bool(re.search(r'\b(?:new|separate|another)\s+(?:[\w-]+\s+){0,3}(?:project|workspace)\b|\b(?:create|make|add)\s+(?:a\s+)?workspace\b', goal or '', re.I))
+
 def explicit_operation_requested(goal, operation):
     """A necessary current-request guard, separate from model classification.
 

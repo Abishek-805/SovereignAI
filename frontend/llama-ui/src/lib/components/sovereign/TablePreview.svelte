@@ -38,7 +38,8 @@
   event.preventDefault();void selectCell(column(Math.max(1,Math.min(col,data.sheets[sheet].column_count))-1)+Math.max(1,Math.min(row,data.total)));
  }
  function currentSearchKey(){return JSON.stringify([documentId,findText,sheet]);}
- function resetFind(){findSequence++;matches=[];matchTotal=0;matchIndex=-1;activeMatch=null;searched=false;findError='';finding=false;searchKey='';}
+ function resetFind(){clearTimeout(timer);findSequence++;matches=[];matchTotal=0;matchIndex=-1;activeMatch=null;searched=false;findError='';finding=false;searchKey='';}
+ function searchAsYouType(event:Event){findText=(event.currentTarget as HTMLInputElement).value;resetFind();if(findText)void find();}
  async function matchPage(offset:number,request:number){
   const params=tableFindParams(findText,false,false,offset,sheet);
   const result=await knowledgeJson(await fetch(`/documents/${encodeURIComponent(documentId)}/table/find?${params}`));
@@ -49,7 +50,7 @@
   if(index<matchOffset||index>=matchOffset+matches.length){if(!await matchPage(Math.floor(index/200)*200,request))return;}
   const match=matches[index-matchOffset];if(!match||request!==findSequence)return;
   activeMatch=match;matchIndex=index;sheet=match.sheet;selected=match.coordinate;address=selected;jump=match.row;clearTimeout(timer);
-  await load(Math.max(0,Math.floor((match.row-1)/50)*50));await tick();
+  await load(Math.max(0,Math.floor((match.row-1)/50)*50),()=>request===findSequence);await tick();
   if(request!==findSequence)return;
   if(viewport)viewport.scrollTop=(match.row-1)*30;
   viewport?.querySelector<HTMLElement>(`[data-coordinate="${match.coordinate}"]`)?.scrollIntoView({block:'nearest',inline:'nearest'});
@@ -63,7 +64,7 @@
   }catch(e){if(request===findSequence)findError=String(e);}finally{if(request===findSequence)finding=false;}
  }
  function boundedOffset(offset:number){return Math.max(0,Math.min(offset,Math.max(0,(data?.total||100)-100)));}
- async function load(offset=0){offset=boundedOffset(offset);const request=++sequence;loading=true;error='';try{const result=await knowledgeJson(await fetch(`/documents/${documentId}/table?sheet=${sheet}&offset=${offset}&limit=100`));if(request===sequence)data=result;}catch(e){if(request===sequence)error=String(e);}finally{if(request===sequence)loading=false;}}
+ async function load(offset=0,isCurrent=()=>true){offset=boundedOffset(offset);const request=++sequence;loading=true;error='';try{const result=await knowledgeJson(await fetch(`/documents/${documentId}/table?sheet=${sheet}&offset=${offset}&limit=100`));if(request===sequence&&isCurrent())data=result;}catch(e){if(request===sequence&&isCurrent())error=String(e);}finally{if(request===sequence)loading=false;}}
  let loadedDocument='';
  $effect(()=>{const id=documentId;if(id===loadedDocument)return;loadedDocument=id;untrack(()=>{resetFind();sheet=0;selected='A1';address=selected;data=null;jump=1;if(viewport){viewport.scrollTop=0;viewport.scrollLeft=0;}void load();});});
  onDestroy(()=>{sequence++;findSequence++;clearTimeout(timer);});
@@ -79,7 +80,7 @@
  <div class="sheet-toolbar"><strong>{data?.name||'Worksheet'}</strong><span>{data?.total||0} rows</span><span role="status">{loading?'Loading rows…':''}</span>
  <div class="cell-bar"><input aria-label="Cell address" bind:value={address} onkeydown={e=>{if(e.key==='Enter'){e.preventDefault();void selectCell(address,true);}}}/><span class="cell-value" aria-label="Selected cell value">{selectedCell?display(selectedCell):''}</span></div>
  <div class="sheet-find" aria-label="Find in selected worksheet">
-  <label>Find <input aria-label="Find cell values" type="search" bind:value={findText} oninput={resetFind} onkeydown={e=>{if(e.key==='Enter'){e.preventDefault();void find(e.shiftKey?-1:1);}}} /></label>
+  <label>Find <input aria-label="Find cell values" type="search" bind:value={findText} oninput={searchAsYouType} onkeydown={e=>{if(e.key==='Enter'){e.preventDefault();void find(e.shiftKey?-1:1);}}} /></label>
   <button onclick={()=>void find(-1)} disabled={!findText||finding}>Previous</button><button onclick={()=>void find(1)} disabled={!findText||finding}>Next</button>
   <span role="status">{finding?'Finding…':searched?(matchTotal?`${matchIndex+1} of ${matchTotal} · ${activeMatch?.name||''}!${activeMatch?.coordinate||''}`:'No matches'):''}</span>
   {#if findError}<span role="alert">{findError}</span>{/if}

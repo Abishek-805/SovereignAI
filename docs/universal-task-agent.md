@@ -96,7 +96,7 @@ See [Smol results](../experimental/results/micro-controller-smollm2-result.json)
 
 ## 11. Test results
 
-The final backend suite passed **829 tests with 7 skips** after correcting source planning context, optional-table applicability, verifier stage contracts and grounded-output settings. The benchmark harness tests passed 19 checks, including focused case selection and provenance. Frontend unit tests passed 722, client tests passed 124, and the production build passed.
+The latest backend suite passed **838 tests with 7 skips** after correcting source planning context, optional-table applicability, verifier stage contracts and grounded-output settings. The benchmark harness tests passed 25 checks, including focused case selection and provenance. Frontend unit tests passed 722, client tests passed 124, and the production build passed.
 
 The corrected live `rag-02` source check passes in 40.52 seconds with seven model calls: [captured result](../benchmarks/universal-grounded-output-check.json). Previous attempts are preserved separately and failed. Table proposals retain semantic review; a valid read-only `none` abstention defers to the normal retrieval and grounded-answer path, never certifies task success. Application-authored stage contracts remain system policy; source previews remain data. Grounded JSON output explicitly disables hidden thinking in its small output budget, following a separate bounded task-interpretation pass.
 
@@ -155,3 +155,7 @@ Replay scoring has no runtime execution authority:
 ```
 
 Use the [benchmark methodology](../benchmarks/universal-agent-benchmark.md) for category subsets and partial-coverage interpretation. A limited sample is not a completed 128-case comparison.
+
+## Additional table planning diagnostics
+
+Independent execution caught a count answer of four from an eight-record table. The answer had used a partial retrieval excerpt, so it was not counted as successful. Applicability planning now retains table identity and complete row count, distinguishes preview rows from complete populations, and treats a total record count independently of pass/fail thresholds. Source binding preserves the validated operation and uses the original request/history. Abstract measure and grouping stages use schema validation rather than a critic expecting a completed numeric answer; concrete source-bound query review remains enabled. These are generic stage contracts, not student-specific rules. The corrected live count passes its independent eight-record oracle; the remaining table coverage and full comparison are pending. Earlier failed diagnostics are preserved in universal-measure-stage-check.json and universal-source-binding-check.json.

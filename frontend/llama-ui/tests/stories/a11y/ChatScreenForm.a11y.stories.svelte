@@ -22,7 +22,7 @@
 		await userEvent.clear(textarea);
 		await userEvent.type(textarea, 'What is the meaning of life?');
 
-		const trigger = await canvas.findByRole('button', { name: 'Add context', exact: true });
+		const trigger = await canvas.findByRole('button', { name: /^Add context$/ });
 
 		trigger.focus();
 		await expect(trigger).toHaveFocus();
@@ -37,7 +37,7 @@
 	args={{ class: 'max-w-[56rem] w-[calc(100vw-2rem)]' }}
 	name="AddDropdownFocusesFirstEnabled"
 	play={async ({ canvas, userEvent }) => {
-		const trigger = await canvas.findByRole('button', { name: 'Add context', exact: true });
+		const trigger = await canvas.findByRole('button', { name: /^Add context$/ });
 
 		trigger.focus();
 		await userEvent.keyboard('{Enter}');

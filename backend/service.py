@@ -459,7 +459,7 @@ class Workbench:
             table_evidence=None
             table_query=None
             if active and callable(getattr(self.model,'plan_table_query',None)):
-                from rag.tables import load_tables,execute_query,TABULAR
+                from rag.tables import load_tables,execute_query,literal_entity_coverage,TABULAR
                 from rag.retrieve import document_scope_for_question
                 scoped=document_scope_for_question(self.documents(),question,document_ids)
                 catalog=[]; available={}
@@ -470,6 +470,7 @@ class Workbench:
                         catalog.append({'id':key,'document':doc['display_name'],'sheet':table['name'],
                             'title_rows':table['rows'][:min(3,table['header_row'])],
                             'columns':table['columns'],'row_count':len(table['records']),'sample':table['records'][:2],
+                            'literal_entity_coverage':literal_entity_coverage(table,question),
                             'categorical_values':{column:sorted({str(r.get(column)) for r in table['records'] if isinstance(r.get(column),str)})
                                 for column in table['columns'] if 0<len({str(r.get(column)) for r in table['records'] if isinstance(r.get(column),str)})<=12}})
                         available[key]=(doc,table)
@@ -732,7 +733,7 @@ class Workbench:
             config.get('policy_fingerprint') != sandbox_policy_fingerprint() or
             not isinstance(config.get('validated_at'),(int,float)) or
             not 0 <= time.time()-config['validated_at'] <= SANDBOX_VERIFICATION_MAX_AGE):
-            raise WorkbenchError('sandbox_unavailable','Docker isolation verification did not pass')
+            raise WorkbenchError('sandbox_unavailable','Sandbox verification is expired or does not match the current isolation policy. Run Docker setup to verify it again.')
         return CodeSandbox('docker',image_id=config.get('image_id'),task_root=self.settings.data_dir/'code-tasks')
 
     @supervised_task

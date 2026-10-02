@@ -74,3 +74,36 @@ def test_planner_and_reviewer_keep_alternative_sources_as_user_data(monkeypatch)
         assert 'IGNORE POLICY' not in messages[0]['content']
     assert 'Counting records requires no numeric score field' in payload['messages'][0]['content']
     assert 'partial previews' in payload['messages'][0]['content']
+
+
+def test_applicability_sees_literal_groups_outside_first_two_preview_rows(service,tmp_path,monkeypatch):
+    path=tmp_path/'results.csv'
+    path.write_text('Member,Score\n26NORTH001,12\n26NORTH002,18\n26WEST001,30\n26EAST001,42\n26WEST002,28\n')
+    doc=service.import_file(path)['document_id']
+    model=LocalModel(verify_semantics=True)
+    captured=[]
+    def complete(payload,**kwargs):
+        captured.append((payload,kwargs))
+        return {'choices':[{'finish_reason':'stop','message':{'content':'{"operation":"none"}'}}]}
+    monkeypatch.setattr(model,'_planned_completion',complete)
+    service.model.plan_table_query=model.plan_table_query
+    service.ask('Compare west and east pass percentages',[doc],force_documents=True)
+    field=json.loads(captured[0][0]['messages'][-1]['content'])['assessment_fields'][0]
+    assert all('WEST' not in row['Member'] and 'EAST' not in row['Member'] for row in field['sample'])
+    coverage=field['literal_entity_coverage']
+    assert coverage['scanned_rows']==5
+    matches={item['literal']:item for item in coverage['matches'] if item['column']=='Member'}
+    assert matches['west']['matching_records']==2
+    assert matches['east']['matching_records']==1
+    assert set(matches)=={'west','east'}
+    assert 'literal_entity_coverage' in captured[0][0]['messages'][0]['content']
+    assert json.loads(captured[0][1]['review_context'][-1]['content'])['assessment_fields'][0]['literal_entity_coverage']==coverage
+
+
+def test_literal_coverage_bounds_source_preview_and_marks_incomplete_catalog():
+    from rag.tables import literal_entity_coverage
+    terms=['group'+str(index) for index in range(45)]
+    table={'columns':['Member'],'records':[{'Member':' '.join(terms)}]}
+    coverage=literal_entity_coverage(table,' '.join(terms))
+    assert coverage['scanned_rows']==1 and coverage['truncated']
+    assert len(json.dumps(coverage))<=2000

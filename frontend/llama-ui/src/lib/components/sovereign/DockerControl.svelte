@@ -16,11 +16,30 @@
    for (let attempt = 0; attempt < 18 && !disposed; attempt++) {
     const info = await WorkbenchService.info();
     if (info.sandbox.ready) { notice = 'Docker is ready. You can run code now.'; onready(); return; }
-    notice = `Waiting for Docker… ${info.sandbox.reason || ''}`;
+    notice = `Checking Docker… ${info.sandbox.reason || ''}`;
+    const verification = await fetch('/workbench/docker/verify', { method: 'POST' });
+    if (verification.ok) {
+     let check = await verification.json();
+     while (check.state === 'running' && !disposed) {
+      notice = check.stage || 'Verifying sandbox isolation…';
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      const progress = await fetch(`/coding/jobs/${encodeURIComponent(check.job_id)}`);
+      if (!progress.ok) throw new Error('Cannot read sandbox verification progress');
+      check = await progress.json();
+     }
+     if (check.state === 'completed') {
+      const refreshed = await WorkbenchService.info();
+      if (refreshed.sandbox.ready) { notice = 'Docker is ready. You can run code now.'; onready(); return; }
+     }
+     if (check.error) {
+      if (check.error_code !== 'sandbox_unavailable') throw new Error(check.error);
+      notice = check.error;
+     }
+    }
     await new Promise(resolve => setTimeout(resolve, 5000));
    }
-   if (!disposed) notice = 'Docker is not ready yet. Open Docker Desktop to check WSL or engine errors, then refresh. No code was run.';
-  } catch (error) { notice = error instanceof Error ? error.message : String(error); }
+   if (!disposed) notice = `Docker setup is incomplete. ${notice} No project code was run.`;
+  } catch (error) { notice = `${error instanceof Error ? error.message : String(error)} No project code was run.`; }
   finally { starting = false; }
  }
 </script>

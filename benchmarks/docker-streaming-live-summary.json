@@ -1,0 +1,176 @@
+{
+  "date": "2026-10-02",
+  "source_sha256": "37b1eb8f81f84bff750daa020422cf0a74fcdea25a8d75df95c9ecb191346de0",
+  "table": {
+    "rule": "Pass >=25; absent/nonnumeric failed; denominator all cohort records",
+    "job_id": "da96e5c83f9c44e8a9c669276121bedf",
+    "state": "completed",
+    "independent_oracle": "openpyxl full All worksheet, no query executor",
+    "all_14_results_match": true,
+    "results": [
+      {
+        "cohort": "ADR",
+        "column": "WAT 1",
+        "passed": 45,
+        "total": 187,
+        "percentage": 24.06
+      },
+      {
+        "cohort": "ADR",
+        "column": "WAT 2",
+        "passed": 22,
+        "total": 187,
+        "percentage": 11.76
+      },
+      {
+        "cohort": "ADR",
+        "column": "WAT 3",
+        "passed": 4,
+        "total": 187,
+        "percentage": 2.14
+      },
+      {
+        "cohort": "ADR",
+        "column": "WAT 4",
+        "passed": 41,
+        "total": 187,
+        "percentage": 21.93
+      },
+      {
+        "cohort": "ADR",
+        "column": "WAT 5",
+        "passed": 106,
+        "total": 187,
+        "percentage": 56.68
+      },
+      {
+        "cohort": "ADR",
+        "column": "WAT 6",
+        "passed": 67,
+        "total": 187,
+        "percentage": 35.83
+      },
+      {
+        "cohort": "ADR",
+        "column": "CAT 1",
+        "passed": 100,
+        "total": 187,
+        "percentage": 53.48
+      },
+      {
+        "cohort": "ALR",
+        "column": "WAT 1",
+        "passed": 23,
+        "total": 64,
+        "percentage": 35.94
+      },
+      {
+        "cohort": "ALR",
+        "column": "WAT 2",
+        "passed": 1,
+        "total": 64,
+        "percentage": 1.56
+      },
+      {
+        "cohort": "ALR",
+        "column": "WAT 3",
+        "passed": 1,
+        "total": 64,
+        "percentage": 1.56
+      },
+      {
+        "cohort": "ALR",
+        "column": "WAT 4",
+        "passed": 6,
+        "total": 64,
+        "percentage": 9.38
+      },
+      {
+        "cohort": "ALR",
+        "column": "WAT 5",
+        "passed": 34,
+        "total": 64,
+        "percentage": 53.12
+      },
+      {
+        "cohort": "ALR",
+        "column": "WAT 6",
+        "passed": 28,
+        "total": 64,
+        "percentage": 43.75
+      },
+      {
+        "cohort": "ALR",
+        "column": "CAT 1",
+        "passed": 31,
+        "total": 64,
+        "percentage": 48.44
+      }
+    ]
+  },
+  "stream": {
+    "job_id": "74241182ccde4982bf41177e8b8a41de",
+    "state": "completed",
+    "preview_character_counts": [
+      9,
+      223,
+      395,
+      499,
+      499,
+      499
+    ],
+    "terminal_preview_cleared": true
+  },
+  "docker": {
+    "image_id": "sha256:5370db5915e0774ba92a758199430a762f2cbc45515ed2958ca8e9a58faef272",
+    "verification_version": 2,
+    "policy_fingerprint": "9041e203ac2d0b254c00256908594fe8b9627d39bf20e09d28c6d7999a318e3f",
+    "checks": {
+      "normal_execution": true,
+      "network_blocked": true,
+      "root_read_only": true,
+      "input_read_only": true,
+      "non_root": true,
+      "capabilities_dropped": true,
+      "no_new_privileges": true,
+      "process_isolated": true,
+      "pids_bounded": true,
+      "memory_bounded": true,
+      "cpu_bounded": true,
+      "output_bounded": true,
+      "docker_socket_absent": true,
+      "host_env_excluded": true,
+      "project_secret_excluded": true,
+      "timeout_stops": true,
+      "cancel_stops": true,
+      "containers_cleaned": true
+    },
+    "validated_at": 1790914766.5715055,
+    "endpoint_job_id": "4271e42f815a409da908619c83589c1b",
+    "desktop_status_after_start": "running",
+    "actual_execution": {
+      "executed": true,
+      "exit_code": 0,
+      "stdout": "60"
+    }
+  },
+  "verification": {
+    "backend_regression": {
+      "passed": 867,
+      "skipped": 7,
+      "manifest_held_until_build": true
+    },
+    "final_api_desktop_jobs_manifest": {
+      "passed": 78
+    },
+    "frontend_unit": {
+      "passed": 727,
+      "files": 61
+    },
+    "frontend_typecheck": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "production_build": "passed"
+  }
+}

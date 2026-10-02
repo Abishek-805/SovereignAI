@@ -121,6 +121,8 @@ export interface DatabaseMessage {
 	knowledgeSources?: import('$lib/services/knowledge.service').KnowledgeSource[];
 	knowledgeDownloads?: Record<string,string>;
 	knowledgeStatus?: string;
+	/** Transient, unverified model output while a connected-Knowledge job is running. */
+	knowledgeDraft?: boolean;
 	id: string;
 	convId: string;
 	type: ChatMessageType;

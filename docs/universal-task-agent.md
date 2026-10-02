@@ -1,6 +1,6 @@
 # Universal Task Agent: implementation and verification report
 
-Status: 2 October 2026. The software supervisor, worker broker, completion observations, and isolated comparison harness are implemented. The full frozen **128-fixture × 3-strategy comparison completed: 384 live executions**. Source-context and intermediate-stage contract corrections pass regression. Universal routing matched fixed routing on the narrow verified work goals; no general accuracy advantage is established. Docker validation and live publication remain blocked by the local environment. This is an implementation and evidence report, not universal correctness, model retraining, or release certification.
+Status: 2 October 2026. The software supervisor, worker broker, completion observations, and isolated comparison harness are implemented. The full frozen **128-fixture × 3-strategy comparison completed: 384 live executions**. Source-context and intermediate-stage contract corrections pass regression. Universal routing matched fixed routing on the narrow verified work goals; no general accuracy advantage is established. Docker validation and live publication were blocked during that comparison; the subsequent [Docker and streaming follow-up](docker-streaming-followup.md) records recovery without changing those benchmark results. This is an implementation and evidence report, not universal correctness, model retraining, or release certification.
 
 ## 1. Architecture summary
 

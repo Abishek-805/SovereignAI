@@ -426,7 +426,7 @@
 			{toolMessages}
 		>
 		{#snippet footer()}
-		{#if message.knowledgeStatus && !message.content}<p class="knowledge-message-status" role="status">{message.knowledgeStatus}</p>{/if}
+		{#if message.knowledgeDraft}<p class="knowledge-message-status" role="status">Draft response · not yet verified</p>{:else if message.knowledgeStatus && !message.content}<p class="knowledge-message-status" role="status">{message.knowledgeStatus}</p>{/if}
 		{#if message.knowledgeStatus==='citation_failure'}<p role="alert">Citation validation failed. Inspect the sources before using this answer.</p>{/if}
 		<KnowledgeSources sources={message.knowledgeSources||[]} coverage={message.knowledgeCoverage}/>
 		{#each Object.entries(message.knowledgeDownloads||{}) as [kind,url]}<a class="knowledge-artifact" href={url}>Download {kind==='word'?'Word report':kind}</a>{/each}

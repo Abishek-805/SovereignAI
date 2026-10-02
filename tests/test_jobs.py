@@ -60,3 +60,26 @@ def test_import_and_workspace_have_independent_bounded_lanes():
         jobs.get(imported['job_id']).created-=7200
         release.set()
     finally: release.set()
+
+
+@pytest.mark.parametrize('error,code', [
+    (WorkbenchError('sandbox_unavailable', 'Engine is still starting'), 'sandbox_unavailable'),
+    (WorkbenchError('sandbox_verification', 'Isolation check failed'), 'sandbox_verification'),
+    (RuntimeError('Unexpected failure'), None),
+])
+def test_job_error_code_distinguishes_engine_startup_from_failed_isolation(error, code):
+    jobs=Jobs()
+    def fail(job):
+        job.preview('Unverified draft', 'answer')
+        raise error
+    record=jobs.start('verify', fail)
+    job=jobs.get(record['job_id'])
+    for _ in range(100):
+        if job.state!='running':break
+        time.sleep(.01)
+    snapshot=job.snapshot()
+    assert snapshot['state']=='failed'
+    assert snapshot['error_code']==code
+    assert snapshot['error']==str(error)
+    assert snapshot['completion']['achieved'] is False
+    assert snapshot['partial_answer']==''

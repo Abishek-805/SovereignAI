@@ -1,0 +1,18 @@
+{
+  "production_url": "http://127.0.0.1:8088/",
+  "isolated_browser": true,
+  "mocked_model_job": true,
+  "real_model_jobs": 0,
+  "request_posts": 1,
+  "polls": 3,
+  "answer_preview": true,
+  "code_preview": true,
+  "embedded_fence_contained": true,
+  "final_replaces_draft": true,
+  "page_errors": [],
+  "initial_app_console_errors": [],
+  "mock_browser_service_worker_blocked_errors": [
+    "[PWA] SW registration error: TypeError: Cannot read properties of undefined (reading 'waiting')\n    at http://127.0.0.1:8088/_app/immutable/chunks/BBnX5xw4.js:2:2886"
+  ],
+  "initial_app_service_workers": "allowed"
+}

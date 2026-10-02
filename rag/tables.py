@@ -118,6 +118,34 @@ def find_cells(path,q,sheet=None,match_case=False,whole_cell=False,offset=0,limi
                     total+=1
     return {'matches':matches,'total':total,'offset':offset,'limit':limit}
 
+def literal_entity_coverage(table,question):
+    """Bounded observations of literal request terms across complete records.
+
+    Matches are source facts, not inferred entities or routing decisions. This
+    precedes semantic applicability so a two-row preview cannot imply absence.
+    """
+    terms=list(dict.fromkeys(token for token in re.findall(r'\b[\w-]+\b',question)
+        if 2<=len(token)<=80 and any(char.isalpha() for char in token)))
+    selected=terms[:40]
+    matches=[]
+    for column in table['columns']:
+        for term in selected:
+            count=0;examples=[]
+            for row in table['records']:
+                value=str(row.get(column) or '').strip()
+                if term.casefold() in value.casefold():
+                    count+=1
+                    if len(examples)<2 and value[:160] not in examples:examples.append(value[:160])
+            if count:matches.append({'literal':term,'column':column,'matching_records':count,'examples':examples})
+    bounded=[];size=0
+    for match in matches:
+        length=len(json.dumps(match,ensure_ascii=True))+2
+        if size+length>1900:break
+        bounded.append(match);size+=length
+    return {'scanned_rows':len(table['records']),'matches':bounded,
+        'truncated':len(terms)>40 or len(bounded)<len(matches)}
+
+
 def population_binding_catalog(available,entities):
     """Observed source candidates for a separate semantic identity-field pass."""
     candidates=[]

@@ -431,6 +431,11 @@ def create_app(service=None):
     from backend.jobs import Jobs
     jobs=Jobs()
 
+    @app.post('/workbench/docker/verify')
+    def docker_verify():
+        from backend.desktop import verify_docker
+        return jobs.start('sandbox_verify', lambda job: verify_docker(service.settings.data_dir, job))
+
     @app.post('/documents/jobs')
     def start_document_job(payload:DocumentJobRequest):
         def run(job):

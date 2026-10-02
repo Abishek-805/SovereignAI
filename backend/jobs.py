@@ -10,6 +10,12 @@ class Job:
         self.id=uuid4().hex;self.kind=kind;self.state='running';self.stage='Starting';self.output=''
         self.result=None;self.error=None;self.created=time.time();self.events=[];self.routing=None;self.completion=None
         self.cancel=threading.Event();self.input=Queue(maxsize=32);self.lock=threading.Lock()
+        self.partial_answer='';self.partial_kind=None;self.error_code=None
+    def preview(self,text,kind):
+        """Actual generated public text; never completion or publication proof."""
+        with self.lock:
+            if self.state=='running' and not self.cancel.is_set():
+                self.partial_answer=text[:131072];self.partial_kind=kind
     def progress(self,stage):
         with self.lock:
             self.stage=stage;self.events.append({'stage':stage,'at':time.time()});self.events=self.events[-40:]
@@ -19,7 +25,7 @@ class Job:
             if self.kind in {'run','terminal'} and channel=='stdout' and self.output.rstrip().endswith((':','?')):
                 self.stage='Waiting for program input'
     def snapshot(self):
-        with self.lock:return {'job_id':self.id,'kind':self.kind,'state':self.state,'stage':self.stage,'output':self.output,'result':self.result,'error':self.error,'routing':self.routing,'completion':self.completion,'events':list(self.events),'elapsed':round(time.time()-self.created,1)}
+        with self.lock:return {'job_id':self.id,'kind':self.kind,'state':self.state,'stage':self.stage,'output':self.output,'partial_answer':self.partial_answer if self.state=='running' and not self.cancel.is_set() else '', 'partial_kind':self.partial_kind if self.state=='running' and not self.cancel.is_set() else None,'result':self.result,'error':self.error,'error_code':self.error_code,'routing':self.routing,'completion':self.completion,'events':list(self.events),'elapsed':round(time.time()-self.created,1)}
 
 class Jobs:
     def __init__(self):self.jobs={};self.lock=threading.Lock()
@@ -43,6 +49,7 @@ class Jobs:
                 from router.task_completion import observe_completion
                 completion=observe_completion(result,kind)
                 with job.lock:
+                    job.partial_answer='';job.partial_kind=None
                     job.completion=completion
                     job.result=result;job.state='cancelled' if job.cancel.is_set() else 'failed' if result.get('state',result.get('status'))=='failed' else 'completed'
                     if job.cancel.is_set():job.completion={**completion,'state':'cancelled','achieved':False}
@@ -51,7 +58,8 @@ class Jobs:
                          'failed':'Check failed','unverified':'Response ready','completed':'Finished'}.get(completion['state'],'Response ready'))
             except Exception as exc:
                 with job.lock:
-                    job.state='cancelled' if job.cancel.is_set() else 'failed';job.error=str(exc);job.stage='Stopped' if job.state=='cancelled' else 'Could not finish'
+                    job.partial_answer='';job.partial_kind=None
+                    job.state='cancelled' if job.cancel.is_set() else 'failed';job.error=str(exc);job.error_code=getattr(exc,'code',None);job.stage='Stopped' if job.state=='cancelled' else 'Could not finish'
                     job.completion={'state':job.state,'achieved':False,'response_delivered':False,'checks':{},'limitations':[str(exc)]}
         threading.Thread(target=run,daemon=True).start()
         return job.snapshot()

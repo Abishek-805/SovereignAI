@@ -1,4 +1,6 @@
 <script lang="ts">
+ import {runningJobPreview, type JobPreview} from '$lib/services/job-preview.service';
+ let generationPreview = $state<JobPreview | null>(null);
  import {stagedTaskFromResponse} from '$lib/services/staged-task';
 	import {
 		decodeAgentResponse,
@@ -42,6 +44,7 @@
 		const latest = turns.at(-1);
 		void latest?.answer;
 		void latest?.status;
+		void generationPreview?.text;
 		void agentStages.length;
 		const element = threadElement;
 		const shouldFollow = followLatest || count !== visibleTurnCount;
@@ -195,6 +198,7 @@
 		);
 	}
 	async function stopAgent() {
+		generationPreview = null;
 		stopRequested = true;
 		notice = 'Stopping after the current step…';
 		if (agentJob) await fetch('/coding/jobs/' + agentJob + '/stop', { method: 'POST' });
@@ -450,6 +454,7 @@
 		try {
 			let result = await json(await fetch('/coding/jobs/' + id));
 			while (result.state === 'running') {
+				generationPreview = stopRequested ? null : runningJobPreview(result);
 				notice = result.stage;
 				agentElapsed = result.elapsed;
 				agentStages = (result.events || []).map((event: { stage: string }) => event.stage);
@@ -457,12 +462,14 @@
 				await new Promise((resolve) => setTimeout(resolve, 650));
 				result = await json(await fetch('/coding/jobs/' + id));
 			}
+			generationPreview = null;
 			if (result.routing) { turns[index] = {...turns[index], routing: result.routing}; persist(); }
 			if (result.error) throw Error(result.error);
 			if (result.state === 'cancelled') throw Error('Task stopped');
 			finish(index, result.result);
 			notice = '';
 		} catch (e) {
+			generationPreview = null;
 			turns[index] = {
 				...turns[index],
 				question: turns[index].question,
@@ -667,6 +674,7 @@
 									>{agentElapsed}s</span
 								>
 							</div>
+							{#if generationPreview}<div class="agent-answer"><small>Draft {generationPreview.kind} - not yet verified</small>{#if generationPreview.kind === 'code'}<pre style="white-space:pre-wrap;overflow-wrap:anywhere">{generationPreview.text}</pre>{:else}<MarkdownContent content={generationPreview.text}/>{/if}</div>{/if}
 							<div class="steps">
 								{#each agentStages.slice(-6) as step, i}<div
 										class:current={i === agentStages.slice(-6).length - 1}

@@ -42,6 +42,8 @@ cd ..\..
 
 The launcher checks the required text model and runtime and reports missing paths. The model file is over GitHub's normal file limit, so install it locally; do not commit it. `requirements.txt` pins the full Python environment, including tests, OCR, document exports, and the Hugging Face setup CLI. `frontend/llama-ui/package-lock.json` pins npm dependencies. For Docker Code mode, use **Control Center → Runtimes** or **Start Docker** in Code to prepare the sandbox; Docker is not needed for Chat or document questions.
 
+**Start Docker** also renews expired sandbox verification for an installed local image and shows the isolation-check progress. Execution stays disabled if verification fails. Chat, Agent, and the Code assistant show actual generated text as an unverified draft before the checked final response replaces it. Planning and retrieval show progress stages. See the [Docker and streaming verification report](docs/docker-streaming-followup.md).
+
 For the pinned text model, after installing `requirements.txt` run:
 
 ```powershell

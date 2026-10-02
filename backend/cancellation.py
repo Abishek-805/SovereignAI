@@ -1,7 +1,7 @@
 """Request-local cancellation checkpoints without cancelling other conversations."""
 from contextlib import nullcontext
 from functools import wraps
-from inspect import signature
+from inspect import signature, getattr_static
 from time import perf_counter
 from router.telemetry import CURRENT_ROUTE, RoutingDecision
 
@@ -15,6 +15,8 @@ def cancellable_model_job(method):
         arguments=bound.arguments
         job=arguments.get('job')
         scope=getattr(self.model,'cancel_scope',None)
+        # Optional instrumentation must not invoke dynamic inference proxies.
+        preview_scope=getattr(self.model,'job_scope',None) if getattr_static(self.model,'job_scope',None) is not None else None
         parent=CURRENT_ROUTE.get()
         trace=parent or RoutingDecision()
         token=CURRENT_ROUTE.set(trace)
@@ -39,7 +41,8 @@ def cancellable_model_job(method):
             trace.event('CLASSIFICATION_COMPLETED')
         try:
             with scope(job.cancel) if job is not None and callable(scope) else nullcontext():
-                result=method(self,*args,**kwargs)
+                with preview_scope(job) if job is not None and callable(preview_scope) else nullcontext():
+                    result=method(self,*args,**kwargs)
             if parent is None and isinstance(result,dict):
                 plan=result.get('plan') or {}
                 trace.intent=plan.get('action') or trace.intent

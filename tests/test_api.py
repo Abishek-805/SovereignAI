@@ -16,6 +16,25 @@ def test_docker_start_requires_local_origin(service, monkeypatch):
         assert calls == [True]
 
 
+def test_docker_verification_requires_local_origin_and_runs_as_job(service, monkeypatch):
+    import time
+    from backend import desktop
+    calls=[]
+    monkeypatch.setattr(desktop,'verify_docker',lambda data,job:calls.append(data) or {'status':'verified','checks':{'normal_execution':True}})
+    with client_for(service) as client:
+        assert client.post('/workbench/docker/verify',headers={'Origin':'https://example.com'}).status_code==403
+        assert not calls
+        response=client.post('/workbench/docker/verify',headers={'Origin':'http://127.0.0.1:8088'})
+        assert response.status_code==200
+        identifier=response.json()['job_id']
+        for _ in range(50):
+            result=client.get('/coding/jobs/'+identifier).json()
+            if result['state']!='running':break
+            time.sleep(.01)
+        assert result['state']=='completed' and result['result']['status']=='verified'
+        assert calls==[service.settings.data_dir]
+
+
 def test_model_load_requires_explicit_capability_and_local_origin(service, monkeypatch):
     calls = []
     monkeypatch.setattr(service.registry, 'acquire_lease', lambda capability: calls.append(capability))

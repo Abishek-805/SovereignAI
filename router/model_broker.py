@@ -1,6 +1,6 @@
 """Worker-role broker; selection proposes resources, never grants tool authority."""
 from backend.contracts import WorkbenchError
-from .model_selection import ModelSelector
+from .model_selection import ModelSelector, measured_value
 
 
 ROLE_CAPABILITIES={'lightweight':'text','reasoning':'text','code':'code','vision':'vision'}
@@ -12,7 +12,7 @@ class ModelBroker:
         self.selector=ModelSelector(registry,sampler=sampler,policy=policy)
 
     def select(self,role,*,modality='text',required_context=None,resource_snapshot=None,
-               current_residency=None,task_affinity=None):
+               current_residency=None,task_affinity=None,task_type=None):
         if role not in ROLE_CAPABILITIES:raise ValueError('Unknown worker role')
         # Omitted residency is observed, not inferred from a UI display label.
         if current_residency is None:
@@ -33,6 +33,12 @@ class ModelBroker:
             candidate['model_file']=spec.model_file
             candidate['projector_file']=spec.projector_file
             candidate['revision']=spec.revision
+            if task_type is not None:
+                measurement_scope=ROLE_CAPABILITIES[role]+'.'+task_type
+                candidate['quality']=measured_value(spec,measurement_scope,'quality')
+                candidate['latency_seconds']=measured_value(spec,measurement_scope,'latency_seconds')
+                candidate['measured_cost']=None
+                candidate['measurement_scope']=measurement_scope
             if role not in spec.worker_roles:
                 candidate['admissible']=False
                 candidate['rejection_codes']=candidate['rejection_codes']+['unsuitable_worker_role']
@@ -78,7 +84,7 @@ class ModelBroker:
         decision.selection_evidence.update({'comparison':comparison,'task_affinity':task_affinity,
             'unknown_metrics_policy':'not comparable; never fabricated','worker_role':role,
             'admissible_candidates':sum(item['admissible'] for item in decision.candidate_models),
-            'quality_comparable':quality_comparable})
+            'quality_comparable':quality_comparable,'task_type':task_type})
         return decision
 
     def acquire(self,decision,*,persist_before_swap=None):

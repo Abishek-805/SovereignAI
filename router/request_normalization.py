@@ -2,7 +2,8 @@
 from dataclasses import dataclass
 import re
 
-CORRECTIONS={'creat':'create','maintanance':'maintenance','calcluate':'calculate','shwo':'show'}
+CORRECTIONS={'creat':'create','maintanance':'maintenance','calcluate':'calculate','shwo':'show',
+             'teh':'the','thi':'this','thsi':'this'}
 PROTECTED=re.compile(r'''```[\s\S]*?```|`[^`\n]*`|"[^"\n]*"|(?<!\w)'[^'\n]*'(?!\w)|\u201c[^\u201d\n]*\u201d|\S*[\\/@.:]\S*|\b\w*\d\w*\b''')
 
 @dataclass(frozen=True)
@@ -11,9 +12,31 @@ class NormalizedRequest:
     normalized: str
     corrections: tuple
 
+def protected_spans(request):
+    """Literal spans and source lines are unavailable to prose interpretation."""
+    spans=[match.span() for match in PROTECTED.finditer(request)]
+    spans.extend(match.span() for match in re.finditer(r'\b\w*_\w*\b|\b[a-z]+[A-Z]\w*\b',request))
+    offset=0
+    source=False
+    for line in request.splitlines(keepends=True):
+        stripped=line.strip()
+        starts=bool(re.match(r'(?:def |class |async def |import |from \S+ import |function |const |let |var |return |if .*:|for .*:)',stripped)
+                    or re.match(r'\w+\s*(?:=|\+=|-=)\s*',stripped)
+                    or re.match(r'\w+\([^\n]*\)\s*;?$',stripped))
+        if starts or (source and (line[:1].isspace() or not stripped)):
+            spans.append((offset,offset+len(line)));source=True
+        else:source=False
+        offset+=len(line)
+    return spans
+
+def prose_request(request):
+    chars=list(request)
+    for start,end in protected_spans(request):chars[start:end]=' '*(end-start)
+    return ''.join(chars)
+
 def normalize_request(request):
     if not isinstance(request,str):return NormalizedRequest(request,request,())
-    spans=[match.span() for match in PROTECTED.finditer(request)]
+    spans=protected_spans(request)
     changes=[]
     def replace(match):
         word=match.group()

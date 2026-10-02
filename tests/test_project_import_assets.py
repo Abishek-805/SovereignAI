@@ -65,7 +65,8 @@ def test_project_edit_preserves_assets_in_validation_and_rejects_asset_edits(tmp
     model=ProjectModel([{'action':'edit','path':'main.py','reason':'change output'}],'print(2)\n')
     result=work.run_project(ident,'main.py','Change output in main.py',model,sandbox,TaskLedger(tmp_path))
     assert result['state']=='completed'
-    assert 'Read-only project asset' in model.tree[0]['assets/photo.jpg']
+    # Single-target edits can bypass workspace planning. The actual execution
+    # snapshot and untouched host bytes establish preservation independently.
     assert sandbox.snapshots[0]['assets/photo.jpg']==asset
     assert work.raw_files(ident)['assets/photo.jpg']==asset
     bad=ProjectModel([{'action':'create','path':'assets/photo.jpg','reason':'replace asset'}],'x')

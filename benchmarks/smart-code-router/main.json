@@ -1,0 +1,3836 @@
+{
+  "schema_version": 1,
+  "authored_at": "2026-10-02",
+  "author": "independent benchmark audit agent",
+  "authorship_scope": "Authored from master requirements and harness audit before inspecting subsequent router implementation; not derived from old 128 cases.",
+  "frozen": true,
+  "cases": [
+    {
+      "id": "main-001",
+      "category": "explain",
+      "request": "Explain the contract and current behavior of clamp in this file. Is it implemented?",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def clamp(value, low, high):\n    \"\"\"Clamp value inclusively to low/high; raise ValueError when low exceeds high.\"\"\"\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Clamp value inclusively to low/high; raise ValueError when low exceeds high.",
+          "The implementation raises NotImplementedError rather than fulfilling the contract."
+        ],
+        "forbidden_claims": [
+          "The function currently passes its contract."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      }
+    },
+    {
+      "id": "main-002",
+      "category": "explain",
+      "request": "Explain the contract and current behavior of median in this file. Is it implemented?",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def median(values):\n    \"\"\"Return the sorted middle value or average of two middle values; empty input raises ValueError; preserve input.\"\"\"\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Return the sorted middle value or average of two middle values; empty input raises ValueError; preserve input.",
+          "The implementation raises NotImplementedError rather than fulfilling the contract."
+        ],
+        "forbidden_claims": [
+          "The function currently passes its contract."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      }
+    },
+    {
+      "id": "main-003",
+      "category": "explain",
+      "request": "Explain the contract and current behavior of dedupe in this file. Is it implemented?",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def dedupe(values):\n    \"\"\"Remove duplicates preserving first occurrence order, including unhashable lists.\"\"\"\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Remove duplicates preserving first occurrence order, including unhashable lists.",
+          "The implementation raises NotImplementedError rather than fulfilling the contract."
+        ],
+        "forbidden_claims": [
+          "The function currently passes its contract."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      }
+    },
+    {
+      "id": "main-004",
+      "category": "explain",
+      "request": "Explain the contract and current behavior of rotate in this file. Is it implemented?",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def rotate(values, steps):\n    \"\"\"Rotate list right by steps; negative steps rotate left; empty list returns empty.\"\"\"\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Rotate list right by steps; negative steps rotate left; empty list returns empty.",
+          "The implementation raises NotImplementedError rather than fulfilling the contract."
+        ],
+        "forbidden_claims": [
+          "The function currently passes its contract."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      }
+    },
+    {
+      "id": "main-005",
+      "category": "explain",
+      "request": "Explain the contract and current behavior of chunk in this file. Is it implemented?",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def chunk(values, size):\n    \"\"\"Return consecutive list chunks including short last chunk; size <=0 raises ValueError.\"\"\"\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Return consecutive list chunks including short last chunk; size <=0 raises ValueError.",
+          "The implementation raises NotImplementedError rather than fulfilling the contract."
+        ],
+        "forbidden_claims": [
+          "The function currently passes its contract."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      }
+    },
+    {
+      "id": "main-006",
+      "category": "explain",
+      "request": "Explain the contract and current behavior of is_prime in this file. Is it implemented?",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def is_prime(n):\n    \"\"\"Return whether integer n is prime; numbers below two are false.\"\"\"\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Return whether integer n is prime; numbers below two are false.",
+          "The implementation raises NotImplementedError rather than fulfilling the contract."
+        ],
+        "forbidden_claims": [
+          "The function currently passes its contract."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      }
+    },
+    {
+      "id": "main-007",
+      "category": "explain",
+      "request": "Explain the contract and current behavior of gcd in this file. Is it implemented?",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def gcd(a, b):\n    \"\"\"Return nonnegative greatest common divisor; gcd(0,0)=0.\"\"\"\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Return nonnegative greatest common divisor; gcd(0,0)=0.",
+          "The implementation raises NotImplementedError rather than fulfilling the contract."
+        ],
+        "forbidden_claims": [
+          "The function currently passes its contract."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      }
+    },
+    {
+      "id": "main-008",
+      "category": "explain",
+      "request": "Explain the contract and current behavior of flatten in this file. Is it implemented?",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def flatten(values):\n    \"\"\"Flatten arbitrarily nested lists; non-list elements are preserved.\"\"\"\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Flatten arbitrarily nested lists; non-list elements are preserved.",
+          "The implementation raises NotImplementedError rather than fulfilling the contract."
+        ],
+        "forbidden_claims": [
+          "The function currently passes its contract."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      }
+    },
+    {
+      "id": "main-009",
+      "category": "explain",
+      "request": "Explain the contract and current behavior of word_counts in this file. Is it implemented?",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def word_counts(text):\n    \"\"\"Count case-insensitive whitespace-separated words; punctuation stays part of words.\"\"\"\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Count case-insensitive whitespace-separated words; punctuation stays part of words.",
+          "The implementation raises NotImplementedError rather than fulfilling the contract."
+        ],
+        "forbidden_claims": [
+          "The function currently passes its contract."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      }
+    },
+    {
+      "id": "main-010",
+      "category": "explain",
+      "request": "Explain the contract and current behavior of binary_search in this file. Is it implemented?",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def binary_search(values, target):\n    \"\"\"Return leftmost target index in sorted list, or -1.\"\"\"\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Return leftmost target index in sorted list, or -1.",
+          "The implementation raises NotImplementedError rather than fulfilling the contract."
+        ],
+        "forbidden_claims": [
+          "The function currently passes its contract."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      }
+    },
+    {
+      "id": "main-011",
+      "category": "explain",
+      "request": "Explain the contract and current behavior of merge_ranges in this file. Is it implemented?",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def merge_ranges(ranges):\n    \"\"\"Merge overlapping or touching closed numeric intervals, sorted by start; input preserved.\"\"\"\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Merge overlapping or touching closed numeric intervals, sorted by start; input preserved.",
+          "The implementation raises NotImplementedError rather than fulfilling the contract."
+        ],
+        "forbidden_claims": [
+          "The function currently passes its contract."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      }
+    },
+    {
+      "id": "main-012",
+      "category": "explain",
+      "request": "Explain the contract and current behavior of transpose in this file. Is it implemented?",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def transpose(rows):\n    \"\"\"Transpose rectangular matrix to lists; empty returns []; ragged raises ValueError.\"\"\"\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Transpose rectangular matrix to lists; empty returns []; ragged raises ValueError.",
+          "The implementation raises NotImplementedError rather than fulfilling the contract."
+        ],
+        "forbidden_claims": [
+          "The function currently passes its contract."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      }
+    },
+    {
+      "id": "main-013",
+      "category": "explain",
+      "request": "Explain the contract and current behavior of balanced in this file. Is it implemented?",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def balanced(text):\n    \"\"\"Check balanced (), [], {} brackets, ignoring other characters.\"\"\"\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Check balanced (), [], {} brackets, ignoring other characters.",
+          "The implementation raises NotImplementedError rather than fulfilling the contract."
+        ],
+        "forbidden_claims": [
+          "The function currently passes its contract."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      }
+    },
+    {
+      "id": "main-014",
+      "category": "explain",
+      "request": "Explain the contract and current behavior of slug in this file. Is it implemented?",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def slug(text):\n    \"\"\"Lowercase ASCII text and replace each run of nonalphanumeric characters with hyphen; trim hyphens.\"\"\"\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Lowercase ASCII text and replace each run of nonalphanumeric characters with hyphen; trim hyphens.",
+          "The implementation raises NotImplementedError rather than fulfilling the contract."
+        ],
+        "forbidden_claims": [
+          "The function currently passes its contract."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      }
+    },
+    {
+      "id": "main-015",
+      "category": "explain",
+      "request": "Explain the contract and current behavior of running_total in this file. Is it implemented?",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def running_total(values):\n    \"\"\"Return prefix sums without modifying input.\"\"\"\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Return prefix sums without modifying input.",
+          "The implementation raises NotImplementedError rather than fulfilling the contract."
+        ],
+        "forbidden_claims": [
+          "The function currently passes its contract."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      }
+    },
+    {
+      "id": "main-016",
+      "category": "explain",
+      "request": "Explain the contract and current behavior of invert in this file. Is it implemented?",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def invert(mapping):\n    \"\"\"Group original keys by their values in original insertion order.\"\"\"\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Group original keys by their values in original insertion order.",
+          "The implementation raises NotImplementedError rather than fulfilling the contract."
+        ],
+        "forbidden_claims": [
+          "The function currently passes its contract."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      }
+    },
+    {
+      "id": "main-017",
+      "category": "explain",
+      "request": "Explain the contract and current behavior of unique_pairs in this file. Is it implemented?",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def unique_pairs(values, total):\n    \"\"\"Return sorted unique pairs (a,b), a<=b, summing to total; repeated value pair needs two occurrences.\"\"\"\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Return sorted unique pairs (a,b), a<=b, summing to total; repeated value pair needs two occurrences.",
+          "The implementation raises NotImplementedError rather than fulfilling the contract."
+        ],
+        "forbidden_claims": [
+          "The function currently passes its contract."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      }
+    },
+    {
+      "id": "main-018",
+      "category": "explain",
+      "request": "Explain the contract and current behavior of rle in this file. Is it implemented?",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def rle(text):\n    \"\"\"Return run-length encoding as list of (character,count) tuples.\"\"\"\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Return run-length encoding as list of (character,count) tuples.",
+          "The implementation raises NotImplementedError rather than fulfilling the contract."
+        ],
+        "forbidden_claims": [
+          "The function currently passes its contract."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      }
+    },
+    {
+      "id": "main-019",
+      "category": "explain",
+      "request": "Explain the contract and current behavior of parse_bool in this file. Is it implemented?",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def parse_bool(text):\n    \"\"\"Strip/casefold and accept true/yes/1 or false/no/0; invalid raises ValueError.\"\"\"\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Strip/casefold and accept true/yes/1 or false/no/0; invalid raises ValueError.",
+          "The implementation raises NotImplementedError rather than fulfilling the contract."
+        ],
+        "forbidden_claims": [
+          "The function currently passes its contract."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      }
+    },
+    {
+      "id": "main-020",
+      "category": "explain",
+      "request": "Explain the contract and current behavior of distance in this file. Is it implemented?",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def distance(a, b):\n    \"\"\"Return Levenshtein edit distance for strings using insertion/deletion/substitution.\"\"\"\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Return Levenshtein edit distance for strings using insertion/deletion/substitution.",
+          "The implementation raises NotImplementedError rather than fulfilling the contract."
+        ],
+        "forbidden_claims": [
+          "The function currently passes its contract."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      }
+    },
+    {
+      "id": "main-021",
+      "category": "edit",
+      "request": "creat the missing body for clamp; keep its public signature. Clamp value inclusively to low/high; raise ValueError when low exceeds high.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def clamp(value, low, high):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import clamp\nassert clamp(9,0,5)==5\nassert clamp(-1,0,5)==0\nassert clamp(3,0,5)==3\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-022",
+      "category": "edit",
+      "request": "creat the missing body for median; keep its public signature. Return the sorted middle value or average of two middle values; empty input raises ValueError; preserve input.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def median(values):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import median\nassert median([9,1,4])==4\nassert median([4,1])==2.5\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-023",
+      "category": "edit",
+      "request": "creat the missing body for dedupe; keep its public signature. Remove duplicates preserving first occurrence order, including unhashable lists.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def dedupe(values):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import dedupe\nassert dedupe([2,1,2])==[2,1]\nassert dedupe([[1],[1],[2]])==[[1],[2]]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-024",
+      "category": "edit",
+      "request": "creat the missing body for rotate; keep its public signature. Rotate list right by steps; negative steps rotate left; empty list returns empty.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def rotate(values, steps):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import rotate\nassert rotate([1,2,3],1)==[3,1,2]\nassert rotate([1,2,3],-1)==[2,3,1]\nassert rotate([],9)==[]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-025",
+      "category": "edit",
+      "request": "creat the missing body for chunk; keep its public signature. Return consecutive list chunks including short last chunk; size <=0 raises ValueError.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def chunk(values, size):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import chunk\nassert chunk([1,2,3],2)==[[1,2],[3]]\nassert chunk([],2)==[]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-026",
+      "category": "edit",
+      "request": "creat the missing body for is_prime; keep its public signature. Return whether integer n is prime; numbers below two are false.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def is_prime(n):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import is_prime\nassert is_prime(2)\nassert is_prime(97)\nassert not is_prime(1)\nassert not is_prime(49)\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-027",
+      "category": "edit",
+      "request": "creat the missing body for gcd; keep its public signature. Return nonnegative greatest common divisor; gcd(0,0)=0.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def gcd(a, b):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import gcd\nassert gcd(-18,24)==6\nassert gcd(0,0)==0\nassert gcd(7,0)==7\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-028",
+      "category": "edit",
+      "request": "creat the missing body for flatten; keep its public signature. Flatten arbitrarily nested lists; non-list elements are preserved.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def flatten(values):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import flatten\nassert flatten([1,[2,[],[3]],4])==[1,2,3,4]\nassert flatten([])==[]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-029",
+      "category": "edit",
+      "request": "creat the missing body for word_counts; keep its public signature. Count case-insensitive whitespace-separated words; punctuation stays part of words.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def word_counts(text):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import word_counts\nassert word_counts(\"A b a\")=={\"a\":2,\"b\":1}\nassert word_counts(\"\")=={}\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-030",
+      "category": "edit",
+      "request": "creat the missing body for binary_search; keep its public signature. Return leftmost target index in sorted list, or -1.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def binary_search(values, target):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import binary_search\nassert binary_search([1,2,2,4],2)==1\nassert binary_search([],3)==-1\nassert binary_search([1,3],2)==-1\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-031",
+      "category": "edit",
+      "request": "creat the missing body for merge_ranges; keep its public signature. Merge overlapping or touching closed numeric intervals, sorted by start; input preserved.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def merge_ranges(ranges):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import merge_ranges\nassert merge_ranges([(5,7),(1,3),(3,6)])==[(1,7)]\nassert merge_ranges([])==[]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-032",
+      "category": "edit",
+      "request": "creat the missing body for transpose; keep its public signature. Transpose rectangular matrix to lists; empty returns []; ragged raises ValueError.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def transpose(rows):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import transpose\nassert transpose([[1,2],[3,4]])==[[1,3],[2,4]]\nassert transpose([])==[]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-033",
+      "category": "edit",
+      "request": "creat the missing body for balanced; keep its public signature. Check balanced (), [], {} brackets, ignoring other characters.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def balanced(text):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import balanced\nassert balanced(\"a([{}])\")\nassert not balanced(\"([)]\")\nassert not balanced(\"(\")\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-034",
+      "category": "edit",
+      "request": "creat the missing body for slug; keep its public signature. Lowercase ASCII text and replace each run of nonalphanumeric characters with hyphen; trim hyphens.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def slug(text):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import slug\nassert slug(\" Hello, WORLD! \")==\"hello-world\"\nassert slug(\"---\")==\"\"\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-035",
+      "category": "edit",
+      "request": "creat the missing body for running_total; keep its public signature. Return prefix sums without modifying input.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def running_total(values):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import running_total\nassert running_total([2,-1,4])==[2,1,5]\nassert running_total([])==[]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-036",
+      "category": "edit",
+      "request": "creat the missing body for invert; keep its public signature. Group original keys by their values in original insertion order.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def invert(mapping):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import invert\nassert invert({\"a\":1,\"b\":1,\"c\":2})=={1:[\"a\",\"b\"],2:[\"c\"]}\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-037",
+      "category": "edit",
+      "request": "creat the missing body for unique_pairs; keep its public signature. Return sorted unique pairs (a,b), a<=b, summing to total; repeated value pair needs two occurrences.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def unique_pairs(values, total):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import unique_pairs\nassert unique_pairs([1,1,2,3,4],5)==[(1,4),(2,3)]\nassert unique_pairs([2],4)==[]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-038",
+      "category": "edit",
+      "request": "creat the missing body for rle; keep its public signature. Return run-length encoding as list of (character,count) tuples.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def rle(text):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import rle\nassert rle(\"aaabbc\")==[(\"a\",3),(\"b\",2),(\"c\",1)]\nassert rle(\"\")==[]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-039",
+      "category": "edit",
+      "request": "creat the missing body for parse_bool; keep its public signature. Strip/casefold and accept true/yes/1 or false/no/0; invalid raises ValueError.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def parse_bool(text):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import parse_bool\nassert parse_bool(\" YES \") is True\nassert parse_bool(\"0\") is False\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-040",
+      "category": "edit",
+      "request": "creat the missing body for distance; keep its public signature. Return Levenshtein edit distance for strings using insertion/deletion/substitution.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def distance(a, b):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import distance\nassert distance(\"kitten\",\"sitting\")==3\nassert distance(\"\",\"abc\")==3\nassert distance(\"same\",\"same\")==0\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-041",
+      "category": "debug",
+      "request": "now make the tests pass",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def clamp(value, low, high):\n    return None  # regression: stub accidentally shipped\n"
+        },
+        "follow_up": true,
+        "previous_request": "fix teh regression in clamp. The test returns None where a result is required. Clamp value inclusively to low/high; raise ValueError when low exceeds high."
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import clamp\nassert clamp(9,0,5)==5\nassert clamp(-1,0,5)==0\nassert clamp(3,0,5)==3\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "history": [
+        {
+          "role": "user",
+          "content": "fix teh regression in clamp. The test returns None where a result is required. Clamp value inclusively to low/high; raise ValueError when low exceeds high."
+        },
+        {
+          "role": "assistant",
+          "content": "The requested function is unfinished; no patch has been accepted. Please confirm whether I should implement the specified contract."
+        }
+      ]
+    },
+    {
+      "id": "main-042",
+      "category": "debug",
+      "request": "fix teh regression in median. The test returns None where a result is required. Return the sorted middle value or average of two middle values; empty input raises ValueError; preserve input.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def median(values):\n    return None  # regression: stub accidentally shipped\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import median\nassert median([9,1,4])==4\nassert median([4,1])==2.5\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-043",
+      "category": "debug",
+      "request": "fix teh regression in dedupe. The test returns None where a result is required. Remove duplicates preserving first occurrence order, including unhashable lists.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def dedupe(values):\n    return None  # regression: stub accidentally shipped\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import dedupe\nassert dedupe([2,1,2])==[2,1]\nassert dedupe([[1],[1],[2]])==[[1],[2]]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-044",
+      "category": "debug",
+      "request": "fix teh regression in rotate. The test returns None where a result is required. Rotate list right by steps; negative steps rotate left; empty list returns empty.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def rotate(values, steps):\n    return None  # regression: stub accidentally shipped\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import rotate\nassert rotate([1,2,3],1)==[3,1,2]\nassert rotate([1,2,3],-1)==[2,3,1]\nassert rotate([],9)==[]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-045",
+      "category": "debug",
+      "request": "fix teh regression in chunk. The test returns None where a result is required. Return consecutive list chunks including short last chunk; size <=0 raises ValueError.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def chunk(values, size):\n    return None  # regression: stub accidentally shipped\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import chunk\nassert chunk([1,2,3],2)==[[1,2],[3]]\nassert chunk([],2)==[]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-046",
+      "category": "debug",
+      "request": "continue",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def is_prime(n):\n    return None  # regression: stub accidentally shipped\n"
+        },
+        "follow_up": true,
+        "previous_request": "fix teh regression in is_prime. The test returns None where a result is required. Return whether integer n is prime; numbers below two are false."
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import is_prime\nassert is_prime(2)\nassert is_prime(97)\nassert not is_prime(1)\nassert not is_prime(49)\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "history": [
+        {
+          "role": "user",
+          "content": "fix teh regression in is_prime. The test returns None where a result is required. Return whether integer n is prime; numbers below two are false."
+        },
+        {
+          "role": "assistant",
+          "content": "The requested function is unfinished; no patch has been accepted. Please confirm whether I should implement the specified contract."
+        }
+      ]
+    },
+    {
+      "id": "main-047",
+      "category": "debug",
+      "request": "fix teh regression in gcd. The test returns None where a result is required. Return nonnegative greatest common divisor; gcd(0,0)=0.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def gcd(a, b):\n    return None  # regression: stub accidentally shipped\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import gcd\nassert gcd(-18,24)==6\nassert gcd(0,0)==0\nassert gcd(7,0)==7\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-048",
+      "category": "debug",
+      "request": "fix teh regression in flatten. The test returns None where a result is required. Flatten arbitrarily nested lists; non-list elements are preserved.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def flatten(values):\n    return None  # regression: stub accidentally shipped\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import flatten\nassert flatten([1,[2,[],[3]],4])==[1,2,3,4]\nassert flatten([])==[]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-049",
+      "category": "debug",
+      "request": "fix teh regression in word_counts. The test returns None where a result is required. Count case-insensitive whitespace-separated words; punctuation stays part of words.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def word_counts(text):\n    return None  # regression: stub accidentally shipped\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import word_counts\nassert word_counts(\"A b a\")=={\"a\":2,\"b\":1}\nassert word_counts(\"\")=={}\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-050",
+      "category": "debug",
+      "request": "fix teh regression in binary_search. The test returns None where a result is required. Return leftmost target index in sorted list, or -1.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def binary_search(values, target):\n    return None  # regression: stub accidentally shipped\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import binary_search\nassert binary_search([1,2,2,4],2)==1\nassert binary_search([],3)==-1\nassert binary_search([1,3],2)==-1\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-051",
+      "category": "debug",
+      "request": "fix that",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def merge_ranges(ranges):\n    return None  # regression: stub accidentally shipped\n"
+        },
+        "follow_up": true,
+        "previous_request": "fix teh regression in merge_ranges. The test returns None where a result is required. Merge overlapping or touching closed numeric intervals, sorted by start; input preserved."
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import merge_ranges\nassert merge_ranges([(5,7),(1,3),(3,6)])==[(1,7)]\nassert merge_ranges([])==[]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "history": [
+        {
+          "role": "user",
+          "content": "fix teh regression in merge_ranges. The test returns None where a result is required. Merge overlapping or touching closed numeric intervals, sorted by start; input preserved."
+        },
+        {
+          "role": "assistant",
+          "content": "The requested function is unfinished; no patch has been accepted. Please confirm whether I should implement the specified contract."
+        }
+      ]
+    },
+    {
+      "id": "main-052",
+      "category": "debug",
+      "request": "fix teh regression in transpose. The test returns None where a result is required. Transpose rectangular matrix to lists; empty returns []; ragged raises ValueError.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def transpose(rows):\n    return None  # regression: stub accidentally shipped\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import transpose\nassert transpose([[1,2],[3,4]])==[[1,3],[2,4]]\nassert transpose([])==[]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-053",
+      "category": "debug",
+      "request": "fix teh regression in balanced. The test returns None where a result is required. Check balanced (), [], {} brackets, ignoring other characters.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def balanced(text):\n    return None  # regression: stub accidentally shipped\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import balanced\nassert balanced(\"a([{}])\")\nassert not balanced(\"([)]\")\nassert not balanced(\"(\")\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-054",
+      "category": "debug",
+      "request": "fix teh regression in slug. The test returns None where a result is required. Lowercase ASCII text and replace each run of nonalphanumeric characters with hyphen; trim hyphens.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def slug(text):\n    return None  # regression: stub accidentally shipped\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import slug\nassert slug(\" Hello, WORLD! \")==\"hello-world\"\nassert slug(\"---\")==\"\"\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-055",
+      "category": "debug",
+      "request": "fix teh regression in running_total. The test returns None where a result is required. Return prefix sums without modifying input.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def running_total(values):\n    return None  # regression: stub accidentally shipped\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import running_total\nassert running_total([2,-1,4])==[2,1,5]\nassert running_total([])==[]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-056",
+      "category": "debug",
+      "request": "fix teh regression in invert. The test returns None where a result is required. Group original keys by their values in original insertion order.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def invert(mapping):\n    return None  # regression: stub accidentally shipped\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import invert\nassert invert({\"a\":1,\"b\":1,\"c\":2})=={1:[\"a\",\"b\"],2:[\"c\"]}\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-057",
+      "category": "debug",
+      "request": "fix teh regression in unique_pairs. The test returns None where a result is required. Return sorted unique pairs (a,b), a<=b, summing to total; repeated value pair needs two occurrences.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def unique_pairs(values, total):\n    return None  # regression: stub accidentally shipped\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import unique_pairs\nassert unique_pairs([1,1,2,3,4],5)==[(1,4),(2,3)]\nassert unique_pairs([2],4)==[]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-058",
+      "category": "debug",
+      "request": "fix teh regression in rle. The test returns None where a result is required. Return run-length encoding as list of (character,count) tuples.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def rle(text):\n    return None  # regression: stub accidentally shipped\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import rle\nassert rle(\"aaabbc\")==[(\"a\",3),(\"b\",2),(\"c\",1)]\nassert rle(\"\")==[]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-059",
+      "category": "debug",
+      "request": "fix teh regression in parse_bool. The test returns None where a result is required. Strip/casefold and accept true/yes/1 or false/no/0; invalid raises ValueError.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def parse_bool(text):\n    return None  # regression: stub accidentally shipped\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import parse_bool\nassert parse_bool(\" YES \") is True\nassert parse_bool(\"0\") is False\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-060",
+      "category": "debug",
+      "request": "fix teh regression in distance. The test returns None where a result is required. Return Levenshtein edit distance for strings using insertion/deletion/substitution.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def distance(a, b):\n    return None  # regression: stub accidentally shipped\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import distance\nassert distance(\"kitten\",\"sitting\")==3\nassert distance(\"\",\"abc\")==3\nassert distance(\"same\",\"same\")==0\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-061",
+      "category": "implement",
+      "request": "continue",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def clamp(value, low, high):\n    raise NotImplementedError(\"unfinished\")\n"
+        },
+        "follow_up": true,
+        "previous_request": "Implement clamp in solution.py. Clamp value inclusively to low/high; raise ValueError when low exceeds high."
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import clamp\nassert clamp(9,0,5)==5\nassert clamp(-1,0,5)==0\nassert clamp(3,0,5)==3\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "history": [
+        {
+          "role": "user",
+          "content": "Implement clamp in solution.py. Clamp value inclusively to low/high; raise ValueError when low exceeds high."
+        },
+        {
+          "role": "assistant",
+          "content": "The requested function is unfinished; no patch has been accepted. Please confirm whether I should implement the specified contract."
+        }
+      ]
+    },
+    {
+      "id": "main-062",
+      "category": "implement",
+      "request": "Implement median in solution.py. Return the sorted middle value or average of two middle values; empty input raises ValueError; preserve input.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def median(values):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import median\nassert median([9,1,4])==4\nassert median([4,1])==2.5\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-063",
+      "category": "implement",
+      "request": "Implement dedupe in solution.py. Remove duplicates preserving first occurrence order, including unhashable lists.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def dedupe(values):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import dedupe\nassert dedupe([2,1,2])==[2,1]\nassert dedupe([[1],[1],[2]])==[[1],[2]]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-064",
+      "category": "implement",
+      "request": "Implement rotate in solution.py. Rotate list right by steps; negative steps rotate left; empty list returns empty.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def rotate(values, steps):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import rotate\nassert rotate([1,2,3],1)==[3,1,2]\nassert rotate([1,2,3],-1)==[2,3,1]\nassert rotate([],9)==[]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-065",
+      "category": "implement",
+      "request": "Implement chunk in solution.py. Return consecutive list chunks including short last chunk; size <=0 raises ValueError.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def chunk(values, size):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import chunk\nassert chunk([1,2,3],2)==[[1,2],[3]]\nassert chunk([],2)==[]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-066",
+      "category": "implement",
+      "request": "Implement is_prime in solution.py. Return whether integer n is prime; numbers below two are false.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def is_prime(n):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import is_prime\nassert is_prime(2)\nassert is_prime(97)\nassert not is_prime(1)\nassert not is_prime(49)\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-067",
+      "category": "implement",
+      "request": "Implement gcd in solution.py. Return nonnegative greatest common divisor; gcd(0,0)=0.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def gcd(a, b):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import gcd\nassert gcd(-18,24)==6\nassert gcd(0,0)==0\nassert gcd(7,0)==7\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-068",
+      "category": "implement",
+      "request": "Implement flatten in solution.py. Flatten arbitrarily nested lists; non-list elements are preserved.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def flatten(values):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import flatten\nassert flatten([1,[2,[],[3]],4])==[1,2,3,4]\nassert flatten([])==[]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-069",
+      "category": "implement",
+      "request": "Implement word_counts in solution.py. Count case-insensitive whitespace-separated words; punctuation stays part of words.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def word_counts(text):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import word_counts\nassert word_counts(\"A b a\")=={\"a\":2,\"b\":1}\nassert word_counts(\"\")=={}\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-070",
+      "category": "implement",
+      "request": "Implement binary_search in solution.py. Return leftmost target index in sorted list, or -1.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def binary_search(values, target):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import binary_search\nassert binary_search([1,2,2,4],2)==1\nassert binary_search([],3)==-1\nassert binary_search([1,3],2)==-1\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-071",
+      "category": "implement",
+      "request": "Implement merge_ranges in solution.py. Merge overlapping or touching closed numeric intervals, sorted by start; input preserved.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def merge_ranges(ranges):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import merge_ranges\nassert merge_ranges([(5,7),(1,3),(3,6)])==[(1,7)]\nassert merge_ranges([])==[]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-072",
+      "category": "implement",
+      "request": "Implement transpose in solution.py. Transpose rectangular matrix to lists; empty returns []; ragged raises ValueError.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def transpose(rows):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import transpose\nassert transpose([[1,2],[3,4]])==[[1,3],[2,4]]\nassert transpose([])==[]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-073",
+      "category": "implement",
+      "request": "Implement balanced in solution.py. Check balanced (), [], {} brackets, ignoring other characters.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def balanced(text):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import balanced\nassert balanced(\"a([{}])\")\nassert not balanced(\"([)]\")\nassert not balanced(\"(\")\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-074",
+      "category": "implement",
+      "request": "Implement slug in solution.py. Lowercase ASCII text and replace each run of nonalphanumeric characters with hyphen; trim hyphens.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def slug(text):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import slug\nassert slug(\" Hello, WORLD! \")==\"hello-world\"\nassert slug(\"---\")==\"\"\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-075",
+      "category": "implement",
+      "request": "Implement running_total in solution.py. Return prefix sums without modifying input.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def running_total(values):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import running_total\nassert running_total([2,-1,4])==[2,1,5]\nassert running_total([])==[]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-076",
+      "category": "refactor_multifile",
+      "request": "continue",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "from legacy import clamp\n",
+          "legacy.py": "def clamp(value, low, high):\n    raise NotImplementedError(\"unfinished\")\n"
+        },
+        "follow_up": true,
+        "previous_request": "Refactor the unfinished clamp out of legacy.py into solution.py. Keep legacy.py as a backwards-compatible import. Clamp value inclusively to low/high; raise ValueError when low exceeds high."
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "legacy.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import clamp\nassert clamp(9,0,5)==5\nassert clamp(-1,0,5)==0\nassert clamp(3,0,5)==3\nfrom legacy import clamp as old\nassert old is clamp\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "history": [
+        {
+          "role": "user",
+          "content": "Refactor the unfinished clamp out of legacy.py into solution.py. Keep legacy.py as a backwards-compatible import. Clamp value inclusively to low/high; raise ValueError when low exceeds high."
+        },
+        {
+          "role": "assistant",
+          "content": "The requested function is unfinished; no patch has been accepted. Please confirm whether I should implement the specified contract."
+        }
+      ]
+    },
+    {
+      "id": "main-077",
+      "category": "refactor_multifile",
+      "request": "Refactor the unfinished median out of legacy.py into solution.py. Keep legacy.py as a backwards-compatible import. Return the sorted middle value or average of two middle values; empty input raises ValueError; preserve input.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "from legacy import median\n",
+          "legacy.py": "def median(values):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "legacy.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import median\nassert median([9,1,4])==4\nassert median([4,1])==2.5\nfrom legacy import median as old\nassert old is median\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-078",
+      "category": "refactor_multifile",
+      "request": "Refactor the unfinished dedupe out of legacy.py into solution.py. Keep legacy.py as a backwards-compatible import. Remove duplicates preserving first occurrence order, including unhashable lists.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "from legacy import dedupe\n",
+          "legacy.py": "def dedupe(values):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "legacy.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import dedupe\nassert dedupe([2,1,2])==[2,1]\nassert dedupe([[1],[1],[2]])==[[1],[2]]\nfrom legacy import dedupe as old\nassert old is dedupe\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-079",
+      "category": "refactor_multifile",
+      "request": "Refactor the unfinished rotate out of legacy.py into solution.py. Keep legacy.py as a backwards-compatible import. Rotate list right by steps; negative steps rotate left; empty list returns empty.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "from legacy import rotate\n",
+          "legacy.py": "def rotate(values, steps):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "legacy.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import rotate\nassert rotate([1,2,3],1)==[3,1,2]\nassert rotate([1,2,3],-1)==[2,3,1]\nassert rotate([],9)==[]\nfrom legacy import rotate as old\nassert old is rotate\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-080",
+      "category": "refactor_multifile",
+      "request": "Refactor the unfinished chunk out of legacy.py into solution.py. Keep legacy.py as a backwards-compatible import. Return consecutive list chunks including short last chunk; size <=0 raises ValueError.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "from legacy import chunk\n",
+          "legacy.py": "def chunk(values, size):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "legacy.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import chunk\nassert chunk([1,2,3],2)==[[1,2],[3]]\nassert chunk([],2)==[]\nfrom legacy import chunk as old\nassert old is chunk\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-081",
+      "category": "refactor_multifile",
+      "request": "fix that",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "from legacy import is_prime\n",
+          "legacy.py": "def is_prime(n):\n    raise NotImplementedError(\"unfinished\")\n"
+        },
+        "follow_up": true,
+        "previous_request": "Refactor the unfinished is_prime out of legacy.py into solution.py. Keep legacy.py as a backwards-compatible import. Return whether integer n is prime; numbers below two are false."
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "legacy.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import is_prime\nassert is_prime(2)\nassert is_prime(97)\nassert not is_prime(1)\nassert not is_prime(49)\nfrom legacy import is_prime as old\nassert old is is_prime\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "history": [
+        {
+          "role": "user",
+          "content": "Refactor the unfinished is_prime out of legacy.py into solution.py. Keep legacy.py as a backwards-compatible import. Return whether integer n is prime; numbers below two are false."
+        },
+        {
+          "role": "assistant",
+          "content": "The requested function is unfinished; no patch has been accepted. Please confirm whether I should implement the specified contract."
+        }
+      ]
+    },
+    {
+      "id": "main-082",
+      "category": "refactor_multifile",
+      "request": "Refactor the unfinished gcd out of legacy.py into solution.py. Keep legacy.py as a backwards-compatible import. Return nonnegative greatest common divisor; gcd(0,0)=0.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "from legacy import gcd\n",
+          "legacy.py": "def gcd(a, b):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "legacy.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import gcd\nassert gcd(-18,24)==6\nassert gcd(0,0)==0\nassert gcd(7,0)==7\nfrom legacy import gcd as old\nassert old is gcd\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-083",
+      "category": "refactor_multifile",
+      "request": "Refactor the unfinished flatten out of legacy.py into solution.py. Keep legacy.py as a backwards-compatible import. Flatten arbitrarily nested lists; non-list elements are preserved.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "from legacy import flatten\n",
+          "legacy.py": "def flatten(values):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "legacy.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import flatten\nassert flatten([1,[2,[],[3]],4])==[1,2,3,4]\nassert flatten([])==[]\nfrom legacy import flatten as old\nassert old is flatten\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-084",
+      "category": "refactor_multifile",
+      "request": "Refactor the unfinished word_counts out of legacy.py into solution.py. Keep legacy.py as a backwards-compatible import. Count case-insensitive whitespace-separated words; punctuation stays part of words.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "from legacy import word_counts\n",
+          "legacy.py": "def word_counts(text):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "legacy.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import word_counts\nassert word_counts(\"A b a\")=={\"a\":2,\"b\":1}\nassert word_counts(\"\")=={}\nfrom legacy import word_counts as old\nassert old is word_counts\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-085",
+      "category": "refactor_multifile",
+      "request": "Refactor the unfinished binary_search out of legacy.py into solution.py. Keep legacy.py as a backwards-compatible import. Return leftmost target index in sorted list, or -1.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "from legacy import binary_search\n",
+          "legacy.py": "def binary_search(values, target):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "legacy.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import binary_search\nassert binary_search([1,2,2,4],2)==1\nassert binary_search([],3)==-1\nassert binary_search([1,3],2)==-1\nfrom legacy import binary_search as old\nassert old is binary_search\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-086",
+      "category": "refactor_multifile",
+      "request": "Refactor the unfinished merge_ranges out of legacy.py into solution.py. Keep legacy.py as a backwards-compatible import. Merge overlapping or touching closed numeric intervals, sorted by start; input preserved.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "from legacy import merge_ranges\n",
+          "legacy.py": "def merge_ranges(ranges):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "legacy.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import merge_ranges\nassert merge_ranges([(5,7),(1,3),(3,6)])==[(1,7)]\nassert merge_ranges([])==[]\nfrom legacy import merge_ranges as old\nassert old is merge_ranges\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-087",
+      "category": "refactor_multifile",
+      "request": "Refactor the unfinished transpose out of legacy.py into solution.py. Keep legacy.py as a backwards-compatible import. Transpose rectangular matrix to lists; empty returns []; ragged raises ValueError.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "from legacy import transpose\n",
+          "legacy.py": "def transpose(rows):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "legacy.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import transpose\nassert transpose([[1,2],[3,4]])==[[1,3],[2,4]]\nassert transpose([])==[]\nfrom legacy import transpose as old\nassert old is transpose\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-088",
+      "category": "refactor_multifile",
+      "request": "Refactor the unfinished balanced out of legacy.py into solution.py. Keep legacy.py as a backwards-compatible import. Check balanced (), [], {} brackets, ignoring other characters.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "from legacy import balanced\n",
+          "legacy.py": "def balanced(text):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "legacy.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import balanced\nassert balanced(\"a([{}])\")\nassert not balanced(\"([)]\")\nassert not balanced(\"(\")\nfrom legacy import balanced as old\nassert old is balanced\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-089",
+      "category": "refactor_multifile",
+      "request": "Refactor the unfinished slug out of legacy.py into solution.py. Keep legacy.py as a backwards-compatible import. Lowercase ASCII text and replace each run of nonalphanumeric characters with hyphen; trim hyphens.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "from legacy import slug\n",
+          "legacy.py": "def slug(text):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "legacy.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import slug\nassert slug(\" Hello, WORLD! \")==\"hello-world\"\nassert slug(\"---\")==\"\"\nfrom legacy import slug as old\nassert old is slug\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-090",
+      "category": "refactor_multifile",
+      "request": "Refactor the unfinished running_total out of legacy.py into solution.py. Keep legacy.py as a backwards-compatible import. Return prefix sums without modifying input.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "from legacy import running_total\n",
+          "legacy.py": "def running_total(values):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "legacy.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import running_total\nassert running_total([2,-1,4])==[2,1,5]\nassert running_total([])==[]\nfrom legacy import running_total as old\nassert old is running_total\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "main-091",
+      "category": "architecture",
+      "request": "Plan briefly, then implement clamp behind a service boundary: solution.py exports the function, service.py exports execute(payload), and cli.py reads one JSON payload from stdin and writes one JSON result. execute accepts keys value, low, high; preserve compatibility. Clamp value inclusively to low/high; raise ValueError when low exceeds high.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "reasoning",
+        "coder"
+      ],
+      "complexity": "complex",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "def clamp(value, low, high):\n    raise NotImplementedError(\"unfinished\")\n",
+          "service.py": "def execute(payload):\n    raise NotImplementedError\n",
+          "cli.py": "raise NotImplementedError\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "service.py",
+        "cli.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import clamp\nassert clamp(9,0,5)==5\nassert clamp(-1,0,5)==0\nassert clamp(3,0,5)==3\n\nimport service, inspect\nassert callable(service.execute)\nassert \"input(\" not in inspect.getsource(service)\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW",
+        "semantic_review_required": true,
+        "limitation": "Function assertions and service shape are executable; payload/CLI architecture needs independent human review and is not fully proven by these tests."
+      }
+    },
+    {
+      "id": "main-092",
+      "category": "architecture",
+      "request": "Plan briefly, then implement median behind a service boundary: solution.py exports the function, service.py exports execute(payload), and cli.py reads one JSON payload from stdin and writes one JSON result. execute accepts keys values; preserve compatibility. Return the sorted middle value or average of two middle values; empty input raises ValueError; preserve input.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "reasoning",
+        "coder"
+      ],
+      "complexity": "complex",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "def median(values):\n    raise NotImplementedError(\"unfinished\")\n",
+          "service.py": "def execute(payload):\n    raise NotImplementedError\n",
+          "cli.py": "raise NotImplementedError\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "service.py",
+        "cli.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import median\nassert median([9,1,4])==4\nassert median([4,1])==2.5\n\nimport service, inspect\nassert callable(service.execute)\nassert \"input(\" not in inspect.getsource(service)\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW",
+        "semantic_review_required": true,
+        "limitation": "Function assertions and service shape are executable; payload/CLI architecture needs independent human review and is not fully proven by these tests."
+      }
+    },
+    {
+      "id": "main-093",
+      "category": "architecture",
+      "request": "Plan briefly, then implement dedupe behind a service boundary: solution.py exports the function, service.py exports execute(payload), and cli.py reads one JSON payload from stdin and writes one JSON result. execute accepts keys values; preserve compatibility. Remove duplicates preserving first occurrence order, including unhashable lists.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "reasoning",
+        "coder"
+      ],
+      "complexity": "complex",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "def dedupe(values):\n    raise NotImplementedError(\"unfinished\")\n",
+          "service.py": "def execute(payload):\n    raise NotImplementedError\n",
+          "cli.py": "raise NotImplementedError\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "service.py",
+        "cli.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import dedupe\nassert dedupe([2,1,2])==[2,1]\nassert dedupe([[1],[1],[2]])==[[1],[2]]\n\nimport service, inspect\nassert callable(service.execute)\nassert \"input(\" not in inspect.getsource(service)\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW",
+        "semantic_review_required": true,
+        "limitation": "Function assertions and service shape are executable; payload/CLI architecture needs independent human review and is not fully proven by these tests."
+      }
+    },
+    {
+      "id": "main-094",
+      "category": "architecture",
+      "request": "Plan briefly, then implement rotate behind a service boundary: solution.py exports the function, service.py exports execute(payload), and cli.py reads one JSON payload from stdin and writes one JSON result. execute accepts keys values, steps; preserve compatibility. Rotate list right by steps; negative steps rotate left; empty list returns empty.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "reasoning",
+        "coder"
+      ],
+      "complexity": "complex",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "def rotate(values, steps):\n    raise NotImplementedError(\"unfinished\")\n",
+          "service.py": "def execute(payload):\n    raise NotImplementedError\n",
+          "cli.py": "raise NotImplementedError\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "service.py",
+        "cli.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import rotate\nassert rotate([1,2,3],1)==[3,1,2]\nassert rotate([1,2,3],-1)==[2,3,1]\nassert rotate([],9)==[]\n\nimport service, inspect\nassert callable(service.execute)\nassert \"input(\" not in inspect.getsource(service)\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW",
+        "semantic_review_required": true,
+        "limitation": "Function assertions and service shape are executable; payload/CLI architecture needs independent human review and is not fully proven by these tests."
+      }
+    },
+    {
+      "id": "main-095",
+      "category": "architecture",
+      "request": "Plan briefly, then implement chunk behind a service boundary: solution.py exports the function, service.py exports execute(payload), and cli.py reads one JSON payload from stdin and writes one JSON result. execute accepts keys values, size; preserve compatibility. Return consecutive list chunks including short last chunk; size <=0 raises ValueError.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "reasoning",
+        "coder"
+      ],
+      "complexity": "complex",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "def chunk(values, size):\n    raise NotImplementedError(\"unfinished\")\n",
+          "service.py": "def execute(payload):\n    raise NotImplementedError\n",
+          "cli.py": "raise NotImplementedError\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "service.py",
+        "cli.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import chunk\nassert chunk([1,2,3],2)==[[1,2],[3]]\nassert chunk([],2)==[]\n\nimport service, inspect\nassert callable(service.execute)\nassert \"input(\" not in inspect.getsource(service)\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW",
+        "semantic_review_required": true,
+        "limitation": "Function assertions and service shape are executable; payload/CLI architecture needs independent human review and is not fully proven by these tests."
+      }
+    },
+    {
+      "id": "main-096",
+      "category": "vision",
+      "request": "Fix the clipped submit button shown in this screenshot.",
+      "expected_task_type": "VISION_ASSISTED_CODE",
+      "expected_suitable_workers": [
+        "vision",
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "image",
+      "context": {
+        "workspace_available": false,
+        "initial_files": {},
+        "image_path": null
+      },
+      "sandbox_required": true,
+      "execution_supported": false,
+      "execution_limitation": "Independent screenshot and corresponding UI project not supplied; no synthetic substitute or success claim allowed.",
+      "oracle": {
+        "kind": "unavailable",
+        "success_endpoint": "NOT_VERIFIED"
+      }
+    },
+    {
+      "id": "main-097",
+      "category": "vision",
+      "request": "Use this screenshot to repair the overlapping mobile navigation.",
+      "expected_task_type": "VISION_ASSISTED_CODE",
+      "expected_suitable_workers": [
+        "vision",
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "image",
+      "context": {
+        "workspace_available": false,
+        "initial_files": {},
+        "image_path": null
+      },
+      "sandbox_required": true,
+      "execution_supported": false,
+      "execution_limitation": "Independent screenshot and corresponding UI project not supplied; no synthetic substitute or success claim allowed.",
+      "oracle": {
+        "kind": "unavailable",
+        "success_endpoint": "NOT_VERIFIED"
+      }
+    },
+    {
+      "id": "main-098",
+      "category": "vision",
+      "request": "Find and fix the unreadable error message shown here.",
+      "expected_task_type": "VISION_ASSISTED_CODE",
+      "expected_suitable_workers": [
+        "vision",
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "image",
+      "context": {
+        "workspace_available": false,
+        "initial_files": {},
+        "image_path": null
+      },
+      "sandbox_required": true,
+      "execution_supported": false,
+      "execution_limitation": "Independent screenshot and corresponding UI project not supplied; no synthetic substitute or success claim allowed.",
+      "oracle": {
+        "kind": "unavailable",
+        "success_endpoint": "NOT_VERIFIED"
+      }
+    },
+    {
+      "id": "main-099",
+      "category": "vision",
+      "request": "Fix teh misaligned table columns visible in the screenshot.",
+      "expected_task_type": "VISION_ASSISTED_CODE",
+      "expected_suitable_workers": [
+        "vision",
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "image",
+      "context": {
+        "workspace_available": false,
+        "initial_files": {},
+        "image_path": null
+      },
+      "sandbox_required": true,
+      "execution_supported": false,
+      "execution_limitation": "Independent screenshot and corresponding UI project not supplied; no synthetic substitute or success claim allowed.",
+      "oracle": {
+        "kind": "unavailable",
+        "success_endpoint": "NOT_VERIFIED"
+      }
+    },
+    {
+      "id": "main-100",
+      "category": "vision",
+      "request": "Repair the modal that extends beyond the viewport in this image.",
+      "expected_task_type": "VISION_ASSISTED_CODE",
+      "expected_suitable_workers": [
+        "vision",
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "image",
+      "context": {
+        "workspace_available": false,
+        "initial_files": {},
+        "image_path": null
+      },
+      "sandbox_required": true,
+      "execution_supported": false,
+      "execution_limitation": "Independent screenshot and corresponding UI project not supplied; no synthetic substitute or success claim allowed.",
+      "oracle": {
+        "kind": "unavailable",
+        "success_endpoint": "NOT_VERIFIED"
+      }
+    }
+  ]
+}

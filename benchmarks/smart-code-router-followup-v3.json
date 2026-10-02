@@ -1,0 +1,1917 @@
+{
+  "mode": "live",
+  "provenance": {
+    "started_at_utc": "2026-10-02T16:45:24.104769+00:00",
+    "compatibility_sha256": "dee00c58073a47ec8695b4ac2e314b4e667b8b95210503ad92d0d7af4ff194ca",
+    "dataset_sha256": "252ac647eda632eedbf4baf40077eb9ec7db1d4e8e9c43936811e6b25c9eca35",
+    "production_sha256": {
+      "backend/__init__.py": "1f9cc2b38818df9ca696a682cce427d62c42f7536c6816e117f97c5148772e4d",
+      "backend/app.py": "2202f8f7d2991676f31c3dc5b43a4dd04f58b3a85d26ec8e91ffffc9a7a1ba77",
+      "backend/application_tools.py": "516b9ae85cb52c67bdb417bd92984f6972a187089339db3fdb0f98f48278a942",
+      "backend/automations.py": "84cdff0e256eb1fb7bcffbfd4e9f556a1cd2b38a57e9f49fc20b17dccc7af2ee",
+      "backend/cancellation.py": "47c79a05ef6d164a6c48950dd4835bf8af072008e24ab0ad8c4659ae7fe86969",
+      "backend/cli.py": "9f78d5101e3fb9945d32b4bbaa9b8841344deab3127eaf6defd3f3a8c4d3a420",
+      "backend/contracts.py": "85976b3ddbea91b51532d182c187ed1aa71ab40024040ad4ec72e6cdcb379d88",
+      "backend/desktop.py": "6bb3e2627b1843d3452b127565a57ecba8e2ff4dde6489f597d02d25f0a408b4",
+      "backend/jobs.py": "9872f19db75e380e9958951b7791f6289c0c65c84ed2fb25bf572a58c0e63f20",
+      "backend/model.py": "be9de3c376a768f8d0c7325345b736ac085617059063d2932e61bbbd4d4dc55a",
+      "backend/service.py": "80b4d7eb1a645feb0da408f7e2b44c13cb9847c901d6b10c231cb4ae472321ff",
+      "backend/settings.py": "c0ae26855c43ef79783b85b48db06eda4010cc3f275b4ed236dad56127336100",
+      "backend/task_supervisor.py": "e20f307a167c8b899d58943354309a329c26d8ab8d262bdaced0051779e90fbf",
+      "benchmarks/evaluate-universal-agent.py": "898ae67434a60074988caed1a72e2f5d3933f3506715d8cc3a736d7fca7d46e1",
+      "rag/__init__.py": "010665b44294d0e9a6182f93a2024a53912d6c1ec8f873b50a12494b13fe71f0",
+      "rag/answer.py": "79454727b54509cc3654bb890f441a2473d306798a6a8b1050da794c2b289635",
+      "rag/calculator.py": "80d290becdb1a9c3a6acdb72553d31003decd83076ea1a0fcddb10f461a0f2b0",
+      "rag/context.py": "a3d46bf6ccafb5255b6625de4e116516922277e6d38bb3ae3c079ddafe4ba39f",
+      "rag/deliverables.py": "3ebd0421dfc1d3b4696fae4f7df5b297bc4c89a6beeba4e676424301eb39bf09",
+      "rag/embedding.py": "9b36de772c2fb1c8406455fc877f47864b396e899ce8349d3b0a443b8feee147",
+      "rag/ingest.py": "8cf013820fa6fd4a6b3fbe51cf2ea53243e89a6f7de1d58e13ae76c6229fa14e",
+      "rag/ocr.py": "a030a0d24f55804f347cedda467df2c23da531fbb07031ec03e9281628369d9f",
+      "rag/overview.py": "9fc779733674da48658621ebae39ccddcb311e40d1895738873cfbe6b577f2de",
+      "rag/pdf_visuals.py": "91043479a9260978bb09cdce8c3f9b2133fa77c29e305816d40b5a3d204954d7",
+      "rag/recovery.py": "c652efb114188967957cc11ac52bd797de8925c3a9f9ffea12a3cb71e7dc84cf",
+      "rag/retrieve.py": "050de929e88db47a78e7ceeabe5c2404dfaef449f8ef50ed6ff39a6962cf2e62",
+      "rag/store.py": "56eb542204049cc824638b11635b9315b76dd156b6d9cdaff73d9853ecab45b2",
+      "rag/structured.py": "94200dc3217ad00359f237b045357843fdd7cc74237cdf96084397d6220c01b6",
+      "rag/tables.py": "d875d2aeaa77fb38b8094cbf04e4577258ed2fd61403f308ec52a714808d30c1",
+      "rag/vision.py": "cfa7450138a5271624118a45ea06997b5b38a672f04d36ac042e78bdc2680a5c",
+      "router/capability_classifier.py": "ec4d9250bf05565ef43408793943890ae3c32ecc603e77c5f942e890ad98b148",
+      "router/coding_router.py": "2a95b76ddca3ed91da6e027c083cf1b1f15e9b17c87661a7b657c92a5f81a963",
+      "router/model_broker.py": "761bc30372830feec87e6d00598469bc1ba8ac141db3219a1d7ae8af9f950c76",
+      "router/model_registry.py": "7ce2493539166edde6503f5250d92d5dceeca2a99286a7b13c8bf89583a6d340",
+      "router/model_selection.py": "238c6126e17016d80da00d1d86dcd750508c1ed6953869aaed667a1216cc1aac",
+      "router/orchestrator.py": "dd1dc56faca1497cc4ac91fd987078a8413ee0d7c13418d30bef29f1e4032e79",
+      "router/request_normalization.py": "184edd34f0619046a79b9d22918f6488f6510030608b911a2831849708eaf59e",
+      "router/resource_admission.py": "8551c82cc8b9b5f08f06ad06302b0f6720a79cfac73da80771037e77f4160c70",
+      "router/router.py": "fbbf4d2614629d4b2d5db53bcbf0341ece74af6046404d6696437a5fbbc86a1d",
+      "router/sandbox.py": "38e90e989dc967413c86e14e6992e75cb48d14bf68c3339619953466f4f7bcee",
+      "router/task_completion.py": "3fe9ee5022b214db0303395f1d9e899be557da245e1d550cf9d956bb3d9568ee",
+      "router/task_ledger.py": "c74f2eddee3eeb36ab04b3099eeae28ad07a680d95e5cf4d90e714bf709057aa",
+      "router/telemetry.py": "1bcfb11adcfb6ef86bcd6d1458e2c8673fb87c07c9d7b1258e7c02b88de7d59d",
+      "router/tool_registry.py": "d3d8979c199f29fe1830b5ba4bc116fb29aaa634f8b87bac8f160b3719df0c72",
+      "workflows/__init__.py": "193aaf1739cb3642fd64429a15d0b21422a3cdc29e5c484352b769f9db694ce3",
+      "workflows/code_runtime.py": "de3e48e553ed9d4233ec64c9bc980d524be3e890462b1c2349d95e761d870690",
+      "workflows/coding.py": "4646ab59483d04bcd6823d92ff7bf45922afa5cb2016a358abf1f4c0b86007ef",
+      "workflows/coding_workspace.py": "25167b1af6bcc2a04270d9f431d67d18080388e79214aba574e4402069a97a61",
+      "workflows/document_report.py": "fc2f5d59fe6d01d76a67167f2c99d912515b3dae4bb0de7292ff0cf5a035744f",
+      "workflows/maintenance.py": "3b19080e526815ef89dd749b4601fd5db5ec3afe86e0275300bd696b4816bda5",
+      "workflows/publication_journal.py": "38fcf81371f1ab3f0aecf78bba1569a07a89c0128f0d5d68743ad3990067d772",
+      "workflows/source_quality.py": "25cc1a91358f406901508eb9e9fa2790cb72610074ec68742178e7cf322d97aa",
+      "benchmarks/evaluate-smart-code-router.py": "c98f5fd92b384ca3636d4bea6dccbde5cef32605d14908a447a1338abb058f0e"
+    },
+    "git_head": "bfd4a04b865d2d71336d92948b617767a513bfc1",
+    "profiles": [
+      {
+        "registry_key": "code",
+        "model_id": "Qwen/Qwen2.5-Coder-3B-Instruct",
+        "runtime_alias": "sovereign-code",
+        "model_file": "C:\\Users\\ashek\\Desktop\\SovereignAI\\models\\qwen2.5-coder-3b-instruct-q4_k_m.gguf",
+        "projector_file": null,
+        "context": 16384,
+        "kv_configuration": "q8_0/q8_0",
+        "slots": 1,
+        "revision": "f74adce6aa16316c625447af059dbebe4983757c",
+        "worker_roles": [
+          "code"
+        ],
+        "launch_arguments": [
+          "C:\\Users\\ashek\\Desktop\\SovereignAI\\runtime\\llama-b11132\\llama-server.exe",
+          "-m",
+          "C:\\Users\\ashek\\Desktop\\SovereignAI\\models\\qwen2.5-coder-3b-instruct-q4_k_m.gguf",
+          "--alias",
+          "sovereign-code",
+          "-c",
+          "16384",
+          "-np",
+          "1",
+          "--n-predict",
+          "8192",
+          "-b",
+          "256",
+          "-ub",
+          "128",
+          "-t",
+          "6",
+          "-fa",
+          "on",
+          "-ctk",
+          "q8_0",
+          "-ctv",
+          "q8_0",
+          "--fit",
+          "on",
+          "--fit-target",
+          "1024",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "8087",
+          "--cors-origins",
+          "localhost",
+          "--offline",
+          "--sleep-idle-seconds",
+          "600",
+          "-lv",
+          "4"
+        ]
+      },
+      {
+        "registry_key": "text",
+        "model_id": "Qwen/Qwen3.5-4B",
+        "runtime_alias": "sovereign-text",
+        "model_file": "C:\\Users\\ashek\\Desktop\\SovereignAI\\models\\Qwen3.5-4B-Q4_K_M.gguf",
+        "projector_file": null,
+        "context": 16384,
+        "kv_configuration": "q8_0/q8_0",
+        "slots": 1,
+        "revision": "e87f176479d0855a907a41277aca2f8ee7a09523",
+        "worker_roles": [
+          "reasoning"
+        ],
+        "launch_arguments": [
+          "C:\\Users\\ashek\\Desktop\\SovereignAI\\runtime\\llama-b11132\\llama-server.exe",
+          "-m",
+          "C:\\Users\\ashek\\Desktop\\SovereignAI\\models\\Qwen3.5-4B-Q4_K_M.gguf",
+          "--alias",
+          "sovereign-text",
+          "-c",
+          "16384",
+          "-np",
+          "1",
+          "--n-predict",
+          "8192",
+          "-b",
+          "256",
+          "-ub",
+          "128",
+          "-t",
+          "6",
+          "-fa",
+          "on",
+          "-ctk",
+          "q8_0",
+          "-ctv",
+          "q8_0",
+          "--fit",
+          "on",
+          "--fit-target",
+          "1024",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "8087",
+          "--cors-origins",
+          "localhost",
+          "--offline",
+          "--sleep-idle-seconds",
+          "600",
+          "-lv",
+          "4"
+        ]
+      },
+      {
+        "registry_key": "text-light",
+        "model_id": "google/gemma-4-E2B-it",
+        "runtime_alias": "sovereign-text-light",
+        "model_file": "C:\\Users\\ashek\\Desktop\\SovereignAI\\models\\gemma-4-E2B-it-Q4_K_M.gguf",
+        "projector_file": null,
+        "context": 16384,
+        "kv_configuration": "q8_0/q8_0",
+        "slots": 1,
+        "revision": "0314792d7f1f7e229411f620751375812bb9faf2",
+        "worker_roles": [
+          "lightweight"
+        ],
+        "launch_arguments": [
+          "C:\\Users\\ashek\\Desktop\\SovereignAI\\runtime\\llama-b11132\\llama-server.exe",
+          "-m",
+          "C:\\Users\\ashek\\Desktop\\SovereignAI\\models\\gemma-4-E2B-it-Q4_K_M.gguf",
+          "--alias",
+          "sovereign-text-light",
+          "-c",
+          "16384",
+          "-np",
+          "1",
+          "--n-predict",
+          "8192",
+          "-b",
+          "256",
+          "-ub",
+          "128",
+          "-t",
+          "6",
+          "-fa",
+          "on",
+          "-ctk",
+          "q8_0",
+          "-ctv",
+          "q8_0",
+          "--fit",
+          "on",
+          "--fit-target",
+          "1024",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "8087",
+          "--cors-origins",
+          "localhost",
+          "--offline",
+          "--sleep-idle-seconds",
+          "600",
+          "-lv",
+          "4"
+        ]
+      },
+      {
+        "registry_key": "vision",
+        "model_id": "Qwen/Qwen3.5-2B",
+        "runtime_alias": "sovereign-vision",
+        "model_file": "C:\\Users\\ashek\\Desktop\\SovereignAI\\models\\vision-qwen3.5-2b\\Qwen3.5-2B-Q4_K_M.gguf",
+        "projector_file": "C:\\Users\\ashek\\Desktop\\SovereignAI\\models\\vision-qwen3.5-2b\\mmproj-F16.gguf",
+        "context": 16384,
+        "kv_configuration": "f16/f16",
+        "slots": 1,
+        "revision": "f6d5376be1edb4d416d56da11e5397a961aca8ae",
+        "worker_roles": [
+          "vision"
+        ],
+        "launch_arguments": [
+          "C:\\Users\\ashek\\Desktop\\SovereignAI\\runtime\\llama-b11132\\llama-server.exe",
+          "-m",
+          "C:\\Users\\ashek\\Desktop\\SovereignAI\\models\\vision-qwen3.5-2b\\Qwen3.5-2B-Q4_K_M.gguf",
+          "--mmproj",
+          "C:\\Users\\ashek\\Desktop\\SovereignAI\\models\\vision-qwen3.5-2b\\mmproj-F16.gguf",
+          "--alias",
+          "sovereign-vision",
+          "-c",
+          "16384",
+          "-np",
+          "1",
+          "--n-predict",
+          "8192",
+          "-b",
+          "256",
+          "-ub",
+          "128",
+          "-t",
+          "6",
+          "-ctk",
+          "f16",
+          "-ctv",
+          "f16",
+          "--fit",
+          "on",
+          "--fit-target",
+          "1024",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "8087",
+          "--cors-origins",
+          "localhost",
+          "--offline",
+          "--sleep-idle-seconds",
+          "600",
+          "-lv",
+          "4"
+        ]
+      }
+    ],
+    "settings": {
+      "root": "C:\\Users\\ashek\\Desktop\\SovereignAI",
+      "model_dir": "C:\\Users\\ashek\\Desktop\\SovereignAI\\models\\bge-small-en-v1.5",
+      "model_url": "http://127.0.0.1:8087",
+      "context": 24576,
+      "output_tokens": 4096,
+      "safety_tokens": 64,
+      "max_file_bytes": 20971520,
+      "max_pages": 200,
+      "max_chunks": 20000,
+      "chunk_tokens": 384,
+      "overlap_tokens": 48,
+      "supervisor_model_calls": 64,
+      "supervisor_tool_calls": 12,
+      "supervisor_model_switches": 4,
+      "supervisor_seconds": 900.0
+    },
+    "timeout_seconds": 900.0,
+    "strategies": [
+      "E"
+    ],
+    "categories": null,
+    "case_ids": [
+      "main-034",
+      "main-091"
+    ],
+    "limit": null,
+    "sample_resources": true,
+    "generation_policy": "Workflow-specific payloads in hashed backend/model.py; no benchmark override",
+    "repair_feedback_policy": "V3-bounded-runtime-exception",
+    "arm_policy": {
+      "A": "lightweight",
+      "B": "reasoning",
+      "C": "code",
+      "D": null,
+      "E": null
+    },
+    "backend_url": "http://127.0.0.1:8765",
+    "backend_job_ids": null
+  },
+  "rows": [
+    {
+      "case_id": "main-034",
+      "fixture_sha256": "40d2ae335e12c46c5b2ca20cb39732e65490936a51c040fce6119aec15079b2a",
+      "category": "edit",
+      "gate": "FAIL",
+      "stage": null,
+      "correctness": null,
+      "validation": {
+        "artifact_verified": null,
+        "semantic_review_required": false
+      },
+      "goal_satisfied": null,
+      "prediction": {
+        "task_type": "EDIT",
+        "complexity": "simple",
+        "worker_role": "code",
+        "active_worker": "Qwen/Qwen2.5-Coder-3B-Instruct"
+      },
+      "expected": {
+        "task_type": "EDIT",
+        "complexity": "simple",
+        "suitable_workers": [
+          "coder"
+        ]
+      },
+      "repair_observed": false,
+      "repair_succeeded": null,
+      "validation_trajectory": [
+        {
+          "phase": "trusted_tests",
+          "artifact_verified": false,
+          "container_executed": true,
+          "exit_code": 1,
+          "stdout": "",
+          "stderr": "Traceback (most recent call last):\n  File \"/input/program.py\", line 5, in <module>\n    runpy.run_path('/input/trusted/test_contract.py', run_name=\"__main__\")\n  File \"<frozen runpy>\", line 287, in run_path\n  File \"<frozen runpy>\", line 98, in _run_module_code\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/input/trusted/test_contract.py\", line 2, in <module>\n    assert slug(\" Hello, WORLD! \")==\"hello-world\"\n           ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/output/candidate/solution.py\", line 2, in slug\n    return ''.join('-'.join(word.lower() for word in re.findall(r'\b\b', text)).strip('-'))\n                                                     ^^\nNameError: name 're' is not defined. Did you forget to import 're'?\n",
+          "trusted_hashes": {
+            "test_contract.py": "54137a67b1869ec8d387ec949dc167b36d75f281dc6262442a1de4a41ad4fcf8"
+          },
+          "candidate_hashes": {
+            "solution.py": "cd222651d7f15a801061884538d4c35bbe36c291574db4788f79a514c9991b2b"
+          }
+        }
+      ],
+      "measurements": {
+        "latency_seconds": 35.74644950000038,
+        "model_calls": 8,
+        "model_switches": 1,
+        "tool_calls": 0,
+        "peak_ram_mib": 2520.76953125,
+        "peak_vram_mib": 3326.0,
+        "max_llama_server_processes": 1
+      },
+      "operational_result": {
+        "error": {
+          "code": "generation_format",
+          "message": "A proposed replacement must match exactly one original text span; no project files were changed"
+        }
+      },
+      "telemetry": {
+        "supervisor_id": "f8f61a57edef439b83c3ef1ae4b729fb",
+        "goal": "creat the missing body for slug; keep its public signature. Lowercase ASCII text and replace each run of nonalphanumeric characters with hyphen; trim hyphens.",
+        "context": {
+          "workspace_id": "d2fcc24b8508465792048ebf0d9ce159",
+          "target": "solution.py",
+          "image_path": null
+        },
+        "created_at": 1790959524.2691507,
+        "elapsed_seconds": 35.734,
+        "limits": {
+          "model_calls": 64,
+          "tool_calls": 12,
+          "model_switches": 4,
+          "seconds": 900.0
+        },
+        "counts": {
+          "model_calls": 8,
+          "tool_calls": 0,
+          "model_switches": 1
+        },
+        "task_state": {
+          "task_id": "f8f61a57edef439b83c3ef1ae4b729fb",
+          "original_request": "creat the missing body for slug; keep its public signature. Lowercase ASCII text and replace each run of nonalphanumeric characters with hyphen; trim hyphens.",
+          "normalized_request": "create the missing body for slug; keep its public signature. Lowercase ASCII text and replace each run of nonalphanumeric characters with hyphen; trim hyphens.",
+          "conversation_context": [],
+          "follow_up_context": null,
+          "intent": null,
+          "workflow": "CODE",
+          "modality": "text",
+          "workspace": "d2fcc24b8508465792048ebf0d9ce159",
+          "knowledge_scope": null,
+          "requested_deliverables": [],
+          "success_conditions": [],
+          "current_stage": "FAILED",
+          "current_action": null,
+          "active_worker": "Qwen/Qwen2.5-Coder-3B-Instruct",
+          "plan": null,
+          "observations": [
+            {
+              "current_residency": "sovereign-vision",
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+              "registry_key": "code",
+              "switch_required": true
+            },
+            {
+              "attempt": 2,
+              "validation_error": "Independent trusted validation failed (exit=1; diagnostic_sha256=9ae484ed2a01252bb68f91e9d4ca19f9997b2d046e0002be47bd911d2a12f544): NameError"
+            },
+            {
+              "completion_checks": {}
+            }
+          ],
+          "tool_results": [],
+          "evidence": [],
+          "repair_count": 1,
+          "replan_count": 0,
+          "completion_status": "failed",
+          "blockers": [
+            {
+              "code": "generation_format",
+              "message": "A proposed replacement must match exactly one original text span; no project files were changed"
+            }
+          ],
+          "cancellation_state": false,
+          "timestamps": {
+            "received": 1790959524.2691507,
+            "updated": 1790959560.012209,
+            "finished": 1790959560.012209
+          },
+          "task_type": "EDIT",
+          "complexity": "simple",
+          "resource_admission": {
+            "status": "conditional",
+            "reasons": [],
+            "reason_codes": [],
+            "conditions": [
+              "Model peak system-memory requirement is not measured",
+              "Model peak GPU-memory requirement is not measured",
+              "Incremental context/KV allocation for the resident model is not measured",
+              "Peak resource measurements do not cover the configured context/KV settings",
+              "Peak resource measurements do not cover the configured KV types"
+            ],
+            "condition_codes": [
+              "peak_ram_unmeasured",
+              "peak_gpu_unmeasured",
+              "resident_incremental_kv_unmeasured",
+              "context_profile_unmeasured",
+              "kv_profile_unmeasured"
+            ],
+            "observed": {
+              "sampled_at": 1790959559.6413326,
+              "available_memory_mib": 3646.9296875,
+              "gpu_free_mib": 634.0,
+              "gpu_total_mib": 4094.0,
+              "gpu_device": "0",
+              "source": "psutil+nvidia-smi",
+              "errors": []
+            },
+            "requirements": {
+              "system_memory_mib": null,
+              "gpu_memory_mib": null,
+              "measured_context": null,
+              "configured_context": 16384,
+              "required_context": 2011,
+              "kv_configuration": "q8_0/q8_0",
+              "measured_kv_configuration": null,
+              "memory_reserve_mib": 256,
+              "gpu_reserve_mib": 256
+            }
+          },
+          "worker_role": "code",
+          "model_switch_count": 1,
+          "tool_call_count": 0,
+          "inference_call_count": 8,
+          "event_count": 78
+        },
+        "events": [
+          {
+            "event": "MODEL_READY",
+            "stage": "EXECUTING",
+            "at": 1790959551.6268082,
+            "details": {
+              "intent": null,
+              "workflow": "CODE",
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+              "selected_tool": null
+            }
+          },
+          {
+            "event": "GENERATION_STARTED",
+            "stage": "EXECUTING",
+            "at": 1790959551.6294518,
+            "details": {}
+          },
+          {
+            "event": "GENERATION_COMPLETED",
+            "stage": "OBSERVING",
+            "at": 1790959552.8757305,
+            "details": {}
+          },
+          {
+            "operation": "model_calls",
+            "count": 5,
+            "elapsed_seconds": 28.734
+          },
+          {
+            "event": "MODEL_SELECTION_COMPLETED",
+            "stage": "OBSERVING",
+            "at": 1790959553.2703927,
+            "details": {
+              "intent": null,
+              "workflow": "CODE",
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+              "selected_tool": null
+            }
+          },
+          {
+            "event": "MODEL_CANDIDATES_FILTERED",
+            "stage": "ROUTING",
+            "at": 1790959553.2743921,
+            "details": {
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct"
+            }
+          },
+          {
+            "event": "RESOURCE_ADMITTED",
+            "stage": "WAITING_FOR_RESOURCE",
+            "at": 1790959553.278465,
+            "details": {
+              "resource_admission": {
+                "status": "conditional",
+                "reasons": [],
+                "reason_codes": [],
+                "conditions": [
+                  "Model peak system-memory requirement is not measured",
+                  "Model peak GPU-memory requirement is not measured",
+                  "Incremental context/KV allocation for the resident model is not measured",
+                  "Peak resource measurements do not cover the configured context/KV settings",
+                  "Peak resource measurements do not cover the configured KV types"
+                ],
+                "condition_codes": [
+                  "peak_ram_unmeasured",
+                  "peak_gpu_unmeasured",
+                  "resident_incremental_kv_unmeasured",
+                  "context_profile_unmeasured",
+                  "kv_profile_unmeasured"
+                ],
+                "observed": {
+                  "sampled_at": 1790959551.4908583,
+                  "available_memory_mib": 3683.48828125,
+                  "gpu_free_mib": 634.0,
+                  "gpu_total_mib": 4094.0,
+                  "gpu_device": "0",
+                  "source": "psutil+nvidia-smi",
+                  "errors": []
+                },
+                "requirements": {
+                  "system_memory_mib": null,
+                  "gpu_memory_mib": null,
+                  "measured_context": null,
+                  "configured_context": 16384,
+                  "required_context": 3295,
+                  "kv_configuration": "q8_0/q8_0",
+                  "measured_kv_configuration": null,
+                  "memory_reserve_mib": 256,
+                  "gpu_reserve_mib": 256
+                }
+              }
+            }
+          },
+          {
+            "event": "MODEL_SELECTED",
+            "stage": "ROUTING",
+            "at": 1790959553.2824497,
+            "details": {
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+              "worker_role": "code"
+            }
+          },
+          {
+            "event": "MODEL_READY",
+            "stage": "EXECUTING",
+            "at": 1790959553.400364,
+            "details": {
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct"
+            }
+          },
+          {
+            "event": "MODEL_READY",
+            "stage": "EXECUTING",
+            "at": 1790959553.4044297,
+            "details": {
+              "intent": null,
+              "workflow": "CODE",
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+              "selected_tool": null
+            }
+          },
+          {
+            "event": "GENERATION_STARTED",
+            "stage": "EXECUTING",
+            "at": 1790959553.40959,
+            "details": {}
+          },
+          {
+            "event": "GENERATION_COMPLETED",
+            "stage": "OBSERVING",
+            "at": 1790959554.4783478,
+            "details": {}
+          },
+          {
+            "operation": "model_calls",
+            "count": 6,
+            "elapsed_seconds": 30.328
+          },
+          {
+            "event": "MODEL_SELECTION_COMPLETED",
+            "stage": "OBSERVING",
+            "at": 1790959555.38864,
+            "details": {
+              "intent": null,
+              "workflow": "CODE",
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+              "selected_tool": null
+            }
+          },
+          {
+            "event": "MODEL_CANDIDATES_FILTERED",
+            "stage": "ROUTING",
+            "at": 1790959555.3916337,
+            "details": {
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct"
+            }
+          },
+          {
+            "event": "RESOURCE_ADMITTED",
+            "stage": "WAITING_FOR_RESOURCE",
+            "at": 1790959555.394562,
+            "details": {
+              "resource_admission": {
+                "status": "conditional",
+                "reasons": [],
+                "reason_codes": [],
+                "conditions": [
+                  "Model peak system-memory requirement is not measured",
+                  "Model peak GPU-memory requirement is not measured",
+                  "Incremental context/KV allocation for the resident model is not measured",
+                  "Peak resource measurements do not cover the configured context/KV settings",
+                  "Peak resource measurements do not cover the configured KV types"
+                ],
+                "condition_codes": [
+                  "peak_ram_unmeasured",
+                  "peak_gpu_unmeasured",
+                  "resident_incremental_kv_unmeasured",
+                  "context_profile_unmeasured",
+                  "kv_profile_unmeasured"
+                ],
+                "observed": {
+                  "sampled_at": 1790959555.3859246,
+                  "available_memory_mib": 3693.57421875,
+                  "gpu_free_mib": 634.0,
+                  "gpu_total_mib": 4094.0,
+                  "gpu_device": "0",
+                  "source": "psutil+nvidia-smi",
+                  "errors": []
+                },
+                "requirements": {
+                  "system_memory_mib": null,
+                  "gpu_memory_mib": null,
+                  "measured_context": null,
+                  "configured_context": 16384,
+                  "required_context": 1976,
+                  "kv_configuration": "q8_0/q8_0",
+                  "measured_kv_configuration": null,
+                  "memory_reserve_mib": 256,
+                  "gpu_reserve_mib": 256
+                }
+              }
+            }
+          },
+          {
+            "event": "MODEL_SELECTED",
+            "stage": "ROUTING",
+            "at": 1790959555.3968344,
+            "details": {
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+              "worker_role": "code"
+            }
+          },
+          {
+            "event": "MODEL_READY",
+            "stage": "EXECUTING",
+            "at": 1790959555.5063648,
+            "details": {
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct"
+            }
+          },
+          {
+            "event": "MODEL_READY",
+            "stage": "EXECUTING",
+            "at": 1790959555.5116498,
+            "details": {
+              "intent": null,
+              "workflow": "CODE",
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+              "selected_tool": null
+            }
+          },
+          {
+            "event": "GENERATION_STARTED",
+            "stage": "EXECUTING",
+            "at": 1790959555.5159693,
+            "details": {}
+          },
+          {
+            "event": "GENERATION_COMPLETED",
+            "stage": "OBSERVING",
+            "at": 1790959556.514626,
+            "details": {}
+          },
+          {
+            "operation": "model_calls",
+            "count": 7,
+            "elapsed_seconds": 32.359
+          },
+          {
+            "event": "MODEL_SELECTION_COMPLETED",
+            "stage": "OBSERVING",
+            "at": 1790959557.5043013,
+            "details": {
+              "intent": null,
+              "workflow": "CODE",
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+              "selected_tool": null
+            }
+          },
+          {
+            "event": "MODEL_CANDIDATES_FILTERED",
+            "stage": "ROUTING",
+            "at": 1790959557.5073419,
+            "details": {
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct"
+            }
+          },
+          {
+            "event": "RESOURCE_ADMITTED",
+            "stage": "WAITING_FOR_RESOURCE",
+            "at": 1790959557.5103726,
+            "details": {
+              "resource_admission": {
+                "status": "conditional",
+                "reasons": [],
+                "reason_codes": [],
+                "conditions": [
+                  "Model peak system-memory requirement is not measured",
+                  "Model peak GPU-memory requirement is not measured",
+                  "Incremental context/KV allocation for the resident model is not measured",
+                  "Peak resource measurements do not cover the configured context/KV settings",
+                  "Peak resource measurements do not cover the configured KV types"
+                ],
+                "condition_codes": [
+                  "peak_ram_unmeasured",
+                  "peak_gpu_unmeasured",
+                  "resident_incremental_kv_unmeasured",
+                  "context_profile_unmeasured",
+                  "kv_profile_unmeasured"
+                ],
+                "observed": {
+                  "sampled_at": 1790959557.4986403,
+                  "available_memory_mib": 3687.97265625,
+                  "gpu_free_mib": 634.0,
+                  "gpu_total_mib": 4094.0,
+                  "gpu_device": "0",
+                  "source": "psutil+nvidia-smi",
+                  "errors": []
+                },
+                "requirements": {
+                  "system_memory_mib": null,
+                  "gpu_memory_mib": null,
+                  "measured_context": null,
+                  "configured_context": 16384,
+                  "required_context": 3628,
+                  "kv_configuration": "q8_0/q8_0",
+                  "measured_kv_configuration": null,
+                  "memory_reserve_mib": 256,
+                  "gpu_reserve_mib": 256
+                }
+              }
+            }
+          },
+          {
+            "event": "MODEL_SELECTED",
+            "stage": "ROUTING",
+            "at": 1790959557.5124202,
+            "details": {
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+              "worker_role": "code"
+            }
+          },
+          {
+            "event": "MODEL_READY",
+            "stage": "EXECUTING",
+            "at": 1790959557.591592,
+            "details": {
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct"
+            }
+          },
+          {
+            "event": "MODEL_READY",
+            "stage": "EXECUTING",
+            "at": 1790959557.5946705,
+            "details": {
+              "intent": null,
+              "workflow": "CODE",
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+              "selected_tool": null
+            }
+          },
+          {
+            "event": "GENERATION_STARTED",
+            "stage": "EXECUTING",
+            "at": 1790959557.5979354,
+            "details": {}
+          },
+          {
+            "event": "GENERATION_COMPLETED",
+            "stage": "OBSERVING",
+            "at": 1790959559.1963153,
+            "details": {}
+          },
+          {
+            "operation": "model_calls",
+            "count": 8,
+            "elapsed_seconds": 35.047
+          },
+          {
+            "event": "MODEL_SELECTION_COMPLETED",
+            "stage": "OBSERVING",
+            "at": 1790959559.6458685,
+            "details": {
+              "intent": null,
+              "workflow": "CODE",
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+              "selected_tool": null
+            }
+          },
+          {
+            "event": "MODEL_CANDIDATES_FILTERED",
+            "stage": "ROUTING",
+            "at": 1790959559.6479354,
+            "details": {
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct"
+            }
+          },
+          {
+            "event": "RESOURCE_ADMITTED",
+            "stage": "WAITING_FOR_RESOURCE",
+            "at": 1790959559.6499445,
+            "details": {
+              "resource_admission": {
+                "status": "conditional",
+                "reasons": [],
+                "reason_codes": [],
+                "conditions": [
+                  "Model peak system-memory requirement is not measured",
+                  "Model peak GPU-memory requirement is not measured",
+                  "Incremental context/KV allocation for the resident model is not measured",
+                  "Peak resource measurements do not cover the configured context/KV settings",
+                  "Peak resource measurements do not cover the configured KV types"
+                ],
+                "condition_codes": [
+                  "peak_ram_unmeasured",
+                  "peak_gpu_unmeasured",
+                  "resident_incremental_kv_unmeasured",
+                  "context_profile_unmeasured",
+                  "kv_profile_unmeasured"
+                ],
+                "observed": {
+                  "sampled_at": 1790959559.6413326,
+                  "available_memory_mib": 3646.9296875,
+                  "gpu_free_mib": 634.0,
+                  "gpu_total_mib": 4094.0,
+                  "gpu_device": "0",
+                  "source": "psutil+nvidia-smi",
+                  "errors": []
+                },
+                "requirements": {
+                  "system_memory_mib": null,
+                  "gpu_memory_mib": null,
+                  "measured_context": null,
+                  "configured_context": 16384,
+                  "required_context": 2011,
+                  "kv_configuration": "q8_0/q8_0",
+                  "measured_kv_configuration": null,
+                  "memory_reserve_mib": 256,
+                  "gpu_reserve_mib": 256
+                }
+              }
+            }
+          },
+          {
+            "event": "MODEL_SELECTED",
+            "stage": "ROUTING",
+            "at": 1790959559.6509452,
+            "details": {
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+              "worker_role": "code"
+            }
+          },
+          {
+            "event": "MODEL_READY",
+            "stage": "EXECUTING",
+            "at": 1790959559.7367191,
+            "details": {
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct"
+            }
+          },
+          {
+            "event": "MODEL_READY",
+            "stage": "EXECUTING",
+            "at": 1790959559.739755,
+            "details": {
+              "intent": null,
+              "workflow": "CODE",
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+              "selected_tool": null
+            }
+          },
+          {
+            "event": "GENERATION_STARTED",
+            "stage": "EXECUTING",
+            "at": 1790959559.7417269,
+            "details": {}
+          },
+          {
+            "event": "GENERATION_COMPLETED",
+            "stage": "OBSERVING",
+            "at": 1790959560.0000374,
+            "details": {}
+          },
+          {
+            "event": "REQUEST_FAILED",
+            "stage": "FAILED",
+            "at": 1790959560.012209,
+            "completion_status": "failed"
+          }
+        ],
+        "completion": {
+          "state": "failed",
+          "achieved": false,
+          "response_delivered": false,
+          "checks": {},
+          "limitations": [
+            "A proposed replacement must match exactly one original text span; no project files were changed"
+          ]
+        },
+        "outcome": "failed",
+        "error": {
+          "code": "generation_format",
+          "message": "A proposed replacement must match exactly one original text span; no project files were changed"
+        }
+      },
+      "publication": "NOT_ACCEPTED",
+      "resource_scope": "Python plus all llama-server RSS; total device VRAM",
+      "arm": "E"
+    },
+    {
+      "case_id": "main-091",
+      "fixture_sha256": "03600e0a5fe139ffb582a94718c821b317df96371fe5013c8c0f88745a66f4ad",
+      "category": "architecture",
+      "gate": "FAIL",
+      "stage": null,
+      "correctness": null,
+      "validation": {
+        "artifact_verified": null,
+        "semantic_review_required": true
+      },
+      "goal_satisfied": null,
+      "prediction": {
+        "task_type": "MULTI_FILE_CHANGE",
+        "complexity": "complex",
+        "worker_role": "code",
+        "active_worker": "Qwen/Qwen2.5-Coder-3B-Instruct"
+      },
+      "expected": {
+        "task_type": "MULTI_FILE_CHANGE",
+        "complexity": "complex",
+        "suitable_workers": [
+          "reasoning",
+          "coder"
+        ]
+      },
+      "repair_observed": false,
+      "repair_succeeded": null,
+      "validation_trajectory": [],
+      "measurements": {
+        "latency_seconds": 80.4811082999986,
+        "model_calls": 16,
+        "model_switches": 2,
+        "tool_calls": 0,
+        "peak_ram_mib": 3428.33984375,
+        "peak_vram_mib": 3262.0,
+        "max_llama_server_processes": 1
+      },
+      "operational_result": {
+        "error": {
+          "code": "generation_format",
+          "message": "Generated service.py lacks substantive Python content after three attempts: Python syntax error on line 15: unmatched '}'. No project changes were saved"
+        }
+      },
+      "telemetry": {
+        "supervisor_id": "25d3a265398c44a6919735065ddc3e2e",
+        "goal": "Plan briefly, then implement clamp behind a service boundary: solution.py exports the function, service.py exports execute(payload), and cli.py reads one JSON payload from stdin and writes one JSON result. execute accepts keys value, low, high; preserve compatibility. Clamp value inclusively to low/high; raise ValueError when low exceeds high.",
+        "context": {
+          "workspace_id": "bd5b1f629d324570ac4fbbf20998b951",
+          "target": "solution.py",
+          "image_path": null
+        },
+        "created_at": 1790959560.08218,
+        "elapsed_seconds": 80.468,
+        "limits": {
+          "model_calls": 64,
+          "tool_calls": 12,
+          "model_switches": 4,
+          "seconds": 900.0
+        },
+        "counts": {
+          "model_calls": 16,
+          "tool_calls": 0,
+          "model_switches": 2
+        },
+        "task_state": {
+          "task_id": "25d3a265398c44a6919735065ddc3e2e",
+          "original_request": "Plan briefly, then implement clamp behind a service boundary: solution.py exports the function, service.py exports execute(payload), and cli.py reads one JSON payload from stdin and writes one JSON result. execute accepts keys value, low, high; preserve compatibility. Clamp value inclusively to low/high; raise ValueError when low exceeds high.",
+          "normalized_request": "Plan briefly, then implement clamp behind a service boundary: solution.py exports the function, service.py exports execute(payload), and cli.py reads one JSON payload from stdin and writes one JSON result. execute accepts keys value, low, high; preserve compatibility. Clamp value inclusively to low/high; raise ValueError when low exceeds high.",
+          "conversation_context": [],
+          "follow_up_context": null,
+          "intent": null,
+          "workflow": "CODE",
+          "modality": "text",
+          "workspace": "bd5b1f629d324570ac4fbbf20998b951",
+          "knowledge_scope": null,
+          "requested_deliverables": [],
+          "success_conditions": [],
+          "current_stage": "FAILED",
+          "current_action": null,
+          "active_worker": "Qwen/Qwen2.5-Coder-3B-Instruct",
+          "plan": {
+            "action": "implement",
+            "strategy": "- **Scope & Constraints**: Implement `clamp(value, low, high)` in `solution.py` raising `ValueError` if `low > high`. Update `service.py` to call `solution.clamp` and return JSON. Update `cli.py` to read stdin JSON, invoke `service.execute`, and write result.\n- **Implementation**:\n  1. Define `solution.clamp` with inclusive bounds and validation logic.\n  2. Modify `service.execute` to import `solution`, extract payload keys, and return the clamped value.\n  3. Update `cli.py` to parse `sys.stdin.read()`, call `service.execute`, and `sys.stdout.write()` the result.\n- **Executable Checks**:\n  - `python solution.py` exports `clamp`.\n  - `python service.py` exports `execute`.\n  - `echo '{\"value\": 10, \"low\": 5, \"high\": 15}' | python cli.py` returns `{\"value\": 10}`.\n  - `echo '{\"value\": 20, \"low\": 5, \"high\": 15}' | python cli.py` returns `{\"value\": 15}`.\n  - `echo '{\"value\": 10, \"low\": 15, \"high\": 5}' | python cli.py` raises `ValueError`."
+          },
+          "observations": [
+            {
+              "current_residency": "sovereign-code",
+              "selected_model": "Qwen/Qwen3.5-4B",
+              "registry_key": "text",
+              "switch_required": true
+            },
+            {
+              "current_residency": "sovereign-text",
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+              "registry_key": "code",
+              "switch_required": true
+            },
+            {
+              "completion_checks": {}
+            }
+          ],
+          "tool_results": [],
+          "evidence": [],
+          "repair_count": 0,
+          "replan_count": 0,
+          "completion_status": "failed",
+          "blockers": [
+            {
+              "code": "generation_format",
+              "message": "Generated service.py lacks substantive Python content after three attempts: Python syntax error on line 15: unmatched '}'. No project changes were saved"
+            }
+          ],
+          "cancellation_state": false,
+          "timestamps": {
+            "received": 1790959560.08218,
+            "updated": 1790959640.5594425,
+            "finished": 1790959640.5594425
+          },
+          "task_type": "MULTI_FILE_CHANGE",
+          "complexity": "complex",
+          "resource_admission": {
+            "status": "conditional",
+            "reasons": [],
+            "reason_codes": [],
+            "conditions": [
+              "Model peak system-memory requirement is not measured",
+              "Model peak GPU-memory requirement is not measured",
+              "Incremental context/KV allocation for the resident model is not measured",
+              "Peak resource measurements do not cover the configured context/KV settings",
+              "Peak resource measurements do not cover the configured KV types"
+            ],
+            "condition_codes": [
+              "peak_ram_unmeasured",
+              "peak_gpu_unmeasured",
+              "resident_incremental_kv_unmeasured",
+              "context_profile_unmeasured",
+              "kv_profile_unmeasured"
+            ],
+            "observed": {
+              "sampled_at": 1790959640.1349845,
+              "available_memory_mib": 3508.3984375,
+              "gpu_free_mib": 632.0,
+              "gpu_total_mib": 4094.0,
+              "gpu_device": "0",
+              "source": "psutil+nvidia-smi",
+              "errors": []
+            },
+            "requirements": {
+              "system_memory_mib": null,
+              "gpu_memory_mib": null,
+              "measured_context": null,
+              "configured_context": 16384,
+              "required_context": 2443,
+              "kv_configuration": "q8_0/q8_0",
+              "measured_kv_configuration": null,
+              "memory_reserve_mib": 256,
+              "gpu_reserve_mib": 256
+            }
+          },
+          "worker_role": "code",
+          "model_switch_count": 2,
+          "tool_call_count": 0,
+          "inference_call_count": 16,
+          "event_count": 147
+        },
+        "events": [
+          {
+            "event": "MODEL_READY",
+            "stage": "EXECUTING",
+            "at": 1790959628.9710007,
+            "details": {
+              "intent": null,
+              "workflow": "CODE",
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+              "selected_tool": null
+            }
+          },
+          {
+            "event": "GENERATION_STARTED",
+            "stage": "EXECUTING",
+            "at": 1790959628.9844868,
+            "details": {}
+          },
+          {
+            "event": "GENERATION_COMPLETED",
+            "stage": "OBSERVING",
+            "at": 1790959631.973154,
+            "details": {}
+          },
+          {
+            "operation": "model_calls",
+            "count": 13,
+            "elapsed_seconds": 71.937
+          },
+          {
+            "event": "MODEL_SELECTION_COMPLETED",
+            "stage": "OBSERVING",
+            "at": 1790959632.2791216,
+            "details": {
+              "intent": null,
+              "workflow": "CODE",
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+              "selected_tool": null
+            }
+          },
+          {
+            "event": "MODEL_CANDIDATES_FILTERED",
+            "stage": "ROUTING",
+            "at": 1790959632.2831435,
+            "details": {
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct"
+            }
+          },
+          {
+            "event": "RESOURCE_ADMITTED",
+            "stage": "WAITING_FOR_RESOURCE",
+            "at": 1790959632.2882156,
+            "details": {
+              "resource_admission": {
+                "status": "conditional",
+                "reasons": [],
+                "reason_codes": [],
+                "conditions": [
+                  "Model peak system-memory requirement is not measured",
+                  "Model peak GPU-memory requirement is not measured",
+                  "Incremental context/KV allocation for the resident model is not measured",
+                  "Peak resource measurements do not cover the configured context/KV settings",
+                  "Peak resource measurements do not cover the configured KV types"
+                ],
+                "condition_codes": [
+                  "peak_ram_unmeasured",
+                  "peak_gpu_unmeasured",
+                  "resident_incremental_kv_unmeasured",
+                  "context_profile_unmeasured",
+                  "kv_profile_unmeasured"
+                ],
+                "observed": {
+                  "sampled_at": 1790959632.2707856,
+                  "available_memory_mib": 3504.18359375,
+                  "gpu_free_mib": 632.0,
+                  "gpu_total_mib": 4094.0,
+                  "gpu_device": "0",
+                  "source": "psutil+nvidia-smi",
+                  "errors": []
+                },
+                "requirements": {
+                  "system_memory_mib": null,
+                  "gpu_memory_mib": null,
+                  "measured_context": null,
+                  "configured_context": 16384,
+                  "required_context": 2443,
+                  "kv_configuration": "q8_0/q8_0",
+                  "measured_kv_configuration": null,
+                  "memory_reserve_mib": 256,
+                  "gpu_reserve_mib": 256
+                }
+              }
+            }
+          },
+          {
+            "event": "MODEL_SELECTED",
+            "stage": "ROUTING",
+            "at": 1790959632.292234,
+            "details": {
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+              "worker_role": "code"
+            }
+          },
+          {
+            "event": "MODEL_READY",
+            "stage": "EXECUTING",
+            "at": 1790959632.407362,
+            "details": {
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct"
+            }
+          },
+          {
+            "event": "MODEL_READY",
+            "stage": "EXECUTING",
+            "at": 1790959632.4123664,
+            "details": {
+              "intent": null,
+              "workflow": "CODE",
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+              "selected_tool": null
+            }
+          },
+          {
+            "event": "GENERATION_STARTED",
+            "stage": "EXECUTING",
+            "at": 1790959632.4236474,
+            "details": {}
+          },
+          {
+            "event": "GENERATION_COMPLETED",
+            "stage": "OBSERVING",
+            "at": 1790959633.1866224,
+            "details": {}
+          },
+          {
+            "operation": "model_calls",
+            "count": 14,
+            "elapsed_seconds": 73.312
+          },
+          {
+            "event": "MODEL_SELECTION_COMPLETED",
+            "stage": "OBSERVING",
+            "at": 1790959634.0877001,
+            "details": {
+              "intent": null,
+              "workflow": "CODE",
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+              "selected_tool": null
+            }
+          },
+          {
+            "event": "MODEL_CANDIDATES_FILTERED",
+            "stage": "ROUTING",
+            "at": 1790959634.0887012,
+            "details": {
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct"
+            }
+          },
+          {
+            "event": "RESOURCE_ADMITTED",
+            "stage": "WAITING_FOR_RESOURCE",
+            "at": 1790959634.0907023,
+            "details": {
+              "resource_admission": {
+                "status": "conditional",
+                "reasons": [],
+                "reason_codes": [],
+                "conditions": [
+                  "Model peak system-memory requirement is not measured",
+                  "Model peak GPU-memory requirement is not measured",
+                  "Incremental context/KV allocation for the resident model is not measured",
+                  "Peak resource measurements do not cover the configured context/KV settings",
+                  "Peak resource measurements do not cover the configured KV types"
+                ],
+                "condition_codes": [
+                  "peak_ram_unmeasured",
+                  "peak_gpu_unmeasured",
+                  "resident_incremental_kv_unmeasured",
+                  "context_profile_unmeasured",
+                  "kv_profile_unmeasured"
+                ],
+                "observed": {
+                  "sampled_at": 1790959632.2707856,
+                  "available_memory_mib": 3504.18359375,
+                  "gpu_free_mib": 632.0,
+                  "gpu_total_mib": 4094.0,
+                  "gpu_device": "0",
+                  "source": "psutil+nvidia-smi",
+                  "errors": []
+                },
+                "requirements": {
+                  "system_memory_mib": null,
+                  "gpu_memory_mib": null,
+                  "measured_context": null,
+                  "configured_context": 16384,
+                  "required_context": 2962,
+                  "kv_configuration": "q8_0/q8_0",
+                  "measured_kv_configuration": null,
+                  "memory_reserve_mib": 256,
+                  "gpu_reserve_mib": 256
+                }
+              }
+            }
+          },
+          {
+            "event": "MODEL_SELECTED",
+            "stage": "ROUTING",
+            "at": 1790959634.0917006,
+            "details": {
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+              "worker_role": "code"
+            }
+          },
+          {
+            "event": "MODEL_READY",
+            "stage": "EXECUTING",
+            "at": 1790959634.16674,
+            "details": {
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct"
+            }
+          },
+          {
+            "event": "MODEL_READY",
+            "stage": "EXECUTING",
+            "at": 1790959634.1696737,
+            "details": {
+              "intent": null,
+              "workflow": "CODE",
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+              "selected_tool": null
+            }
+          },
+          {
+            "event": "GENERATION_STARTED",
+            "stage": "EXECUTING",
+            "at": 1790959634.1711795,
+            "details": {}
+          },
+          {
+            "event": "GENERATION_COMPLETED",
+            "stage": "OBSERVING",
+            "at": 1790959636.4606664,
+            "details": {}
+          },
+          {
+            "operation": "model_calls",
+            "count": 15,
+            "elapsed_seconds": 76.375
+          },
+          {
+            "event": "MODEL_SELECTION_COMPLETED",
+            "stage": "OBSERVING",
+            "at": 1790959636.633936,
+            "details": {
+              "intent": null,
+              "workflow": "CODE",
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+              "selected_tool": null
+            }
+          },
+          {
+            "event": "MODEL_CANDIDATES_FILTERED",
+            "stage": "ROUTING",
+            "at": 1790959636.6374154,
+            "details": {
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct"
+            }
+          },
+          {
+            "event": "RESOURCE_ADMITTED",
+            "stage": "WAITING_FOR_RESOURCE",
+            "at": 1790959636.6415317,
+            "details": {
+              "resource_admission": {
+                "status": "conditional",
+                "reasons": [],
+                "reason_codes": [],
+                "conditions": [
+                  "Model peak system-memory requirement is not measured",
+                  "Model peak GPU-memory requirement is not measured",
+                  "Incremental context/KV allocation for the resident model is not measured",
+                  "Peak resource measurements do not cover the configured context/KV settings",
+                  "Peak resource measurements do not cover the configured KV types"
+                ],
+                "condition_codes": [
+                  "peak_ram_unmeasured",
+                  "peak_gpu_unmeasured",
+                  "resident_incremental_kv_unmeasured",
+                  "context_profile_unmeasured",
+                  "kv_profile_unmeasured"
+                ],
+                "observed": {
+                  "sampled_at": 1790959636.6263678,
+                  "available_memory_mib": 3507.92578125,
+                  "gpu_free_mib": 632.0,
+                  "gpu_total_mib": 4094.0,
+                  "gpu_device": "0",
+                  "source": "psutil+nvidia-smi",
+                  "errors": []
+                },
+                "requirements": {
+                  "system_memory_mib": null,
+                  "gpu_memory_mib": null,
+                  "measured_context": null,
+                  "configured_context": 16384,
+                  "required_context": 7109,
+                  "kv_configuration": "q8_0/q8_0",
+                  "measured_kv_configuration": null,
+                  "memory_reserve_mib": 256,
+                  "gpu_reserve_mib": 256
+                }
+              }
+            }
+          },
+          {
+            "event": "MODEL_SELECTED",
+            "stage": "ROUTING",
+            "at": 1790959636.6455293,
+            "details": {
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+              "worker_role": "code"
+            }
+          },
+          {
+            "event": "MODEL_READY",
+            "stage": "EXECUTING",
+            "at": 1790959636.755538,
+            "details": {
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct"
+            }
+          },
+          {
+            "event": "MODEL_READY",
+            "stage": "EXECUTING",
+            "at": 1790959636.7592027,
+            "details": {
+              "intent": null,
+              "workflow": "CODE",
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+              "selected_tool": null
+            }
+          },
+          {
+            "event": "GENERATION_STARTED",
+            "stage": "EXECUTING",
+            "at": 1790959636.764107,
+            "details": {}
+          },
+          {
+            "event": "GENERATION_COMPLETED",
+            "stage": "OBSERVING",
+            "at": 1790959639.398403,
+            "details": {}
+          },
+          {
+            "operation": "model_calls",
+            "count": 16,
+            "elapsed_seconds": 79.453
+          },
+          {
+            "event": "MODEL_SELECTION_COMPLETED",
+            "stage": "OBSERVING",
+            "at": 1790959640.1398666,
+            "details": {
+              "intent": null,
+              "workflow": "CODE",
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+              "selected_tool": null
+            }
+          },
+          {
+            "event": "MODEL_CANDIDATES_FILTERED",
+            "stage": "ROUTING",
+            "at": 1790959640.1417909,
+            "details": {
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct"
+            }
+          },
+          {
+            "event": "RESOURCE_ADMITTED",
+            "stage": "WAITING_FOR_RESOURCE",
+            "at": 1790959640.1447933,
+            "details": {
+              "resource_admission": {
+                "status": "conditional",
+                "reasons": [],
+                "reason_codes": [],
+                "conditions": [
+                  "Model peak system-memory requirement is not measured",
+                  "Model peak GPU-memory requirement is not measured",
+                  "Incremental context/KV allocation for the resident model is not measured",
+                  "Peak resource measurements do not cover the configured context/KV settings",
+                  "Peak resource measurements do not cover the configured KV types"
+                ],
+                "condition_codes": [
+                  "peak_ram_unmeasured",
+                  "peak_gpu_unmeasured",
+                  "resident_incremental_kv_unmeasured",
+                  "context_profile_unmeasured",
+                  "kv_profile_unmeasured"
+                ],
+                "observed": {
+                  "sampled_at": 1790959640.1349845,
+                  "available_memory_mib": 3508.3984375,
+                  "gpu_free_mib": 632.0,
+                  "gpu_total_mib": 4094.0,
+                  "gpu_device": "0",
+                  "source": "psutil+nvidia-smi",
+                  "errors": []
+                },
+                "requirements": {
+                  "system_memory_mib": null,
+                  "gpu_memory_mib": null,
+                  "measured_context": null,
+                  "configured_context": 16384,
+                  "required_context": 2443,
+                  "kv_configuration": "q8_0/q8_0",
+                  "measured_kv_configuration": null,
+                  "memory_reserve_mib": 256,
+                  "gpu_reserve_mib": 256
+                }
+              }
+            }
+          },
+          {
+            "event": "MODEL_SELECTED",
+            "stage": "ROUTING",
+            "at": 1790959640.1475196,
+            "details": {
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+              "worker_role": "code"
+            }
+          },
+          {
+            "event": "MODEL_READY",
+            "stage": "EXECUTING",
+            "at": 1790959640.2699227,
+            "details": {
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct"
+            }
+          },
+          {
+            "event": "MODEL_READY",
+            "stage": "EXECUTING",
+            "at": 1790959640.2749987,
+            "details": {
+              "intent": null,
+              "workflow": "CODE",
+              "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+              "selected_tool": null
+            }
+          },
+          {
+            "event": "GENERATION_STARTED",
+            "stage": "EXECUTING",
+            "at": 1790959640.279689,
+            "details": {}
+          },
+          {
+            "event": "GENERATION_COMPLETED",
+            "stage": "OBSERVING",
+            "at": 1790959640.5507176,
+            "details": {}
+          },
+          {
+            "event": "REQUEST_FAILED",
+            "stage": "FAILED",
+            "at": 1790959640.5594425,
+            "completion_status": "failed"
+          }
+        ],
+        "completion": {
+          "state": "failed",
+          "achieved": false,
+          "response_delivered": false,
+          "checks": {},
+          "limitations": [
+            "Generated service.py lacks substantive Python content after three attempts: Python syntax error on line 15: unmatched '}'. No project changes were saved"
+          ]
+        },
+        "outcome": "failed",
+        "error": {
+          "code": "generation_format",
+          "message": "Generated service.py lacks substantive Python content after three attempts: Python syntax error on line 15: unmatched '}'. No project changes were saved"
+        }
+      },
+      "publication": "NOT_ACCEPTED",
+      "resource_scope": "Python plus all llama-server RSS; total device VRAM",
+      "arm": "E"
+    }
+  ],
+  "backend_idle_check": {
+    "persisted_supervisor_check": "idle",
+    "known_backend_jobs": [],
+    "limitation": "Backend exposes individual job lookup, no list-active endpoint; other callers must remain idle"
+  },
+  "state": "COMPLETED",
+  "checkpoint": null,
+  "limitations": [
+    "Rubrics require independent semantic review",
+    "Contracts reused across categories; clustered uncertainty required",
+    "READY_FOR_REVIEW is not publication"
+  ],
+  "summary": {
+    "A": {
+      "completed_cases": 0,
+      "routing": {
+        "task_type_exact": {
+          "cases": 0,
+          "evaluated": 0,
+          "unknown": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "complexity_exact": {
+          "cases": 0,
+          "evaluated": 0,
+          "unknown": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "classification_exact": {
+          "cases": 0,
+          "evaluated": 0,
+          "unknown": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "worker_suitability": {
+          "cases": 0,
+          "evaluated": 0,
+          "unknown": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        }
+      },
+      "trusted_artifacts_evaluated": 0,
+      "trusted_artifact_accuracy": null,
+      "latency_observed_cases": 0,
+      "latency_unknown_cases": 0,
+      "trusted_artifacts_passed": 0,
+      "trusted_artifacts_failed": 0,
+      "correctness_unknown": 0,
+      "semantic_goals_unknown": 0,
+      "repairs_observed": 0,
+      "repairs_independently_passed": 0,
+      "latency_p50_seconds": null,
+      "latency_p95_seconds": null,
+      "categories": {}
+    },
+    "B": {
+      "completed_cases": 0,
+      "routing": {
+        "task_type_exact": {
+          "cases": 0,
+          "evaluated": 0,
+          "unknown": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "complexity_exact": {
+          "cases": 0,
+          "evaluated": 0,
+          "unknown": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "classification_exact": {
+          "cases": 0,
+          "evaluated": 0,
+          "unknown": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "worker_suitability": {
+          "cases": 0,
+          "evaluated": 0,
+          "unknown": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        }
+      },
+      "trusted_artifacts_evaluated": 0,
+      "trusted_artifact_accuracy": null,
+      "latency_observed_cases": 0,
+      "latency_unknown_cases": 0,
+      "trusted_artifacts_passed": 0,
+      "trusted_artifacts_failed": 0,
+      "correctness_unknown": 0,
+      "semantic_goals_unknown": 0,
+      "repairs_observed": 0,
+      "repairs_independently_passed": 0,
+      "latency_p50_seconds": null,
+      "latency_p95_seconds": null,
+      "categories": {}
+    },
+    "C": {
+      "completed_cases": 0,
+      "routing": {
+        "task_type_exact": {
+          "cases": 0,
+          "evaluated": 0,
+          "unknown": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "complexity_exact": {
+          "cases": 0,
+          "evaluated": 0,
+          "unknown": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "classification_exact": {
+          "cases": 0,
+          "evaluated": 0,
+          "unknown": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "worker_suitability": {
+          "cases": 0,
+          "evaluated": 0,
+          "unknown": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        }
+      },
+      "trusted_artifacts_evaluated": 0,
+      "trusted_artifact_accuracy": null,
+      "latency_observed_cases": 0,
+      "latency_unknown_cases": 0,
+      "trusted_artifacts_passed": 0,
+      "trusted_artifacts_failed": 0,
+      "correctness_unknown": 0,
+      "semantic_goals_unknown": 0,
+      "repairs_observed": 0,
+      "repairs_independently_passed": 0,
+      "latency_p50_seconds": null,
+      "latency_p95_seconds": null,
+      "categories": {}
+    },
+    "D": {
+      "completed_cases": 0,
+      "routing": {
+        "task_type_exact": {
+          "cases": 0,
+          "evaluated": 0,
+          "unknown": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "complexity_exact": {
+          "cases": 0,
+          "evaluated": 0,
+          "unknown": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "classification_exact": {
+          "cases": 0,
+          "evaluated": 0,
+          "unknown": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        },
+        "worker_suitability": {
+          "cases": 0,
+          "evaluated": 0,
+          "unknown": 0,
+          "correct": 0,
+          "incorrect": 0,
+          "accuracy": null
+        }
+      },
+      "trusted_artifacts_evaluated": 0,
+      "trusted_artifact_accuracy": null,
+      "latency_observed_cases": 0,
+      "latency_unknown_cases": 0,
+      "trusted_artifacts_passed": 0,
+      "trusted_artifacts_failed": 0,
+      "correctness_unknown": 0,
+      "semantic_goals_unknown": 0,
+      "repairs_observed": 0,
+      "repairs_independently_passed": 0,
+      "latency_p50_seconds": null,
+      "latency_p95_seconds": null,
+      "categories": {}
+    },
+    "E": {
+      "completed_cases": 2,
+      "routing": {
+        "task_type_exact": {
+          "cases": 2,
+          "evaluated": 2,
+          "unknown": 0,
+          "correct": 2,
+          "incorrect": 0,
+          "accuracy": 1.0
+        },
+        "complexity_exact": {
+          "cases": 2,
+          "evaluated": 2,
+          "unknown": 0,
+          "correct": 2,
+          "incorrect": 0,
+          "accuracy": 1.0
+        },
+        "classification_exact": {
+          "cases": 2,
+          "evaluated": 2,
+          "unknown": 0,
+          "correct": 2,
+          "incorrect": 0,
+          "accuracy": 1.0
+        },
+        "worker_suitability": {
+          "cases": 2,
+          "evaluated": 2,
+          "unknown": 0,
+          "correct": 0,
+          "incorrect": 2,
+          "accuracy": 0.0
+        }
+      },
+      "trusted_artifacts_evaluated": 0,
+      "trusted_artifact_accuracy": null,
+      "latency_observed_cases": 2,
+      "latency_unknown_cases": 0,
+      "trusted_artifacts_passed": 0,
+      "trusted_artifacts_failed": 0,
+      "correctness_unknown": 2,
+      "semantic_goals_unknown": 2,
+      "repairs_observed": 0,
+      "repairs_independently_passed": 0,
+      "latency_p50_seconds": 58.11377889999949,
+      "latency_p95_seconds": 78.24437535999868,
+      "categories": {
+        "architecture": {
+          "cases": 1,
+          "trusted_passed": 0
+        },
+        "edit": {
+          "cases": 1,
+          "trusted_passed": 0
+        }
+      }
+    }
+  }
+}

@@ -41,7 +41,7 @@ def test_simple_greeting_uses_one_inference_and_observed_completion(service,monk
     assert result['supervisor']['counts']['model_switches']==0
 
 
-def test_two_distinct_docker_errors_replan_and_return_to_same_coder_task(service,monkeypatch):
+def test_two_distinct_docker_errors_repair_with_same_coder_task(service,monkeypatch):
     goal='Create program.py for reading measurements'
     leases=[];calls=[];task_ids=[];replans=[]
     monkeypatch.setattr(service,'_verified_coding_sandbox',lambda:SimpleNamespace(_ready=lambda:None))
@@ -66,16 +66,15 @@ def test_two_distinct_docker_errors_replan_and_return_to_same_coder_task(service
     monkeypatch.setattr(service.coding,'run_project',run)
     monkeypatch.setattr(service.model,'replan_code',replan,raising=False)
     result=service.run_coding_project_task('selected','program.py',goal,routed=True)
-    assert leases==[('code',None),('text','reasoning'),('code','code')]
+    assert leases==[('code','code')]
     assert len(set(task_ids))==1 and task_ids[0]==result['supervisor']['supervisor_id']
     assert all(call[:3]==('selected','program.py',goal) for call in calls)
-    assert replans[0][0]==replans[0][2]==goal
-    assert replans[0][3]['workspace_id']=='selected'
-    assert 'Repair strategy proposal' in calls[2][3][-1]
+    assert replans==[]
+    assert 'Actual sandbox validation failed' in calls[2][3][-1]
     assert result['completion']['state']=='awaiting_review' and not result['completion']['achieved']
-    assert result['supervisor']['task_state']['replan_count']==1
+    assert result['supervisor']['task_state']['replan_count']==0
     assert result['supervisor']['task_state']['current_stage']=='READY_FOR_REVIEW'
-    assert result['supervisor']['counts']['model_switches']==3
+    assert result['supervisor']['counts']['model_switches']==1
 
 
 def test_followup_retains_authoritative_workspace_and_conversation_context(service,monkeypatch):

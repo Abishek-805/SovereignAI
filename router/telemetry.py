@@ -59,6 +59,12 @@ class RoutingDecision:
     prefill_time: float | None = None
     generation_time: float | None = None
     retrieval_time: float | None = None
+    original_request: str | None = None
+    normalized_request: str | None = None
+    task_type: str | None = None
+    complexity: str | None = None
+    coding_context: dict | None = None
+    normalization_time: float | None = None
     _started: float = field(default_factory=perf_counter, repr=False)
     _context_admit: object = field(default=None, repr=False)
 
@@ -67,12 +73,21 @@ class RoutingDecision:
         result.pop('_started')
         result.pop('_context_admit')
         result['timings'] = {name: None if value is None else value * 1000 for name, value in {
+            'normalization_ms': self.normalization_time,
             'classification_ms': self.classifier_time, 'routing_ms': self.routing_time,
             'retrieval_ms': self.retrieval_time, 'load_ms': self.model_load_time,
             'switch_ms': None, 'prefill_ms': self.prefill_time,
             'generation_ms': self.generation_time, 'validation_ms': self.validation_time,
             'total_ms': self.total_time}.items()}
         return result
+
+    def coding_request(self, decision, normalization_seconds=None):
+        """Copy only declared public routing facts, never model analysis."""
+        for name in ('original_request','normalized_request','task_type','complexity','worker_role'):
+            if isinstance(decision.get(name),str):setattr(self,name,decision[name])
+        from backend.task_supervisor import _operational_value
+        self.coding_context=_operational_value(decision.get('features',{}))
+        self.add_time('normalization_time',normalization_seconds)
 
     def event(self, name):
         self.events.append({'event': name, 'elapsed_ms': (perf_counter()-self._started)*1000})

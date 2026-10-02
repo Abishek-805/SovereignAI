@@ -17,6 +17,21 @@ def test_unknowns_and_measured_completion_are_distinct():
     assert trace.model_load_time is None
 
 
+def test_coding_request_records_public_features_without_private_reasoning():
+    trace=RoutingDecision()
+    trace.coding_request({'original_request':'creat main.py','normalized_request':'create main.py',
+                          'task_type':'CODE_GENERATION','complexity':'simple','worker_role':'code',
+                          'features':{'active_file':'main.py','file_count':1},
+                          'reasoning':'private text'},normalization_seconds=.002)
+    snapshot=trace.snapshot()
+    assert snapshot['original_request']=='creat main.py'
+    assert snapshot['normalized_request']=='create main.py'
+    assert snapshot['task_type']=='CODE_GENERATION'
+    assert snapshot['coding_context']['active_file']=='main.py'
+    assert snapshot['timings']['normalization_ms']==2
+    assert 'private text' not in str(snapshot)
+
+
 class Service:
     model=object()
     def remember_route(self,value):self.saved=value

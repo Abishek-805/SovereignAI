@@ -1,0 +1,21 @@
+{
+  "author": "independent vision fixture agent",
+  "created": "2026-10-02",
+  "inputs_read": [
+    "benchmarks/universal-agent-fixtures.json (schema only)",
+    "benchmarks/smart-code-router/main.json (schema only)"
+  ],
+  "production_inspected": false,
+  "heldout_inspected": false,
+  "models_used": false,
+  "docker_used": false,
+  "independent_held_out": false,
+  "datasets": [
+    {
+      "file": "fixtures.json",
+      "canonical_sha256": "f7f36676aa2ee5d0c180a9bc3abd05812c167cb92fcca319e83587c8150be458",
+      "file_sha256": "c2ea3827e60223506120848f5ad8f41de43fa7a6712b767e7df1125519f039d8",
+      "case_count": 5
+    }
+  ]
+}

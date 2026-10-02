@@ -891,3 +891,35 @@ def test_chat_model_selected_report_publishes_word(service):
         assert result['coverage']['covered_documents']==1
         artifact=client.get(result['downloads']['word'])
         assert artifact.status_code==200 and artifact.content.startswith(b'PK')
+
+
+def test_code_vision_upload_job_uses_validated_temporary_and_cleans_it(service, monkeypatch):
+    import io
+    import time
+    from PIL import Image
+    from pathlib import Path
+    monkeypatch.setattr(service.coding,'get',lambda *_:{'files':[]})
+    seen=[]
+    def run(workspace,target,instruction,job=None,image_path=None):
+        assert workspace=='selected' and target=='app.py'
+        assert instruction=='Fix the screenshot UI'
+        assert Path(image_path).is_file()
+        seen.append(Path(image_path))
+        return {'state':'completed','publication_state':'staged'}
+    monkeypatch.setattr(service,'run_coding_project_task',run)
+    image=io.BytesIO()
+    Image.new('RGB',(2,2)).save(image,format='PNG')
+    with client_for(service) as client:
+        response=client.post('/coding/workspaces/selected/vision/jobs',data={'question':'Fix the screenshot UI','target':'app.py'},files={'file':('ui.png',image.getvalue(),'image/png')})
+        assert response.status_code==200,response.text
+        job_id=response.json()['job_id']
+        deadline=time.monotonic()+5
+        while True:
+            job=client.get('/coding/jobs/'+job_id).json()
+            if job['state']!='running':break
+            assert time.monotonic()<deadline
+            time.sleep(.01)
+        assert job['state']=='completed',job
+        assert seen and not seen[0].exists()
+        bad=client.post('/coding/workspaces/selected/vision/jobs',data={'question':'Fix the screenshot UI','target':'app.py'},files={'file':('ui.exe',b'junk')})
+        assert bad.status_code==400

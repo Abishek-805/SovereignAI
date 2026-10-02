@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { routeFacts, routingModel } from '../../src/lib/services/routing-telemetry';
 describe('routing telemetry truth', () => {
+ it('shows public coding task and complexity without inventing them', () => {
+  const facts=routeFacts({decision:{task_type:'DEBUG',complexity:'simple'}});
+  expect(facts).toContainEqual({label:'Coding task',value:'DEBUG'});
+  expect(facts).toContainEqual({label:'Complexity',value:'simple'});
+ });
  it('renders legacy routing without fabricating a decision', () => {
   expect(routeFacts({model:'legacy',capability:'text',reason:'old route'})).toEqual([]);
   expect(routingModel({model:'legacy'})).toBe('legacy');

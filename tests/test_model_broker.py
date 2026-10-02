@@ -29,6 +29,15 @@ def test_unknown_metrics_keep_task_affinity_without_fake_cost(tmp_path):
     assert all(candidate['measured_cost'] is None for candidate in decision.candidate_models)
 
 
+def test_task_specific_measurements_do_not_inherit_unrelated_quality(tmp_path):
+    workers=[spec('a',worker_roles=('code',),measured_metrics=(('code.quality',1.0),('code.DEBUG.quality',.5))),
+             spec('z',worker_roles=('code',),measured_metrics=(('code.DEBUG.quality',.9),))]
+    with patch('router.model_registry.ROOT',tmp_path):
+        decision=ModelBroker(registry(tmp_path,workers)).select('code',task_type='DEBUG',resource_snapshot=snapshot())
+    assert decision.selected_model=='z'
+    assert decision.selection_evidence['task_type']=='DEBUG'
+
+
 def test_broker_lexicographic_latency_not_latency_switch_sum(tmp_path):
     workers=[spec('a',worker_roles=('code',),measured_metrics=(('code.quality',.9),('code.latency_seconds',1),('code.switch_seconds',9))),
              spec('z',worker_roles=('code',),measured_metrics=(('code.quality',.9),('code.latency_seconds',2),('code.switch_seconds',0)))]

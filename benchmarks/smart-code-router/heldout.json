@@ -1,0 +1,937 @@
+{
+  "schema_version": 1,
+  "authored_at": "2026-10-02",
+  "author": "independent benchmark audit agent",
+  "authorship_scope": "Authored from master requirements and harness audit before inspecting subsequent router implementation; not derived from old 128 cases.",
+  "frozen": true,
+  "cases": [
+    {
+      "id": "heldout-001",
+      "category": "debug",
+      "request": "fix teh regression in factorial. The test returns None where a result is required. Return factorial for nonnegative integer; negative raises ValueError.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def factorial(n):\n    return None  # regression: stub accidentally shipped\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import factorial\nassert factorial(0)==1\nassert factorial(6)==720\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "heldout-002",
+      "category": "debug",
+      "request": "fix teh regression in fib. The test returns None where a result is required. Return nth Fibonacci with F0=0 F1=1; negative raises ValueError.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def fib(n):\n    return None  # regression: stub accidentally shipped\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import fib\nassert fib(0)==0\nassert fib(10)==55\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "heldout-003",
+      "category": "debug",
+      "request": "fix teh regression in palindrome. The test returns None where a result is required. Ignore whitespace and case only when checking palindrome.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def palindrome(text):\n    return None  # regression: stub accidentally shipped\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import palindrome\nassert palindrome(\"Never odd or even\")\nassert not palindrome(\"ab\")\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "heldout-004",
+      "category": "debug",
+      "request": "fix teh regression in intersection. The test returns None where a result is required. Return sorted unique integer intersection.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def intersection(a, b):\n    return None  # regression: stub accidentally shipped\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import intersection\nassert intersection([3,1,1],[1,2,3])==[1,3]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "heldout-005",
+      "category": "debug",
+      "request": "fix teh regression in suffixes. The test returns None where a result is required. Return every nonempty suffix in descending length.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def suffixes(text):\n    return None  # regression: stub accidentally shipped\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import suffixes\nassert suffixes(\"abc\")==[\"abc\",\"bc\",\"c\"]\nassert suffixes(\"\")==[]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "heldout-006",
+      "category": "debug",
+      "request": "fix teh regression in count_runs. The test returns None where a result is required. Count consecutive runs of equal items.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def count_runs(values):\n    return None  # regression: stub accidentally shipped\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import count_runs\nassert count_runs([1,1,2,1])==3\nassert count_runs([])==0\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "heldout-007",
+      "category": "debug",
+      "request": "fix teh regression in min_gap. The test returns None where a result is required. Return minimum gap between sorted distinct integers, or None if fewer than two distinct values.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def min_gap(values):\n    return None  # regression: stub accidentally shipped\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import min_gap\nassert min_gap([9,1,4,4])==3\nassert min_gap([2,2]) is None\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "heldout-008",
+      "category": "debug",
+      "request": "fix teh regression in zip_long. The test returns None where a result is required. Zip lists to tuples padding missing values with None.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def zip_long(a, b):\n    return None  # regression: stub accidentally shipped\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import zip_long\nassert zip_long([1,2],[3])==[(1,3),(2,None)]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "heldout-009",
+      "category": "implement",
+      "request": "Implement factorial in solution.py. Return factorial for nonnegative integer; negative raises ValueError.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def factorial(n):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import factorial\nassert factorial(0)==1\nassert factorial(6)==720\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "heldout-010",
+      "category": "implement",
+      "request": "Implement fib in solution.py. Return nth Fibonacci with F0=0 F1=1; negative raises ValueError.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def fib(n):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import fib\nassert fib(0)==0\nassert fib(10)==55\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "heldout-011",
+      "category": "implement",
+      "request": "Implement palindrome in solution.py. Ignore whitespace and case only when checking palindrome.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def palindrome(text):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import palindrome\nassert palindrome(\"Never odd or even\")\nassert not palindrome(\"ab\")\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "heldout-012",
+      "category": "implement",
+      "request": "Implement intersection in solution.py. Return sorted unique integer intersection.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def intersection(a, b):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import intersection\nassert intersection([3,1,1],[1,2,3])==[1,3]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "heldout-013",
+      "category": "implement",
+      "request": "Implement suffixes in solution.py. Return every nonempty suffix in descending length.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def suffixes(text):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import suffixes\nassert suffixes(\"abc\")==[\"abc\",\"bc\",\"c\"]\nassert suffixes(\"\")==[]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "heldout-014",
+      "category": "implement",
+      "request": "Implement count_runs in solution.py. Count consecutive runs of equal items.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def count_runs(values):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import count_runs\nassert count_runs([1,1,2,1])==3\nassert count_runs([])==0\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "heldout-015",
+      "category": "implement",
+      "request": "Implement min_gap in solution.py. Return minimum gap between sorted distinct integers, or None if fewer than two distinct values.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def min_gap(values):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import min_gap\nassert min_gap([9,1,4,4])==3\nassert min_gap([2,2]) is None\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "heldout-016",
+      "category": "implement",
+      "request": "Implement zip_long in solution.py. Zip lists to tuples padding missing values with None.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def zip_long(a, b):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import zip_long\nassert zip_long([1,2],[3])==[(1,3),(2,None)]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "heldout-017",
+      "category": "refactor_multifile",
+      "request": "Refactor the unfinished factorial out of legacy.py into solution.py. Keep legacy.py as a backwards-compatible import. Return factorial for nonnegative integer; negative raises ValueError.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "from legacy import factorial\n",
+          "legacy.py": "def factorial(n):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "legacy.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import factorial\nassert factorial(0)==1\nassert factorial(6)==720\nfrom legacy import factorial as old\nassert old is factorial\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "heldout-018",
+      "category": "refactor_multifile",
+      "request": "Refactor the unfinished fib out of legacy.py into solution.py. Keep legacy.py as a backwards-compatible import. Return nth Fibonacci with F0=0 F1=1; negative raises ValueError.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "from legacy import fib\n",
+          "legacy.py": "def fib(n):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "legacy.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import fib\nassert fib(0)==0\nassert fib(10)==55\nfrom legacy import fib as old\nassert old is fib\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "heldout-019",
+      "category": "refactor_multifile",
+      "request": "Refactor the unfinished palindrome out of legacy.py into solution.py. Keep legacy.py as a backwards-compatible import. Ignore whitespace and case only when checking palindrome.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "from legacy import palindrome\n",
+          "legacy.py": "def palindrome(text):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "legacy.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import palindrome\nassert palindrome(\"Never odd or even\")\nassert not palindrome(\"ab\")\nfrom legacy import palindrome as old\nassert old is palindrome\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "heldout-020",
+      "category": "refactor_multifile",
+      "request": "Refactor the unfinished intersection out of legacy.py into solution.py. Keep legacy.py as a backwards-compatible import. Return sorted unique integer intersection.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "from legacy import intersection\n",
+          "legacy.py": "def intersection(a, b):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "legacy.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import intersection\nassert intersection([3,1,1],[1,2,3])==[1,3]\nfrom legacy import intersection as old\nassert old is intersection\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "heldout-021",
+      "category": "refactor_multifile",
+      "request": "Refactor the unfinished suffixes out of legacy.py into solution.py. Keep legacy.py as a backwards-compatible import. Return every nonempty suffix in descending length.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "from legacy import suffixes\n",
+          "legacy.py": "def suffixes(text):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "legacy.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import suffixes\nassert suffixes(\"abc\")==[\"abc\",\"bc\",\"c\"]\nassert suffixes(\"\")==[]\nfrom legacy import suffixes as old\nassert old is suffixes\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "heldout-022",
+      "category": "refactor_multifile",
+      "request": "Refactor the unfinished count_runs out of legacy.py into solution.py. Keep legacy.py as a backwards-compatible import. Count consecutive runs of equal items.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "from legacy import count_runs\n",
+          "legacy.py": "def count_runs(values):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "legacy.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import count_runs\nassert count_runs([1,1,2,1])==3\nassert count_runs([])==0\nfrom legacy import count_runs as old\nassert old is count_runs\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "heldout-023",
+      "category": "refactor_multifile",
+      "request": "Refactor the unfinished min_gap out of legacy.py into solution.py. Keep legacy.py as a backwards-compatible import. Return minimum gap between sorted distinct integers, or None if fewer than two distinct values.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "from legacy import min_gap\n",
+          "legacy.py": "def min_gap(values):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "legacy.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import min_gap\nassert min_gap([9,1,4,4])==3\nassert min_gap([2,2]) is None\nfrom legacy import min_gap as old\nassert old is min_gap\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "heldout-024",
+      "category": "refactor_multifile",
+      "request": "Refactor the unfinished zip_long out of legacy.py into solution.py. Keep legacy.py as a backwards-compatible import. Zip lists to tuples padding missing values with None.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "coder"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "from legacy import zip_long\n",
+          "legacy.py": "def zip_long(a, b):\n    raise NotImplementedError(\"unfinished\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "legacy.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import zip_long\nassert zip_long([1,2],[3])==[(1,3),(2,None)]\nfrom legacy import zip_long as old\nassert old is zip_long\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    }
+  ]
+}

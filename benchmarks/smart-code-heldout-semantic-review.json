@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "reviewer": "Independent continued_semantic_review",
+  "reviewed_at_utc": "2026-10-02T16:38:50.900007+00:00",
+  "scope": "Post-run heldout V1 answers only; no tuning, execution or runtime changes. Dataset contains no explanation/architecture rubric cases and no staged multifile candidates.",
+  "results_path": "benchmarks/smart-code-router-heldout-results.json",
+  "dataset_path": "benchmarks/smart-code-router/heldout.json",
+  "dataset_file_sha256": "8af9f1c3bc6c79ffc1ca867ba306f81937e6a03f72c5e5de956a6374fc575de8",
+  "benchmark_started_at_utc": "2026-10-02T15:39:52.320757+00:00",
+  "rubric": {
+    "FAIL": "Bound answer materially contradicts supplied source/context or does not fulfill requested code change; no artifact-test result is invented."
+  },
+  "reviews": [
+    {
+      "review_key": "B:heldout-019:28db9bf1bc0aac51d85f999c2c1299b8a9c46591cbd72b87d990b182acfde516:f7657b67f038c68bc5134de391246204ac33662a3b15e01c001fd200ec246287",
+      "arm": "B",
+      "case_id": "heldout-019",
+      "category": "refactor_multifile",
+      "fixture_sha256": "28db9bf1bc0aac51d85f999c2c1299b8a9c46591cbd72b87d990b182acfde516",
+      "answer_sha256": "f7657b67f038c68bc5134de391246204ac33662a3b15e01c001fd200ec246287",
+      "request": "Refactor the unfinished palindrome out of legacy.py into solution.py. Keep legacy.py as a backwards-compatible import. Ignore whitespace and case only when checking palindrome.",
+      "source_files": {
+        "solution.py": "from legacy import palindrome\n",
+        "legacy.py": "def palindrome(text):\n    raise NotImplementedError(\"unfinished\")\n"
+      },
+      "answer": "I cannot proceed with the refactoring because the content of `legacy.py` was not provided in the context. Please paste the code from `legacy.py` so I can refactor the `palindrome` function into `solution.py` and update `legacy.py` to import it.",
+      "verdict": "FAIL",
+      "goal_satisfied": false,
+      "operational_task_status": "FAIL",
+      "fact_assessment": {
+        "source_context": "PRESENT: legacy.py and solution.py exist in selected fixture workspace",
+        "requested_patch": "ABSENT",
+        "trusted_execution": "ABSENT",
+        "publication": "NOT_ACCEPTED"
+      },
+      "rationale": "The answer asks for missing legacy.py source although both actual source files are supplied in the selected workspace. It produces no refactored candidate and never reaches the required READY_FOR_REVIEW endpoint. This is an observed unmet goal, not evidence of a tested artifact failure."
+    },
+    {
+      "review_key": "B:heldout-021:d8b8116105a325ddfc6e4ffcf6f6508f1d1e956c5b00a59f36d838278f5f8cb5:c043fed3c98f24ac7a0c838f247a5f1745cbd5310d32f6729163748e139577fe",
+      "arm": "B",
+      "case_id": "heldout-021",
+      "category": "refactor_multifile",
+      "fixture_sha256": "d8b8116105a325ddfc6e4ffcf6f6508f1d1e956c5b00a59f36d838278f5f8cb5",
+      "answer_sha256": "c043fed3c98f24ac7a0c838f247a5f1745cbd5310d32f6729163748e139577fe",
+      "request": "Refactor the unfinished suffixes out of legacy.py into solution.py. Keep legacy.py as a backwards-compatible import. Return every nonempty suffix in descending length.",
+      "source_files": {
+        "solution.py": "from legacy import suffixes\n",
+        "legacy.py": "def suffixes(text):\n    raise NotImplementedError(\"unfinished\")\n"
+      },
+      "answer": "I cannot perform the refactoring because the actual content of `legacy.py` is missing. To extract the suffix logic and implement the sorting/filtering rules, I need to see the source code. Please provide the content of `legacy.py` so I can generate `solution.py` and update `legacy.py` accordingly.",
+      "verdict": "FAIL",
+      "goal_satisfied": false,
+      "operational_task_status": "FAIL",
+      "fact_assessment": {
+        "source_context": "PRESENT: legacy.py and solution.py exist in selected fixture workspace",
+        "requested_patch": "ABSENT",
+        "trusted_execution": "ABSENT",
+        "publication": "NOT_ACCEPTED"
+      },
+      "rationale": "The answer asks for missing legacy.py source although both actual source files are supplied in the selected workspace. It produces no refactored candidate and never reaches the required READY_FOR_REVIEW endpoint. This is an observed unmet goal, not evidence of a tested artifact failure."
+    }
+  ],
+  "summary": {
+    "reviewed_answers": 2,
+    "FAIL": 2,
+    "architecture_candidates": 0,
+    "explanation_rubric_cases": 0
+  }
+}

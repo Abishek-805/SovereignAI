@@ -886,6 +886,33 @@ class CodingWorkspace:
                             'url': f'/coding/workspaces/{workspace_id}/tasks/{task_id}/artifacts/{name}'})
         return entries
 
+    @staticmethod
+    def _direct_target_plan(instruction, target, files, assets):
+        """Resolve only a clear source-file operation; never infer additional scope."""
+        from router.tool_registry import explicit_operation_requested
+        if (not target or target in assets or Path(target).suffix.lower() not in LANGUAGES
+                or Path(target).suffix.lower() in {'.md', '.txt', '.csv', '.json'}
+                or not explicit_operation_requested(instruction, 'file_edit')):
+            return None
+        # Literal replacements retain the existing planner's exact-span contract.
+        if re.search(r'\b(?:delete|remove|erase|rename|move|copy|replace|refactor|integrat\w*|architecture|across|repository|project|files|modules)\b', instruction, re.I):
+            return None
+        # Include absent filenames: a second requested file cannot silently vanish.
+        mentioned = set(re.findall(r'(?<![\w./\\-])[\w.-]+(?:[/\\][\w.-]+)*\.[A-Za-z][A-Za-z0-9]*', instruction))
+        if mentioned - {target}:
+            return None
+        creating = bool(re.search(r'\b(?:create|generate|write|build)\b', instruction, re.I))
+        if target in files:
+            if creating:
+                return None
+            action, scope = 'edit', 'existing_files'
+        else:
+            if not creating or mentioned != {target}:
+                return None
+            action, scope = 'create', 'new_files'
+        return {'scope': scope, 'operations': [{'action': action, 'path': target,
+                'reason': 'Explicit single source target', 'replacements': []}]}
+
     def run_project(self, workspace_id: str, target: str, instruction: str, model, sandbox, ledger,
                     model_alias='sovereign-text', progress=None, cancel=None, history=None):
         """Plan and validate bounded changes across the whole local workspace."""
@@ -917,9 +944,10 @@ class CodingWorkspace:
         named_for_delete=[name for name in files if re.search(r'(?<![\w./-])'+re.escape(name)+r'(?![\w./-])',deletion_clause,re.I)]
         simple_delete=(explicit_delete and len(named_for_delete)==1 and
                        not re.search(r'\b(create|add|edit|modify|update|rename|move|copy|fix)\b',instruction,re.I))
+        direct_plan = self._direct_target_plan(instruction, target, files, assets)
         plan=({'scope':'existing_files','operations':[{'action':'delete','path':named_for_delete[0],
                 'reason':'Explicit single-file deletion'}]} if simple_delete else
-              model.plan_workspace_edit(instruction,summaries,snapshot['folders'],target or '',history=history))
+              direct_plan or model.plan_workspace_edit(instruction,summaries,snapshot['folders'],target or '',history=history))
         scope=plan.get('scope') if isinstance(plan,dict) else None
         operations=plan['operations'] if isinstance(plan,dict) else plan
         # Small models sometimes label newly requested files as edits. Only

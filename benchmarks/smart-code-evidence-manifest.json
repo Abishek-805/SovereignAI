@@ -1,0 +1,23 @@
+{
+  "smart-code-router-results.json": {
+    "raw_sha256": "212e03fd78930807e4e708210198b74199ee9aec6a548f2ad301744ade026dc2",
+    "raw_bytes": 54568778,
+    "archive": "smart-code-router-results.json.gz",
+    "archive_sha256": "ee383a225b8d8fcbc815717e052ec6e8753ea63bb470999d56a4275861f13ae7",
+    "archive_bytes": 2916205
+  },
+  "smart-code-router-heldout-results.json": {
+    "raw_sha256": "5ff44c1170ffcac9be13dfe1944b92e3223a9a1d82910433b6d06bd242b130cd",
+    "raw_bytes": 14065391,
+    "archive": "smart-code-router-heldout-results.json.gz",
+    "archive_sha256": "1380c317dff0abfabf9e4689bf02b89b6e357ffbf5da4e762a3f92745dc90108",
+    "archive_bytes": 732782
+  },
+  "smart-code-router-interruption-docker-stop.json": {
+    "raw_sha256": "4bc615452e90ad4aaafabaa89e0b100de04edaf13f155a51f476ee538f7b9b00",
+    "raw_bytes": 17460855,
+    "archive": "smart-code-router-interruption-docker-stop.json.gz",
+    "archive_sha256": "4724c5f88324e8d4b64dd0f910cd439e7a58ceb57cad5c946def626a4d469f9c",
+    "archive_bytes": 991277
+  }
+}

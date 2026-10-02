@@ -1,0 +1,24 @@
+{
+  "canonicalization": "UTF-8 JSON sort_keys=True separators=(comma,colon) ensure_ascii=False, excluding no fields",
+  "datasets": [
+    {
+      "file": "main.json",
+      "case_count": 100,
+      "canonical_sha256": "ddb07ca03c6209c7ef2530dbfb929352c274283be90a4e12e88f0b0fa6d53624",
+      "file_sha256": "3f7cfda5b2325802544eaef754aa4b253311e257f0d0ee2f019ec03df4c982c4"
+    },
+    {
+      "file": "heldout.json",
+      "case_count": 24,
+      "canonical_sha256": "6bc017944b28cab99bcd6f5a5ddfe6c59660d97fdab8a555e33cf369f870ce7f",
+      "file_sha256": "8af9f1c3bc6c79ffc1ca867ba306f81937e6a03f72c5e5de956a6374fc575de8"
+    }
+  ],
+  "holdout_policy": "Do not inspect heldout prompts or assertions during tuning. Run once after policy and production hashes freeze; fixes require a new independent holdout.",
+  "limitations": [
+    "Main categories reuse contracts across task modes; report clustered confidence by contract, not 100 statistically independent algorithms.",
+    "Five vision cases deliberately lack assets and are unsupported; 95 main cases are executable or rubric-reviewable.",
+    "Assertions are narrow examples, not exhaustive correctness proof.",
+    "No fixture was executed against product or model during authoring."
+  ]
+}

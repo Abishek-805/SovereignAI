@@ -1,5 +1,5 @@
 /** Public request-owned facts only. Unknown values are never inferred from UI state. */
-export type RoutingDecision = Partial<Record<'request_id'|'intent'|'capability'|'modality'|'candidate_models'|'candidate_rejection_reasons'|'selected_model'|'runtime_alias'|'route_reason'|'required_context'|'available_context'|'resource_admission'|'current_residency'|'switch_required'|'classifier_time'|'routing_time'|'model_load_time'|'inference_time'|'validation_time'|'model_request_time'|'lease_time'|'total_time'|'fallback'|'errors'|'evidence_required'|'evidence_used'|'knowledge_scope'|'retrieval'|'tools'|'tool_candidates'|'model_candidates'|'failure_layer'|'validation'|'timings', unknown>>;
+export type RoutingDecision = Partial<Record<'request_id'|'task_type'|'complexity'|'intent'|'capability'|'modality'|'candidate_models'|'candidate_rejection_reasons'|'selected_model'|'runtime_alias'|'route_reason'|'required_context'|'available_context'|'resource_admission'|'current_residency'|'switch_required'|'classifier_time'|'routing_time'|'model_load_time'|'inference_time'|'validation_time'|'model_request_time'|'lease_time'|'total_time'|'fallback'|'errors'|'evidence_required'|'evidence_used'|'knowledge_scope'|'retrieval'|'tools'|'tool_candidates'|'model_candidates'|'failure_layer'|'validation'|'timings', unknown>>;
 export type RoutingTelemetry = { capability?: string | null; model?: string | null; reason?: string | null; decision?: RoutingDecision | null };
 export type RouteFact = { label:string; value:string };
 const record=(value:unknown):Record<string,unknown>|null=>value!==null&&typeof value==='object'&&!Array.isArray(value)?value as Record<string,unknown>:null;
@@ -22,6 +22,7 @@ function resource(value:unknown):string {
 export function routeFacts(routing?: RoutingTelemetry | null):RouteFact[] {
  const decision=record(routing?.decision);if(!decision)return [];
  const facts:RouteFact[]=[];const add=(label:string,value:string)=>{if(value)facts.push({label,value});};
+ add('Coding task',text(decision.task_type));add('Complexity',text(decision.complexity));
  for(const [key,label] of [['request_id','Request'],['intent','Intent'],['workflow','Workflow'],['worker_role','Worker role'],['current_stage','Task stage'],['completion_status','Completion'],['selected_tool','Selected tool'],['capability','Capability'],['modality','Modality']] as const)add(label,text(decision[key]));
  add('Worker already warm',boolean(decision.is_warm));
  add('Evidence required',boolean(decision.evidence_required));add('Evidence used',typeof decision.evidence_used==='boolean'?(decision.evidence_used?'Used':'Not used'):'');

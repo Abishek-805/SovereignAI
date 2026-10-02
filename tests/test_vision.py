@@ -36,6 +36,7 @@ def test_vision_returns_visible_complete_answer(monkeypatch):
     def post(url, *, json, **kwargs):
         assert url == 'http://127.0.0.1:8087/v1/chat/completions'
         assert json['chat_template_kwargs'] == {'enable_thinking': False}
+        assert json['max_tokens'] == 1536
         return Response()
 
     monkeypatch.setattr('rag.vision.httpx.post', post)
@@ -58,8 +59,20 @@ def test_vision_uses_owned_model_client_and_preserves_cancellation():
     calls=[]
     def request(method,path,**kwargs):
         calls.append((method,path))
+        assert 'image-observation' in kwargs['stage_contract']
         raise WorkbenchError('cancelled','Task stopped')
     with pytest.raises(WorkbenchError) as error:
         ask_vision(Image.new('RGB',(10,10)),'read',request=request)
     assert error.value.code=='cancelled'
     assert calls==[('POST','/v1/chat/completions')]
+
+def test_vision_generation_contract_preserves_image_and_defers_code():
+    def request(method, path, **kwargs):
+        messages = kwargs['json']['messages']
+        assert 'image-observation stage' in messages[0]['content']
+        assert 'subsequent code stage' in messages[0]['content']
+        parts = messages[1]['content']
+        assert parts[0]['image_url']['url'].startswith('data:image/jpeg;base64,')
+        assert parts[1]['text'] == 'Fix this interface'
+        return {'choices': [{'finish_reason': 'stop', 'message': {'content': 'A red panel.'}}]}
+    assert ask_vision(Image.new('RGB', (10, 10)), 'Fix this interface', request=request)['answer'] == 'A red panel.'

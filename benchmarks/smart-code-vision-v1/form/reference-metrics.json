@@ -1,0 +1,133 @@
+{
+  "text": "Reserve a desk\nFull name\nEmail\nDate\nGuests\nConfirm reservation",
+  "labels": [
+    [
+      "name",
+      true
+    ],
+    [
+      "email",
+      true
+    ],
+    [
+      "date",
+      true
+    ],
+    [
+      "guests",
+      true
+    ]
+  ],
+  "items": [
+    {
+      "id": "form",
+      "tag": "FORM",
+      "x": 48,
+      "y": 108,
+      "width": 640,
+      "height": 228,
+      "background": "rgba(0, 0, 0, 0)",
+      "color": "rgb(32, 51, 68)",
+      "borderRadius": "0px"
+    },
+    {
+      "id": "name-label",
+      "tag": "LABEL",
+      "x": 48,
+      "y": 108,
+      "width": 310,
+      "height": 70,
+      "background": "rgba(0, 0, 0, 0)",
+      "color": "rgb(32, 51, 68)",
+      "borderRadius": "0px"
+    },
+    {
+      "id": "name",
+      "tag": "INPUT",
+      "x": 48,
+      "y": 134,
+      "width": 310,
+      "height": 44,
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(0, 0, 0)",
+      "borderRadius": "6px"
+    },
+    {
+      "id": "email-label",
+      "tag": "LABEL",
+      "x": 378,
+      "y": 108,
+      "width": 310,
+      "height": 70,
+      "background": "rgba(0, 0, 0, 0)",
+      "color": "rgb(32, 51, 68)",
+      "borderRadius": "0px"
+    },
+    {
+      "id": "email",
+      "tag": "INPUT",
+      "x": 378,
+      "y": 134,
+      "width": 310,
+      "height": 44,
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(0, 0, 0)",
+      "borderRadius": "6px"
+    },
+    {
+      "id": "date-label",
+      "tag": "LABEL",
+      "x": 48,
+      "y": 198,
+      "width": 310,
+      "height": 72,
+      "background": "rgba(0, 0, 0, 0)",
+      "color": "rgb(32, 51, 68)",
+      "borderRadius": "0px"
+    },
+    {
+      "id": "date",
+      "tag": "INPUT",
+      "x": 48,
+      "y": 224,
+      "width": 310,
+      "height": 46,
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(0, 0, 0)",
+      "borderRadius": "6px"
+    },
+    {
+      "id": "guests-label",
+      "tag": "LABEL",
+      "x": 378,
+      "y": 198,
+      "width": 310,
+      "height": 72,
+      "background": "rgba(0, 0, 0, 0)",
+      "color": "rgb(32, 51, 68)",
+      "borderRadius": "0px"
+    },
+    {
+      "id": "guests",
+      "tag": "INPUT",
+      "x": 378,
+      "y": 224,
+      "width": 310,
+      "height": 44,
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(0, 0, 0)",
+      "borderRadius": "6px"
+    },
+    {
+      "id": "submit",
+      "tag": "BUTTON",
+      "x": 48,
+      "y": 290,
+      "width": 640,
+      "height": 46,
+      "background": "rgb(23, 62, 102)",
+      "color": "rgb(255, 255, 255)",
+      "borderRadius": "6px"
+    }
+  ]
+}

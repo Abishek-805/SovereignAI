@@ -376,10 +376,11 @@ def create_app(service=None):
     @app.post('/vision/ask')
     @app.post('/agent/vision')
     @app.post('/agent/vision/jobs')
+    @app.post('/coding/workspaces/{workspace_id}/vision/jobs')
     async def vision_ask(request:Request):
         temporary=None
         job_owns_upload=False
-        async with request.form(max_files=1,max_fields=1,max_part_size=8192) as form:
+        async with request.form(max_files=1,max_fields=2,max_part_size=8192) as form:
             upload=form.get('file')
             question=form.get('question')
             if not isinstance(question,str) or not question.strip() or len(question)>2000:
@@ -400,10 +401,18 @@ def create_app(service=None):
                         if total>5*1024*1024:
                             raise WorkbenchError('file_too_large','Image exceeds 5 MB')
                         handle.write(data)
-                if request.url.path=='/agent/vision/jobs':
+                if request.url.path=='/agent/vision/jobs' or 'workspace_id' in request.path_params:
                     image_path=temporary
+                    workspace_id=request.path_params.get('workspace_id')
+                    target=form.get('target')
+                    if workspace_id:
+                        service.coding.get(workspace_id)
+                        if not isinstance(target,str) or not target.strip():
+                            raise WorkbenchError('needs_input','Choose the code target')
                     def run(job):
                         try:
+                            if workspace_id:
+                                return service.run_coding_project_task(workspace_id,target,question,job=job,image_path=image_path)
                             return service.run_image_agent(question,image_path,job=job)
                         finally:
                             image_path.unlink(missing_ok=True)

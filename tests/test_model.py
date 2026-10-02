@@ -7,6 +7,20 @@ from backend.model import LocalModel
 def test_remote_endpoint_rejected():
     with pytest.raises(ValueError): LocalModel('https://example.com')
 
+
+def test_simple_code_explanation_uses_one_public_inference(monkeypatch):
+    model=LocalModel(verify_semantics=True)
+    calls=[]
+    monkeypatch.setattr(model,'_request',lambda method,path,**kwargs:{'default_generation_settings':{'n_ctx':4096}})
+    monkeypatch.setattr(model,'count_messages',lambda messages:100)
+    def complete(payload,kind):
+        calls.append((payload,kind))
+        return {'choices':[{'finish_reason':'stop','message':{'content':'main.py doubles x.'}}]}
+    monkeypatch.setattr(model,'_public_completion',complete)
+    monkeypatch.setattr(model,'_planned_completion',lambda *args,**kwargs:pytest.fail('No interpretation/review for simple explanation'))
+    assert model.simple_code_explanation('Explain this function',files=[{'name':'main.py','source_excerpt':'def f(x): return x*2'}])=='main.py doubles x.'
+    assert len(calls)==1 and calls[0][1]=='plain_answer'
+
 def test_loading_is_distinct_from_offline():
     model=LocalModel(transport=httpx.MockTransport(lambda request:httpx.Response(503,json={'error':{'message':'Loading model'}})))
     with pytest.raises(WorkbenchError) as error: model.status()
@@ -311,3 +325,58 @@ def test_planner_decoding_cannot_offer_file_edits_without_current_authority(goal
     root=sent[0]['grammar'].splitlines()[0]
     assert ('(code | generic)' in root)==allowed
     assert 'A selected project is optional context' in sent[0]['messages'][0]['content']
+
+
+def test_code_strategy_is_one_bounded_completed_public_proposal():
+    seen=[]
+    def handler(request):
+        seen.append(json.loads(request.content))
+        return httpx.Response(200,json={'choices':[{'finish_reason':'stop',
+            'message':{'content':'  Keep the service boundary and run its supplied tests.  '}}]})
+    model=LocalModel(transport=httpx.MockTransport(handler))
+    try:
+        assert model.plan_code_strategy('Implement the selected modules',
+            [{'name':'service.py'}])=='Keep the service boundary and run its supplied tests.'
+    finally:model.close()
+    assert len(seen)==1
+    assert seen[0]['max_tokens']==1536
+    assert seen[0]['chat_template_kwargs']=={'enable_thinking':False}
+    assert 'at most 200 words' in seen[0]['messages'][0]['content']
+    assert json.loads(seen[0]['messages'][1]['content'])['file_metadata']==[{'name':'service.py'}]
+
+
+@pytest.mark.parametrize('body,diagnostic',[
+    ({'choices':[{'finish_reason':'length','message':{'content':'Partial public plan'}}]},
+        'finish_reason=length, public_content=nonempty_text'),
+    ({'choices':[{'finish_reason':'stop','message':{'content':'  '}}]},
+        'finish_reason=stop, public_content=empty_text'),
+    ({'choices':[{'finish_reason':'stop','message':{'reasoning_content':'PRIVATE_SENTINEL'}}]},
+        'finish_reason=stop, public_content=non_text'),
+    ({'choices':[]},'finish_reason=missing, public_content=missing'),
+    ({'choices':['malformed']},'finish_reason=missing, public_content=missing'),
+    ({'choices':[{'finish_reason':'PRIVATE_SENTINEL','message':{'content':'Partial plan'}}]},
+        'finish_reason=unsupported, public_content=nonempty_text'),
+])
+def test_code_strategy_rejects_incomplete_or_malformed_public_proposal(body,diagnostic):
+    model=LocalModel(transport=httpx.MockTransport(lambda request:httpx.Response(200,json=body)))
+    try:
+        with pytest.raises(WorkbenchError) as error:model.plan_code_strategy('Implement selected modules')
+        assert error.value.code=='generation_format'
+        assert diagnostic in str(error.value)
+        assert 'PRIVATE_SENTINEL' not in str(error.value)
+        assert 'Partial plan' not in str(error.value)
+    finally:model.close()
+def test_code_completion_review_has_source_stage_contract(monkeypatch):
+    model=LocalModel()
+    captured=[]
+    monkeypatch.setattr(model,'_request',lambda *args,**kwargs:{'default_generation_settings':{'n_ctx':8192}})
+    monkeypatch.setattr(model,'count_messages',lambda *args:100)
+    def planned(payload,**kwargs):
+        captured.append(kwargs)
+        return {'choices':[{'finish_reason':'stop','message':{'content':'{"code":"print(1)"}'}}]}
+    monkeypatch.setattr(model,'_planned_completion',planned)
+    try:
+        model.complete_code([{'role':'user','content':'Implement the selected function'}])
+    finally:model.close()
+    assert 'source-generation' in captured[0]['review_context'][0]['content']
+    assert 'file_edit' in captured[0]['review_context'][0]['content']

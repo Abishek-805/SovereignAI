@@ -1,0 +1,61 @@
+{
+  "text": "+\nNo notebooks yet\n\nCapture your first idea in a fresh notebook.\n\nCreate notebook",
+  "labels": [],
+  "items": [
+    {
+      "id": "panel",
+      "tag": "SECTION",
+      "x": 200,
+      "y": 84,
+      "width": 560,
+      "height": 292,
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(32, 51, 68)",
+      "borderRadius": "12px"
+    },
+    {
+      "id": "icon",
+      "tag": "DIV",
+      "x": 448,
+      "y": 125,
+      "width": 64,
+      "height": 64,
+      "background": "rgb(219, 233, 247)",
+      "color": "rgb(23, 62, 102)",
+      "borderRadius": "50%"
+    },
+    {
+      "id": "title",
+      "tag": "H1",
+      "x": 241,
+      "y": 189,
+      "width": 478,
+      "height": 32,
+      "background": "rgba(0, 0, 0, 0)",
+      "color": "rgb(32, 51, 68)",
+      "borderRadius": "0px"
+    },
+    {
+      "id": "description",
+      "tag": "P",
+      "x": 241,
+      "y": 249,
+      "width": 478,
+      "height": 24,
+      "background": "rgba(0, 0, 0, 0)",
+      "color": "rgb(32, 51, 68)",
+      "borderRadius": "0px"
+    },
+    {
+      "id": "create",
+      "tag": "BUTTON",
+      "x": 396.84375,
+      "y": 289,
+      "width": 166.3125,
+      "height": 46,
+      "background": "rgb(23, 62, 102)",
+      "color": "rgb(255, 255, 255)",
+      "borderRadius": "6px"
+    }
+  ]
+}

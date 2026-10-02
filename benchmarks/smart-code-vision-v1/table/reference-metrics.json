@@ -1,0 +1,94 @@
+{
+  "text": "Recent shipments\nOrder\tDestination\tStatus\nPK-1042\tJaipur\tDelivered\nPK-1043\tKochi\tDelivered",
+  "labels": [],
+  "items": [
+    {
+      "id": "table",
+      "tag": "TABLE",
+      "x": 48,
+      "y": 108,
+      "width": 864,
+      "height": 201,
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(32, 51, 68)",
+      "borderRadius": "0px"
+    },
+    {
+      "id": "order",
+      "tag": "TH",
+      "x": 48,
+      "y": 108,
+      "width": 259.1875,
+      "height": 58.5,
+      "background": "rgb(23, 62, 102)",
+      "color": "rgb(255, 255, 255)",
+      "borderRadius": "0px"
+    },
+    {
+      "id": "destination",
+      "tag": "TH",
+      "x": 307.1875,
+      "y": 108,
+      "width": 345.59375,
+      "height": 58.5,
+      "background": "rgb(23, 62, 102)",
+      "color": "rgb(255, 255, 255)",
+      "borderRadius": "0px"
+    },
+    {
+      "id": "status",
+      "tag": "TH",
+      "x": 652.78125,
+      "y": 108,
+      "width": 259.21875,
+      "height": 58.5,
+      "background": "rgb(23, 62, 102)",
+      "color": "rgb(255, 255, 255)",
+      "borderRadius": "0px"
+    },
+    {
+      "id": "row1",
+      "tag": "TR",
+      "x": 48,
+      "y": 166.5,
+      "width": 864,
+      "height": 71,
+      "background": "rgba(0, 0, 0, 0)",
+      "color": "rgb(32, 51, 68)",
+      "borderRadius": "0px"
+    },
+    {
+      "id": "badge1",
+      "tag": "SPAN",
+      "x": 672.78125,
+      "y": 187,
+      "width": 91.59375,
+      "height": 30,
+      "background": "rgb(216, 241, 229)",
+      "color": "rgb(23, 96, 68)",
+      "borderRadius": "20px"
+    },
+    {
+      "id": "row2",
+      "tag": "TR",
+      "x": 48,
+      "y": 237.5,
+      "width": 864,
+      "height": 71,
+      "background": "rgba(0, 0, 0, 0)",
+      "color": "rgb(32, 51, 68)",
+      "borderRadius": "0px"
+    },
+    {
+      "id": "badge2",
+      "tag": "SPAN",
+      "x": 672.78125,
+      "y": 258,
+      "width": 91.59375,
+      "height": 30,
+      "background": "rgb(216, 241, 229)",
+      "color": "rgb(23, 96, 68)",
+      "borderRadius": "20px"
+    }
+  ]
+}

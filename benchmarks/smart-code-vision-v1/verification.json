@@ -1,0 +1,62 @@
+{
+  "trusted_checks": [
+    {
+      "id": "vision-code-cards",
+      "source": "reference.html",
+      "exit": 0
+    },
+    {
+      "id": "vision-code-cards",
+      "source": "original.html",
+      "exit": 1
+    },
+    {
+      "id": "vision-code-navigation",
+      "source": "reference.html",
+      "exit": 0
+    },
+    {
+      "id": "vision-code-navigation",
+      "source": "original.html",
+      "exit": 1
+    },
+    {
+      "id": "vision-code-form",
+      "source": "reference.html",
+      "exit": 0
+    },
+    {
+      "id": "vision-code-form",
+      "source": "original.html",
+      "exit": 1
+    },
+    {
+      "id": "vision-code-table",
+      "source": "reference.html",
+      "exit": 0
+    },
+    {
+      "id": "vision-code-table",
+      "source": "original.html",
+      "exit": 1
+    },
+    {
+      "id": "vision-code-empty-state",
+      "source": "reference.html",
+      "exit": 0
+    },
+    {
+      "id": "vision-code-empty-state",
+      "source": "original.html",
+      "exit": 1
+    }
+  ],
+  "screenshots": {
+    "cards/target.png": "ae1165dce8eecc05ff994230e5081e165ac8914be44fc28743b6294deae3f7be",
+    "navigation/target.png": "b73b50b8b315c91316773b2110bbf8e5012e0da5adca804a55f9f4fa9b09495f",
+    "form/target.png": "a0ea6429f3369b1d4b068d2bbc1b47a3c12e084b3f5fd0a361bd880f3c22a723",
+    "table/target.png": "ea44f6b28590d4400492ade756772cc00145be583b2d2a793f219159e6195ef8",
+    "empty-state/target.png": "5b50f581503adac2a85aa5a5c81e906c62b1912d16d0c602951ba43a9c56e978"
+  },
+  "browser_validation": "All reference pages pass; all original pages fail; Chromium 141.0.7390.37"
+}

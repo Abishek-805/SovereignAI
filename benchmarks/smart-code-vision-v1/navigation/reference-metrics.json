@@ -1,0 +1,72 @@
+{
+  "text": "Orbit library\nBooks\nCollections\nSaved\nYour collections\n\nArrange the books that matter to you.",
+  "labels": [],
+  "items": [
+    {
+      "id": "nav",
+      "tag": "NAV",
+      "x": 48,
+      "y": 48,
+      "width": 864,
+      "height": 60,
+      "background": "rgba(0, 0, 0, 0)",
+      "color": "rgb(32, 51, 68)",
+      "borderRadius": "0px"
+    },
+    {
+      "id": "brand",
+      "tag": "STRONG",
+      "x": 48,
+      "y": 58.5,
+      "width": 91.578125,
+      "height": 18,
+      "background": "rgba(0, 0, 0, 0)",
+      "color": "rgb(32, 51, 68)",
+      "borderRadius": "0px"
+    },
+    {
+      "id": "tabs",
+      "tag": "DIV",
+      "x": 639.9375,
+      "y": 48,
+      "width": 272.0625,
+      "height": 39,
+      "background": "rgba(0, 0, 0, 0)",
+      "color": "rgb(32, 51, 68)",
+      "borderRadius": "0px"
+    },
+    {
+      "id": "books",
+      "tag": "BUTTON",
+      "x": 639.9375,
+      "y": 48,
+      "width": 73.0625,
+      "height": 39,
+      "background": "rgba(0, 0, 0, 0)",
+      "color": "rgb(0, 0, 0)",
+      "borderRadius": "6px"
+    },
+    {
+      "id": "active",
+      "tag": "BUTTON",
+      "x": 725,
+      "y": 48,
+      "width": 101.203125,
+      "height": 39,
+      "background": "rgb(23, 62, 102)",
+      "color": "rgb(255, 255, 255)",
+      "borderRadius": "6px"
+    },
+    {
+      "id": "saved",
+      "tag": "BUTTON",
+      "x": 838.203125,
+      "y": 48,
+      "width": 73.796875,
+      "height": 39,
+      "background": "rgba(0, 0, 0, 0)",
+      "color": "rgb(0, 0, 0)",
+      "borderRadius": "6px"
+    }
+  ]
+}

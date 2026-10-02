@@ -1,0 +1,368 @@
+{
+  "version": 1,
+  "kind": "independently_authored_supplemental_vision_code",
+  "independent_held_out": false,
+  "sources": [],
+  "cases": [
+    {
+      "id": "vision-code-cards",
+      "category": "vision",
+      "request": "Restore the card layout, spacing and accent colors shown in the attached screenshot. Return the complete corrected index.html. Preserve the existing content and element IDs.",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "image": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "code_generation"
+        ],
+        "workflow": [
+          "CODE",
+          "code_generation"
+        ],
+        "worker": [
+          "vision",
+          "code"
+        ],
+        "stage_order": [
+          "vision",
+          "code"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {
+        "kind": "trusted_tests",
+        "trusted_files": {
+          "verify.py": "from html.parser import HTMLParser\nfrom pathlib import Path\nimport re\nclass Parser(HTMLParser):\n    def __init__(self):\n        super().__init__(); self.elements=[]; self.text=[]; self.labels=[]\n    def handle_starttag(self,tag,attrs):\n        a=dict(attrs)\n        if 'id' in a:self.elements.append((tag,a['id']))\n        if tag=='label':self.labels.append(a.get('for'))\n    def handle_data(self,data):\n        if data.strip():self.text.append(data.strip())\np=Parser(); source=Path('index.html').read_text(encoding='utf-8'); p.feed(source)\nEXPECTED_ELEMENTS = [('div', 'cards'), ('article', 'a'), ('article', 'b'), ('article', 'c')]\nassert p.elements==EXPECTED_ELEMENTS, 'preserve original element IDs and tags'\nids={value for tag,value in p.elements}\nassert all(value in ids for value in p.labels), 'labels must reference inputs'\ncss=re.sub(r'\\s+','',source.lower())\nfor declaration in ['display:grid', 'grid-template-columns:repeat(3,1fr)', 'gap:20px']:\n    assert re.sub(r'\\s+', '', declaration) in css, 'missing required layout/style declaration: '+declaration\nprint('PASS narrow structure/style assertions; visual review still required')\n"
+        },
+        "command": [
+          "python",
+          "verify.py"
+        ],
+        "expected_exit_code": 0,
+        "semantic_review_required": true
+      },
+      "context": {
+        "active_file": "index.html",
+        "initial_files": {
+          "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>UI repair fixture</title><style>html{box-sizing:border-box}*,*:before,*:after{box-sizing:inherit}body{margin:0;padding:48px;background:#eef3f7;color:#203344;font:16px Arial,sans-serif}h1{font-size:28px;margin:0 0 28px}p{line-height:1.5}#cards{display:block}article{padding:6px;background:white;border-top:1px solid gray;margin:4px}</style></head><body><h1>Field notes</h1><div id=\"cards\"><article id=\"a\"><b>River survey</b><p>12 samples collected</p></article><article id=\"b\"><b>Forest census</b><p>8 plots mapped</p></article><article id=\"c\"><b>Coastal watch</b><p>4 stations online</p></article></div></body></html>"
+        },
+        "image_path": "cards/target.png",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "image_sha256": "ae1165dce8eecc05ff994230e5081e165ac8914be44fc28743b6294deae3f7be"
+      },
+      "modality": "image",
+      "sandbox_required": true,
+      "allowed_change_paths": [
+        "index.html"
+      ],
+      "expected_task_type": "VISION_ASSISTED_CODE",
+      "complexity": "simple",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "execution_supported": true,
+      "stage_order": [
+        "vision",
+        "code"
+      ],
+      "visual_oracle": {
+        "validator": "validate.mjs",
+        "reference": "cards/reference-metrics.json",
+        "original": "cards/original.html",
+        "scope": "supplemental browser geometry/style; not Docker pass evidence"
+      }
+    },
+    {
+      "id": "vision-code-navigation",
+      "category": "vision",
+      "request": "Fix the navigation alignment and selected tab styling to match the attached screenshot. Return the complete corrected index.html. Preserve the existing content and element IDs.",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "image": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "code_generation"
+        ],
+        "workflow": [
+          "CODE",
+          "code_generation"
+        ],
+        "worker": [
+          "vision",
+          "code"
+        ],
+        "stage_order": [
+          "vision",
+          "code"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {
+        "kind": "trusted_tests",
+        "trusted_files": {
+          "verify.py": "from html.parser import HTMLParser\nfrom pathlib import Path\nimport re\nclass Parser(HTMLParser):\n    def __init__(self):\n        super().__init__(); self.elements=[]; self.text=[]; self.labels=[]\n    def handle_starttag(self,tag,attrs):\n        a=dict(attrs)\n        if 'id' in a:self.elements.append((tag,a['id']))\n        if tag=='label':self.labels.append(a.get('for'))\n    def handle_data(self,data):\n        if data.strip():self.text.append(data.strip())\np=Parser(); source=Path('index.html').read_text(encoding='utf-8'); p.feed(source)\nEXPECTED_ELEMENTS = [('nav', 'nav'), ('strong', 'brand'), ('div', 'tabs'), ('button', 'books'), ('button', 'active'), ('button', 'saved')]\nassert p.elements==EXPECTED_ELEMENTS, 'preserve original element IDs and tags'\nids={value for tag,value in p.elements}\nassert all(value in ids for value in p.labels), 'labels must reference inputs'\ncss=re.sub(r'\\s+','',source.lower())\nfor declaration in ['display:flex', 'justify-content:space-between', 'background:#173e66']:\n    assert re.sub(r'\\s+', '', declaration) in css, 'missing required layout/style declaration: '+declaration\nprint('PASS narrow structure/style assertions; visual review still required')\n"
+        },
+        "command": [
+          "python",
+          "verify.py"
+        ],
+        "expected_exit_code": 0,
+        "semantic_review_required": true
+      },
+      "context": {
+        "active_file": "index.html",
+        "initial_files": {
+          "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>UI repair fixture</title><style>html{box-sizing:border-box}*,*:before,*:after{box-sizing:inherit}body{margin:0;padding:48px;background:#eef3f7;color:#203344;font:16px Arial,sans-serif}h1{font-size:28px;margin:0 0 28px}p{line-height:1.5}#nav{display:block}#tabs{display:block}button{padding:3px;border:1px solid gray;background:white}#active{color:#111}</style></head><body><nav id=\"nav\"><strong id=\"brand\">Orbit library</strong><div id=\"tabs\"><button id=\"books\">Books</button><button id=\"active\" aria-current=\"page\">Collections</button><button id=\"saved\">Saved</button></div></nav><h1>Your collections</h1><p>Arrange the books that matter to you.</p></body></html>"
+        },
+        "image_path": "navigation/target.png",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "image_sha256": "b73b50b8b315c91316773b2110bbf8e5012e0da5adca804a55f9f4fa9b09495f"
+      },
+      "modality": "image",
+      "sandbox_required": true,
+      "allowed_change_paths": [
+        "index.html"
+      ],
+      "expected_task_type": "VISION_ASSISTED_CODE",
+      "complexity": "simple",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "execution_supported": true,
+      "stage_order": [
+        "vision",
+        "code"
+      ],
+      "visual_oracle": {
+        "validator": "validate.mjs",
+        "reference": "navigation/reference-metrics.json",
+        "original": "navigation/original.html",
+        "scope": "supplemental browser geometry/style; not Docker pass evidence"
+      }
+    },
+    {
+      "id": "vision-code-form",
+      "category": "vision",
+      "request": "Repair the form field arrangement and submit button shown in the reference screenshot. Keep labels associated with inputs. Return the complete corrected index.html. Preserve the existing content and element IDs.",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "image": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "code_generation"
+        ],
+        "workflow": [
+          "CODE",
+          "code_generation"
+        ],
+        "worker": [
+          "vision",
+          "code"
+        ],
+        "stage_order": [
+          "vision",
+          "code"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {
+        "kind": "trusted_tests",
+        "trusted_files": {
+          "verify.py": "from html.parser import HTMLParser\nfrom pathlib import Path\nimport re\nclass Parser(HTMLParser):\n    def __init__(self):\n        super().__init__(); self.elements=[]; self.text=[]; self.labels=[]\n    def handle_starttag(self,tag,attrs):\n        a=dict(attrs)\n        if 'id' in a:self.elements.append((tag,a['id']))\n        if tag=='label':self.labels.append(a.get('for'))\n    def handle_data(self,data):\n        if data.strip():self.text.append(data.strip())\np=Parser(); source=Path('index.html').read_text(encoding='utf-8'); p.feed(source)\nEXPECTED_ELEMENTS = [('form', 'form'), ('label', 'name-label'), ('input', 'name'), ('label', 'email-label'), ('input', 'email'), ('label', 'date-label'), ('input', 'date'), ('label', 'guests-label'), ('input', 'guests'), ('button', 'submit')]\nassert p.elements==EXPECTED_ELEMENTS, 'preserve original element IDs and tags'\nids={value for tag,value in p.elements}\nassert all(value in ids for value in p.labels), 'labels must reference inputs'\ncss=re.sub(r'\\s+','',source.lower())\nfor declaration in ['display:grid', 'grid-template-columns:1fr 1fr', 'grid-column:1/-1']:\n    assert re.sub(r'\\s+', '', declaration) in css, 'missing required layout/style declaration: '+declaration\nprint('PASS narrow structure/style assertions; visual review still required')\n"
+        },
+        "command": [
+          "python",
+          "verify.py"
+        ],
+        "expected_exit_code": 0,
+        "semantic_review_required": true
+      },
+      "context": {
+        "active_file": "index.html",
+        "initial_files": {
+          "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>UI repair fixture</title><style>html{box-sizing:border-box}*,*:before,*:after{box-sizing:inherit}body{margin:0;padding:48px;background:#eef3f7;color:#203344;font:16px Arial,sans-serif}h1{font-size:28px;margin:0 0 28px}p{line-height:1.5}#form{display:block;width:320px}label{display:block}input{width:120px}#submit{padding:2px;background:white}</style></head><body><h1>Reserve a desk</h1><form id=\"form\"><label id=\"name-label\" for=\"name\">Full name<input id=\"name\" value=\"Mira Shah\"></label><label id=\"email-label\" for=\"email\">Email<input id=\"email\" value=\"mira@example.test\"></label><label id=\"date-label\" for=\"date\">Date<input id=\"date\" type=\"date\" value=\"2026-10-05\"></label><label id=\"guests-label\" for=\"guests\">Guests<input id=\"guests\" type=\"number\" value=\"2\"></label><button id=\"submit\" type=\"submit\">Confirm reservation</button></form></body></html>"
+        },
+        "image_path": "form/target.png",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "image_sha256": "a0ea6429f3369b1d4b068d2bbc1b47a3c12e084b3f5fd0a361bd880f3c22a723"
+      },
+      "modality": "image",
+      "sandbox_required": true,
+      "allowed_change_paths": [
+        "index.html"
+      ],
+      "expected_task_type": "VISION_ASSISTED_CODE",
+      "complexity": "simple",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "execution_supported": true,
+      "stage_order": [
+        "vision",
+        "code"
+      ],
+      "visual_oracle": {
+        "validator": "validate.mjs",
+        "reference": "form/reference-metrics.json",
+        "original": "form/original.html",
+        "scope": "supplemental browser geometry/style; not Docker pass evidence"
+      }
+    },
+    {
+      "id": "vision-code-table",
+      "category": "vision",
+      "request": "Fix the shipment table column sizing, row spacing and delivered status badges to match the attached screenshot. Return the complete corrected index.html. Preserve the existing content and element IDs.",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "image": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "code_generation"
+        ],
+        "workflow": [
+          "CODE",
+          "code_generation"
+        ],
+        "worker": [
+          "vision",
+          "code"
+        ],
+        "stage_order": [
+          "vision",
+          "code"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {
+        "kind": "trusted_tests",
+        "trusted_files": {
+          "verify.py": "from html.parser import HTMLParser\nfrom pathlib import Path\nimport re\nclass Parser(HTMLParser):\n    def __init__(self):\n        super().__init__(); self.elements=[]; self.text=[]; self.labels=[]\n    def handle_starttag(self,tag,attrs):\n        a=dict(attrs)\n        if 'id' in a:self.elements.append((tag,a['id']))\n        if tag=='label':self.labels.append(a.get('for'))\n    def handle_data(self,data):\n        if data.strip():self.text.append(data.strip())\np=Parser(); source=Path('index.html').read_text(encoding='utf-8'); p.feed(source)\nEXPECTED_ELEMENTS = [('table', 'table'), ('th', 'order'), ('th', 'destination'), ('th', 'status'), ('tr', 'row1'), ('span', 'badge1'), ('tr', 'row2'), ('span', 'badge2')]\nassert p.elements==EXPECTED_ELEMENTS, 'preserve original element IDs and tags'\nids={value for tag,value in p.elements}\nassert all(value in ids for value in p.labels), 'labels must reference inputs'\ncss=re.sub(r'\\s+','',source.lower())\nfor declaration in ['width:100%', 'text-align:left', 'background:#d8f1e5']:\n    assert re.sub(r'\\s+', '', declaration) in css, 'missing required layout/style declaration: '+declaration\nprint('PASS narrow structure/style assertions; visual review still required')\n"
+        },
+        "command": [
+          "python",
+          "verify.py"
+        ],
+        "expected_exit_code": 0,
+        "semantic_review_required": true
+      },
+      "context": {
+        "active_file": "index.html",
+        "initial_files": {
+          "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>UI repair fixture</title><style>html{box-sizing:border-box}*,*:before,*:after{box-sizing:inherit}body{margin:0;padding:48px;background:#eef3f7;color:#203344;font:16px Arial,sans-serif}h1{font-size:28px;margin:0 0 28px}p{line-height:1.5}table{width:240px;border-collapse:collapse}th,td{padding:2px;text-align:center}span{background:#f2dddd;color:#a22}</style></head><body><h1>Recent shipments</h1><table id=\"table\"><thead><tr><th id=\"order\">Order</th><th id=\"destination\">Destination</th><th id=\"status\">Status</th></tr></thead><tbody><tr id=\"row1\"><td>PK-1042</td><td>Jaipur</td><td><span id=\"badge1\">Delivered</span></td></tr><tr id=\"row2\"><td>PK-1043</td><td>Kochi</td><td><span id=\"badge2\">Delivered</span></td></tr></tbody></table></body></html>"
+        },
+        "image_path": "table/target.png",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "image_sha256": "ea44f6b28590d4400492ade756772cc00145be583b2d2a793f219159e6195ef8"
+      },
+      "modality": "image",
+      "sandbox_required": true,
+      "allowed_change_paths": [
+        "index.html"
+      ],
+      "expected_task_type": "VISION_ASSISTED_CODE",
+      "complexity": "simple",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "execution_supported": true,
+      "stage_order": [
+        "vision",
+        "code"
+      ],
+      "visual_oracle": {
+        "validator": "validate.mjs",
+        "reference": "table/reference-metrics.json",
+        "original": "table/original.html",
+        "scope": "supplemental browser geometry/style; not Docker pass evidence"
+      }
+    },
+    {
+      "id": "vision-code-empty-state",
+      "category": "vision",
+      "request": "Match the attached empty state screenshot by correcting the panel width, centered content, icon circle and action button. Return the complete corrected index.html. Preserve the existing content and element IDs.",
+      "history": [],
+      "documents": false,
+      "workspace": true,
+      "image": true,
+      "expected": {
+        "intent": [
+          "CODE",
+          "code_generation"
+        ],
+        "workflow": [
+          "CODE",
+          "code_generation"
+        ],
+        "worker": [
+          "vision",
+          "code"
+        ],
+        "stage_order": [
+          "vision",
+          "code"
+        ],
+        "tools": null,
+        "achieved": null
+      },
+      "oracle": {
+        "kind": "trusted_tests",
+        "trusted_files": {
+          "verify.py": "from html.parser import HTMLParser\nfrom pathlib import Path\nimport re\nclass Parser(HTMLParser):\n    def __init__(self):\n        super().__init__(); self.elements=[]; self.text=[]; self.labels=[]\n    def handle_starttag(self,tag,attrs):\n        a=dict(attrs)\n        if 'id' in a:self.elements.append((tag,a['id']))\n        if tag=='label':self.labels.append(a.get('for'))\n    def handle_data(self,data):\n        if data.strip():self.text.append(data.strip())\np=Parser(); source=Path('index.html').read_text(encoding='utf-8'); p.feed(source)\nEXPECTED_ELEMENTS = [('section', 'panel'), ('div', 'icon'), ('h1', 'title'), ('p', 'description'), ('button', 'create')]\nassert p.elements==EXPECTED_ELEMENTS, 'preserve original element IDs and tags'\nids={value for tag,value in p.elements}\nassert all(value in ids for value in p.labels), 'labels must reference inputs'\ncss=re.sub(r'\\s+','',source.lower())\nfor declaration in ['width:560px', 'text-align:center', 'border-radius:50%']:\n    assert re.sub(r'\\s+', '', declaration) in css, 'missing required layout/style declaration: '+declaration\nprint('PASS narrow structure/style assertions; visual review still required')\n"
+        },
+        "command": [
+          "python",
+          "verify.py"
+        ],
+        "expected_exit_code": 0,
+        "semantic_review_required": true
+      },
+      "context": {
+        "active_file": "index.html",
+        "initial_files": {
+          "index.html": "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>UI repair fixture</title><style>html{box-sizing:border-box}*,*:before,*:after{box-sizing:inherit}body{margin:0;padding:48px;background:#eef3f7;color:#203344;font:16px Arial,sans-serif}h1{font-size:28px;margin:0 0 28px}p{line-height:1.5}#panel{width:280px;background:white;padding:8px;text-align:left}#icon{font-size:16px}#create{background:white;padding:2px}</style></head><body><section id=\"panel\"><div id=\"icon\" aria-hidden=\"true\">+</div><h1 id=\"title\">No notebooks yet</h1><p id=\"description\">Capture your first idea in a fresh notebook.</p><button id=\"create\">Create notebook</button></section></body></html>"
+        },
+        "image_path": "empty-state/target.png",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "image_sha256": "5b50f581503adac2a85aa5a5c81e906c62b1912d16d0c602951ba43a9c56e978"
+      },
+      "modality": "image",
+      "sandbox_required": true,
+      "allowed_change_paths": [
+        "index.html"
+      ],
+      "expected_task_type": "VISION_ASSISTED_CODE",
+      "complexity": "simple",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "execution_supported": true,
+      "stage_order": [
+        "vision",
+        "code"
+      ],
+      "visual_oracle": {
+        "validator": "validate.mjs",
+        "reference": "empty-state/reference-metrics.json",
+        "original": "empty-state/original.html",
+        "scope": "supplemental browser geometry/style; not Docker pass evidence"
+      }
+    }
+  ]
+}

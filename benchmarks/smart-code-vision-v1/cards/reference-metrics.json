@@ -1,0 +1,50 @@
+{
+  "text": "Field notes\nRiver survey\n\n12 samples collected\n\nForest census\n\n8 plots mapped\n\nCoastal watch\n\n4 stations online",
+  "labels": [],
+  "items": [
+    {
+      "id": "cards",
+      "tag": "DIV",
+      "x": 48,
+      "y": 108,
+      "width": 864,
+      "height": 128,
+      "background": "rgba(0, 0, 0, 0)",
+      "color": "rgb(32, 51, 68)",
+      "borderRadius": "0px"
+    },
+    {
+      "id": "a",
+      "tag": "ARTICLE",
+      "x": 48,
+      "y": 108,
+      "width": 274.65625,
+      "height": 128,
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(32, 51, 68)",
+      "borderRadius": "8px"
+    },
+    {
+      "id": "b",
+      "tag": "ARTICLE",
+      "x": 342.65625,
+      "y": 108,
+      "width": 274.671875,
+      "height": 128,
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(32, 51, 68)",
+      "borderRadius": "8px"
+    },
+    {
+      "id": "c",
+      "tag": "ARTICLE",
+      "x": 637.328125,
+      "y": 108,
+      "width": 274.65625,
+      "height": 128,
+      "background": "rgb(255, 255, 255)",
+      "color": "rgb(32, 51, 68)",
+      "borderRadius": "8px"
+    }
+  ]
+}

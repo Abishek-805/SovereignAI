@@ -29,7 +29,7 @@ def explicit_operation_requested(goal, operation):
     text=re.sub(r"\b(?:do\s+not|don't|don’t|without|never|no)\b[^.;,\n]*",'',text,flags=re.I)
     verbs={
         'project_create':r'create|make|build|start', 'project_delete':r'delete|remove',
-        'file_edit':r'create|write|generate|modify|edit|change|fix|repair|solve|update|replace|implement|add|make',
+        'file_edit':r'create|write|generate|modify|edit|change|fix|repair|solve|update|replace|implement|add|make|rename|refactor|debug|restore',
         'document_create':r'create|crate|write|add|make', 'document_update':r'update|modify|edit|change|rewrite|expand|details?|add|make', 'document_import':r'import|upload|add',
         'document_rename':r'rename', 'document_move':r'move', 'document_copy':r'copy|duplicate',
         'document_delete':r'delete|remove', 'file_delete':r'delete|remove',
@@ -53,9 +53,13 @@ def explicit_operation_requested(goal, operation):
         return False
     if operation=='file_edit' and re.search(r'\b(?:want|need|put)\b.{0,80}\b(?:codes?|programs?|scripts?)\b',text,re.I):
         return re.search(r'\b(?:explain|describe|review|read)\b',text,re.I) is None
-    if operation not in {'automation_list','document_duplicates'} and re.match(r'\s*(?:read|explain|describe|tell|show)\b',text,re.I):
+    explanatory_prefix = re.match(
+        r'\s*(?:please\s+)?(?:(?:read|explain|describe|tell|show)\b|'
+        r'(?:can|could|would|will)\s+you\s+(?:please\s+)?(?:read|explain|describe|tell|show)\b|'
+        r'how\s+(?:(?:can|could|do|should|would|will)\s+(?:i|we|you|one|someone)\b|to\b))',text,re.I)
+    if operation not in {'automation_list','document_duplicates'} and explanatory_prefix:
         # An explanatory question mentioning an operation is not its invocation.
-        if not re.search(r'\b(?:and|then)\s+(?:please\s+)?(?:'+verbs.get(operation,r'(?!)')+r')\b',text,re.I):return False
+        if not re.search(r'\b(?:and|then)\s+(?:then\s+)?(?:please\s+)?(?:'+verbs.get(operation,r'(?!)')+r')\b',text,re.I):return False
     return operation in verbs and re.search(r'\b(?:'+verbs[operation]+r')\b',text,re.I) is not None
 
 @dataclass(frozen=True)

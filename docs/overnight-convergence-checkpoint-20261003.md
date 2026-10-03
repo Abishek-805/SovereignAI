@@ -29,4 +29,8 @@ Status: **IN PROGRESS. No production candidate selected.** This record is separa
 
 Current gate: **step 1 not complete**. No new model, runner, router or production code was installed or changed in this checkpoint.
 
+## 2026-10-04 first continuation
+
+A separate [run-project feasibility probe](../benchmarks/overnight-convergence/run-project-probe.py) now has ten small repository fixtures. It made no model calls and ran generated fixture programs only through the existing verified Docker sandbox. Eight entries were selected and executed: five returned expected success output and three returned their expected real Python/Node/Java errors. A Vite fixture with absent offline dependencies was reported `BLOCKED_DEPENDENCY`; a project with two plausible Python entry points was reported `NEEDS_INPUT`. The [raw results](../benchmarks/overnight-convergence/run-project-probe-results.json) include selected entry, bounded stdout/stderr, exit code, elapsed time, Docker execution flag, fixture hash and image identity. This validates only the tool-first entry selection and sandbox path; it does **not** establish that the agent understands or repairs these projects. The fixture set is a pilot and does not yet satisfy the new 100-task benchmark gate.
+
 An hourly thread heartbeat named `SovereignAI overnight convergence` has been created to resume the work from this checkpoint. It should stay quiet during ordinary progress and notify only on completion, material failure or needed user action. The heartbeat is continuity, not evidence that the experiments have finished.

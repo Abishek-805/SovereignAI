@@ -1,0 +1,55 @@
+"""Assemble an evidence-linked diagnostic report without changing production."""
+import json,hashlib,collections
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[1];OUT=ROOT/'benchmarks/code-fidelity-repair'
+p=json.loads((OUT/'results.json').read_text());a=json.loads((OUT/'analysis.json').read_text());tasks={c['id']:c for c in json.loads((OUT/'tasks.json').read_text())['cases']}
+rows=p['rows'];by={(r['case_id'],r['arm']):r for r in rows}
+lines=['# Code Fidelity & Repair — Phase C, 2026-10-03','',
+'Production remains frozen. All 60 scheduled executions finished: 20 new contracts × three arms. No old benchmark or held-out data was modified. This small diagnostic does not establish overall architectural superiority.','',
+'## Design and evidence','',
+'A skips Qwen planning and uses the existing Coder workflow. B forces the existing Qwen3.5 plan → Coder path. C uses the unchanged Smart Router. The common Coder operation planner, tools, project inputs, private Docker oracle and existing bounded repair policy are identical. Direct does not mean a newly invented one-call generator. Arm order rotates; model residency carries over. Twenty distinct behaviors share a two-file service skeleton, so this is not a broad application-engineering benchmark. No extra retries were added.','',
+'The private oracle was authored independently of the evaluated models and never supplied to them. Twenty positive reference implementations passed Docker checks; twenty initial stubs failed. The corrected offline component observer also passed all twenty positive controls. These finite tests do not prove every possible behavior.','',
+'Full raw executions are in `benchmarks/code-fidelity-repair/raw/`. `results.json` preserves raw statuses; `evidence-index.json` maps all 17 requested fields. Empty candidate/Docker fields mean the operation stopped before that stage, never a pass. `analysis.json` supplies clustered paired analysis.','',
+'## Results','', '| Arm | Passed | Operational failures | Median task seconds | Model calls | Switches | Verified repair recoveries |','|---|---:|---:|---:|---:|---:|---:|']
+for arm in 'ABC':
+ s=a['summary'][arm];lines.append(f"| {arm} | {s['pass']}/20 | {s['fail']} | {s['latency_median']:.2f} | {s['model_calls']} | {s['switches']} | {s['independently_verified_recoveries']} |")
+lines+=['','Raw NOT_VERIFIED with a known operation error is counted as an operational failure, not an independently tested candidate failure. One C execution (histogram) failed model startup, with zero model calls; this is TOOL / runtime availability, not demonstrated routing or generation failure.','',
+'B gained paths, pagination and statistics relative to A, but lost escaping and polynomial. Transitions passed all arms. B and C have identical task-level pass/fail outcomes. The paired planning advantage is +5 percentage points, exploratory task-bootstrap 95% interval −15 to +25 points, discordant exact p=1. This does not demonstrate a reliable planning benefit. Median paired added latency is 28.00 seconds for B and 29.08 seconds for C.','',
+'| Contract | A | B | C |','|---|---|---|---|']
+for name in tasks:
+ lines.append('| '+name+' | '+' | '.join(by[name,arm]['status'] for arm in 'ABC')+' |')
+lines+=['','## Answer-bound failure review','',
+'Every captured source handoff retains the original request. Literal requirement loss in transport is not established. Qwen planning receives the request and file names/sizes, but not actual source interfaces. Coder receives source later. This weakens planning grounding; shorthand such as run() is not by itself proof of a lost signature. A richer handoff contract is a concrete candidate for a later isolated change, not a fix implemented here.','',
+'Ledger A uses isinstance(entry, int), which accepts bool contrary to the request, and service.run duplicates computation instead of delegating. Both failed checks persist after repair. Inventory candidates fail atomic/copy behavior. Versions A raises IndexError on a tested valid comparison and misses a required ValueError check. RLE B/C accept an invalid count. Several generated strings contain invalid escaping and never become executable Python. Repeated workspace paths are malformed plans; the existing tool correctly rejects them. These are PLAN or MODEL_GENERATION failures, not evidence that the tool or router is broken.','',
+'Histogram B initially omits compatibility_tag; repair restores that binding but remains behaviorally failing. No assembled candidate shows actual unrelated-file removal. Protected-file proposals do occur and are rejected: targeting a protected path, proposing changed bytes, and successfully saving/deleting a file are different events. No candidate was accepted into production. Lambda-bound compatibility_tag is a preserved callable, not an omitted symbol.','',
+'Offline per-statement replay found no previously passing ordinary oracle check turning into a failed check across saved completed repairs. This is limited evidence, not proof that repair preserves all behavior: some attempts never assemble, some replay executions have no check output, and finite tests are incomplete. The optional sample-mutation check in observer v1 failed because AST locations were absent; its index −1 records are excluded from regression conclusions. The corrected observer passes reference controls; candidate mutation claims must use the original trusted tests/source inspection.','',
+'## Per-execution classification and resource evidence','',
+'The following classifications are evidence tags, not mutually exclusive causal counts. ROUTER is not assigned without a demonstrated decision error. CONTEXT/HANDOFF risks are discussed above, not invented from a failed result. Runtime availability is classified TOOL with an environment subtype because Phase C has no ENVIRONMENT category.','',
+'| Case/arm | Classification | Exact boundary or trusted error | RAM MiB peak | VRAM MiB peak |','|---|---|---|---:|---:|']
+review=[]
+for r in rows:
+ item=next(x for x in a['review'] if x['case_id']==r['case_id'] and x['arm']==r['arm']);tags=list(item['failure_classes']);error=r['operational_result'].get('error') or {};msg=error.get('message','')
+ if 'fixture-protected' in msg:
+  tags=['PLAN']+(['REPAIR'] if len(r['fidelity_trace']['candidate_attempts'])>1 else [])
+ if error.get('code')=='model_unavailable':tags=['TOOL'];msg='Runtime availability: '+msg
+ if not msg:
+  msg=next((at.get('result',{}).get('stderr','') for at in r['fidelity_trace']['candidate_attempts'] if at.get('result',{}).get('stderr')),'Independent contract checks passed')
+ item['independent_review_tags']=tags;item['exact_review_basis']=msg;review.append(item)
+ m=r['measurements'];lines.append(f"| {r['case_id']}/{r['arm']} | {', '.join(tags) or 'PASS'} | {msg.replace('|','/')} | {m['peak_ram_mib']:.1f} | {m['peak_vram_mib']:.1f} |")
+lines+=['','Memory values are sampled runtime process/device peaks, not total machine RAM requirements; sequential sampling can miss brief peaks. Each task observed at most one llama-server process. No overlap of two model servers was observed.','',
+'## Switch analysis','',
+'B has 40 switches (Qwen then Coder per task). C has 39: the histogram startup failure stopped after one switch. A has one switch after that failed startup changed residency. Switching is necessary to execute the forced two-model path; that does not establish policy necessity. On three tasks planning is associated with a pass that A lacks; on two it is associated with losing A’s pass; on transitions it adds cost without changing the passing outcome; on fourteen tasks neither path passes. Association is not proof of causality, especially with a single execution per arm. There is no evidence justifying mandatory switching for every multi-file request.','',
+'## Smallest evidence-supported recommendations','',
+'1. Retain Coder direct as the low-cost baseline and a candidate default for validated classes; 3/20 means it is not sufficient generally.','2. Do not make Qwen→Coder mandatory. The three observed planning wins warrant replication on new contracts before defining a narrow production class.','3. Test a handoff contract containing exact public interfaces, protected paths, exception/output obligations and the untouched original request. Ground planning in actual source interfaces.','4. Test repair feedback with public requirement identifiers and preservation checks while keeping private test values hidden. Existing AssertionError-only feedback is too vague to locate many semantic defects; more retries are not supported.','5. Defer router retraining/redesign. Model output, malformed plans and repair fidelity need isolated experiments first. A new router cannot by itself correct an already selected Coder’s bool acceptance or invalid Python.','',
+'No production changes are implemented. These are proposed bounded experiments, not another agent/reviewer/controller.','',
+'## Latest pasted research proposal','',
+'The upstream mini-coder model card reports agent-trajectory training and SWE-bench results, making it a relevant challenger, not a demonstrated local replacement: https://huggingface.co/ricdomolm/mini-coder-1.7b . Granite is another published candidate: https://huggingface.co/ibm-granite/granite-4.2-3b . mini-SWE-agent and RoRF are separate scaffold/router experiments: https://github.com/SWE-agent/mini-swe-agent and https://github.com/Not-Diamond/RoRF . Their upstream claims do not validate SovereignAI.','',
+'A model experiment should hold the scaffold fixed; a scaffold experiment should hold the model fixed. Replacing model and loop together would confound attribution. Do not train a router on this diagnostic then report these same tasks as held-out performance. Production freeze and the explicit no-new-model instruction remain in force; no candidates were installed or registered.','',
+'## Observer incidents and preservation','',
+'A preflight ledger/A capture was lost to an observer decode error and is NOT_VERIFIED outside the final 60; it is not a recovery or pass. After 18 recorded rows, protected-path auditing rejected an already saved inventory/A raw artifact; it was recovered without a model rerun. Both observer versions and corrections are retained. The def-only symbol audit was corrected to include lambda assignments. Optional mutation observer v1 is retained and excluded as described above. These corrections changed observation only.','',
+f"Frozen production/historical hash changes: {a['freeze_changes']}. Raw benchmark evidence and historical hashes are preserved. No overall superiority claim is warranted."]
+(OUT/'independent-review.json').write_text(json.dumps(review,indent=2),encoding='utf-8')
+(ROOT/'docs/code-fidelity-repair-report-20261003.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
+manifest={str(f.relative_to(ROOT)):hashlib.sha256(f.read_bytes()).hexdigest() for f in OUT.rglob('*') if f.is_file() and f.name!='final-evidence-manifest.json'}
+(OUT/'final-evidence-manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8')
+print('Report and evidence manifest saved')

@@ -173,7 +173,7 @@ class TaskSupervisor:
         if self.on_change:self.on_change(self)
 
     def snapshot(self,completion=None,error=None):
-        return {'supervisor_id':self.id,'goal':self.goal,'context':self.context,
+        snapshot={'supervisor_id':self.id,'goal':self.goal,'context':self.context,
                 'created_at':self.created,'elapsed_seconds':round(time.monotonic()-self.started,3),
                 'limits':asdict(self.limits),'counts':dict(self.counts),
                 'task_state':{**json.loads(json.dumps(self.task_state)),
@@ -182,6 +182,10 @@ class TaskSupervisor:
                     'inference_call_count':self.counts['model_calls'],'event_count':self.event_count},
                 'events':list(self.events),'completion':completion,'outcome':completion['state'] if completion else 'running',
                 **({'error':{'code':getattr(error,'code','task_failed'),'message':str(error)}} if error else {})}
+        # Projection of this owner, never a second state store or transitioner.
+        from router.code_agent_state import CodeTaskView
+        snapshot['code_task_view']=CodeTaskView.from_snapshot(snapshot).to_dict()
+        return snapshot
 
 
 def consume(kind,identity=None):

@@ -1,0 +1,12 @@
+{
+  "reviews": [
+    {
+      "case_id": "explanation",
+      "status": "PASS",
+      "answer_sha256": "6a62d605c89991a32809ddb97d959c9b6b264aa2de4aa6b7fb0836a48f900d08",
+      "fixture_sha256": "81fe1b2f167bd40fd30a4e709fc2dce612741eb5a125bd1495cc63815a1907d1",
+      "reviewer": "independent source comparison agent",
+      "basis": "Compared with verify-hybrid-live.py:32 source score(values)=sum(values)/len(values) if values else0. Correct arithmetic mean and empty zero, relevant score.py, no mutation or unsupported execution claim. Exact corrected answer hash verified."
+    }
+  ]
+}

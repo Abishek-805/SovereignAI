@@ -29,6 +29,10 @@ Status: **IN PROGRESS. No production candidate selected.** This record is separa
 
 Current gate: **step 1 not complete**. No new model, runner, router or production code was installed or changed in this checkpoint.
 
+## 2026-10-04 code-fidelity authoring continuation
+
+Twenty independently written [Code Fidelity & Repair task drafts](../benchmarks/overnight-convergence/code-fidelity-tasks.json) now cover exception behavior, symbol preservation, multi-file behavior, repair regressions, follow-up turns, data integrity and real execution reporting. The file records the three intended comparison arms and the required per-task traces. These are specifications only: repository snapshots, hidden validation, Docker authoring controls and model runs remain to be built. They do not count as 20 validated benchmark cases or as evidence for an architecture change. The frozen historical and held-out datasets remain untouched.
+
 ## 2026-10-04 first continuation
 
 A separate [run-project feasibility probe](../benchmarks/overnight-convergence/run-project-probe.py) now has ten small repository fixtures. It made no model calls and ran generated fixture programs only through the existing verified Docker sandbox. Eight entries were selected and executed: five returned expected success output and three returned their expected real Python/Node/Java errors. A Vite fixture with absent offline dependencies was reported `BLOCKED_DEPENDENCY`; a project with two plausible Python entry points was reported `NEEDS_INPUT`. The [raw results](../benchmarks/overnight-convergence/run-project-probe-results.json) include selected entry, bounded stdout/stderr, exit code, elapsed time, Docker execution flag, fixture hash and image identity. This validates only the tool-first entry selection and sandbox path; it does **not** establish that the agent understands or repairs these projects. The fixture set is a pilot and does not yet satisfy the new 100-task benchmark gate.

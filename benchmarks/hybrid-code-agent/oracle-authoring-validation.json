@@ -1,0 +1,9 @@
+{
+  "purpose": "Offline oracle sanity only; not model evaluation",
+  "case_count": 100,
+  "contract_clusters": 25,
+  "reference_pass": 85,
+  "broken_baseline_fail": 85,
+  "rubric_only": 15,
+  "failures": []
+}

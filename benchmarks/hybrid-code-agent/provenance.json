@@ -1,0 +1,14 @@
+{
+  "datasets": [
+    {
+      "file": "main.json",
+      "case_count": 100,
+      "contract_clusters": 25,
+      "canonical_sha256": "c0e743f3b42b316183c2a4231e24939b4731ba8eb0023adacd815403f72358bb",
+      "file_sha256": "ffe85a54106089969263653d48347f1dad161a099b5ea11fb437955c1772dcde"
+    }
+  ],
+  "heldout_access": false,
+  "authoring_only_references": "References live only in author script; never model context.",
+  "vision_clusters_correlated": true
+}

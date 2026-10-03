@@ -1,0 +1,7 @@
+{
+  "revision": "89fb7fe9b4f654438d0efcb41c78329b1ab3c29d",
+  "sha256": {
+    "baseline-coding-workspace.py": "b77ecf799c0f25331ca4168796b207fe1c30f4023dad453d815b078421f0850a",
+    "baseline-service.py": "1a24cfc3fe35126378c307b8ebc913426ddd4011839be06ed98aed9047bf700b"
+  }
+}

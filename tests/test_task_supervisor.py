@@ -5,6 +5,18 @@ from backend.contracts import WorkbenchError
 from backend.task_supervisor import CURRENT_SUPERVISOR,SupervisorLimits,TaskSupervisor,consume,supervised_task
 from backend.task_supervisor import operational_event
 
+def test_terminal_outcome_hook_receives_actual_result_once(tmp_path):
+    observed=[]
+    class Service:
+        settings=SimpleNamespace(data_dir=tmp_path)
+        def _record_model_outcome(self,result,snapshot):observed.append((result,snapshot))
+        @supervised_task
+        def act(self,goal):return {'state':'completed','checks':{'container_executed':True,'tests_passed':True}}
+    Service().act('Fix the function')
+    assert len(observed)==1
+    assert observed[0][0]['checks']['tests_passed'] is True
+    assert observed[0][1]['completion']['state']!='running'
+
 
 def test_one_envelope_for_nested_workflows_preserves_scope(tmp_path):
     class Service:

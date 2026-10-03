@@ -38,7 +38,7 @@ def classify_coding_request(request, context=None):
     text=re.sub(r"\b(?:do not|don't|never|without)\b[^.;\n]*",' ',text)
     files=context.get('requested_files') or ()
     visual=bool(context.get('visual_input_present') or context.get('image'))
-    followup=bool(re.fullmatch(r'\s*(?:fix that|fix it|make it work|continue|now make the tests pass)[.!?\s]*',text))
+    followup=bool(re.fullmatch(r'\s*(?:fix that|fix it|try again|make it work|continue|(?:now )?make the tests pass)[.!?\s]*',text))
     multi=len(files)>1 or bool(re.search(r'\b(?:across|throughout)\b.*\b(?:project|repository|modules|files)\b|\bmulti[- ]file\b',text))
     features={'active_file_present':bool(context.get('active_file')),
         'workspace_available':bool(context.get('workspace_available') or context.get('workspace')),
@@ -75,7 +75,10 @@ def classify_coding_request(request, context=None):
     if task and task!='EXPLAIN' and not coding and not visual:task=None
     if visual:task='VISION_ASSISTED_CODE' if task and task!='EXPLAIN' else 'VISION_ASSISTED_CODE'
     if multi and not visual and task not in {None,'EXPLAIN','REVIEW'}:task='MULTI_FILE_CHANGE'
-    complex_task=bool(multi or re.search(r'\b(?:architecture|architectural|migration|redesign|distributed)\b',text)
+    mechanical_rename=bool(multi and len(files)>1 and re.search(r'\brename\b',text)
+        and not re.search(r'\b(?:refactor|implement|migration|architecture|architectural|redesign|distributed)\b',text))
+    features['mechanical_rename']=mechanical_rename
+    complex_task=bool((multi and not mechanical_rename) or re.search(r'\b(?:architecture|architectural|migration|redesign|distributed)\b',text)
         or (context.get('estimated_context_size') or 0)>12000)
     complexity='complex' if complex_task else 'simple'
     if task is None:

@@ -143,7 +143,8 @@ def test_failed_tests_do_not_commit(tmp_path):
     result = work.run(workspace_id, 'solution.py', 'Fix add', Model(*(
         'def add(a, b):\n    return 0\n' for _ in range(3)
     )), Sandbox(), TaskLedger(tmp_path))
-    assert result['state'] == 'failed' and result['attempts'] == 3
+    assert result['state'] == 'failed' and result['attempts'] == 2
+    assert result['repair_stop_reason'] == 'repeated_failure'
     assert result['checks']['target_committed'] is False
     assert work.read(workspace_id, 'solution.py')['content'].endswith('return 0\n')
 
@@ -201,7 +202,8 @@ def test_comment_only_candidate_cannot_pass_container_stub_and_stage(tmp_path):
                       Model(*(['<!-- implementation later -->'] * 3)),
                       PassingSandbox(), TaskLedger(tmp_path))
     assert result['state'] == 'failed'
-    assert result['attempts'] == 3
+    assert result['attempts'] == 2
+    assert result['repair_stop_reason'] == 'repeated_failure'
     assert 'markup' in result['stderr']
     assert not result.get('staged_files')
     assert work.read(wid, 'index.html')['content'] == '<p>Original</p>'

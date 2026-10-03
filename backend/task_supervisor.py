@@ -241,7 +241,7 @@ def supervised_task(function):
         from router.request_normalization import normalize_request
         supervisor.task_state['normalized_request']=normalize_request(goal).normalized
         history=context.get('reference_history',[])
-        follow_up=bool(re.fullmatch(r'\s*(?:fix that|continue|is (?:it|the task) done\??|make it work|use the other file|now show failures(?: instead)?)[.!?\s]*',goal,re.I))
+        follow_up=bool(re.fullmatch(r'\s*(?:fix that|fix it|try again|continue|(?:now )?make the tests pass|is (?:it|the task) done\??|make it work|use the other file|now show failures(?: instead)?)[.!?\s]*',goal,re.I))
         if follow_up:
             supervisor.task_state['follow_up_context']={'reference_history':history,'resolution':'conversation_context' if history else 'missing_context',
                                                       'workspace':context.get('workspace_id'),'knowledge_scope':context.get('document_ids')}
@@ -265,7 +265,7 @@ def supervised_task(function):
                 if len(matches)==1:
                     previous=matches[0]
                     supervisor.task_state['follow_up_context'].update(previous_task_id=previous['supervisor_id'],
-                        previous_completion=previous.get('completion'),previous_operational_state={key:value for key,value in (previous.get('task_state') or {}).items() if key!='follow_up_context'})
+                        previous_scope={key:previous.get('context',{}).get(key) for key in ('workspace_id','target')},previous_completion=previous.get('completion'),previous_operational_state={key:value for key,value in (previous.get('task_state') or {}).items() if key!='follow_up_context'})
         supervisor.on_change=lambda current:_persist(owner,current.snapshot())
         token=CURRENT_SUPERVISOR.set(supervisor)
         try:
@@ -280,6 +280,8 @@ def supervised_task(function):
             supervisor.finish(completion)
             snapshot=supervisor.snapshot(completion)
             _persist(owner,snapshot)
+            recorder=getattr(owner,'_record_model_outcome',None)
+            if callable(recorder):recorder(result,snapshot)
             if isinstance(result,dict):
                 result={**result,'completion':completion,'supervisor':snapshot}
                 decision=(result.get('routing') or {}).get('decision')
@@ -298,8 +300,11 @@ def supervised_task(function):
             # Persistence failure must not conceal the original workflow error.
             if supervisor.task_state['current_stage'] not in TERMINAL_STAGES:
                 supervisor.finish(completion,error)
-            try:_persist(owner,supervisor.snapshot(completion,error))
+            snapshot=supervisor.snapshot(completion,error)
+            try:_persist(owner,snapshot)
             except OSError:pass
+            recorder=getattr(owner,'_record_model_outcome',None)
+            if callable(recorder):recorder({'state':completion['state'],'error':snapshot.get('error')},snapshot)
             raise
         finally:CURRENT_SUPERVISOR.reset(token)
     return run

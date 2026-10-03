@@ -42,6 +42,7 @@ def test_simple_greeting_uses_one_inference_and_observed_completion(service,monk
 
 
 def test_two_distinct_docker_errors_repair_with_same_coder_task(service,monkeypatch):
+    monkeypatch.setattr(service.coding,'raw_files',lambda workspace:{})
     goal='Create program.py for reading measurements'
     leases=[];calls=[];task_ids=[];replans=[]
     monkeypatch.setattr(service,'_verified_coding_sandbox',lambda:SimpleNamespace(_ready=lambda:None))
@@ -78,6 +79,7 @@ def test_two_distinct_docker_errors_repair_with_same_coder_task(service,monkeypa
 
 
 def test_followup_retains_authoritative_workspace_and_conversation_context(service,monkeypatch):
+    monkeypatch.setattr(service.coding,'raw_files',lambda workspace:{})
     history=['user: Create program.py for this project','assistant: program.py has a missing input error']
     captured=[]
     monkeypatch.setattr(service,'_lease',lambda *args,**kwargs:'code')
@@ -94,6 +96,7 @@ def test_followup_retains_authoritative_workspace_and_conversation_context(servi
 
 
 def test_cancelled_coding_preserves_original_error_and_never_publishes(service,monkeypatch,tmp_path):
+    monkeypatch.setattr(service.coding,'raw_files',lambda workspace:{})
     canonical=tmp_path/'canonical.py';canonical.write_text('original',encoding='utf-8')
     job=Job('agent');published=[]
     monkeypatch.setattr(service,'_lease',lambda *args,**kwargs:'code')

@@ -18,6 +18,7 @@ def test_unavailable_validation_stops_before_code_generation(service,monkeypatch
 
 def test_ordinary_repairs_keep_coder_affinity(service,monkeypatch):
     leases=[]
+    monkeypatch.setattr(service.coding,'raw_files',lambda workspace:{})
     monkeypatch.setattr(service,'_lease',lambda capability,**kwargs:leases.append((capability,kwargs.get('worker_role'))) or 'code')
     monkeypatch.setattr(service,'_verified_coding_sandbox',lambda:SimpleNamespace(_ready=lambda:None))
     monkeypatch.setattr(service.model,'replan_code',lambda *args:'repair proposal',raising=False)
@@ -33,6 +34,7 @@ def test_ordinary_repairs_keep_coder_affinity(service,monkeypatch):
 @pytest.mark.parametrize('repeat_error,expected_attempts',[(False,3),(True,2)])
 def test_supervisor_retries_actual_validation_without_publishing(service,monkeypatch,repeat_error,expected_attempts):
     calls=[]
+    monkeypatch.setattr(service.coding,'raw_files',lambda workspace:{})
     monkeypatch.setattr(service,'_verified_coding_sandbox',lambda:SimpleNamespace(_ready=lambda:None))
     def run(workspace,target,instruction,*args,**kwargs):
         calls.append((workspace,instruction,kwargs['history']))

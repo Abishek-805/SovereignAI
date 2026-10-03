@@ -1,0 +1,4625 @@
+{
+  "schema_version": 1,
+  "authored_at": "2026-10-03",
+  "author": "independent V2 fixture author agent",
+  "authorship_scope": "New development contracts authored offline before V2 runtime tuning. No old benchmark output or old heldout.json was opened. Initial schema inspection of the old authoring script exposed its embedded legacy contract definitions; these V2 contracts were newly authored and no old output informed them.",
+  "frozen": true,
+  "cases": [
+    {
+      "id": "v2-main-001",
+      "contract_id": "adjacent_deltas",
+      "category": "explain",
+      "request": "Explain the current behavior of adjacent_deltas, including input handling and one concrete example. Do not edit files.",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def adjacent_deltas(values):\n    return [b-a for a,b in zip(values,values[1:])]\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Return each next-minus-current difference; fewer than two values returns [].",
+          "Describe actual implementation behavior, not merely a proposed implementation."
+        ],
+        "forbidden_claims": [
+          "Files were changed."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-002",
+      "contract_id": "partition_sign",
+      "category": "explain",
+      "request": "Explain the current behavior of partition_sign, including input handling and one concrete example. Do not edit files.",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def partition_sign(values):\n    return ([v for v in values if v<0],[v for v in values if v==0],[v for v in values if v>0])\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Return three lists of negative, zero, positive values, preserving order.",
+          "Describe actual implementation behavior, not merely a proposed implementation."
+        ],
+        "forbidden_claims": [
+          "Files were changed."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-003",
+      "contract_id": "last_positions",
+      "category": "explain",
+      "request": "Explain the current behavior of last_positions, including input handling and one concrete example. Do not edit files.",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def last_positions(values):\n    return {v:i for i,v in enumerate(values)}\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Map each hashable value to its last zero-based position.",
+          "Describe actual implementation behavior, not merely a proposed implementation."
+        ],
+        "forbidden_claims": [
+          "Files were changed."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-004",
+      "contract_id": "consecutive_groups",
+      "category": "explain",
+      "request": "Explain the current behavior of consecutive_groups, including input handling and one concrete example. Do not edit files.",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def consecutive_groups(values):\n    import itertools\n    return [list(g) for _,g in itertools.groupby(values)]\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Return lists grouping equal adjacent items; nonadjacent equal items stay separate.",
+          "Describe actual implementation behavior, not merely a proposed implementation."
+        ],
+        "forbidden_claims": [
+          "Files were changed."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-005",
+      "contract_id": "weighted_mean",
+      "category": "explain",
+      "request": "Explain the current behavior of weighted_mean, including input handling and one concrete example. Do not edit files.",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def weighted_mean(values, weights):\n    if len(values)!=len(weights) or sum(weights)==0: raise ValueError\n    return sum(v*w for v,w in zip(values,weights))/sum(weights)\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Return weighted mean; lengths differ or total weight is zero raises ValueError.",
+          "Describe actual implementation behavior, not merely a proposed implementation."
+        ],
+        "forbidden_claims": [
+          "Files were changed."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-006",
+      "contract_id": "cartesian_pairs",
+      "category": "explain",
+      "request": "Explain the current behavior of cartesian_pairs, including input handling and one concrete example. Do not edit files.",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def cartesian_pairs(left, right):\n    return [(a,b) for a in left for b in right]\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Return ordered Cartesian pairs, left outermost; preserve inputs.",
+          "Describe actual implementation behavior, not merely a proposed implementation."
+        ],
+        "forbidden_claims": [
+          "Files were changed."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-007",
+      "contract_id": "pad_to",
+      "category": "explain",
+      "request": "Explain the current behavior of pad_to, including input handling and one concrete example. Do not edit files.",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def pad_to(values, size, fill):\n    return list(values)+[fill]*max(0,size-len(values))\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Return a copy padded on the right to size; never truncate a longer input.",
+          "Describe actual implementation behavior, not merely a proposed implementation."
+        ],
+        "forbidden_claims": [
+          "Files were changed."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-008",
+      "contract_id": "drop_every",
+      "category": "explain",
+      "request": "Explain the current behavior of drop_every, including input handling and one concrete example. Do not edit files.",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def drop_every(values, n):\n    if n<=0: raise ValueError\n    return [v for i,v in enumerate(values,1) if i%n]\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Remove each nth item counting from one; n<=0 raises ValueError.",
+          "Describe actual implementation behavior, not merely a proposed implementation."
+        ],
+        "forbidden_claims": [
+          "Files were changed."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-009",
+      "contract_id": "longest_word",
+      "category": "explain",
+      "request": "Explain the current behavior of longest_word, including input handling and one concrete example. Do not edit files.",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def longest_word(text):\n    words=text.split()\n    return max(words,key=len) if words else None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Return first longest whitespace-separated word; empty text returns None.",
+          "Describe actual implementation behavior, not merely a proposed implementation."
+        ],
+        "forbidden_claims": [
+          "Files were changed."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-010",
+      "contract_id": "strip_prefix_once",
+      "category": "explain",
+      "request": "Explain the current behavior of strip_prefix_once, including input handling and one concrete example. Do not edit files.",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def strip_prefix_once(text, prefix):\n    return text[len(prefix):] if text.startswith(prefix) else text\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Remove prefix exactly once if present; otherwise preserve text.",
+          "Describe actual implementation behavior, not merely a proposed implementation."
+        ],
+        "forbidden_claims": [
+          "Files were changed."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-011",
+      "contract_id": "snake_to_camel",
+      "category": "explain",
+      "request": "Explain the current behavior of snake_to_camel, including input handling and one concrete example. Do not edit files.",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def snake_to_camel(text):\n    parts=[p for p in text.split(\"_\") if p]\n    return parts[0]+\"\".join(p[:1].upper()+p[1:] for p in parts[1:]) if parts else \"\"\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Convert underscore-separated words to lower camel case; skip empty segments.",
+          "Describe actual implementation behavior, not merely a proposed implementation."
+        ],
+        "forbidden_claims": [
+          "Files were changed."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-012",
+      "contract_id": "mask_tail",
+      "category": "explain",
+      "request": "Explain the current behavior of mask_tail, including input handling and one concrete example. Do not edit files.",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def mask_tail(text, keep):\n    keep=max(0,keep)\n    return \"*\"*max(0,len(text)-keep)+(text[-keep:] if keep else \"\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Mask all but final keep characters with *; keep<=0 masks everything.",
+          "Describe actual implementation behavior, not merely a proposed implementation."
+        ],
+        "forbidden_claims": [
+          "Files were changed."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-013",
+      "contract_id": "initials",
+      "category": "explain",
+      "request": "Explain the current behavior of initials, including input handling and one concrete example. Do not edit files.",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def initials(name):\n    return \"\".join(p[0].upper() for p in name.split())\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Return uppercase first characters of whitespace-separated words.",
+          "Describe actual implementation behavior, not merely a proposed implementation."
+        ],
+        "forbidden_claims": [
+          "Files were changed."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-014",
+      "contract_id": "line_numbers",
+      "category": "explain",
+      "request": "Explain the current behavior of line_numbers, including input handling and one concrete example. Do not edit files.",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def line_numbers(text):\n    return [f\"{i}: {line}\" for i,line in enumerate(text.splitlines(),1)]\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Prefix splitlines with one-based number and colon-space; return list of strings.",
+          "Describe actual implementation behavior, not merely a proposed implementation."
+        ],
+        "forbidden_claims": [
+          "Files were changed."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-015",
+      "contract_id": "character_positions",
+      "category": "explain",
+      "request": "Explain the current behavior of character_positions, including input handling and one concrete example. Do not edit files.",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def character_positions(text, character):\n    return [i for i,c in enumerate(text) if c==character]\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Return every zero-based position matching character exactly.",
+          "Describe actual implementation behavior, not merely a proposed implementation."
+        ],
+        "forbidden_claims": [
+          "Files were changed."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-016",
+      "contract_id": "escape_html",
+      "category": "explain",
+      "request": "Explain the current behavior of escape_html, including input handling and one concrete example. Do not edit files.",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def escape_html(text):\n    return text.replace(\"&\",\"&amp;\").replace(\"<\",\"&lt;\").replace(\">\",\"&gt;\").replace(chr(34),\"&quot;\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Escape &, <, > and double quotes in text, in that order.",
+          "Describe actual implementation behavior, not merely a proposed implementation."
+        ],
+        "forbidden_claims": [
+          "Files were changed."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-017",
+      "contract_id": "only_digits",
+      "category": "explain",
+      "request": "Explain the current behavior of only_digits, including input handling and one concrete example. Do not edit files.",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def only_digits(text):\n    return \"\".join(c for c in text if \"0\"<=c<=\"9\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Return ASCII digits from text, preserving order; exclude non-ASCII numerals.",
+          "Describe actual implementation behavior, not merely a proposed implementation."
+        ],
+        "forbidden_claims": [
+          "Files were changed."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-018",
+      "contract_id": "common_prefix",
+      "category": "explain",
+      "request": "Explain the current behavior of common_prefix, including input handling and one concrete example. Do not edit files.",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def common_prefix(strings):\n    if not strings: return \"\"\n    a=min(strings); b=max(strings)\n    i=0\n    while i<min(len(a),len(b)) and a[i]==b[i]: i+=1\n    return a[:i]\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Return longest common prefix of strings; empty collection returns empty string.",
+          "Describe actual implementation behavior, not merely a proposed implementation."
+        ],
+        "forbidden_claims": [
+          "Files were changed."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-019",
+      "contract_id": "reverse_words",
+      "category": "explain",
+      "request": "Explain the current behavior of reverse_words, including input handling and one concrete example. Do not edit files.",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def reverse_words(text):\n    return \" \".join(reversed(text.split()))\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Reverse whitespace-separated word order using single spaces.",
+          "Describe actual implementation behavior, not merely a proposed implementation."
+        ],
+        "forbidden_claims": [
+          "Files were changed."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-020",
+      "contract_id": "find_duplicate_keys",
+      "category": "explain",
+      "request": "Explain the current behavior of find_duplicate_keys, including input handling and one concrete example. Do not edit files.",
+      "expected_task_type": "EXPLAIN",
+      "expected_suitable_workers": [
+        "lightweight"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def find_duplicate_keys(pairs):\n    seen=set(); result=[]\n    for key,_ in pairs:\n     if key in seen and key not in result: result.append(key)\n     seen.add(key)\n    return result\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": false,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Return keys seen more than once, in first duplicate occurrence order.",
+          "Describe actual implementation behavior, not merely a proposed implementation."
+        ],
+        "forbidden_claims": [
+          "Files were changed."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "ANSWERED"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-021",
+      "contract_id": "drop_every",
+      "category": "edit",
+      "request": "Edit teh unfinished body of drop_every in solution.py; preserve its signature. Remove each nth item counting from one; n<=0 raises ValueError.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def drop_every(values, n):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import drop_every\nassert drop_every([1,2,3,4,5],2)==[1,3,5]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": true,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-022",
+      "contract_id": "longest_word",
+      "category": "edit",
+      "request": "Edit the unfinished body of longest_word in solution.py; preserve its signature. Return first longest whitespace-separated word; empty text returns None.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def longest_word(text):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import longest_word\nassert longest_word(\"cat bear wolf\")==\"bear\"\nassert longest_word(\" \") is None\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-023",
+      "contract_id": "strip_prefix_once",
+      "category": "edit",
+      "request": "Edit the unfinished body of strip_prefix_once in solution.py; preserve its signature. Remove prefix exactly once if present; otherwise preserve text.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def strip_prefix_once(text, prefix):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import strip_prefix_once\nassert strip_prefix_once(\"ababx\",\"ab\")==\"abx\"\nassert strip_prefix_once(\"x\",\"ab\")==\"x\"\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-024",
+      "contract_id": "snake_to_camel",
+      "category": "edit",
+      "request": "Edit the unfinished body of snake_to_camel in solution.py; preserve its signature. Convert underscore-separated words to lower camel case; skip empty segments.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def snake_to_camel(text):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import snake_to_camel\nassert snake_to_camel(\"account__display_name\")==\"accountDisplayName\"\nassert snake_to_camel(\"_\")==\"\"\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-025",
+      "contract_id": "mask_tail",
+      "category": "edit",
+      "request": "Edit teh unfinished body of mask_tail in solution.py; preserve its signature. Mask all but final keep characters with *; keep<=0 masks everything.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def mask_tail(text, keep):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import mask_tail\nassert mask_tail(\"123456\",2)==\"****56\"\nassert mask_tail(\"abc\",0)==\"***\"\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": true,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-026",
+      "contract_id": "initials",
+      "category": "edit",
+      "request": "Edit the unfinished body of initials in solution.py; preserve its signature. Return uppercase first characters of whitespace-separated words.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def initials(name):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import initials\nassert initials(\" ada  lovelace \")==\"AL\"\nassert initials(\"\")==\"\"\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-027",
+      "contract_id": "line_numbers",
+      "category": "edit",
+      "request": "Edit the unfinished body of line_numbers in solution.py; preserve its signature. Prefix splitlines with one-based number and colon-space; return list of strings.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def line_numbers(text):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import line_numbers\nassert line_numbers(\"a\\nb\")==[\"1: a\",\"2: b\"]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-028",
+      "contract_id": "character_positions",
+      "category": "edit",
+      "request": "Edit the unfinished body of character_positions in solution.py; preserve its signature. Return every zero-based position matching character exactly.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def character_positions(text, character):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import character_positions\nassert character_positions(\"banana\",\"a\")==[1,3,5]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-029",
+      "contract_id": "escape_html",
+      "category": "edit",
+      "request": "Edit the unfinished body of escape_html in solution.py; preserve its signature. Escape &, <, > and double quotes in text, in that order.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def escape_html(text):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import escape_html\nassert escape_html(\"<&>\")==\"&lt;&amp;&gt;\"\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-030",
+      "contract_id": "only_digits",
+      "category": "edit",
+      "request": "Edit the unfinished body of only_digits in solution.py; preserve its signature. Return ASCII digits from text, preserving order; exclude non-ASCII numerals.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def only_digits(text):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import only_digits\nassert only_digits(\"a1²2٣\")==\"12\"\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-031",
+      "contract_id": "common_prefix",
+      "category": "edit",
+      "request": "Edit the unfinished body of common_prefix in solution.py; preserve its signature. Return longest common prefix of strings; empty collection returns empty string.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def common_prefix(strings):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import common_prefix\nassert common_prefix([\"garden\",\"garlic\",\"garment\"])==\"gar\"\nassert common_prefix([])==\"\"\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-032",
+      "contract_id": "reverse_words",
+      "category": "edit",
+      "request": "Edit the unfinished body of reverse_words in solution.py; preserve its signature. Reverse whitespace-separated word order using single spaces.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def reverse_words(text):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import reverse_words\nassert reverse_words(\" a  b c \")==\"c b a\"\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-033",
+      "contract_id": "find_duplicate_keys",
+      "category": "edit",
+      "request": "Edit the unfinished body of find_duplicate_keys in solution.py; preserve its signature. Return keys seen more than once, in first duplicate occurrence order.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def find_duplicate_keys(pairs):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import find_duplicate_keys\nassert find_duplicate_keys([(\"a\",1),(\"b\",2),(\"b\",3),(\"a\",4)])==[\"b\",\"a\"]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-034",
+      "contract_id": "merge_defaults",
+      "category": "edit",
+      "request": "Edit the unfinished body of merge_defaults in solution.py; preserve its signature. Return new mapping with overrides replacing defaults; preserve both inputs.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def merge_defaults(defaults, overrides):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import merge_defaults\nd={\"a\":1}; assert merge_defaults(d,{\"a\":2,\"b\":3})=={\"a\":2,\"b\":3}; assert d=={\"a\":1}\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-035",
+      "contract_id": "select_keys",
+      "category": "edit",
+      "request": "Edit the unfinished body of select_keys in solution.py; preserve its signature. Return mapping entries requested by keys, skip missing keys, preserve requested order.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def select_keys(mapping, keys):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import select_keys\nassert list(select_keys({\"a\":1,\"b\":2},[\"b\",\"x\",\"a\"]))==[\"b\",\"a\"]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-036",
+      "contract_id": "count_by_field",
+      "category": "edit",
+      "request": "Edit the unfinished body of count_by_field in solution.py; preserve its signature. Count record values for field; missing field is skipped.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def count_by_field(records, field):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import count_by_field\nassert count_by_field([{\"k\":\"x\"},{},{\"k\":\"x\"},{\"k\":\"y\"}],\"k\")=={\"x\":2,\"y\":1}\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-037",
+      "contract_id": "sort_records",
+      "category": "edit",
+      "request": "Edit the unfinished body of sort_records in solution.py; preserve its signature. Return stable ascending list by field; do not mutate input.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def sort_records(records, field):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import sort_records\nr=[{\"k\":2,\"id\":\"a\"},{\"k\":1,\"id\":\"b\"},{\"k\":2,\"id\":\"c\"}]; assert [x[\"id\"] for x in sort_records(r,\"k\")]==[\"b\",\"a\",\"c\"]; assert r[0][\"id\"]==\"a\"\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-038",
+      "contract_id": "rename_key",
+      "category": "edit",
+      "request": "Edit the unfinished body of rename_key in solution.py; preserve its signature. Return copy renaming old to new if present; renamed value replaces existing new.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def rename_key(mapping, old, new):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import rename_key\nassert rename_key({\"a\":1,\"b\":2},\"a\",\"b\")=={\"b\":1}\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-039",
+      "contract_id": "euclidean_squared",
+      "category": "edit",
+      "request": "Edit solution.py to make its behavior better.",
+      "expected_task_type": "CLARIFICATION",
+      "expected_suitable_workers": [
+        "lightweight",
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def euclidean_squared(left, right):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "human_rubric",
+        "required_facts": [
+          "Ask for the desired behavior before applying a guessed change."
+        ],
+        "forbidden_claims": [
+          "A change was made or validated."
+        ],
+        "semantic_review_required": true,
+        "success_endpoint": "NEEDS_INPUT"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": true,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-040",
+      "contract_id": "ceil_div",
+      "category": "edit",
+      "request": "Edit the unfinished body of ceil_div in solution.py; preserve its signature. Return mathematical ceiling of integer a/b; zero divisor raises ZeroDivisionError.",
+      "expected_task_type": "EDIT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def ceil_div(a, b):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import ceil_div\nassert ceil_div(7,3)==3\nassert ceil_div(-7,3)==-2\nassert ceil_div(7,-3)==-2\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-041",
+      "contract_id": "escape_html",
+      "category": "debug",
+      "request": "Fix teh regression in escape_html: it returns None. Use the selected solution.py. Escape &, <, > and double quotes in text, in that order.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def escape_html(text):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import escape_html\nassert escape_html(\"<&>\")==\"&lt;&amp;&gt;\"\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": true,
+        "followup": false,
+        "ambiguous": false,
+        "repair": true
+      }
+    },
+    {
+      "id": "v2-main-042",
+      "contract_id": "only_digits",
+      "category": "debug",
+      "request": "Fix the regression in only_digits: it returns None. Use the selected solution.py. Return ASCII digits from text, preserving order; exclude non-ASCII numerals.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def only_digits(text):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import only_digits\nassert only_digits(\"a1²2٣\")==\"12\"\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": true
+      }
+    },
+    {
+      "id": "v2-main-043",
+      "contract_id": "common_prefix",
+      "category": "debug",
+      "request": "Fix the regression in common_prefix: it returns None. Use the selected solution.py. Return longest common prefix of strings; empty collection returns empty string.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def common_prefix(strings):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import common_prefix\nassert common_prefix([\"garden\",\"garlic\",\"garment\"])==\"gar\"\nassert common_prefix([])==\"\"\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": true
+      }
+    },
+    {
+      "id": "v2-main-044",
+      "contract_id": "reverse_words",
+      "category": "debug",
+      "request": "Continue and apply that change.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def reverse_words(text):\n    return None\n"
+        },
+        "follow_up": true,
+        "previous_request": "Fix the regression in reverse_words: it returns None. Use the selected solution.py. Reverse whitespace-separated word order using single spaces."
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import reverse_words\nassert reverse_words(\" a  b c \")==\"c b a\"\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": true,
+        "ambiguous": false,
+        "repair": true
+      },
+      "history": [
+        {
+          "role": "user",
+          "content": "Fix the regression in reverse_words: it returns None. Use the selected solution.py. Reverse whitespace-separated word order using single spaces."
+        },
+        {
+          "role": "assistant",
+          "content": "The selected file remains unchanged. I can apply that contract next."
+        }
+      ]
+    },
+    {
+      "id": "v2-main-045",
+      "contract_id": "find_duplicate_keys",
+      "category": "debug",
+      "request": "Fix the regression in find_duplicate_keys: it returns None. Use the selected solution.py. Return keys seen more than once, in first duplicate occurrence order.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def find_duplicate_keys(pairs):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import find_duplicate_keys\nassert find_duplicate_keys([(\"a\",1),(\"b\",2),(\"b\",3),(\"a\",4)])==[\"b\",\"a\"]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": true
+      }
+    },
+    {
+      "id": "v2-main-046",
+      "contract_id": "merge_defaults",
+      "category": "debug",
+      "request": "Fix the regression in merge_defaults: it returns None. Use the selected solution.py. Return new mapping with overrides replacing defaults; preserve both inputs.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def merge_defaults(defaults, overrides):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import merge_defaults\nd={\"a\":1}; assert merge_defaults(d,{\"a\":2,\"b\":3})=={\"a\":2,\"b\":3}; assert d=={\"a\":1}\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": true
+      }
+    },
+    {
+      "id": "v2-main-047",
+      "contract_id": "select_keys",
+      "category": "debug",
+      "request": "Fix teh regression in select_keys: it returns None. Use the selected solution.py. Return mapping entries requested by keys, skip missing keys, preserve requested order.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def select_keys(mapping, keys):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import select_keys\nassert list(select_keys({\"a\":1,\"b\":2},[\"b\",\"x\",\"a\"]))==[\"b\",\"a\"]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": true,
+        "followup": false,
+        "ambiguous": false,
+        "repair": true
+      }
+    },
+    {
+      "id": "v2-main-048",
+      "contract_id": "count_by_field",
+      "category": "debug",
+      "request": "Fix the regression in count_by_field: it returns None. Use the selected solution.py. Count record values for field; missing field is skipped.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def count_by_field(records, field):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import count_by_field\nassert count_by_field([{\"k\":\"x\"},{},{\"k\":\"x\"},{\"k\":\"y\"}],\"k\")=={\"x\":2,\"y\":1}\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": true
+      }
+    },
+    {
+      "id": "v2-main-049",
+      "contract_id": "sort_records",
+      "category": "debug",
+      "request": "Fix the regression in sort_records: it returns None. Use the selected solution.py. Return stable ascending list by field; do not mutate input.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def sort_records(records, field):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import sort_records\nr=[{\"k\":2,\"id\":\"a\"},{\"k\":1,\"id\":\"b\"},{\"k\":2,\"id\":\"c\"}]; assert [x[\"id\"] for x in sort_records(r,\"k\")]==[\"b\",\"a\",\"c\"]; assert r[0][\"id\"]==\"a\"\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": true
+      }
+    },
+    {
+      "id": "v2-main-050",
+      "contract_id": "rename_key",
+      "category": "debug",
+      "request": "Fix the regression in rename_key: it returns None. Use the selected solution.py. Return copy renaming old to new if present; renamed value replaces existing new.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def rename_key(mapping, old, new):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import rename_key\nassert rename_key({\"a\":1,\"b\":2},\"a\",\"b\")=={\"b\":1}\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": true
+      }
+    },
+    {
+      "id": "v2-main-051",
+      "contract_id": "euclidean_squared",
+      "category": "debug",
+      "request": "Fix the regression in euclidean_squared: it returns None. Use the selected solution.py. Return squared Euclidean distance; unequal lengths raises ValueError.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def euclidean_squared(left, right):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import euclidean_squared\nassert euclidean_squared([1,2],[4,6])==25\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": true
+      }
+    },
+    {
+      "id": "v2-main-052",
+      "contract_id": "ceil_div",
+      "category": "debug",
+      "request": "Fix the regression in ceil_div: it returns None. Use the selected solution.py. Return mathematical ceiling of integer a/b; zero divisor raises ZeroDivisionError.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def ceil_div(a, b):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import ceil_div\nassert ceil_div(7,3)==3\nassert ceil_div(-7,3)==-2\nassert ceil_div(7,-3)==-2\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": true
+      }
+    },
+    {
+      "id": "v2-main-053",
+      "contract_id": "triangular",
+      "category": "debug",
+      "request": "Fix the regression in triangular: it returns None. Use the selected solution.py. Return sum of integers 1..n; negative raises ValueError.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def triangular(n):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import triangular\nassert triangular(0)==0\nassert triangular(8)==36\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": true
+      }
+    },
+    {
+      "id": "v2-main-054",
+      "contract_id": "digital_root",
+      "category": "debug",
+      "request": "Continue and apply that change.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def digital_root(n):\n    return None\n"
+        },
+        "follow_up": true,
+        "previous_request": "Fix the regression in digital_root: it returns None. Use the selected solution.py. Return repeated decimal digit sum for nonnegative integer; negative raises ValueError."
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import digital_root\nassert digital_root(9875)==2\nassert digital_root(0)==0\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": true,
+        "ambiguous": false,
+        "repair": true
+      },
+      "history": [
+        {
+          "role": "user",
+          "content": "Fix the regression in digital_root: it returns None. Use the selected solution.py. Return repeated decimal digit sum for nonnegative integer; negative raises ValueError."
+        },
+        {
+          "role": "assistant",
+          "content": "The selected file remains unchanged. I can apply that contract next."
+        }
+      ]
+    },
+    {
+      "id": "v2-main-055",
+      "contract_id": "to_base",
+      "category": "debug",
+      "request": "Fix the regression in to_base: it returns None. Use the selected solution.py. Convert nonnegative integer to base 2..16 lowercase digits; invalid raises ValueError.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def to_base(n, base):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import to_base\nassert to_base(31,16)==\"1f\"\nassert to_base(5,2)==\"101\"\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": true
+      }
+    },
+    {
+      "id": "v2-main-056",
+      "contract_id": "date_offset",
+      "category": "debug",
+      "request": "Fix the regression in date_offset: it returns None. Use the selected solution.py. Add integer days to ISO date and return ISO string, including leap days.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def date_offset(iso_date, days):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import date_offset\nassert date_offset(\"2024-02-28\",1)==\"2024-02-29\"\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": true
+      }
+    },
+    {
+      "id": "v2-main-057",
+      "contract_id": "minutes_to_clock",
+      "category": "debug",
+      "request": "Fix the regression in minutes_to_clock: it returns None. Use the selected solution.py. Format nonnegative minutes as unbounded hours:two-digit minutes; negatives raise ValueError.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def minutes_to_clock(minutes):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import minutes_to_clock\nassert minutes_to_clock(1505)==\"25:05\"\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": true
+      }
+    },
+    {
+      "id": "v2-main-058",
+      "contract_id": "overlap_length",
+      "category": "debug",
+      "request": "Fix the regression in overlap_length: it returns None. Use the selected solution.py. Return length of intersection of half-open intervals; reversed endpoints raise ValueError.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def overlap_length(a_start, a_end, b_start, b_end):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import overlap_length\nassert overlap_length(1,5,3,7)==2\nassert overlap_length(1,3,3,4)==0\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": true
+      }
+    },
+    {
+      "id": "v2-main-059",
+      "contract_id": "remove_indices",
+      "category": "debug",
+      "request": "Fix the regression in remove_indices: it returns None. Use the selected solution.py. Return items except positions in indices; ignore negative and out-of-range positions.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def remove_indices(values, indices):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import remove_indices\nassert remove_indices([\"a\",\"b\",\"c\"],[1,-1,8])==[\"a\",\"c\"]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": true
+      }
+    },
+    {
+      "id": "v2-main-060",
+      "contract_id": "interleave",
+      "category": "debug",
+      "request": "Fix the regression in interleave: it returns None. Use the selected solution.py. Alternate items starting left; append remaining tail.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def interleave(left, right):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import interleave\nassert interleave([1,2,3],[\"a\"])==[1,\"a\",2,3]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": true
+      }
+    },
+    {
+      "id": "v2-main-061",
+      "contract_id": "merge_defaults",
+      "category": "implement",
+      "request": "Implement merge_defaults in solution.py. Return new mapping with overrides replacing defaults; preserve both inputs.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def merge_defaults(defaults, overrides):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import merge_defaults\nd={\"a\":1}; assert merge_defaults(d,{\"a\":2,\"b\":3})=={\"a\":2,\"b\":3}; assert d=={\"a\":1}\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-062",
+      "contract_id": "select_keys",
+      "category": "implement",
+      "request": "Implement select_keys in solution.py. Return mapping entries requested by keys, skip missing keys, preserve requested order.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def select_keys(mapping, keys):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import select_keys\nassert list(select_keys({\"a\":1,\"b\":2},[\"b\",\"x\",\"a\"]))==[\"b\",\"a\"]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-063",
+      "contract_id": "count_by_field",
+      "category": "implement",
+      "request": "Implement count_by_field in solution.py. Count record values for field; missing field is skipped.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def count_by_field(records, field):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import count_by_field\nassert count_by_field([{\"k\":\"x\"},{},{\"k\":\"x\"},{\"k\":\"y\"}],\"k\")=={\"x\":2,\"y\":1}\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-064",
+      "contract_id": "sort_records",
+      "category": "implement",
+      "request": "Implement sort_records in solution.py. Return stable ascending list by field; do not mutate input.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def sort_records(records, field):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import sort_records\nr=[{\"k\":2,\"id\":\"a\"},{\"k\":1,\"id\":\"b\"},{\"k\":2,\"id\":\"c\"}]; assert [x[\"id\"] for x in sort_records(r,\"k\")]==[\"b\",\"a\",\"c\"]; assert r[0][\"id\"]==\"a\"\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": true,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-065",
+      "contract_id": "rename_key",
+      "category": "implement",
+      "request": "Implement rename_key in solution.py. Return copy renaming old to new if present; renamed value replaces existing new.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def rename_key(mapping, old, new):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import rename_key\nassert rename_key({\"a\":1,\"b\":2},\"a\",\"b\")=={\"b\":1}\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-066",
+      "contract_id": "euclidean_squared",
+      "category": "implement",
+      "request": "Implement euclidean_squared in solution.py. Return squared Euclidean distance; unequal lengths raises ValueError.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def euclidean_squared(left, right):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import euclidean_squared\nassert euclidean_squared([1,2],[4,6])==25\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-067",
+      "contract_id": "ceil_div",
+      "category": "implement",
+      "request": "Implement ceil_div in solution.py. Return mathematical ceiling of integer a/b; zero divisor raises ZeroDivisionError.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def ceil_div(a, b):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import ceil_div\nassert ceil_div(7,3)==3\nassert ceil_div(-7,3)==-2\nassert ceil_div(7,-3)==-2\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-068",
+      "contract_id": "triangular",
+      "category": "implement",
+      "request": "Implement triangular in solution.py. Return sum of integers 1..n; negative raises ValueError.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def triangular(n):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import triangular\nassert triangular(0)==0\nassert triangular(8)==36\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-069",
+      "contract_id": "digital_root",
+      "category": "implement",
+      "request": "Implement digital_root in solution.py. Return repeated decimal digit sum for nonnegative integer; negative raises ValueError.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def digital_root(n):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import digital_root\nassert digital_root(9875)==2\nassert digital_root(0)==0\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-070",
+      "contract_id": "to_base",
+      "category": "implement",
+      "request": "Continue and apply that change.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def to_base(n, base):\n    return None\n"
+        },
+        "follow_up": true,
+        "previous_request": "Implement to_base in solution.py. Convert nonnegative integer to base 2..16 lowercase digits; invalid raises ValueError."
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import to_base\nassert to_base(31,16)==\"1f\"\nassert to_base(5,2)==\"101\"\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": true,
+        "ambiguous": false,
+        "repair": false
+      },
+      "history": [
+        {
+          "role": "user",
+          "content": "Implement to_base in solution.py. Convert nonnegative integer to base 2..16 lowercase digits; invalid raises ValueError."
+        },
+        {
+          "role": "assistant",
+          "content": "The selected file remains unchanged. I can apply that contract next."
+        }
+      ]
+    },
+    {
+      "id": "v2-main-071",
+      "contract_id": "date_offset",
+      "category": "implement",
+      "request": "Implement date_offset in solution.py. Add integer days to ISO date and return ISO string, including leap days.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def date_offset(iso_date, days):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import date_offset\nassert date_offset(\"2024-02-28\",1)==\"2024-02-29\"\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-072",
+      "contract_id": "minutes_to_clock",
+      "category": "implement",
+      "request": "Implement minutes_to_clock in solution.py. Format nonnegative minutes as unbounded hours:two-digit minutes; negatives raise ValueError.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def minutes_to_clock(minutes):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import minutes_to_clock\nassert minutes_to_clock(1505)==\"25:05\"\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-073",
+      "contract_id": "overlap_length",
+      "category": "implement",
+      "request": "Implement overlap_length in solution.py. Return length of intersection of half-open intervals; reversed endpoints raise ValueError.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def overlap_length(a_start, a_end, b_start, b_end):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import overlap_length\nassert overlap_length(1,5,3,7)==2\nassert overlap_length(1,3,3,4)==0\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-074",
+      "contract_id": "remove_indices",
+      "category": "implement",
+      "request": "Implement remove_indices in solution.py. Return items except positions in indices; ignore negative and out-of-range positions.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def remove_indices(values, indices):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import remove_indices\nassert remove_indices([\"a\",\"b\",\"c\"],[1,-1,8])==[\"a\",\"c\"]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-075",
+      "contract_id": "interleave",
+      "category": "implement",
+      "request": "Implement interleave in solution.py. Alternate items starting left; append remaining tail.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def interleave(left, right):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import interleave\nassert interleave([1,2,3],[\"a\"])==[1,\"a\",2,3]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-076",
+      "contract_id": "cartesian_pairs",
+      "category": "refactor_multifile",
+      "request": "Refactor cartesian_pairs from legacy.py into solution.py and implement its contract. Leave a backwards-compatible import in legacy.py. Return ordered Cartesian pairs, left outermost; preserve inputs.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "legacy.py": "def cartesian_pairs(left, right):\n    return None\n",
+          "solution.py": "from legacy import cartesian_pairs\n"
+        }
+      },
+      "allowed_change_paths": [
+        "legacy.py",
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import cartesian_pairs\nassert cartesian_pairs([1,2],[\"x\",\"y\"])==[(1,\"x\"),(1,\"y\"),(2,\"x\"),(2,\"y\")]\nfrom legacy import cartesian_pairs as compatibility\nassert compatibility is cartesian_pairs\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-077",
+      "contract_id": "pad_to",
+      "category": "refactor_multifile",
+      "request": "Refactor pad_to from legacy.py into solution.py and implement its contract. Leave a backwards-compatible import in legacy.py. Return a copy padded on the right to size; never truncate a longer input.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "legacy.py": "def pad_to(values, size, fill):\n    return None\n",
+          "solution.py": "from legacy import pad_to\n"
+        }
+      },
+      "allowed_change_paths": [
+        "legacy.py",
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import pad_to\nassert pad_to([1],3,0)==[1,0,0]\nassert pad_to([1,2],1,0)==[1,2]\nfrom legacy import pad_to as compatibility\nassert compatibility is pad_to\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-078",
+      "contract_id": "drop_every",
+      "category": "refactor_multifile",
+      "request": "Refactor drop_every from legacy.py into solution.py and implement its contract. Leave a backwards-compatible import in legacy.py. Remove each nth item counting from one; n<=0 raises ValueError.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "legacy.py": "def drop_every(values, n):\n    return None\n",
+          "solution.py": "from legacy import drop_every\n"
+        }
+      },
+      "allowed_change_paths": [
+        "legacy.py",
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import drop_every\nassert drop_every([1,2,3,4,5],2)==[1,3,5]\nfrom legacy import drop_every as compatibility\nassert compatibility is drop_every\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-079",
+      "contract_id": "longest_word",
+      "category": "refactor_multifile",
+      "request": "Refactor longest_word from legacy.py into solution.py and implement its contract. Leave a backwards-compatible import in legacy.py. Return first longest whitespace-separated word; empty text returns None.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "legacy.py": "def longest_word(text):\n    return None\n",
+          "solution.py": "from legacy import longest_word\n"
+        }
+      },
+      "allowed_change_paths": [
+        "legacy.py",
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import longest_word\nassert longest_word(\"cat bear wolf\")==\"bear\"\nassert longest_word(\" \") is None\nfrom legacy import longest_word as compatibility\nassert compatibility is longest_word\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-080",
+      "contract_id": "strip_prefix_once",
+      "category": "refactor_multifile",
+      "request": "Refactor strip_prefix_once from legacy.py into solution.py and implement its contract. Leave a backwards-compatible import in legacy.py. Remove prefix exactly once if present; otherwise preserve text.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "legacy.py": "def strip_prefix_once(text, prefix):\n    return None\n",
+          "solution.py": "from legacy import strip_prefix_once\n"
+        }
+      },
+      "allowed_change_paths": [
+        "legacy.py",
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import strip_prefix_once\nassert strip_prefix_once(\"ababx\",\"ab\")==\"abx\"\nassert strip_prefix_once(\"x\",\"ab\")==\"x\"\nfrom legacy import strip_prefix_once as compatibility\nassert compatibility is strip_prefix_once\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-081",
+      "contract_id": "snake_to_camel",
+      "category": "refactor_multifile",
+      "request": "Refactor snake_to_camel from legacy.py into solution.py and implement its contract. Leave a backwards-compatible import in legacy.py. Convert underscore-separated words to lower camel case; skip empty segments.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "legacy.py": "def snake_to_camel(text):\n    return None\n",
+          "solution.py": "from legacy import snake_to_camel\n"
+        }
+      },
+      "allowed_change_paths": [
+        "legacy.py",
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import snake_to_camel\nassert snake_to_camel(\"account__display_name\")==\"accountDisplayName\"\nassert snake_to_camel(\"_\")==\"\"\nfrom legacy import snake_to_camel as compatibility\nassert compatibility is snake_to_camel\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-082",
+      "contract_id": "mask_tail",
+      "category": "refactor_multifile",
+      "request": "Refactor mask_tail from legacy.py into solution.py and implement its contract. Leave a backwards-compatible import in legacy.py. Mask all but final keep characters with *; keep<=0 masks everything.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "legacy.py": "def mask_tail(text, keep):\n    return None\n",
+          "solution.py": "from legacy import mask_tail\n"
+        }
+      },
+      "allowed_change_paths": [
+        "legacy.py",
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import mask_tail\nassert mask_tail(\"123456\",2)==\"****56\"\nassert mask_tail(\"abc\",0)==\"***\"\nfrom legacy import mask_tail as compatibility\nassert compatibility is mask_tail\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": true,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-083",
+      "contract_id": "initials",
+      "category": "refactor_multifile",
+      "request": "Refactor initials from legacy.py into solution.py and implement its contract. Leave a backwards-compatible import in legacy.py. Return uppercase first characters of whitespace-separated words.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "legacy.py": "def initials(name):\n    return None\n",
+          "solution.py": "from legacy import initials\n"
+        }
+      },
+      "allowed_change_paths": [
+        "legacy.py",
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import initials\nassert initials(\" ada  lovelace \")==\"AL\"\nassert initials(\"\")==\"\"\nfrom legacy import initials as compatibility\nassert compatibility is initials\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-084",
+      "contract_id": "line_numbers",
+      "category": "refactor_multifile",
+      "request": "Continue and apply that change.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "legacy.py": "def line_numbers(text):\n    return None\n",
+          "solution.py": "from legacy import line_numbers\n"
+        },
+        "follow_up": true,
+        "previous_request": "Refactor line_numbers from legacy.py into solution.py and implement its contract. Leave a backwards-compatible import in legacy.py. Prefix splitlines with one-based number and colon-space; return list of strings."
+      },
+      "allowed_change_paths": [
+        "legacy.py",
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import line_numbers\nassert line_numbers(\"a\\nb\")==[\"1: a\",\"2: b\"]\nfrom legacy import line_numbers as compatibility\nassert compatibility is line_numbers\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": true,
+        "ambiguous": false,
+        "repair": false
+      },
+      "history": [
+        {
+          "role": "user",
+          "content": "Refactor line_numbers from legacy.py into solution.py and implement its contract. Leave a backwards-compatible import in legacy.py. Prefix splitlines with one-based number and colon-space; return list of strings."
+        },
+        {
+          "role": "assistant",
+          "content": "The selected file remains unchanged. I can apply that contract next."
+        }
+      ]
+    },
+    {
+      "id": "v2-main-085",
+      "contract_id": "character_positions",
+      "category": "refactor_multifile",
+      "request": "Refactor character_positions from legacy.py into solution.py and implement its contract. Leave a backwards-compatible import in legacy.py. Return every zero-based position matching character exactly.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "legacy.py": "def character_positions(text, character):\n    return None\n",
+          "solution.py": "from legacy import character_positions\n"
+        }
+      },
+      "allowed_change_paths": [
+        "legacy.py",
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import character_positions\nassert character_positions(\"banana\",\"a\")==[1,3,5]\nfrom legacy import character_positions as compatibility\nassert compatibility is character_positions\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-086",
+      "contract_id": "escape_html",
+      "category": "refactor_multifile",
+      "request": "Refactor escape_html from legacy.py into solution.py and implement its contract. Leave a backwards-compatible import in legacy.py. Escape &, <, > and double quotes in text, in that order.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "legacy.py": "def escape_html(text):\n    return None\n",
+          "solution.py": "from legacy import escape_html\n"
+        }
+      },
+      "allowed_change_paths": [
+        "legacy.py",
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import escape_html\nassert escape_html(\"<&>\")==\"&lt;&amp;&gt;\"\nfrom legacy import escape_html as compatibility\nassert compatibility is escape_html\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-087",
+      "contract_id": "only_digits",
+      "category": "refactor_multifile",
+      "request": "Refactor only_digits from legacy.py into solution.py and implement its contract. Leave a backwards-compatible import in legacy.py. Return ASCII digits from text, preserving order; exclude non-ASCII numerals.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "legacy.py": "def only_digits(text):\n    return None\n",
+          "solution.py": "from legacy import only_digits\n"
+        }
+      },
+      "allowed_change_paths": [
+        "legacy.py",
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import only_digits\nassert only_digits(\"a1²2٣\")==\"12\"\nfrom legacy import only_digits as compatibility\nassert compatibility is only_digits\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-088",
+      "contract_id": "common_prefix",
+      "category": "refactor_multifile",
+      "request": "Refactor common_prefix from legacy.py into solution.py and implement its contract. Leave a backwards-compatible import in legacy.py. Return longest common prefix of strings; empty collection returns empty string.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "legacy.py": "def common_prefix(strings):\n    return None\n",
+          "solution.py": "from legacy import common_prefix\n"
+        }
+      },
+      "allowed_change_paths": [
+        "legacy.py",
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import common_prefix\nassert common_prefix([\"garden\",\"garlic\",\"garment\"])==\"gar\"\nassert common_prefix([])==\"\"\nfrom legacy import common_prefix as compatibility\nassert compatibility is common_prefix\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-089",
+      "contract_id": "reverse_words",
+      "category": "refactor_multifile",
+      "request": "Refactor reverse_words from legacy.py into solution.py and implement its contract. Leave a backwards-compatible import in legacy.py. Reverse whitespace-separated word order using single spaces.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "legacy.py": "def reverse_words(text):\n    return None\n",
+          "solution.py": "from legacy import reverse_words\n"
+        }
+      },
+      "allowed_change_paths": [
+        "legacy.py",
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import reverse_words\nassert reverse_words(\" a  b c \")==\"c b a\"\nfrom legacy import reverse_words as compatibility\nassert compatibility is reverse_words\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-090",
+      "contract_id": "find_duplicate_keys",
+      "category": "refactor_multifile",
+      "request": "Refactor find_duplicate_keys from legacy.py into solution.py and implement its contract. Leave a backwards-compatible import in legacy.py. Return keys seen more than once, in first duplicate occurrence order.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "legacy.py": "def find_duplicate_keys(pairs):\n    return None\n",
+          "solution.py": "from legacy import find_duplicate_keys\n"
+        }
+      },
+      "allowed_change_paths": [
+        "legacy.py",
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import find_duplicate_keys\nassert find_duplicate_keys([(\"a\",1),(\"b\",2),(\"b\",3),(\"a\",4)])==[\"b\",\"a\"]\nfrom legacy import find_duplicate_keys as compatibility\nassert compatibility is find_duplicate_keys\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-091",
+      "contract_id": "euclidean_squared",
+      "category": "architecture",
+      "request": "Plan briefly, then implement a three-file JSON service: solution.py provides euclidean_squared; service.py execute(payload) calls it using keys left, right; cli.py reads one JSON object from stdin and prints one JSON result. Return squared Euclidean distance; unequal lengths raises ValueError.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "reasoning",
+        "code"
+      ],
+      "complexity": "complex",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "def euclidean_squared(left, right):\n    return None\n",
+          "service.py": "def execute(payload):\n    return None\n",
+          "cli.py": "print(\"null\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "service.py",
+        "cli.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import euclidean_squared\nassert euclidean_squared([1,2],[4,6])==25\nimport subprocess,json\nresult=subprocess.run(['python','cli.py'],input=json.dumps({'left': [1, 2], 'right': [4, 6]}),text=True,capture_output=True,timeout=5)\nassert result.returncode==0, result.stderr\nassert json.loads(result.stdout)==25, 'CLI must return function result'\nimport service, subprocess, json, inspect\npayload={key:1 for key in ['left', 'right']}\ncalled=[]\ndef sentinel(*a,**kw):\n called.append((a,kw)); return 831\nservice.euclidean_squared=sentinel\nif not hasattr(service, 'euclidean_squared'): raise AssertionError('service must expose imported callable')\nassert service.execute(payload)==831\nassert called, 'service must delegate to function'\nassert 'input(' not in inspect.getsource(service)\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW",
+        "semantic_review_required": true,
+        "limitation": "Function, service delegation and one actual CLI payload are executable; broader architectural quality requires review."
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-092",
+      "contract_id": "ceil_div",
+      "category": "architecture",
+      "request": "Plan briefly, then implement a three-file JSON service: solution.py provides ceil_div; service.py execute(payload) calls it using keys a, b; cli.py reads one JSON object from stdin and prints one JSON result. Return mathematical ceiling of integer a/b; zero divisor raises ZeroDivisionError.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "reasoning",
+        "code"
+      ],
+      "complexity": "complex",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "def ceil_div(a, b):\n    return None\n",
+          "service.py": "def execute(payload):\n    return None\n",
+          "cli.py": "print(\"null\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "service.py",
+        "cli.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import ceil_div\nassert ceil_div(7,3)==3\nassert ceil_div(-7,3)==-2\nassert ceil_div(7,-3)==-2\nimport subprocess,json\nresult=subprocess.run(['python','cli.py'],input=json.dumps({'a': 7, 'b': 3}),text=True,capture_output=True,timeout=5)\nassert result.returncode==0, result.stderr\nassert json.loads(result.stdout)==3, 'CLI must return function result'\nimport service, subprocess, json, inspect\npayload={key:1 for key in ['a', 'b']}\ncalled=[]\ndef sentinel(*a,**kw):\n called.append((a,kw)); return 831\nservice.ceil_div=sentinel\nif not hasattr(service, 'ceil_div'): raise AssertionError('service must expose imported callable')\nassert service.execute(payload)==831\nassert called, 'service must delegate to function'\nassert 'input(' not in inspect.getsource(service)\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW",
+        "semantic_review_required": true,
+        "limitation": "Function, service delegation and one actual CLI payload are executable; broader architectural quality requires review."
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-093",
+      "contract_id": "triangular",
+      "category": "architecture",
+      "request": "Plan briefly, then implement a three-file JSON service: solution.py provides triangular; service.py execute(payload) calls it using keys n; cli.py reads one JSON object from stdin and prints one JSON result. Return sum of integers 1..n; negative raises ValueError.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "reasoning",
+        "code"
+      ],
+      "complexity": "complex",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "def triangular(n):\n    return None\n",
+          "service.py": "def execute(payload):\n    return None\n",
+          "cli.py": "print(\"null\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "service.py",
+        "cli.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import triangular\nassert triangular(0)==0\nassert triangular(8)==36\nimport subprocess,json\nresult=subprocess.run(['python','cli.py'],input=json.dumps({'n': 8}),text=True,capture_output=True,timeout=5)\nassert result.returncode==0, result.stderr\nassert json.loads(result.stdout)==36, 'CLI must return function result'\nimport service, subprocess, json, inspect\npayload={key:1 for key in ['n']}\ncalled=[]\ndef sentinel(*a,**kw):\n called.append((a,kw)); return 831\nservice.triangular=sentinel\nif not hasattr(service, 'triangular'): raise AssertionError('service must expose imported callable')\nassert service.execute(payload)==831\nassert called, 'service must delegate to function'\nassert 'input(' not in inspect.getsource(service)\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW",
+        "semantic_review_required": true,
+        "limitation": "Function, service delegation and one actual CLI payload are executable; broader architectural quality requires review."
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-094",
+      "contract_id": "digital_root",
+      "category": "architecture",
+      "request": "Plan briefly, then implement a three-file JSON service: solution.py provides digital_root; service.py execute(payload) calls it using keys n; cli.py reads one JSON object from stdin and prints one JSON result. Return repeated decimal digit sum for nonnegative integer; negative raises ValueError.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "reasoning",
+        "code"
+      ],
+      "complexity": "complex",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "def digital_root(n):\n    return None\n",
+          "service.py": "def execute(payload):\n    return None\n",
+          "cli.py": "print(\"null\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "service.py",
+        "cli.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import digital_root\nassert digital_root(9875)==2\nassert digital_root(0)==0\nimport subprocess,json\nresult=subprocess.run(['python','cli.py'],input=json.dumps({'n': 9875}),text=True,capture_output=True,timeout=5)\nassert result.returncode==0, result.stderr\nassert json.loads(result.stdout)==2, 'CLI must return function result'\nimport service, subprocess, json, inspect\npayload={key:1 for key in ['n']}\ncalled=[]\ndef sentinel(*a,**kw):\n called.append((a,kw)); return 831\nservice.digital_root=sentinel\nif not hasattr(service, 'digital_root'): raise AssertionError('service must expose imported callable')\nassert service.execute(payload)==831\nassert called, 'service must delegate to function'\nassert 'input(' not in inspect.getsource(service)\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW",
+        "semantic_review_required": true,
+        "limitation": "Function, service delegation and one actual CLI payload are executable; broader architectural quality requires review."
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-095",
+      "contract_id": "to_base",
+      "category": "architecture",
+      "request": "Plan briefly, then implement a three-file JSON service: solution.py provides to_base; service.py execute(payload) calls it using keys n, base; cli.py reads one JSON object from stdin and prints one JSON result. Convert nonnegative integer to base 2..16 lowercase digits; invalid raises ValueError.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "reasoning",
+        "code"
+      ],
+      "complexity": "complex",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "solution.py": "def to_base(n, base):\n    return None\n",
+          "service.py": "def execute(payload):\n    return None\n",
+          "cli.py": "print(\"null\")\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py",
+        "service.py",
+        "cli.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import to_base\nassert to_base(31,16)==\"1f\"\nassert to_base(5,2)==\"101\"\nimport subprocess,json\nresult=subprocess.run(['python','cli.py'],input=json.dumps({'n': 31, 'base': 16}),text=True,capture_output=True,timeout=5)\nassert result.returncode==0, result.stderr\nassert json.loads(result.stdout)=='1f', 'CLI must return function result'\nimport service, subprocess, json, inspect\npayload={key:1 for key in ['n', 'base']}\ncalled=[]\ndef sentinel(*a,**kw):\n called.append((a,kw)); return 831\nservice.to_base=sentinel\nif not hasattr(service, 'to_base'): raise AssertionError('service must expose imported callable')\nassert service.execute(payload)==831\nassert called, 'service must delegate to function'\nassert 'input(' not in inspect.getsource(service)\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW",
+        "semantic_review_required": true,
+        "limitation": "Function, service delegation and one actual CLI payload are executable; broader architectural quality requires review."
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": false
+      }
+    },
+    {
+      "id": "v2-main-096",
+      "contract_id": "visual-progress",
+      "category": "vision",
+      "request": "Fix index.html to match the supplied reference image. Preserve its labels and IDs. Use a 480px panel with 24px padding, an 8px left accent border, and a visible rounded badge. Return complete corrected source.",
+      "expected_task_type": "VISION_ASSISTED_CODE",
+      "expected_suitable_workers": [
+        "vision",
+        "code"
+      ],
+      "stage_order": [
+        "vision",
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "image",
+      "context": {
+        "active_file": "index.html",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "index.html": "<!doctype html><html><head><style>body{font:20px Arial}#panel{width:160px}#badge{color:white;background:white}</style></head><body><section id=\"panel\"><h1>Upload progress</h1><p>68% complete</p><span id=\"badge\">68%</span></section></body></html>"
+        },
+        "image_path": "vision/progress/target.png",
+        "image_sha256": "fe005a45d16f8a0c87c64922deafb56f0eb0f0fb0f6098e845f36b6eb16e0d94"
+      },
+      "allowed_change_paths": [
+        "index.html"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "html",
+        "trusted_files": {
+          "test_visual_structure.py": "from pathlib import Path\nfrom html.parser import HTMLParser\nimport re\ns=Path('index.html').read_text(encoding='utf-8')\nclass P(HTMLParser):\n def __init__(self): super().__init__(); self.ids=[];self.text=[]\n def handle_starttag(self,t,a):\n  d=dict(a)\n  if 'id' in d:self.ids.append(d['id'])\n def handle_data(self,d):self.text.append(d)\np=P();p.feed(s)\nassert p.ids==['panel','badge']\nfor text in ['Upload progress', '68% complete', '68%']: assert text in ''.join(p.text)\ncompact=re.sub(r'\\s+','',s.lower())\nfor expected in ['width:480px', 'padding:24px', 'border-left:8px solid #176b87', 'background:#176b87', 'color:white', 'border-radius:8px']:assert re.sub(r'\\s+','',expected) in compact\n"
+        },
+        "command": [
+          "python",
+          "test_visual_structure.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW",
+        "semantic_review_required": true,
+        "limitation": "Actual PNG is an authored interface reference, not a browser screenshot. Structural/style assertions do not prove pixel fidelity; independent visual review is mandatory."
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": true
+      }
+    },
+    {
+      "id": "v2-main-097",
+      "contract_id": "visual-notice",
+      "category": "vision",
+      "request": "Fix index.html to match the supplied reference image. Preserve its labels and IDs. Use a 480px panel with 24px padding, an 8px left accent border, and a visible rounded badge. Return complete corrected source.",
+      "expected_task_type": "VISION_ASSISTED_CODE",
+      "expected_suitable_workers": [
+        "vision",
+        "code"
+      ],
+      "stage_order": [
+        "vision",
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "image",
+      "context": {
+        "active_file": "index.html",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "index.html": "<!doctype html><html><head><style>body{font:20px Arial}#panel{width:160px}#badge{color:white;background:white}</style></head><body><section id=\"panel\"><h1>Maintenance notice</h1><p>Returns at 18:00</p><span id=\"badge\">Scheduled</span></section></body></html>"
+        },
+        "image_path": "vision/notice/target.png",
+        "image_sha256": "894a2009adb6b1e9e4fc4add0f3b6b8e1a29f8e894ab2aebd9ba272b38fe3e72"
+      },
+      "allowed_change_paths": [
+        "index.html"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "html",
+        "trusted_files": {
+          "test_visual_structure.py": "from pathlib import Path\nfrom html.parser import HTMLParser\nimport re\ns=Path('index.html').read_text(encoding='utf-8')\nclass P(HTMLParser):\n def __init__(self): super().__init__(); self.ids=[];self.text=[]\n def handle_starttag(self,t,a):\n  d=dict(a)\n  if 'id' in d:self.ids.append(d['id'])\n def handle_data(self,d):self.text.append(d)\np=P();p.feed(s)\nassert p.ids==['panel','badge']\nfor text in ['Maintenance notice', 'Returns at 18:00', 'Scheduled']: assert text in ''.join(p.text)\ncompact=re.sub(r'\\s+','',s.lower())\nfor expected in ['width:480px', 'padding:24px', 'border-left:8px solid #855623', 'background:#855623', 'color:white', 'border-radius:8px']:assert re.sub(r'\\s+','',expected) in compact\n"
+        },
+        "command": [
+          "python",
+          "test_visual_structure.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW",
+        "semantic_review_required": true,
+        "limitation": "Actual PNG is an authored interface reference, not a browser screenshot. Structural/style assertions do not prove pixel fidelity; independent visual review is mandatory."
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": true
+      }
+    },
+    {
+      "id": "v2-main-098",
+      "contract_id": "visual-profile",
+      "category": "vision",
+      "request": "Fix index.html to match the supplied reference image. Preserve its labels and IDs. Use a 480px panel with 24px padding, an 8px left accent border, and a visible rounded badge. Return complete corrected source.",
+      "expected_task_type": "VISION_ASSISTED_CODE",
+      "expected_suitable_workers": [
+        "vision",
+        "code"
+      ],
+      "stage_order": [
+        "vision",
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "image",
+      "context": {
+        "active_file": "index.html",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "index.html": "<!doctype html><html><head><style>body{font:20px Arial}#panel{width:160px}#badge{color:white;background:white}</style></head><body><section id=\"panel\"><h1>Research profile</h1><p>Lena Rao</p><span id=\"badge\">Available</span></section></body></html>"
+        },
+        "image_path": "vision/profile/target.png",
+        "image_sha256": "f3ccd809a0a5147b975779bc2efb9a3d9702e333d725c8e7c63f2119869e643c"
+      },
+      "allowed_change_paths": [
+        "index.html"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "html",
+        "trusted_files": {
+          "test_visual_structure.py": "from pathlib import Path\nfrom html.parser import HTMLParser\nimport re\ns=Path('index.html').read_text(encoding='utf-8')\nclass P(HTMLParser):\n def __init__(self): super().__init__(); self.ids=[];self.text=[]\n def handle_starttag(self,t,a):\n  d=dict(a)\n  if 'id' in d:self.ids.append(d['id'])\n def handle_data(self,d):self.text.append(d)\np=P();p.feed(s)\nassert p.ids==['panel','badge']\nfor text in ['Research profile', 'Lena Rao', 'Available']: assert text in ''.join(p.text)\ncompact=re.sub(r'\\s+','',s.lower())\nfor expected in ['width:480px', 'padding:24px', 'border-left:8px solid #6355a4', 'background:#6355a4', 'color:white', 'border-radius:8px']:assert re.sub(r'\\s+','',expected) in compact\n"
+        },
+        "command": [
+          "python",
+          "test_visual_structure.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW",
+        "semantic_review_required": true,
+        "limitation": "Actual PNG is an authored interface reference, not a browser screenshot. Structural/style assertions do not prove pixel fidelity; independent visual review is mandatory."
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": true
+      }
+    },
+    {
+      "id": "v2-main-099",
+      "contract_id": "visual-ticket",
+      "category": "vision",
+      "request": "Fix index.html to match the supplied reference image. Preserve its labels and IDs. Use a 480px panel with 24px padding, an 8px left accent border, and a visible rounded badge. Return complete corrected source.",
+      "expected_task_type": "VISION_ASSISTED_CODE",
+      "expected_suitable_workers": [
+        "vision",
+        "code"
+      ],
+      "stage_order": [
+        "vision",
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "image",
+      "context": {
+        "active_file": "index.html",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "index.html": "<!doctype html><html><head><style>body{font:20px Arial}#panel{width:160px}#badge{color:white;background:white}</style></head><body><section id=\"panel\"><h1>Support ticket</h1><p>T-302 awaiting reply</p><span id=\"badge\">Waiting</span></section></body></html>"
+        },
+        "image_path": "vision/ticket/target.png",
+        "image_sha256": "39822ff31a1361900ad4bb51eeaa5211bd5d5dd06e6ee888781554f3e80be107"
+      },
+      "allowed_change_paths": [
+        "index.html"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "html",
+        "trusted_files": {
+          "test_visual_structure.py": "from pathlib import Path\nfrom html.parser import HTMLParser\nimport re\ns=Path('index.html').read_text(encoding='utf-8')\nclass P(HTMLParser):\n def __init__(self): super().__init__(); self.ids=[];self.text=[]\n def handle_starttag(self,t,a):\n  d=dict(a)\n  if 'id' in d:self.ids.append(d['id'])\n def handle_data(self,d):self.text.append(d)\np=P();p.feed(s)\nassert p.ids==['panel','badge']\nfor text in ['Support ticket', 'T-302 awaiting reply', 'Waiting']: assert text in ''.join(p.text)\ncompact=re.sub(r'\\s+','',s.lower())\nfor expected in ['width:480px', 'padding:24px', 'border-left:8px solid #a34368', 'background:#a34368', 'color:white', 'border-radius:8px']:assert re.sub(r'\\s+','',expected) in compact\n"
+        },
+        "command": [
+          "python",
+          "test_visual_structure.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW",
+        "semantic_review_required": true,
+        "limitation": "Actual PNG is an authored interface reference, not a browser screenshot. Structural/style assertions do not prove pixel fidelity; independent visual review is mandatory."
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": true
+      }
+    },
+    {
+      "id": "v2-main-100",
+      "contract_id": "visual-meter",
+      "category": "vision",
+      "request": "Fix index.html to match the supplied reference image. Preserve its labels and IDs. Use a 480px panel with 24px padding, an 8px left accent border, and a visible rounded badge. Return complete corrected source.",
+      "expected_task_type": "VISION_ASSISTED_CODE",
+      "expected_suitable_workers": [
+        "vision",
+        "code"
+      ],
+      "stage_order": [
+        "vision",
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "image",
+      "context": {
+        "active_file": "index.html",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "index.html": "<!doctype html><html><head><style>body{font:20px Arial}#panel{width:160px}#badge{color:white;background:white}</style></head><body><section id=\"panel\"><h1>Energy meter</h1><p>42 kWh today</p><span id=\"badge\">42 kWh</span></section></body></html>"
+        },
+        "image_path": "vision/meter/target.png",
+        "image_sha256": "1e6c743168af91feb373c7492304b20efb19acec73ef2c67762007d31e7c5a4f"
+      },
+      "allowed_change_paths": [
+        "index.html"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "html",
+        "trusted_files": {
+          "test_visual_structure.py": "from pathlib import Path\nfrom html.parser import HTMLParser\nimport re\ns=Path('index.html').read_text(encoding='utf-8')\nclass P(HTMLParser):\n def __init__(self): super().__init__(); self.ids=[];self.text=[]\n def handle_starttag(self,t,a):\n  d=dict(a)\n  if 'id' in d:self.ids.append(d['id'])\n def handle_data(self,d):self.text.append(d)\np=P();p.feed(s)\nassert p.ids==['panel','badge']\nfor text in ['Energy meter', '42 kWh today', '42 kWh']: assert text in ''.join(p.text)\ncompact=re.sub(r'\\s+','',s.lower())\nfor expected in ['width:480px', 'padding:24px', 'border-left:8px solid #28754b', 'background:#28754b', 'color:white', 'border-radius:8px']:assert re.sub(r'\\s+','',expected) in compact\n"
+        },
+        "command": [
+          "python",
+          "test_visual_structure.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW",
+        "semantic_review_required": true,
+        "limitation": "Actual PNG is an authored interface reference, not a browser screenshot. Structural/style assertions do not prove pixel fidelity; independent visual review is mandatory."
+      },
+      "properties": {
+        "typo": false,
+        "followup": false,
+        "ambiguous": false,
+        "repair": true
+      }
+    }
+  ]
+}

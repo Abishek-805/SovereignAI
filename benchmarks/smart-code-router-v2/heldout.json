@@ -1,0 +1,961 @@
+{
+  "schema_version": 1,
+  "authored_at": "2026-10-03",
+  "author": "independent V2 fixture author agent, separate holdout authoring pass",
+  "authorship_scope": "Distinct V2 heldout contracts separately authored without reading old heldout.json or benchmark results. Initial old schema-authoring script inspection exposed embedded legacy contract definitions; no legacy contract or result was reused. Not supplied to runtime tuner. No models or production routing imported.",
+  "frozen": true,
+  "cases": [
+    {
+      "id": "v2-heldout-001",
+      "contract_id": "xor_reduce",
+      "category": "debug",
+      "request": "Fix xor_reduce in solution.py. Return integer XOR of every value; empty returns 0.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def xor_reduce(values):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import xor_reduce\nassert xor_reduce([3,5,3])==5\nassert xor_reduce([])==0\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "v2-heldout-002",
+      "contract_id": "hamming",
+      "category": "debug",
+      "request": "Fix hamming in solution.py. Count differing positions in equal-length strings; unequal lengths raises ValueError.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def hamming(a, b):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import hamming\nassert hamming(\"10101\",\"10011\")==2\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "v2-heldout-003",
+      "contract_id": "title_ascii",
+      "category": "debug",
+      "request": "Fix title_ascii in solution.py. Capitalize first ASCII character of each whitespace-separated word; lowercase remaining characters.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def title_ascii(text):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import title_ascii\nassert title_ascii(\"aDA LOVELACE\")==\"Ada Lovelace\"\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "v2-heldout-004",
+      "contract_id": "nth_from_end",
+      "category": "debug",
+      "request": "Fix nth_from_end in solution.py. Return nth item from end, n counting from one; invalid n raises IndexError.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def nth_from_end(values, n):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import nth_from_end\nassert nth_from_end([4,7,9],2)==7\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "v2-heldout-005",
+      "contract_id": "pairwise_products",
+      "category": "debug",
+      "request": "Fix pairwise_products in solution.py. Return products of adjacent pairs.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def pairwise_products(values):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import pairwise_products\nassert pairwise_products([2,3,4])==[6,12]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "v2-heldout-006",
+      "contract_id": "sum_squares",
+      "category": "debug",
+      "request": "Fix sum_squares in solution.py. Return sum of squares of numeric values.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def sum_squares(values):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import sum_squares\nassert sum_squares([-2,3])==13\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "v2-heldout-007",
+      "contract_id": "strip_suffix_once",
+      "category": "debug",
+      "request": "Fix strip_suffix_once in solution.py. Remove suffix exactly once, empty suffix leaves text unchanged.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def strip_suffix_once(text, suffix):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import strip_suffix_once\nassert strip_suffix_once(\"report.txt.txt\",\".txt\")==\"report.txt\"\nassert strip_suffix_once(\"abc\",\"\")==\"abc\"\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "v2-heldout-008",
+      "contract_id": "quote_csv",
+      "category": "debug",
+      "request": "Fix quote_csv in solution.py. Always quote string as a CSV field, doubling any inner double quotes.",
+      "expected_task_type": "DEBUG",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def quote_csv(field):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import quote_csv\nassert quote_csv('a\"b')=='\"a\"\"b\"'\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "v2-heldout-009",
+      "contract_id": "stable_minima",
+      "category": "implement",
+      "request": "Implement stable_minima in solution.py. Return indices of all minimum values; empty returns [].",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def stable_minima(values):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import stable_minima\nassert stable_minima([3,1,2,1])==[1,3]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "v2-heldout-010",
+      "contract_id": "range_step",
+      "category": "implement",
+      "request": "Implement range_step in solution.py. Return list of Python range values; step zero raises ValueError.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def range_step(start, stop, step):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import range_step\nassert range_step(5,-1,-2)==[5,3,1]\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "v2-heldout-011",
+      "contract_id": "greater_count",
+      "category": "implement",
+      "request": "Implement greater_count in solution.py. Count values strictly greater than threshold.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def greater_count(values, threshold):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import greater_count\nassert greater_count([2,3,4],3)==1\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "v2-heldout-012",
+      "contract_id": "absolute_sum",
+      "category": "implement",
+      "request": "Implement absolute_sum in solution.py. Return sum of absolute values.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def absolute_sum(values):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import absolute_sum\nassert absolute_sum([-4,2,-1])==7\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "v2-heldout-013",
+      "contract_id": "mod_histogram",
+      "category": "implement",
+      "request": "Implement mod_histogram in solution.py. Count integer values by modulo bucket; modulus<=0 raises ValueError.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def mod_histogram(values, modulus):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import mod_histogram\nassert mod_histogram([-1,0,3],3)=={2:1,0:2}\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "v2-heldout-014",
+      "contract_id": "nonempty_values",
+      "category": "implement",
+      "request": "Implement nonempty_values in solution.py. Return new mapping dropping None and empty strings, but retain zero and False.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def nonempty_values(mapping):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import nonempty_values\nassert nonempty_values({\"a\":None,\"b\":\"\",\"c\":0,\"d\":False})=={\"c\":0,\"d\":False}\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "v2-heldout-015",
+      "contract_id": "swap_values",
+      "category": "implement",
+      "request": "Implement swap_values in solution.py. Return copy swapping values of two existing keys; missing key raises KeyError.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def swap_values(mapping, first, second):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import swap_values\nassert swap_values({\"a\":1,\"b\":2},\"a\",\"b\")=={\"a\":2,\"b\":1}\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "v2-heldout-016",
+      "contract_id": "group_lengths",
+      "category": "implement",
+      "request": "Implement group_lengths in solution.py. Group words by length, preserve original order within each bucket.",
+      "expected_task_type": "IMPLEMENT",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "simple",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "file",
+        "initial_files": {
+          "solution.py": "def group_lengths(words):\n    return None\n"
+        }
+      },
+      "allowed_change_paths": [
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import group_lengths\nassert group_lengths([\"a\",\"bb\",\"c\"])=={1:[\"a\",\"c\"],2:[\"bb\"]}\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "v2-heldout-017",
+      "contract_id": "move_first",
+      "category": "refactor_multifile",
+      "request": "Refactor move_first into solution.py, leaving legacy.py as a compatibility import; implement this behavior: Return copy moving first matching target to front; missing target preserves list.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "legacy.py": "def move_first(values, target):\n    return None\n",
+          "solution.py": "from legacy import move_first\n"
+        }
+      },
+      "allowed_change_paths": [
+        "legacy.py",
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import move_first\nassert move_first([1,2,3,2],2)==[2,1,3,2]\nfrom legacy import move_first as old\nassert old is move_first\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "v2-heldout-018",
+      "contract_id": "window_average",
+      "category": "refactor_multifile",
+      "request": "Refactor window_average into solution.py, leaving legacy.py as a compatibility import; implement this behavior: Return average of each full sliding window; size<=0 raises ValueError.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "legacy.py": "def window_average(values, size):\n    return None\n",
+          "solution.py": "from legacy import window_average\n"
+        }
+      },
+      "allowed_change_paths": [
+        "legacy.py",
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import window_average\nassert window_average([1,3,5],2)==[2,4]\nfrom legacy import window_average as old\nassert old is window_average\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "v2-heldout-019",
+      "contract_id": "wrap_index",
+      "category": "refactor_multifile",
+      "request": "Refactor wrap_index into solution.py, leaving legacy.py as a compatibility import; implement this behavior: Return index modulo positive size; size<=0 raises ValueError.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "legacy.py": "def wrap_index(index, size):\n    return None\n",
+          "solution.py": "from legacy import wrap_index\n"
+        }
+      },
+      "allowed_change_paths": [
+        "legacy.py",
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import wrap_index\nassert wrap_index(-1,4)==3\nfrom legacy import wrap_index as old\nassert old is wrap_index\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "v2-heldout-020",
+      "contract_id": "ordinal_suffix",
+      "category": "refactor_multifile",
+      "request": "Refactor ordinal_suffix into solution.py, leaving legacy.py as a compatibility import; implement this behavior: Return English ordinal suffix using absolute integer, including 11/12/13 exceptions.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "legacy.py": "def ordinal_suffix(n):\n    return None\n",
+          "solution.py": "from legacy import ordinal_suffix\n"
+        }
+      },
+      "allowed_change_paths": [
+        "legacy.py",
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import ordinal_suffix\nassert ordinal_suffix(11)==\"th\"\nassert ordinal_suffix(22)==\"nd\"\nfrom legacy import ordinal_suffix as old\nassert old is ordinal_suffix\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "v2-heldout-021",
+      "contract_id": "repeat_each",
+      "category": "refactor_multifile",
+      "request": "Refactor repeat_each into solution.py, leaving legacy.py as a compatibility import; implement this behavior: Repeat each item times times; negative times returns empty.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "legacy.py": "def repeat_each(values, times):\n    return None\n",
+          "solution.py": "from legacy import repeat_each\n"
+        }
+      },
+      "allowed_change_paths": [
+        "legacy.py",
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import repeat_each\nassert repeat_each([1,2],2)==[1,1,2,2]\nfrom legacy import repeat_each as old\nassert old is repeat_each\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "v2-heldout-022",
+      "contract_id": "ascii_letters",
+      "category": "refactor_multifile",
+      "request": "Refactor ascii_letters into solution.py, leaving legacy.py as a compatibility import; implement this behavior: Return only ASCII letters, preserving original case.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "legacy.py": "def ascii_letters(text):\n    return None\n",
+          "solution.py": "from legacy import ascii_letters\n"
+        }
+      },
+      "allowed_change_paths": [
+        "legacy.py",
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import ascii_letters\nassert ascii_letters(\"éA1z_\")==\"Az\"\nfrom legacy import ascii_letters as old\nassert old is ascii_letters\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "v2-heldout-023",
+      "contract_id": "join_nonempty",
+      "category": "refactor_multifile",
+      "request": "Refactor join_nonempty into solution.py, leaving legacy.py as a compatibility import; implement this behavior: Join nonempty strings; skip empty strings but retain whitespace strings.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "legacy.py": "def join_nonempty(parts, separator):\n    return None\n",
+          "solution.py": "from legacy import join_nonempty\n"
+        }
+      },
+      "allowed_change_paths": [
+        "legacy.py",
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import join_nonempty\nassert join_nonempty([\"a\",\"\",\" \",\"b\"],\"|\")==\"a| |b\"\nfrom legacy import join_nonempty as old\nassert old is join_nonempty\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    },
+    {
+      "id": "v2-heldout-024",
+      "contract_id": "lookup_path",
+      "category": "refactor_multifile",
+      "request": "Refactor lookup_path into solution.py, leaving legacy.py as a compatibility import; implement this behavior: Follow nested mapping keys; return None when any key missing.",
+      "expected_task_type": "MULTI_FILE_CHANGE",
+      "expected_suitable_workers": [
+        "code"
+      ],
+      "complexity": "medium",
+      "modality": "text",
+      "context": {
+        "active_file": "solution.py",
+        "workspace_available": true,
+        "repository_scope": "project",
+        "initial_files": {
+          "legacy.py": "def lookup_path(mapping, keys):\n    return None\n",
+          "solution.py": "from legacy import lookup_path\n"
+        }
+      },
+      "allowed_change_paths": [
+        "legacy.py",
+        "solution.py"
+      ],
+      "sandbox_required": true,
+      "execution_supported": true,
+      "oracle": {
+        "kind": "trusted_tests",
+        "language": "python",
+        "trusted_files": {
+          "test_contract.py": "from solution import lookup_path\nassert lookup_path({\"a\":{\"b\":4}},[\"a\",\"b\"])==4\nassert lookup_path({},[\"a\"]) is None\nfrom legacy import lookup_path as old\nassert old is lookup_path\n"
+        },
+        "command": [
+          "python",
+          "test_contract.py"
+        ],
+        "expected_exit_code": 0,
+        "test_mount": "outside_editable_workspace",
+        "success_endpoint": "READY_FOR_REVIEW"
+      }
+    }
+  ]
+}

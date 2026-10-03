@@ -1091,11 +1091,20 @@ class CodingWorkspace:
             input_files={**assets, **{name:content.encode('utf-8') for name,content in planned.items()}}
             check_targets=[change['path'] for change in changes if change['action'] in {'create','edit'}]
             has_tests=any(Path(name).name.startswith('test_') and name.endswith('.py') for name in planned)
+            supplied_checks={name:content for name,content in files.items()
+                if Path(name).name.startswith('test_') and name.endswith('.py')}
+            planned_checks={name:content for name,content in planned.items()
+                if Path(name).name.startswith('test_') and name.endswith('.py')}
+            # A generated or edited test suite may provide useful checks, but
+            # cannot serve as independent evidence for its own generated code.
+            result['goal_checks_independent']=bool(supplied_checks) and supplied_checks==planned_checks
+            result['validation_kind']='tests' if has_tests else 'syntax_or_format'
             scripts=[TEST_RUNNER] if has_tests else [runner(name,mode='check') for name in check_targets]
             if not scripts:scripts=["print('Project file operations checked.')"]
             for script in scripts if sandbox is not None else []:
                 stage('Running project tests' if has_tests else 'Checking changed files in Docker')
                 execution=sandbox.execute(script,input_files=input_files)
+                result['validation_exit_code']=execution.exit_code
                 result['stdout']+=execution.stdout
                 result['stderr']+=execution.stderr[-3000:]
                 if not execution.executed or execution.exit_code!=0:
@@ -1163,6 +1172,8 @@ class CodingWorkspace:
                   'routing': {'capability': 'code', 'model': model_alias,
                               'reason': 'Configured local text model for bounded source editing'},
                   'sandbox': {'backend': 'docker', 'image_id': getattr(sandbox, 'image_id', None)}}
+        # This path prohibits targeting supplied tests and edits only target.
+        result['goal_checks_independent']=bool(trusted_tests)
         self._save_result(workspace_id, result)
         try:
             ledger.step(task, 'plan', {'target': target, 'file_count': len(files)})
@@ -1181,8 +1192,11 @@ class CodingWorkspace:
                 if baseline.stderr:
                     messages.append({'role':'user','content':'The current file fails when run in Docker. Fix this actual traceback, then return the complete corrected file:\n'+baseline.stderr[-2500:]})
                     base_messages = list(messages)
+            failures=set()
             for attempt in range(3):
                 stage('Generating change' if attempt==0 else f'Repairing after failed check ({attempt+1}/3)')
+                if self.raw_files(workspace_id)!=raw_files:
+                    raise WorkbenchError('workspace_conflict','Workspace changed during repair; no further candidate was generated')
                 candidate = model.complete_code(messages, max_tokens=2048)['code']
                 if len(candidate.encode('utf-8')) > MAX_FILE_BYTES:
                     raise WorkbenchError('sandbox_input', 'Generated file exceeds 128 KB')
@@ -1193,6 +1207,9 @@ class CodingWorkspace:
                 stage('Running supplied tests' if trusted_tests else 'Checking source in Docker')
                 execution = sandbox.execute(TEST_RUNNER if trusted_tests else runner(target, mode='run' if runtime_check else 'check'), input_files={**assets, **{name: content.encode('utf-8')
                                                                         for name, content in trial.items()}})
+                result['validation_exit_code']=execution.exit_code
+                result['validation_kind']='tests' if trusted_tests else 'runtime' if runtime_check else 'syntax_or_format'
+                result['repair_count']=attempt
                 safe_stderr = execution.stderr.replace(str(self.root), '[workspace]')
                 source_error = generated_source_issue(target, candidate, instruction, original)
                 if source_error:
@@ -1225,12 +1242,21 @@ class CodingWorkspace:
                     result['original_content'] = original
                     result['applied_hash'] = hashlib.sha256(candidate.encode('utf-8')).hexdigest()
                     result['state'] = 'completed'
+                    result['repair_stop_reason']='validated'
                     events.append({'event': 'verification', 'checks': result['checks']})
                     ledger.complete(task, {'staged':True})
                     break
                 if candidate == original and execution.exit_code == 0:
                     safe_stderr = 'The model returned the original file unchanged. Produce a real edit that addresses the request.'
                 events.append({'event': 'test_failed', 'attempt': attempt + 1})
+                from router.validation_feedback import failure_fingerprint
+                fingerprint=failure_fingerprint(safe_stderr or execution.stdout)
+                result['repair_count']=attempt
+                result['repair_stop_reason']=('validation_unavailable' if not execution.executed else
+                    'repeated_failure' if fingerprint in failures else 'attempt_budget' if attempt==2 else 'repair_pending')
+                failures.add(fingerprint)
+                result['failure_fingerprints']=sorted(failures)
+                if result['repair_stop_reason']!='repair_pending':break
                 if attempt < 2:
                     messages = base_messages + [
                         {'role': 'assistant', 'content': json.dumps({'code': candidate})},

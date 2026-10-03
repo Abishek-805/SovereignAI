@@ -1,0 +1,24 @@
+{
+  "status": "verified",
+  "checks": {
+    "normal_execution": true,
+    "network_blocked": true,
+    "root_read_only": true,
+    "input_read_only": true,
+    "non_root": true,
+    "capabilities_dropped": true,
+    "no_new_privileges": true,
+    "process_isolated": true,
+    "pids_bounded": true,
+    "memory_bounded": true,
+    "cpu_bounded": true,
+    "output_bounded": true,
+    "docker_socket_absent": true,
+    "host_env_excluded": true,
+    "project_secret_excluded": true,
+    "timeout_stops": true,
+    "cancel_stops": true,
+    "containers_cleaned": true
+  },
+  "image_id": "sha256:5370db5915e0774ba92a758199430a762f2cbc45515ed2958ca8e9a58faef272"
+}

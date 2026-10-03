@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "datasets": [
+    {
+      "file": "main.json",
+      "case_count": 100,
+      "canonical_sha256": "0bab8ee63c31b0ae93a4f592bd45f2f27b89527fe034ab0c09d99aed7165cd85",
+      "file_sha256": "cd905cdc4bb11b32bf122963c6b4776b3eb50355dae62762ff96fb26679af712"
+    },
+    {
+      "file": "heldout.json",
+      "case_count": 24,
+      "canonical_sha256": "ecbe40561922b25e2b8b807b76206c92783ed20e0a5c77b01686405d1a1a462a",
+      "file_sha256": "34211dc783d60ec240b6c9a075f5f915bd27523c018c40baa2a7a03493e4cc21"
+    }
+  ],
+  "holdout_policy": "Runtime tuning may inspect development only. Freeze production/harness/configuration before first heldout execution. Do not tune using heldout failures; a new policy needs a separately authored new holdout.",
+  "limitations": [
+    "Development has 100 task cases over 35 distinct computational contracts plus five vision contracts. Repeated computational contracts across modes are correlated; cluster statistical intervals by contract_id.",
+    "20 explanation tasks and one ambiguous edit require independent semantic review.",
+    "Five actual PNG UI references are authored bitmaps, not browser screenshots; executable structure/style checks do not prove visual fidelity.",
+    "Holdout has 24 distinct contracts, but only debugging/implementation/refactoring. No heldout explanation, architecture, or vision quality estimate.",
+    "Initial legacy authoring script inspection exposed embedded old heldout contract definitions. Old heldout.json and old model outputs were not opened. V2 contracts are distinct, but authorship was not blind to every old contract definition.",
+    "Oracle examples are not exhaustive correctness proofs. All generation context excludes trusted_files and author reference solutions."
+  ]
+}

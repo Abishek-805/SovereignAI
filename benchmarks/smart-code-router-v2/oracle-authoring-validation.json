@@ -1,0 +1,7 @@
+{
+  "purpose": "Offline reference-positive and broken-baseline-negative oracle sanity, not model evaluation",
+  "reference_pass": 103,
+  "broken_baseline_fail": 103,
+  "rubric_only": 21,
+  "failures": []
+}

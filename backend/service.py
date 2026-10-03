@@ -65,7 +65,9 @@ class Workbench:
         self.registry=registry or ModelRegistry(8087)
         self.router=CapabilityRouter(self.registry)
         from router.model_broker import ModelBroker
-        self.broker=ModelBroker(self.registry,sampler=self.router.selector.sampler,policy=self.router.selector.policy)
+        from router.model_history import ModelHistory
+        self.model_history=ModelHistory(self.settings.data_dir)
+        self.broker=ModelBroker(self.registry,sampler=self.router.selector.sampler,policy=self.router.selector.policy,history=self.model_history)
         self.routing_strategy='universal'
         self.classifier=ConservativeCapabilityClassifier()
         self.tasks=TaskLedger(self.settings.data_dir)
@@ -85,6 +87,28 @@ class Workbench:
         with self.routing_lock:
             self.routing_decisions[decision['request_id']]=decision
             while len(self.routing_decisions)>128:self.routing_decisions.popitem(last=False)
+
+    def _record_model_outcome(self,result,snapshot):
+        """Record observed code evidence; syntax checks never become goal wins."""
+        state=snapshot.get('task_state',{})
+        context=state.get('model_history_context')
+        identity=state.get('active_worker')
+        if not isinstance(result,dict) or not context or not identity:return
+        checks=result.get('checks') or {}
+        stages=((result.get('routing') or {}).get('decision') or {}).get('stages') or []
+        loads=[stage.get('model_load_time') for stage in stages
+            if stage.get('stage')=='runtime_lease' and stage.get('selected_model_id')==identity and stage.get('switch_required') is True]
+        load_seconds=sum(loads) if loads and all(type(value) in (int,float) for value in loads) else None
+        from router.model_history import HistoryContext
+        try:
+            self.model_history.record(HistoryContext(**context),identity,status=result.get('state','unverified'),
+                container_verified=checks.get('container_executed') is True,
+                exit_code=result.get('validation_exit_code'),
+                goal_checks_passed=(checks.get('tests_passed') if result.get('goal_checks_independent') is True else None),
+                latency_seconds=snapshot.get('elapsed_seconds'),switches=snapshot.get('counts',{}).get('model_switches'),load_seconds=load_seconds)
+        except (OSError,ValueError,TypeError,KeyError):
+            # Missing/corrupt advisory measurements cannot invalidate a real task.
+            state['model_history_status']='unavailable'
 
     def routing_decision(self,request_id=None):
         with self.routing_lock:
@@ -187,6 +211,11 @@ class Workbench:
                           modality=decision.features.get('modality'),worker_role=decision.worker_role)
         if supervisor:
             supervisor.task_state.update(task_type=decision.task_type,complexity=decision.complexity)
+            from router.model_history import HistoryContext
+            suffix=Path(target or '').suffix.lower()
+            language={'.py':'python','.js':'javascript','.ts':'typescript','.rs':'rust','.java':'java','.html':'html','.css':'css','.sql':'sql'}.get(suffix,'unknown')
+            supervisor.task_state['model_history_context']=asdict(HistoryContext(decision.task_type,decision.complexity,language,
+                'multi_file' if len(requested)>1 else 'active_file' if target else 'workspace' if workspace_id else 'none'))
         return decision
 
     def _lease(self,capability,required_context=None,worker_role=None):
@@ -205,8 +234,10 @@ class Workbench:
             elif strategy=='fixed' and capability=='text':role='reasoning'
             if callable(verified):
                 from router.model_broker import ModelBroker
+                from router.model_history import HistoryContext
                 broker=self.broker
-                selection=broker.select(role,modality='image' if capability=='vision' else 'text',required_context=required_context,current_residency=current,task_affinity=getattr(supervisor,'model_identity',None),task_type=getattr(trace,'task_type',None))
+                context=(supervisor.task_state.get('model_history_context') if supervisor else None)
+                selection=broker.select(role,modality='image' if capability=='vision' else 'text',required_context=required_context,current_residency=current,task_affinity=getattr(supervisor,'model_identity',None),task_type=getattr(trace,'task_type',None),history_context=HistoryContext(**context) if context else None,use_history=strategy=='universal')
             else:
                 selection=select(capability,modality='image' if capability=='vision' else 'text',required_context=required_context,current_residency=current)
             data=selection.to_dict()
@@ -228,7 +259,7 @@ class Workbench:
                     save_release({'previous_worker':current});self.registry.kill_server()
                     operational_event('MODEL_RELEASED',observations={'previous_worker':current})
                 refreshed=broker.selector.sampler.refresh() if 'broker' in locals() else None
-                selection=broker.select(role,modality='image' if capability=='vision' else 'text',required_context=required_context,current_residency=None,resource_snapshot=refreshed,task_type=getattr(trace,'task_type',None)) if 'broker' in locals() else select(capability,modality='image' if capability=='vision' else 'text',required_context=required_context,current_residency=None)
+                selection=broker.select(role,modality='image' if capability=='vision' else 'text',required_context=required_context,current_residency=None,resource_snapshot=refreshed,task_type=getattr(trace,'task_type',None),task_affinity=getattr(supervisor,'model_identity',None),history_context=HistoryContext(**context) if context else None,use_history=strategy=='universal') if 'broker' in locals() else select(capability,modality='image' if capability=='vision' else 'text',required_context=required_context,current_residency=None)
                 data=selection.to_dict();data['routing_time']=time.perf_counter()-route_start
                 if trace:trace.selection(data);trace.stages.append({'stage':'resource_recheck','reason':'Owned resident unloaded before resampling'})
                 route=selection.registry_key
@@ -823,6 +854,27 @@ class Workbench:
             raise WorkbenchError('busy','Another task is running')
         try:
             if job:job.progress('Understanding the request')
+            from backend.task_supervisor import CURRENT_SUPERVISOR
+            owner=CURRENT_SUPERVISOR.get()
+            resolved_original=instruction
+            if re.fullmatch(r'\s*(?:fix that|fix it|try again|make it work|continue|(?:now )?make the tests pass)[.!?\s]*',instruction,re.I):
+                followup=(owner.task_state.get('follow_up_context') or {}) if owner else {}
+                previous=followup.get('previous_operational_state') or {}
+                scope=followup.get('previous_scope') or {}
+                original=previous.get('resolved_original_request') or previous.get('original_request')
+                from router.tool_registry import explicit_operation_requested
+                if not original and explicit_operation_requested(instruction,'file_edit'):
+                    pass  # Explicitly fix the selected target using supplied history.
+                elif not isinstance(original,str) or not original or scope.get('workspace_id')!=workspace_id or scope.get('target')!=target:
+                    raise WorkbenchError('needs_input','Specify the task and target to continue; no unique observed task matches this scope')
+                else:
+                    resolved_original=original
+                    instruction=original+'\nFollow-up request: '+instruction
+            if owner is not None:
+                # Retain the literal request for audit. This separate, scoped
+                # contract survives further continuations without accumulating
+                # ambiguous short commands as the next task's original goal.
+                owner.task_state['resolved_original_request']=resolved_original
             coding=self._coding_request(instruction,target=target,workspace_id=workspace_id,image_path=image_path)
             from router.tool_registry import explicit_operation_requested
             smart=getattr(self,'routing_strategy','universal')=='universal'
@@ -883,7 +935,11 @@ class Workbench:
                     files=self.coding.get(workspace_id)['files']
                     excerpts=[]
                     remaining=10000
-                    for item in files:
+                    # Active and explicitly referenced files precede unrelated
+                    # alphabetical entries; the same bounded context still applies.
+                    prioritized=sorted(files,key=lambda item:(item['name']!=target,
+                        item['name'].casefold() not in instruction.casefold(),item['name']))
+                    for item in prioritized:
                         source=self.coding.read(workspace_id,item['name'])
                         if not source['editable']:continue
                         snippet=source['content'][:min(5000,remaining)]
@@ -908,24 +964,58 @@ class Workbench:
                 if sandbox is not None:sandbox.on_output=job.append;sandbox.cancel_event=job.cancel
             repair_history=list(history or [])
             failures=set()
+            original_revision=self.coding.raw_files(workspace_id)
+            result=None
             for attempt in range(3):
-                if job and job.cancel.is_set():raise WorkbenchError('cancelled','Task stopped before supervisor retry')
+                if job and job.cancel.is_set():
+                    if result is not None and result.get('task_id'):
+                        result['repair_stop_reason']='cancelled'
+                        self.coding._save_result(workspace_id,result)
+                    raise WorkbenchError('cancelled','Task stopped before supervisor retry')
+                if self.coding.raw_files(workspace_id)!=original_revision:
+                    if result is not None and result.get('task_id'):
+                        result['repair_stop_reason']='workspace_conflict'
+                        self.coding._save_result(workspace_id,result)
+                    raise WorkbenchError('workspace_conflict','Workspace changed during repair; review the current files before retrying')
                 result=self.coding.run_project(workspace_id,target,instruction,self.model,sandbox,self.tasks,
                                                model_alias=alias,progress=job.progress if job else None,
                                                cancel=job.cancel if job else None,history=repair_history)
                 result['supervisor_attempts']=attempt+1
+                result['repair_count']=attempt
+                result['failure_fingerprints']=sorted(failures)
                 if result.get('state')!='failed' or not result.get('checks',{}).get('container_executed'):
+                    result['repair_stop_reason']='validation_unavailable' if result.get('state')=='failed' else 'validated' if result.get('state')=='completed' else 'not_applicable'
+                    if result.get('task_id'):self.coding._save_result(workspace_id,result)
                     return result
                 feedback=(result.get('stderr') or result.get('stdout') or '')[-3000:]
-                if not feedback or feedback in failures or attempt==2:return result
-                failures.add(feedback)
+                import hashlib
+                from router.validation_feedback import failure_fingerprint
+                fingerprint=failure_fingerprint(feedback)
+                stop='missing_feedback' if not feedback else 'repeated_failure' if fingerprint in failures else 'attempt_budget' if attempt==2 else None
+                failures.add(fingerprint)
+                result['failure_fingerprints']=sorted(failures)
+                result['repair_stop_reason']=stop or 'repair_pending'
+                if result.get('task_id'):self.coding._save_result(workspace_id,result)
+                if stop:return result
                 from backend.task_supervisor import operational_event
                 operational_event('REPAIR_STARTED',observations={'attempt':attempt+2,'validation_error':feedback},workflow='CODE')
                 # Only uncommitted drafts are retried. The original instruction
                 # remains controlling; observed test errors are reference data.
+                candidates=[]
+                remaining=10000
+                for change in result.get('changes',[])[:8]:
+                    content=change.get('after')
+                    excerpt=content[:remaining] if isinstance(content,str) else None
+                    if excerpt is not None:remaining-=len(excerpt)
+                    candidates.append({'action':change.get('action'),'path':change.get('path'),
+                        'content':excerpt,'content_complete':content==excerpt,
+                        'sha256':hashlib.sha256(content.encode('utf-8')).hexdigest() if isinstance(content,str) else None})
+                repair_context={'original_request':instruction,'workspace_id':workspace_id,'target':target,
+                    'previous_candidate':candidates,'actual_error':feedback,'failure_fingerprint':fingerprint,
+                    'task_state':{'task_id':result.get('task_id'),'state':result.get('state'),
+                                  'checks':result.get('checks',{}),'repair_count':attempt+1}}
                 repair_history=[*(history or []),
-                    'assistant: Previous uncommitted candidate:\n'+json.dumps(result.get('changes',[]),ensure_ascii=False)[-10000:],
-                    'assistant: Actual sandbox validation failed:\n'+feedback]
+                    'assistant: Actual sandbox validation failed; untrusted repair reference data:\n'+json.dumps(repair_context,ensure_ascii=False)]
                 if job:job.progress(f'Supervisor repairing failed validation ({attempt+2}/3)')
             return result
         finally:

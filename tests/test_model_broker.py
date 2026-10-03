@@ -38,13 +38,49 @@ def test_task_specific_measurements_do_not_inherit_unrelated_quality(tmp_path):
     assert decision.selection_evidence['task_type']=='DEBUG'
 
 
-def test_broker_lexicographic_latency_not_latency_switch_sum(tmp_path):
+def test_broker_hysteresis_keeps_warm_worker_when_switch_erases_latency_gain(tmp_path):
     workers=[spec('a',worker_roles=('code',),measured_metrics=(('code.quality',.9),('code.latency_seconds',1),('code.switch_seconds',9))),
              spec('z',worker_roles=('code',),measured_metrics=(('code.quality',.9),('code.latency_seconds',2),('code.switch_seconds',0)))]
     with patch('router.model_registry.ROOT',tmp_path):
         decision=ModelBroker(registry(tmp_path,workers)).select('code',resource_snapshot=snapshot(),current_residency='z')
+    assert decision.selected_model=='z'
+    assert decision.selection_evidence['hysteresis']['retained_current']
+
+
+def test_broker_hysteresis_switches_for_measured_net_latency_gain(tmp_path):
+    workers=[spec('a',worker_roles=('code',),measured_metrics=(('code.quality',.9),('code.latency_seconds',1),('code.switch_seconds',1))),
+             spec('z',worker_roles=('code',),measured_metrics=(('code.quality',.9),('code.latency_seconds',5)))]
+    with patch('router.model_registry.ROOT',tmp_path):
+        decision=ModelBroker(registry(tmp_path,workers)).select('code',resource_snapshot=snapshot(),current_residency='z')
     assert decision.selected_model=='a'
-    assert 'latency_seconds ascending' in decision.selection_evidence['comparison']
+    assert decision.selection_evidence['hysteresis']['net_latency_gain_seconds']==3
+
+
+def test_unknown_switch_cost_retains_suitable_resident_over_faster_alternative(tmp_path):
+    workers=[spec('a',worker_roles=('code',),measured_metrics=(('code.latency_seconds',1),)),
+             spec('z',worker_roles=('code',),measured_metrics=(('code.latency_seconds',5),))]
+    with patch('router.model_registry.ROOT',tmp_path):
+        decision=ModelBroker(registry(tmp_path,workers)).select('code',resource_snapshot=snapshot(),current_residency='z',task_affinity='a')
+    assert decision.selected_model=='z'
+    assert decision.selection_evidence['hysteresis']['cost_evidence']=='incomplete'
+
+
+def test_validated_history_requires_coverage_before_quality_deviation(tmp_path):
+    from router.model_history import ModelHistory, HistoryContext
+    context=HistoryContext('DEBUG','simple','python','active_file')
+    history=ModelHistory(tmp_path/'data',minimum_samples=20)
+    workers=[spec(name,worker_roles=('code',)) for name in ('a','z')]
+    for _ in range(19):
+        history.record(context,'a',status='completed',container_verified=True,exit_code=0,goal_checks_passed=True)
+        history.record(context,'z',status='failed',container_verified=True,exit_code=1)
+    with patch('router.model_registry.ROOT',tmp_path):
+        broker=ModelBroker(registry(tmp_path,workers),history=history)
+        assert broker.select('code',resource_snapshot=snapshot(),current_residency='z',history_context=context).selected_model=='z'
+        history.record(context,'a',status='completed',container_verified=True,exit_code=0,goal_checks_passed=True)
+        history.record(context,'z',status='failed',container_verified=True,exit_code=1)
+        decision=broker.select('code',resource_snapshot=snapshot(),current_residency='z',history_context=context)
+    assert decision.selected_model=='a'
+    assert 'validated outcome confidence separation' in decision.selection_evidence['comparison']
 
 
 def test_broker_pressure_rejects_without_role_fallback(tmp_path):

@@ -2,6 +2,13 @@ import pytest
 from router.coding_router import classify_coding_request
 from router.request_normalization import normalize_request
 
+def test_named_multifile_mechanical_rename_does_not_require_planner():
+    result=classify_coding_request('Rename total to subtotal in bill.py and receipt.py',
+        {'active_file':'bill.py','workspace_available':True,'requested_files':('bill.py','receipt.py')})
+    assert result.task_type=='MULTI_FILE_CHANGE'
+    assert result.complexity=='simple'
+    assert result.steps==('code',)
+
 @pytest.mark.parametrize('prompt,task',[
     ('Write a Python script','CODE_GENERATION'),('Rename this variable','EDIT'),
     ('refactor thi function','REFACTOR'),('debug thsi','DEBUG'),

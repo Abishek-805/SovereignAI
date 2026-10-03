@@ -1,0 +1,65 @@
+{
+  "name": "Code Fidelity & Repair authoring controls",
+  "status": "AUTHORING_CONTROLS_ONLY",
+  "task_manifest_sha256": "0910bfdd4eb518e699eb584d3728e2128713dbc5dcc11576118f95947a269650",
+  "sandbox_image_id": "sha256:5370db5915e0774ba92a758199430a762f2cbc45515ed2958ca8e9a58faef272",
+  "cases": [
+    {
+      "task_id": "cf01",
+      "starting": {
+        "executed": true,
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "test_missing_number_raises (test_contract.TestInvoice.test_missing_number_raises) ... FAIL\ntest_missing_total_raises (test_contract.TestInvoice.test_missing_total_raises) ... FAIL\ntest_no_false_total (test_contract.TestInvoice.test_no_false_total) ... FAIL\ntest_valid (test_contract.TestInvoice.test_valid) ... ok\n\n======================================================================\nFAIL: test_missing_number_raises (test_contract.TestInvoice.test_missing_number_raises)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 7, in test_missing_number_raises\n    with self.assertRaisesRegex(KeyError, 'invoice_number'):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: KeyError not raised\n\n======================================================================\nFAIL: test_missing_total_raises (test_contract.TestInvoice.test_missing_total_raises)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 10, in test_missing_total_raises\n    with self.assertRaisesRegex(KeyError, 'total'):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: KeyError not raised\n\n======================================================================\nFAIL: test_no_false_total (test_contract.TestInvoice.test_no_false_total)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 13, in test_no_false_total\n    with self.assertRaises(KeyError):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: KeyError not raised\n\n----------------------------------------------------------------------\nRan 4 tests in 0.001s\n\nFAILED (failures=3)\n",
+        "file_sha256": "b5bbb56dac6efe41260df6d5b285551d3e7eaab8f1ab79de8dce1f42b515a654",
+        "private_test_sha256": "b7c974c6fc62f33a77ee863773e5926364da3bd48f15670f59ea3903d90b1ca3"
+      },
+      "reference": {
+        "executed": true,
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "test_missing_number_raises (test_contract.TestInvoice.test_missing_number_raises) ... ok\ntest_missing_total_raises (test_contract.TestInvoice.test_missing_total_raises) ... ok\ntest_no_false_total (test_contract.TestInvoice.test_no_false_total) ... ok\ntest_valid (test_contract.TestInvoice.test_valid) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.001s\n\nOK\n",
+        "file_sha256": "76bb9a4782ec3ec93587884e5023abc707292ecb4a0f12ebe4c4528a33f025e6",
+        "private_test_sha256": "b7c974c6fc62f33a77ee863773e5926364da3bd48f15670f59ea3903d90b1ca3"
+      }
+    },
+    {
+      "task_id": "cf04",
+      "starting": {
+        "executed": true,
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "test_empty (test_contract.TestInvoiceCSV.test_empty) ... ok\ntest_preserved_symbols (test_contract.TestInvoiceCSV.test_preserved_symbols) ... ok\ntest_round_trip (test_contract.TestInvoiceCSV.test_round_trip) ... FAIL\n\n======================================================================\nFAIL: test_round_trip (test_contract.TestInvoiceCSV.test_round_trip)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 9, in test_round_trip\n    self.assertEqual(list(csv.reader(io.StringIO(export_invoice(rows)))), [['item','amount'], *rows])\nAssertionError: Lists differ: [['item', 'amount'], ['Widget', ' large', '2'], ['A \"quoted\" part', '5']] != [['item', 'amount'], ['Widget, large', '2'], ['A \"quoted\" part', '5']]\n\nFirst differing element 1:\n['Widget', ' large', '2']\n['Widget, large', '2']\n\n- [['item', 'amount'], ['Widget', ' large', '2'], ['A \"quoted\" part', '5']]\n?                              - --\n\n+ [['item', 'amount'], ['Widget, large', '2'], ['A \"quoted\" part', '5']]\n\n----------------------------------------------------------------------\nRan 3 tests in 0.001s\n\nFAILED (failures=1)\n",
+        "file_sha256": "9595783861a65cb5f6c75a71314f9efae3746dc0b7bfa2d300fce3cc80123b40",
+        "private_test_sha256": "c469a2da721f0f8ff84b1ac0ec13d4b8bd1927a80403f217623462e577e96972"
+      },
+      "reference": {
+        "executed": true,
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "test_empty (test_contract.TestInvoiceCSV.test_empty) ... ok\ntest_preserved_symbols (test_contract.TestInvoiceCSV.test_preserved_symbols) ... ok\ntest_round_trip (test_contract.TestInvoiceCSV.test_round_trip) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nOK\n",
+        "file_sha256": "1173c516955ce9bc70fb09749d4770813badadbc46140943887bdd247c31dfdb",
+        "private_test_sha256": "c469a2da721f0f8ff84b1ac0ec13d4b8bd1927a80403f217623462e577e96972"
+      }
+    },
+    {
+      "task_id": "cf18",
+      "starting": {
+        "executed": true,
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "test_boundary_and_missing (test_contract.TestPassReport.test_boundary_and_missing) ... ERROR\ntest_empty (test_contract.TestPassReport.test_empty) ... ERROR\ntest_nan_is_invalid (test_contract.TestPassReport.test_nan_is_invalid) ... ERROR\n\n======================================================================\nERROR: test_boundary_and_missing (test_contract.TestPassReport.test_boundary_and_missing)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 6, in test_boundary_and_missing\n    out = pass_report(rows, ['WAT1','WAT2'])\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/output/project/solution.py\", line 2, in pass_report\n    return {name: {'passed': sum(float(row[name]) > 25 for row in rows), 'total': len(rows)} for name in columns}\n                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/output/project/solution.py\", line 2, in <genexpr>\n    return {name: {'passed': sum(float(row[name]) > 25 for row in rows), 'total': len(rows)} for name in columns}\n                                 ^^^^^^^^^^^^^^^^\nValueError: could not convert string to float: 'bad'\n\n======================================================================\nERROR: test_empty (test_contract.TestPassReport.test_empty)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 10, in test_empty\n    self.assertEqual(pass_report([], ['CAT'])['CAT']['percentage'], None)\n                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^\nKeyError: 'percentage'\n\n======================================================================\nERROR: test_nan_is_invalid (test_contract.TestPassReport.test_nan_is_invalid)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 12, in test_nan_is_invalid\n    self.assertEqual(pass_report([{'A': float('nan')}], ['A'])['A']['invalid'], 1)\n                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^\nKeyError: 'invalid'\n\n----------------------------------------------------------------------\nRan 3 tests in 0.002s\n\nFAILED (errors=3)\n",
+        "file_sha256": "d4d9721698dce70cbe788e23712c045f4d5167adec7fdf8e0753709a3ec2dad1",
+        "private_test_sha256": "7d24bc41e59c6ee50971c4003dbcc04904ee1af46551fb98908e417f32855655"
+      },
+      "reference": {
+        "executed": true,
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "test_boundary_and_missing (test_contract.TestPassReport.test_boundary_and_missing) ... ok\ntest_empty (test_contract.TestPassReport.test_empty) ... ok\ntest_nan_is_invalid (test_contract.TestPassReport.test_nan_is_invalid) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nOK\n",
+        "file_sha256": "a4c3a4374a3cd724fa0dcc7d3098a172a99424d671b6e33467d10316c3b754d1",
+        "private_test_sha256": "7d24bc41e59c6ee50971c4003dbcc04904ee1af46551fb98908e417f32855655"
+      }
+    }
+  ]
+}

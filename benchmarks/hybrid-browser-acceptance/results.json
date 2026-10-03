@@ -1,0 +1,67 @@
+{
+  "fixtureOnly": true,
+  "modelCalls": 0,
+  "dockerCalls": 0,
+  "checks": [
+    {
+      "name": "Selected workspace explorer scope",
+      "passed": true
+    },
+    {
+      "name": "Real staged API draft renders review; canonical bytes unchanged; no fake validation",
+      "passed": true
+    },
+    {
+      "name": "Real Job API public progress and code preview rendered from fixture",
+      "passed": true
+    }
+  ],
+  "pageErrors": [],
+  "limitations": [
+    "Synthetic draft and public preview fixture through real backend; no generated-code execution or live inference demonstrated."
+  ],
+  "fixture": {
+    "workspace": "f875f33eb4b94cdd945f4fc88150a562",
+    "other": "b8939f7f7dd049d883eb6d28bfb4737a",
+    "task": "29f25cb313ea4e30a52eb6afcef61bb3",
+    "job": "3ce899333f8c47d88448969c0fccb56e",
+    "before": "def value():\n    return 1\n",
+    "fixture_only": true,
+    "model_calls": 0
+  },
+  "networkErrors": [
+    {
+      "console": "[PWA] SW registration error: TypeError: Cannot read properties of undefined (reading 'waiting')\n    at http://127.0.0.1:8088/_app/immutable/chunks/BBnX5xw4.js:2:2886"
+    },
+    {
+      "url": "http://127.0.0.1:8088/workbench/info",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8088/workbench/info",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8088/workbench/info",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8088/workbench/info",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "console": "[PWA] SW registration error: TypeError: Cannot read properties of undefined (reading 'waiting')\n    at http://127.0.0.1:8088/_app/immutable/chunks/BBnX5xw4.js:2:2886"
+    }
+  ],
+  "builtIndexSha256": "7866181622aec93fbee3ab48df1044c7cf8ec7f4c09df391757352b7ca8ecceb",
+  "passed": true,
+  "backendLogs": "Fixture imports starting\r\nFixture Workbench created\r\n"
+}

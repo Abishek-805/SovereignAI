@@ -1012,7 +1012,7 @@ class CodingWorkspace:
                     payload = {key:value for key,value in reusable_plan.items() if key != 'plan_sha256'}
                     valid = (len(json.dumps(payload, ensure_ascii=False)) <= 24000 and
                              self._plan_digest(payload) == reusable_plan['plan_sha256'] and
-                             payload['scope'] in (None,'existing_files','new_files') and
+                             payload['scope'] in (None,'existing_files','new_files','project') and
                              isinstance(payload['operations'], list))
                     if valid:
                         cached_plan = json.loads(json.dumps({'scope':payload['scope'],'operations':payload['operations']}))
@@ -1044,7 +1044,7 @@ class CodingWorkspace:
               direct_plan or model.plan_workspace_edit(instruction,summaries,snapshot['folders'],target or '',history=history))
         scope=plan.get('scope') if isinstance(plan,dict) else None
         operations=plan['operations'] if isinstance(plan,dict) else plan
-        if (scope not in (None,'existing_files','new_files') or not isinstance(operations,list) or
+        if (scope not in (None,'existing_files','new_files','project') or not isinstance(operations,list) or
             not 1 <= len(operations) <= 8 or any(not isinstance(item,dict) or
             not isinstance(item.get('path'),str) or not isinstance(item.get('reason'),str) or
             item.get('action') not in {'create','edit','delete','mkdir'} for item in operations)):

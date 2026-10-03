@@ -1,0 +1,20 @@
+# Independent audit of initial hybrid live checks
+
+Read-only review of benchmarks/hybrid-live-acceptance-20261003.json and the development fixtures in benchmarks/verify-hybrid-live.py, inspected 2026-10-03. No model, Docker, or heldout calls. No production, harness, settings or existing review edits.
+
+| Check | Evidence-based verdict | Finding |
+|---|---|---|
+| Explanation | PASS after source review | verify-hybrid-live.py:32 supplies score(values) = sum(values)/len(values) for nonempty input, else 0. Answer correctly explains arithmetic mean and empty behavior, names score.py, and makes no edit claim. Exact answer SHA256 6a62d605c89991a32809ddb97d959c9b6b264aa2de4aa6b7fb0836a48f900d08 matches the existing primary review. Raw UNKNOWN is appropriate before review. |
+| Rename | FAIL, MODEL/PLAN VERIFICATION boundary | semantic_uncertainty says proposal lacks total→subtotal replacements. Seven model calls; no trusted container trajectory and no REPAIR_STARTED. This is not a failed generated candidate repaired by Docker feedback. Need inspect planner/verifier contract alignment before attributing it solely to model skill. |
+| Generated repair fixture | PASS for requested artifact; automatic repair NOT VERIFIED | One trusted container check, exit 0, artifact_verified true; supervisor_attempts=1, repair_observed=false. Candidate passed first time. A broken baseline fixture does not prove a generated candidate failed. verify-hybrid-live.py:143 correctly records automatic_generated_repair_status NOT_VERIFIED. |
+| Architecture | FAIL, MODEL/PLAN VERIFICATION boundary | semantic_uncertainty rejects missing Catalog/invoice responsibilities or implementation detail. Eight model calls, two switches, no trusted candidate validation and no repair. Qwen planning→Coder occurred, but no independent evidence that switching helped. A plan verifier demanding generated implementation detail may also be a schema/stage mismatch; this trace alone cannot isolate causality. |
+| Warm coder | PASS for requested artifact and retention observation | Trusted exit 0, artifact_verified true; one candidate, three model calls, zero switches. Amount empty-list behavior corrected, source retained until review. Demonstrates this observed warm route, not general calibrated hysteresis benefit. |
+| Follow-ups | PASS for observed scope/goal continuity; functional accuracy NOT VERIFIED here | Both fix that and now make the tests pass retain selected workspace and previous observed task. Both return completed/awaiting_review, zero switches, syntax-only validation. This row has no independent trusted trajectory for these follow-up artifacts; do not count functional success solely from completed. |
+| Cancellation | PASS for observed pre-generation cancellation | cancelled error, zero model calls, source_preserved true. Does not cover cancellation during an active provider stream or tool execution. |
+| Stale acceptance | PASS for observed revision conflict | Actual Accept endpoint returns HTTP409 workspace_conflict and preserves changed source in disposable workspace. Publication protection remains separate from generation/validation. |
+
+## Resource and repair interpretation
+
+Sampled max llama-server process count is 1 for measured turns. Maximum recorded RSS across main checks is 3496.6640625 MiB and device VRAM 3361 MiB. These are sampling observations, not proof of every instant or calibrated peak admission. Resource metadata explicitly records unknown model/KV peak requirements and conditional admission.
+
+No row establishes actual generated-candidate failure→bounded repair→changed candidate→independent final pass. The passing batches candidate has a single trajectory entry; rename/architecture terminate before candidate validation. Repeated generated-failure budget behavior is also unverified in this initial suite. The suite's COMPLETED means the checking script finished, not universal task success. Two observed planning failures, unverified automatic repair, and unverified functional follow-up accuracy must remain visible in any release claim. No six-arm superiority conclusion is supported by this acceptance sample.

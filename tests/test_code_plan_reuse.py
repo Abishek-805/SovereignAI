@@ -113,3 +113,21 @@ def test_entire_plan_is_checked_before_first_generation(tmp_path,operations):
         work.run_project(wid,'','Implement value module',model,sandbox,ledger)
     assert model.generations == len(sandbox.inputs) == 0
 
+
+
+def test_integrated_project_scope_is_supported_for_fresh_and_reused_plans(tmp_path):
+    work,wid,model,sandbox,ledger = setup(tmp_path)
+    work.write(wid,'existing.py','def value():\n    return 0\n')
+    model.plan = {'scope':'project','operations':[
+        {'action':'edit','path':'existing.py','reason':'update shared implementation'},
+        {'action':'create','path':'consumer.py','reason':'add integrated consumer'}]}
+    request='Implement the project across existing.py and consumer.py; update the existing source and add the consumer.'
+    first=work.run_project(wid,'existing.py',request,model,sandbox,ledger)
+    second=work.run_project(wid,'existing.py',request,model,sandbox,ledger,reusable_plan=first['operation_plan'])
+    assert model.plans == 1 and model.generations == 4
+    assert len(sandbox.inputs)==2
+    assert first['operation_plan']['scope']==second['operation_plan']['scope']=='project'
+    assert second['events'][0]['event']=='PLAN_REUSED'
+    assert set(change['path'] for change in second['changes'])=={'existing.py','consumer.py'}
+    assert work.read(wid,'existing.py')['content']=='def value():\n    return 0\n'
+    assert not (work.files_directory(wid)/'consumer.py').exists()

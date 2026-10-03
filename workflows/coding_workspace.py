@@ -932,8 +932,10 @@ class CodingWorkspace:
                 raise WorkbenchError('generation_format', 'Invalid project operation schema')
             action, path = operation['action'], self._name(operation.get('path'))
             self._file(workspace_id, path)
-            if path in assets or path in seen:
-                raise WorkbenchError('invalid_file', 'The plan repeats a path or changes a read-only asset')
+            if path in assets:
+                raise WorkbenchError('invalid_file', 'Binary and large assets cannot be changed by generated text edits')
+            if path in seen:
+                raise WorkbenchError('invalid_file', 'The plan repeats a workspace path')
             seen.add(path)
             replacements = operation.get('replacements', [])
             if not isinstance(replacements, list) or len(replacements) > 8 or (replacements and action != 'edit'):

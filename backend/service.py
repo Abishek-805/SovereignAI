@@ -962,45 +962,45 @@ class Workbench:
             if job:
                 job.progress('Reading project structure')
                 if sandbox is not None:sandbox.on_output=job.append;sandbox.cancel_event=job.cancel
+            from router.code_agent import Action, CodeAgent
+            from router.code_agent_state import CodeTaskContext, CodeObservation, ObservationKind
+            from backend.task_supervisor import operational_event
+            import hashlib
+            context=CodeTaskContext(original_request=owner.goal if owner else instruction,
+                resolved_request=instruction,workspace=workspace_id,target=target,active_file=target,
+                current_model=alias,task_stage='EXECUTING',context_scope={'workspace_id':workspace_id,'target':target})
+            if owner is not None:
+                owner.task_state.update(target=target,task_type=coding.task_type,complexity=coding.complexity,
+                    context_scope=context.to_dict()['context_scope'])
             repair_history=list(history or [])
-            failures=set()
             original_revision=self.coding.raw_files(workspace_id)
             result=None
-            for attempt in range(3):
-                if job and job.cancel.is_set():
-                    if result is not None and result.get('task_id'):
-                        result['repair_stop_reason']='cancelled'
-                        self.coding._save_result(workspace_id,result)
-                    raise WorkbenchError('cancelled','Task stopped before supervisor retry')
+            reusable_plan=None
+
+            def before_attempt(attempt, observations):
                 if self.coding.raw_files(workspace_id)!=original_revision:
                     if result is not None and result.get('task_id'):
                         result['repair_stop_reason']='workspace_conflict'
                         self.coding._save_result(workspace_id,result)
                     raise WorkbenchError('workspace_conflict','Workspace changed during repair; review the current files before retrying')
-                result=self.coding.run_project(workspace_id,target,instruction,self.model,sandbox,self.tasks,
-                                               model_alias=alias,progress=job.progress if job else None,
-                                               cancel=job.cancel if job else None,history=repair_history)
-                result['supervisor_attempts']=attempt+1
-                result['repair_count']=attempt
+
+            def candidate_tool(attempt):
+                nonlocal result
+                if isinstance(attempt,bool) or not isinstance(attempt,int) or not 1<=attempt<=3:
+                    raise WorkbenchError('tool_input','Invalid candidate attempt')
+                options={'model_alias':alias,'progress':job.progress if job else None,
+                         'cancel':job.cancel if job else None,'history':repair_history}
+                if reusable_plan is not None:options['reusable_plan']=reusable_plan
+                result=self.coding.run_project(workspace_id,target,instruction,self.model,sandbox,self.tasks,**options)
+                return result
+
+            def after_observation(attempt, observation, decision, failures):
+                nonlocal repair_history, reusable_plan
+                result['supervisor_attempts']=attempt
+                result['repair_count']=attempt-1
                 result['failure_fingerprints']=sorted(failures)
-                if result.get('state')!='failed' or not result.get('checks',{}).get('container_executed'):
-                    result['repair_stop_reason']='validation_unavailable' if result.get('state')=='failed' else 'validated' if result.get('state')=='completed' else 'not_applicable'
-                    if result.get('task_id'):self.coding._save_result(workspace_id,result)
-                    return result
-                feedback=(result.get('stderr') or result.get('stdout') or '')[-3000:]
-                import hashlib
-                from router.validation_feedback import failure_fingerprint
-                fingerprint=failure_fingerprint(feedback)
-                stop='missing_feedback' if not feedback else 'repeated_failure' if fingerprint in failures else 'attempt_budget' if attempt==2 else None
-                failures.add(fingerprint)
-                result['failure_fingerprints']=sorted(failures)
-                result['repair_stop_reason']=stop or 'repair_pending'
-                if result.get('task_id'):self.coding._save_result(workspace_id,result)
-                if stop:return result
-                from backend.task_supervisor import operational_event
-                operational_event('REPAIR_STARTED',observations={'attempt':attempt+2,'validation_error':feedback},workflow='CODE')
-                # Only uncommitted drafts are retried. The original instruction
-                # remains controlling; observed test errors are reference data.
+                result['repair_stop_reason']=decision.stop_reason
+                reusable_plan=result.get('operation_plan')
                 candidates=[]
                 remaining=10000
                 for change in result.get('changes',[])[:8]:
@@ -1010,14 +1010,36 @@ class Workbench:
                     candidates.append({'action':change.get('action'),'path':change.get('path'),
                         'content':excerpt,'content_complete':content==excerpt,
                         'sha256':hashlib.sha256(content.encode('utf-8')).hexdigest() if isinstance(content,str) else None})
+                typed=CodeObservation.from_result(ObservationKind.SANDBOX,
+                    {'executed':observation.validation_executed,'exit_code':observation.validation_exit_code,
+                     'stdout':result.get('stdout',''),'stderr':result.get('stderr',''),
+                     'checks':result.get('checks',{})},identity=getattr(sandbox,'image_id',None),timestamp=time.time())
+                operational_event('CANDIDATE_OBSERVED',workflow='CODE',observations=typed.to_dict())
+                if owner is not None:
+                    owner.task_state['current_candidate']=[{key:value for key,value in item.items() if key!='content'} for item in candidates]
+                    owner.task_state['candidate_hash']=hashlib.sha256(json.dumps(owner.task_state['current_candidate'],sort_keys=True).encode()).hexdigest()
+                    owner.task_state['plan']={'plan_sha256':reusable_plan.get('plan_sha256')} if reusable_plan else None
+                if result.get('task_id'):self.coding._save_result(workspace_id,result)
+                if not decision.retry:
+                    operational_event('REPAIR_STOPPED',workflow='CODE',observations={'reason':decision.stop_reason,'attempt':attempt})
+                    return
+                operational_event('REPAIR_STARTED',observations={'attempt':attempt+1,'validation_error':observation.feedback},workflow='CODE')
                 repair_context={'original_request':instruction,'workspace_id':workspace_id,'target':target,
-                    'previous_candidate':candidates,'actual_error':feedback,'failure_fingerprint':fingerprint,
+                    'previous_candidate':candidates,'actual_error':observation.feedback,'failure_fingerprint':decision.fingerprint,
                     'task_state':{'task_id':result.get('task_id'),'state':result.get('state'),
-                                  'checks':result.get('checks',{}),'repair_count':attempt+1}}
+                                  'checks':result.get('checks',{}),'repair_count':attempt}}
                 repair_history=[*(history or []),
                     'assistant: Actual sandbox validation failed; untrusted repair reference data:\n'+json.dumps(repair_context,ensure_ascii=False)]
-                if job:job.progress(f'Supervisor repairing failed validation ({attempt+2}/3)')
-            return result
+                if job:job.progress(f'Supervisor repairing failed validation ({attempt+1}/3)')
+
+            tools=ToolRegistry()
+            tools.register('coding_project_candidate',candidate_tool,ToolContract(arguments=('attempt',),required=('attempt',),
+                timeout_seconds=900,max_input_bytes=128,max_output_bytes=4000000))
+            agent=CodeAgent(tools,allowed_tools=('coding_project_candidate',),max_attempts=3)
+            run=agent.run(lambda attempt,observations:Action('coding_project_candidate',{'attempt':attempt}),
+                before_attempt=before_attempt,after_observation=after_observation,
+                cancelled=(lambda:job.cancel.is_set()) if job else None)
+            return run.last_result
         finally:
             self.ask_lock.release()
 

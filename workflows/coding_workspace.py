@@ -913,8 +913,76 @@ class CodingWorkspace:
         return {'scope': scope, 'operations': [{'action': action, 'path': target,
                 'reason': 'Explicit single source target', 'replacements': []}]}
 
+    @staticmethod
+    def _plan_digest(value):
+        return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()).hexdigest()
+
+    def _preflight_operation_plan(self, workspace_id, operations, files, assets, original_folders, instruction):
+        """Validate the entire sequential plan before any source generation."""
+        if not isinstance(operations, list) or not 1 <= len(operations) <= 8:
+            raise WorkbenchError('generation_format', 'A project plan requires one to eight operations')
+        planned = dict(files)
+        folders = set(original_folders)
+        seen = set()
+        changed_paths = set()
+        for operation in operations:
+            if (not isinstance(operation, dict) or set(operation) - {'action','path','reason','replacements'} or
+                not isinstance(operation.get('reason'), str) or len(operation['reason']) > 2000 or
+                operation.get('action') not in {'create','edit','delete','mkdir'}):
+                raise WorkbenchError('generation_format', 'Invalid project operation schema')
+            action, path = operation['action'], self._name(operation.get('path'))
+            self._file(workspace_id, path)
+            if path in assets or path in seen:
+                raise WorkbenchError('invalid_file', 'The plan repeats a path or changes a read-only asset')
+            seen.add(path)
+            replacements = operation.get('replacements', [])
+            if not isinstance(replacements, list) or len(replacements) > 8 or (replacements and action != 'edit'):
+                raise WorkbenchError('generation_format', 'Literal replacements require an existing file and at most eight edits')
+            if action == 'mkdir':
+                if path in planned: raise WorkbenchError('workspace_conflict', 'A file occupies the planned folder path')
+                if path in folders: continue
+                for parent in reversed(Path(path).parents):
+                    folder = parent.as_posix()
+                    if folder != '.' and folder not in folders:
+                        folders.add(folder); changed_paths.add(folder)
+                folders.add(path); changed_paths.add(path)
+                continue
+            if action == 'delete':
+                if not re.search(r'\b(delete|remove|erase)\b', instruction, re.I):
+                    raise WorkbenchError('invalid_file', 'The task must explicitly request deletion')
+                if path in folders:
+                    if any(name.startswith(path+'/') for name in {*planned,*assets,*folders}):
+                        raise WorkbenchError('invalid_file', 'Delete folder contents explicitly first')
+                    folders.remove(path)
+                elif path in planned: planned.pop(path)
+                else: raise WorkbenchError('invalid_file', 'Planned deletion target does not exist')
+                changed_paths.add(path)
+                continue
+            if Path(path).suffix.lower() not in LANGUAGES:
+                raise WorkbenchError('invalid_file', 'Planned source file has an unsupported type')
+            if action == 'create' and (path in planned or path in folders):
+                raise WorkbenchError('workspace_conflict', 'Planned new file already exists')
+            if action == 'edit' and path not in planned:
+                raise WorkbenchError('invalid_file', 'Planned edit target does not exist')
+            content = planned.get(path, '')
+            for replacement in replacements:
+                if (not isinstance(replacement, dict) or set(replacement) != {'old_text','new_text'} or
+                    not isinstance(replacement['old_text'], str) or not replacement['old_text'] or
+                    not isinstance(replacement['new_text'], str) or content.count(replacement['old_text']) != 1):
+                    raise WorkbenchError('generation_format', 'A proposed replacement must match exactly one original text span')
+                content = content.replace(replacement['old_text'], replacement['new_text'], 1)
+            planned[path] = content
+            changed_paths.add(path)
+            if action == 'create':
+                for parent in reversed(Path(path).parents):
+                    folder = parent.as_posix()
+                    if folder != '.' and folder not in folders:
+                        folders.add(folder); changed_paths.add(folder)
+        if len(changed_paths) > 8 or len(planned) + len(assets) > MAX_FILES:
+            raise WorkbenchError('sandbox_input', 'Project plan exceeds the path or file budget')
+
     def run_project(self, workspace_id: str, target: str, instruction: str, model, sandbox, ledger,
-                    model_alias='sovereign-text', progress=None, cancel=None, history=None):
+                    model_alias='sovereign-text', progress=None, cancel=None, history=None, *, reusable_plan=None):
         """Plan and validate bounded changes across the whole local workspace."""
         def stage(label):
             if cancel is not None and cancel.is_set():
@@ -927,6 +995,30 @@ class CodingWorkspace:
         stage('Reading project structure')
         snapshot=self.get(workspace_id)
         raw_files=self.raw_files(workspace_id)
+        binding = {'version':1,'workspace_id':workspace_id,'target':target,
+                   'request_sha256':self._plan_digest(instruction),
+                   'revision_sha256':self._plan_digest({'files':{name:hashlib.sha256(data).hexdigest() for name,data in raw_files.items()},
+                                                        'folders':sorted(snapshot['folders'])})}
+        cached_plan = None
+        plan_event = {'event':'PLAN_CREATED'}
+        if reusable_plan is not None:
+            valid = (isinstance(reusable_plan, dict) and set(reusable_plan) == {*binding,'scope','operations','plan_sha256'})
+            if valid and all(reusable_plan.get(key) == value for key,value in binding.items() if key != 'revision_sha256'):
+                if reusable_plan['revision_sha256'] != binding['revision_sha256']:
+                    raise WorkbenchError('workspace_conflict', 'The project changed since this operation plan was validated')
+                try:
+                    payload = {key:value for key,value in reusable_plan.items() if key != 'plan_sha256'}
+                    valid = (len(json.dumps(payload, ensure_ascii=False)) <= 24000 and
+                             self._plan_digest(payload) == reusable_plan['plan_sha256'] and
+                             payload['scope'] in (None,'existing_files','new_files') and
+                             isinstance(payload['operations'], list))
+                    if valid:
+                        cached_plan = json.loads(json.dumps({'scope':payload['scope'],'operations':payload['operations']}))
+                        plan_event = {'event':'PLAN_REUSED','plan_sha256':reusable_plan['plan_sha256']}
+                except (TypeError, ValueError): valid = False
+            else: valid = False
+            if not valid:
+                plan_event = {'event':'PLAN_REUSE_REJECTED','reason':'invalid envelope or request/workspace/target mismatch'}
         files=self._editable_sources(raw_files)
         assets={name:data for name,data in raw_files.items() if name not in files}
         summaries={}
@@ -945,11 +1037,16 @@ class CodingWorkspace:
         simple_delete=(explicit_delete and len(named_for_delete)==1 and
                        not re.search(r'\b(create|add|edit|modify|update|rename|move|copy|fix)\b',instruction,re.I))
         direct_plan = self._direct_target_plan(instruction, target, files, assets)
-        plan=({'scope':'existing_files','operations':[{'action':'delete','path':named_for_delete[0],
+        plan=cached_plan or ({'scope':'existing_files','operations':[{'action':'delete','path':named_for_delete[0],
                 'reason':'Explicit single-file deletion'}]} if simple_delete else
               direct_plan or model.plan_workspace_edit(instruction,summaries,snapshot['folders'],target or '',history=history))
         scope=plan.get('scope') if isinstance(plan,dict) else None
         operations=plan['operations'] if isinstance(plan,dict) else plan
+        if (scope not in (None,'existing_files','new_files') or not isinstance(operations,list) or
+            not 1 <= len(operations) <= 8 or any(not isinstance(item,dict) or
+            not isinstance(item.get('path'),str) or not isinstance(item.get('reason'),str) or
+            item.get('action') not in {'create','edit','delete','mkdir'} for item in operations)):
+            raise WorkbenchError('generation_format','Invalid project operation schema')
         # Small models sometimes label newly requested files as edits. Only
         # repair this when every edit target is absent and the current request
         # explicitly asks for creation; never reinterpret a real existing edit.
@@ -971,6 +1068,11 @@ class CodingWorkspace:
         for name in files:
             if re.search(r'\b(leave|keep)\s+'+re.escape(name)+r'\s+unchanged\b',instruction,re.I):
                 operations=[operation for operation in operations if not (operation['action'] in {'edit','delete'} and operation['path']==name)]
+        self._preflight_operation_plan(workspace_id, operations, files, assets, snapshot['folders'], instruction)
+        operation_plan = {**binding,'scope':scope,'operations':json.loads(json.dumps(operations))}
+        if len(json.dumps(operation_plan, ensure_ascii=False)) > 24000:
+            raise WorkbenchError('sandbox_input', 'Project operation plan exceeds the bounded cache budget')
+        operation_plan['plan_sha256'] = self._plan_digest(operation_plan)
         planned=dict(files)
         folders=set(snapshot['folders'])
         changes=[]
@@ -1078,8 +1180,8 @@ class CodingWorkspace:
         diff=''.join(''.join(line if line.endswith('\n') else line+'\n\\ No newline at end of file\n' for line in difflib.unified_diff((change['before'] or '').splitlines(True),(change['after'] or '').splitlines(True),
              fromfile='a/'+change['path'],tofile='b/'+change['path'])) for change in changes if change['action'] not in {'mkdir','rmdir'})
         result={'task_id':task['task_id'],'workspace_id':workspace_id,'target':primary['path'],'state':'running',
-                'instruction':instruction,'changes':changes,'original_content':primary['before'] or '',
-                'diff':diff,'checks':{},'events':[{'event':'planning','files':sorted(files)},
+                'instruction':instruction,'operation_plan':operation_plan,'changes':changes,'original_content':primary['before'] or '',
+                'diff':diff,'checks':{},'events':[plan_event,{'event':'planning','files':sorted(files)},
                 {'event':'planned_changes','files':[change['path'] for change in changes]}],
                 'attempts':1,'stdout':'','stderr':'','output_files':[],
                 'routing':{'capability':'code','model':model_alias,'reason':'Project-wide local coding task'},
@@ -1249,14 +1351,17 @@ class CodingWorkspace:
                 if candidate == original and execution.exit_code == 0:
                     safe_stderr = 'The model returned the original file unchanged. Produce a real edit that addresses the request.'
                 events.append({'event': 'test_failed', 'attempt': attempt + 1})
-                from router.validation_feedback import failure_fingerprint
-                fingerprint=failure_fingerprint(safe_stderr or execution.stdout)
+                from router.code_agent import Observation, repair_decision
+                observation=Observation.from_result({'state':'failed',
+                    'checks':{'container_executed':execution.executed},
+                    'validation_exit_code':execution.exit_code,
+                    'stderr':safe_stderr,'stdout':execution.stdout})
+                decision=repair_decision(observation,attempt+1,failures,max_attempts=3)
                 result['repair_count']=attempt
-                result['repair_stop_reason']=('validation_unavailable' if not execution.executed else
-                    'repeated_failure' if fingerprint in failures else 'attempt_budget' if attempt==2 else 'repair_pending')
-                failures.add(fingerprint)
+                result['repair_stop_reason']=decision.stop_reason
+                if decision.fingerprint:failures.add(decision.fingerprint)
                 result['failure_fingerprints']=sorted(failures)
-                if result['repair_stop_reason']!='repair_pending':break
+                if not decision.retry:break
                 if attempt < 2:
                     messages = base_messages + [
                         {'role': 'assistant', 'content': json.dumps({'code': candidate})},

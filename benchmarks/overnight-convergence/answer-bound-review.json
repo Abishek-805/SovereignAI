@@ -1,0 +1,27 @@
+{
+  "review_scope": "Ten run-project entry-selection fixtures only; not code generation, repair or production routing",
+  "first_decision_expected": {
+    "python-direct": true,
+    "python-package": true,
+    "python-broken": true,
+    "node-direct": true,
+    "node-main": true,
+    "node-broken": true,
+    "java-main": true,
+    "java-broken": true,
+    "vite-unavailable": false,
+    "ambiguous-python": false
+  },
+  "unsupported_rationales": {
+    "python-package": "Model claimed pyproject.toml specified src/main.py; it contained only project name and version.",
+    "java-main": "Model claimed metadata named Main.java; fixture had a README and Main.java, no manifest identifying an entry."
+  },
+  "observed_failure_layer": {
+    "vite-unavailable": "MODEL_DECISION: proposed an HTML file even though the package requires unavailable Vite dependencies.",
+    "ambiguous-python": "MODEL_DECISION: selected one.py solely because it was first in the file list.",
+    "python-broken": "PROGRAM_RUNTIME: chosen entry was correct and Docker observed the expected RuntimeError.",
+    "node-broken": "PROGRAM_RUNTIME: chosen entry was correct and Docker observed the expected thrown Error.",
+    "java-broken": "PROGRAM_COMPILE: chosen entry was correct and Docker observed javac cannot find symbol."
+  },
+  "paired_observation": "Both unsupported decisions changed to null after one public tool observation and one extra call each. This does not establish general repair success."
+}

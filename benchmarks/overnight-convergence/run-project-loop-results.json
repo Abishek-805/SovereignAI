@@ -1,0 +1,191 @@
+{
+  "name": "Paired fixed-Coder action/observation pilot",
+  "purpose": "Reuses captured first decisions; only rejected actions receive one public tool observation and one extra model call. No private oracle shown to model.",
+  "first_evidence": "run-project-model-results.json",
+  "model": {
+    "pid": 12452,
+    "model_path": "C:\\Users\\ashek\\Desktop\\SovereignAI\\models\\qwen2.5-coder-3b-instruct-q4_k_m.gguf",
+    "model_sha256": "724fb256bec1ff062b2f65e4569e871ad2e95ab2a3989723d1769c54294730b7"
+  },
+  "max_model_calls_per_case": 2,
+  "rows": [
+    {
+      "id": "python-direct",
+      "first_decision": {
+        "entry": "app.py",
+        "reason": "The README.md file specifies that the entry point is 'python app.py'."
+      },
+      "tool_observation": null,
+      "revised_decision": {
+        "entry": "app.py",
+        "reason": "The README.md file specifies that the entry point is 'python app.py'."
+      },
+      "model_calls": 1,
+      "additional_seconds": 0,
+      "status": "PASS",
+      "docker_executed": true
+    },
+    {
+      "id": "python-package",
+      "first_decision": {
+        "entry": "src/main.py",
+        "reason": "The 'pyproject.toml' file specifies 'src/main.py' as the entry point for the project."
+      },
+      "tool_observation": null,
+      "revised_decision": {
+        "entry": "src/main.py",
+        "reason": "The 'pyproject.toml' file specifies 'src/main.py' as the entry point for the project."
+      },
+      "model_calls": 1,
+      "additional_seconds": 0,
+      "status": "PASS",
+      "docker_executed": true
+    },
+    {
+      "id": "python-broken",
+      "first_decision": {
+        "entry": "main.py",
+        "reason": "The README.md file specifies that the entry point is 'python main.py'."
+      },
+      "tool_observation": null,
+      "revised_decision": {
+        "entry": "main.py",
+        "reason": "The README.md file specifies that the entry point is 'python main.py'."
+      },
+      "model_calls": 1,
+      "additional_seconds": 0,
+      "status": "EXECUTION_FAILED",
+      "docker_executed": true
+    },
+    {
+      "id": "node-direct",
+      "first_decision": {
+        "entry": "app.js",
+        "reason": "The 'package.json' file specifies 'app.js' as the entry point for the project."
+      },
+      "tool_observation": null,
+      "revised_decision": {
+        "entry": "app.js",
+        "reason": "The 'package.json' file specifies 'app.js' as the entry point for the project."
+      },
+      "model_calls": 1,
+      "additional_seconds": 0,
+      "status": "PASS",
+      "docker_executed": true
+    },
+    {
+      "id": "node-main",
+      "first_decision": {
+        "entry": "src/index.js",
+        "reason": "The 'package.json' file specifies 'src/index.js' as the main entry point."
+      },
+      "tool_observation": null,
+      "revised_decision": {
+        "entry": "src/index.js",
+        "reason": "The 'package.json' file specifies 'src/index.js' as the main entry point."
+      },
+      "model_calls": 1,
+      "additional_seconds": 0,
+      "status": "PASS",
+      "docker_executed": true
+    },
+    {
+      "id": "node-broken",
+      "first_decision": {
+        "entry": "app.js",
+        "reason": "The 'package.json' file specifies 'app.js' as the entry point for the project."
+      },
+      "tool_observation": null,
+      "revised_decision": {
+        "entry": "app.js",
+        "reason": "The 'package.json' file specifies 'app.js' as the entry point for the project."
+      },
+      "model_calls": 1,
+      "additional_seconds": 0,
+      "status": "EXECUTION_FAILED",
+      "docker_executed": true
+    },
+    {
+      "id": "java-main",
+      "first_decision": {
+        "entry": "Main.java",
+        "reason": "The entry file 'Main.java' is specified in the metadata and is a valid Java file."
+      },
+      "tool_observation": null,
+      "revised_decision": {
+        "entry": "Main.java",
+        "reason": "The entry file 'Main.java' is specified in the metadata and is a valid Java file."
+      },
+      "model_calls": 1,
+      "additional_seconds": 0,
+      "status": "PASS",
+      "docker_executed": true
+    },
+    {
+      "id": "java-broken",
+      "first_decision": {
+        "entry": "Main.java",
+        "reason": "The provided file 'Main.java' is the only entry file specified in the project metadata."
+      },
+      "tool_observation": null,
+      "revised_decision": {
+        "entry": "Main.java",
+        "reason": "The provided file 'Main.java' is the only entry file specified in the project metadata."
+      },
+      "model_calls": 1,
+      "additional_seconds": 0,
+      "status": "EXECUTION_FAILED",
+      "docker_executed": true
+    },
+    {
+      "id": "vite-unavailable",
+      "first_decision": {
+        "entry": "index.html",
+        "reason": "The 'package.json' file indicates that the project uses Vite, which is a build tool for modern web projects. The 'index.html' file is the entry point for the project, so it is the most likely file to run."
+      },
+      "tool_observation": "The available offline project metadata identifies required dependencies that are absent; no executable source entry is supported.",
+      "revised_decision": {
+        "entry": null,
+        "reason": "invalid model JSON: Expecting value: line 1 column 1 (char 0)"
+      },
+      "raw_followup": "```json\nnull\n```",
+      "followup_usage": {
+        "completion_tokens": 7,
+        "prompt_tokens": 217,
+        "total_tokens": 224,
+        "prompt_tokens_details": {
+          "cached_tokens": 62
+        }
+      },
+      "model_calls": 2,
+      "additional_seconds": 0.6451320000014675,
+      "status": "CORRECT_DECLINE",
+      "docker_executed": false
+    },
+    {
+      "id": "ambiguous-python",
+      "first_decision": {
+        "entry": "one.py",
+        "reason": "one.py is the first file in the list."
+      },
+      "tool_observation": "There are multiple plausible source entry points and no manifest or README selects one. The tool cannot choose safely.",
+      "revised_decision": {
+        "entry": null,
+        "reason": "invalid model JSON: Expecting value: line 1 column 1 (char 0)"
+      },
+      "raw_followup": "```json\nnull\n```",
+      "followup_usage": {
+        "completion_tokens": 7,
+        "prompt_tokens": 154,
+        "total_tokens": 161,
+        "prompt_tokens_details": {
+          "cached_tokens": 62
+        }
+      },
+      "model_calls": 2,
+      "additional_seconds": 0.18549369999891496,
+      "status": "CORRECT_DECLINE",
+      "docker_executed": false
+    }
+  ]
+}

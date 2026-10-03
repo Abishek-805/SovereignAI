@@ -1,0 +1,270 @@
+{
+  "name": "Fixed warm Coder run-project entry selection",
+  "purpose": "Model-assisted entry selection pilot; not full agent/scaffold evidence",
+  "code_revision": "dfa038596e7cd4576a0740c77fd87c21092a19c3",
+  "fixture_sha256": "1cf840b2411a8480f2f46cdeb0607f2ee1778c0e7a12fad0ac69f70536818331",
+  "model": {
+    "pid": 12452,
+    "model_path": "C:\\Users\\ashek\\Desktop\\SovereignAI\\models\\qwen2.5-coder-3b-instruct-q4_k_m.gguf",
+    "model_sha256": "724fb256bec1ff062b2f65e4569e871ad2e95ab2a3989723d1769c54294730b7"
+  },
+  "sandbox_image_id": "sha256:5370db5915e0774ba92a758199430a762f2cbc45515ed2958ca8e9a58faef272",
+  "rows": [
+    {
+      "id": "python-direct",
+      "decision": {
+        "entry": "app.py",
+        "reason": "The README.md file specifies that the entry point is 'python app.py'."
+      },
+      "raw_model_output": "```json\n{\n  \"entry\": \"app.py\",\n  \"reason\": \"The README.md file specifies that the entry point is 'python app.py'.\"\n}\n```",
+      "model_usage": {
+        "completion_tokens": 36,
+        "prompt_tokens": 89,
+        "total_tokens": 125,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "selection_seconds": 2.898832399998355,
+      "expected_target": "app.py",
+      "expected_success": true,
+      "baseline_state": "PASS",
+      "state": "PASS",
+      "docker_executed": true,
+      "exit_code": 0,
+      "stdout": "PY_OK\nExecution finished.\n",
+      "stderr": "",
+      "marker_present": true
+    },
+    {
+      "id": "python-package",
+      "decision": {
+        "entry": "src/main.py",
+        "reason": "The 'pyproject.toml' file specifies 'src/main.py' as the entry point for the project."
+      },
+      "raw_model_output": "```json\n{\n  \"entry\": \"src/main.py\",\n  \"reason\": \"The 'pyproject.toml' file specifies 'src/main.py' as the entry point for the project.\"\n}\n```",
+      "model_usage": {
+        "completion_tokens": 43,
+        "prompt_tokens": 104,
+        "total_tokens": 147,
+        "prompt_tokens_details": {
+          "cached_tokens": 62
+        }
+      },
+      "selection_seconds": 1.2617069999978412,
+      "expected_target": "src/main.py",
+      "expected_success": true,
+      "baseline_state": "PASS",
+      "state": "PASS",
+      "docker_executed": true,
+      "exit_code": 0,
+      "stdout": "PY_PACKAGE_OK\nExecution finished.\n",
+      "stderr": "",
+      "marker_present": true
+    },
+    {
+      "id": "python-broken",
+      "decision": {
+        "entry": "main.py",
+        "reason": "The README.md file specifies that the entry point is 'python main.py'."
+      },
+      "raw_model_output": "```json\n{\n  \"entry\": \"main.py\",\n  \"reason\": \"The README.md file specifies that the entry point is 'python main.py'.\"\n}\n```",
+      "model_usage": {
+        "completion_tokens": 36,
+        "prompt_tokens": 89,
+        "total_tokens": 125,
+        "prompt_tokens_details": {
+          "cached_tokens": 62
+        }
+      },
+      "selection_seconds": 0.893905500000983,
+      "expected_target": "main.py",
+      "expected_success": false,
+      "baseline_state": "EXECUTION_FAILED",
+      "state": "EXECUTION_FAILED",
+      "docker_executed": true,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/output/project/main.py\", line 1, in <module>\n    raise RuntimeError(\"BROKEN_PY\")\nRuntimeError: BROKEN_PY\n",
+      "marker_present": true
+    },
+    {
+      "id": "node-direct",
+      "decision": {
+        "entry": "app.js",
+        "reason": "The 'package.json' file specifies 'app.js' as the entry point for the project."
+      },
+      "raw_model_output": "```json\n{\n  \"entry\": \"app.js\",\n  \"reason\": \"The 'package.json' file specifies 'app.js' as the entry point for the project.\"\n}\n```",
+      "model_usage": {
+        "completion_tokens": 39,
+        "prompt_tokens": 96,
+        "total_tokens": 135,
+        "prompt_tokens_details": {
+          "cached_tokens": 62
+        }
+      },
+      "selection_seconds": 0.764050199999474,
+      "expected_target": "app.js",
+      "expected_success": true,
+      "baseline_state": "PASS",
+      "state": "PASS",
+      "docker_executed": true,
+      "exit_code": 0,
+      "stdout": "NODE_OK\nExecution finished.\n",
+      "stderr": "",
+      "marker_present": true
+    },
+    {
+      "id": "node-main",
+      "decision": {
+        "entry": "src/index.js",
+        "reason": "The 'package.json' file specifies 'src/index.js' as the main entry point."
+      },
+      "raw_model_output": "```json\n{\n  \"entry\": \"src/index.js\",\n  \"reason\": \"The 'package.json' file specifies 'src/index.js' as the main entry point.\"\n}\n```",
+      "model_usage": {
+        "completion_tokens": 39,
+        "prompt_tokens": 95,
+        "total_tokens": 134,
+        "prompt_tokens_details": {
+          "cached_tokens": 62
+        }
+      },
+      "selection_seconds": 1.010810700001457,
+      "expected_target": "src/index.js",
+      "expected_success": true,
+      "baseline_state": "PASS",
+      "state": "PASS",
+      "docker_executed": true,
+      "exit_code": 0,
+      "stdout": "NODE_MAIN_OK\nExecution finished.\n",
+      "stderr": "",
+      "marker_present": true
+    },
+    {
+      "id": "node-broken",
+      "decision": {
+        "entry": "app.js",
+        "reason": "The 'package.json' file specifies 'app.js' as the entry point for the project."
+      },
+      "raw_model_output": "```json\n{\n  \"entry\": \"app.js\",\n  \"reason\": \"The 'package.json' file specifies 'app.js' as the entry point for the project.\"\n}\n```",
+      "model_usage": {
+        "completion_tokens": 39,
+        "prompt_tokens": 96,
+        "total_tokens": 135,
+        "prompt_tokens_details": {
+          "cached_tokens": 95
+        }
+      },
+      "selection_seconds": 0.9503326999983983,
+      "expected_target": "app.js",
+      "expected_success": false,
+      "baseline_state": "EXECUTION_FAILED",
+      "state": "EXECUTION_FAILED",
+      "docker_executed": true,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "/output/project/app.js:1\nthrow new Error(\"BROKEN_NODE\")\n^\n\nError: BROKEN_NODE\n    at Object.<anonymous> (/output/project/app.js:1:7)\n    at Module._compile (node:internal/modules/cjs/loader:1871:14)\n    at Object..js (node:internal/modules/cjs/loader:2002:10)\n    at Module.load (node:internal/modules/cjs/loader:1594:32)\n    at Module._load (node:internal/modules/cjs/loader:1396:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\n    at node:internal/main/run_main_module:33:47\n\nNode.js v24.18.1\n",
+      "marker_present": true
+    },
+    {
+      "id": "java-main",
+      "decision": {
+        "entry": "Main.java",
+        "reason": "The entry file 'Main.java' is specified in the metadata and is a valid Java file."
+      },
+      "raw_model_output": "```json\n{\n  \"entry\": \"Main.java\",\n  \"reason\": \"The entry file 'Main.java' is specified in the metadata and is a valid Java file.\"\n}\n```",
+      "model_usage": {
+        "completion_tokens": 39,
+        "prompt_tokens": 93,
+        "total_tokens": 132,
+        "prompt_tokens_details": {
+          "cached_tokens": 62
+        }
+      },
+      "selection_seconds": 0.8665384000014456,
+      "expected_target": "Main.java",
+      "expected_success": true,
+      "baseline_state": "PASS",
+      "state": "PASS",
+      "docker_executed": true,
+      "exit_code": 0,
+      "stdout": "JAVA_OK\nExecution finished.\n",
+      "stderr": "",
+      "marker_present": true
+    },
+    {
+      "id": "java-broken",
+      "decision": {
+        "entry": "Main.java",
+        "reason": "The provided file 'Main.java' is the only entry file specified in the project metadata."
+      },
+      "raw_model_output": "```json\n{\n  \"entry\": \"Main.java\",\n  \"reason\": \"The provided file 'Main.java' is the only entry file specified in the project metadata.\"\n}\n```",
+      "model_usage": {
+        "completion_tokens": 38,
+        "prompt_tokens": 75,
+        "total_tokens": 113,
+        "prompt_tokens_details": {
+          "cached_tokens": 64
+        }
+      },
+      "selection_seconds": 0.9534204999981739,
+      "expected_target": "Main.java",
+      "expected_success": false,
+      "baseline_state": "EXECUTION_FAILED",
+      "state": "EXECUTION_FAILED",
+      "docker_executed": true,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Main.java:1: error: cannot find symbol\npublic class Main { public static void main(String[] a) { missing(); } }\n                                                          ^\n  symbol:   method missing()\n  location: class Main\n1 error\n",
+      "marker_present": true
+    },
+    {
+      "id": "vite-unavailable",
+      "decision": {
+        "entry": "index.html",
+        "reason": "The 'package.json' file indicates that the project uses Vite, which is a build tool for modern web projects. The 'index.html' file is the entry point for the project, so it is the most likely file to run."
+      },
+      "raw_model_output": "```json\n{\n  \"entry\": \"index.html\",\n  \"reason\": \"The 'package.json' file indicates that the project uses Vite, which is a build tool for modern web projects. The 'index.html' file is the entry point for the project, so it is the most likely file to run.\"\n}\n```",
+      "model_usage": {
+        "completion_tokens": 68,
+        "prompt_tokens": 106,
+        "total_tokens": 174,
+        "prompt_tokens_details": {
+          "cached_tokens": 62
+        }
+      },
+      "selection_seconds": 1.5894829999997455,
+      "expected_target": null,
+      "expected_success": null,
+      "baseline_state": "BLOCKED_DEPENDENCY",
+      "state": "INVALID_ENTRY",
+      "docker_executed": false
+    },
+    {
+      "id": "ambiguous-python",
+      "decision": {
+        "entry": "one.py",
+        "reason": "one.py is the first file in the list."
+      },
+      "raw_model_output": "```json\n{\n  \"entry\": \"one.py\",\n  \"reason\": \"one.py is the first file in the list.\"\n}\n```",
+      "model_usage": {
+        "completion_tokens": 30,
+        "prompt_tokens": 79,
+        "total_tokens": 109,
+        "prompt_tokens_details": {
+          "cached_tokens": 62
+        }
+      },
+      "selection_seconds": 0.6654098999970302,
+      "expected_target": null,
+      "expected_success": null,
+      "baseline_state": "NEEDS_INPUT",
+      "state": "PASS",
+      "docker_executed": true,
+      "exit_code": 0,
+      "stdout": "ONE\nExecution finished.\n",
+      "stderr": "",
+      "marker_present": false
+    }
+  ]
+}

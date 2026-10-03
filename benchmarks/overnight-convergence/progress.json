@@ -1,0 +1,25 @@
+{
+  "name": "SovereignAI overnight convergence",
+  "status": "IN_PROGRESS",
+  "branch": "codex/overnight-convergence",
+  "production_candidate_selected": false,
+  "frozen_historical_evidence_modified": false,
+  "new_development_benchmark": {
+    "required_tasks": 100,
+    "complete": false,
+    "pilot_run_project_fixtures": 10
+  },
+  "run_project_pilot": {
+    "tool_first_expected_classifications": 10,
+    "model_first_expected_classifications": 8,
+    "paired_public_observation_recoveries": 2,
+    "additional_model_calls": 2,
+    "model_switches": 0,
+    "programs_repaired": 0,
+    "full_agent_scaffold_comparison_complete": false
+  },
+  "model_comparison_complete": false,
+  "router_comparison_complete": false,
+  "production_changes": 0,
+  "next_gate": "Author and validate new 100-task development manifest, then compare fixed-model scaffolds on the same tasks and Docker controls."
+}

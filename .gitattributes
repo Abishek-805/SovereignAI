@@ -1,0 +1,4 @@
+# Byte-hashed experiment inputs must survive Windows checkout unchanged.
+benchmarks/hybrid-code-agent/*.py text eol=lf
+benchmarks/hybrid-code-agent/*.json text eol=lf
+benchmarks/hybrid-code-agent/vision/*.png binary

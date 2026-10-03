@@ -228,7 +228,7 @@ class LocalModel:
         Low-level callers may opt out; the application enables it by default.
         """
         original=list(payload['messages'])
-        if self.verify_semantics:
+        if self.verify_semantics and not (review_candidate is False and public_output in {'action_answer', 'source_candidate'}):
             interpretation_messages=[{'role':'system','content':
                 'Describe the CURRENT user task concisely before choosing a tool or output format. '
                 'State requested result, subject/cohort, scope, constraints and what changed from prior turns. For software tasks, a folder is an output location: the requested functional purpose still requires an implementation. State that deliverable explicitly. Copy identifiers and prefixes literally; never expand or rewrite them. '
@@ -334,9 +334,6 @@ class LocalModel:
                 'revise requires concrete contradictions or missing requirements; issues must name the conflicting request/evidence and candidate field in at most 30 words each. '
                 'clarify means essential information is genuinely missing and cannot be resolved from history or tools. '
                 'Return verdict accept and issues [] when no concrete defect exists. Return JSON only.'},
-                {'role':'user','content':json.dumps({'request_and_evidence':'Create a Python folder for receipt parsing.',
-                    'candidate':{'operations':[{'tool':'folder_create','target':'python','value':'','input':''}]}})},
-                {'role':'assistant','content':'{"verdict":"revise","issues":["The receipt parsing functionality is missing: folder_create makes an empty directory. Include file_edit to implement the requested parser in that folder."]}'},
                 {'role':'user','content':json.dumps({'request_and_evidence':review_evidence,'candidate':candidate},ensure_ascii=False)}]
             # Explicit stage contracts are application-authored policy. Keep
             # that role intact; requests, sources and candidates stay data.
@@ -815,7 +812,9 @@ class LocalModel:
         if max_tokens < 512:
             raise WorkbenchError('context_budget',
                 f'Coding input needs {prompt_tokens} tokens; context is {context} and fewer than 512 output tokens remain. Reduce the workspace or task; no files were truncated.')
-        response=self._planned_completion(payload,review_context=[
+        # Source is an unverified candidate. Actual sandbox checks and explicit
+        # artifact review decide completion; same-model vetoes are not proof.
+        response=self._planned_completion(payload,review_candidate=False,public_output='source_candidate',review_context=[
             {'role':'system','content':'Review this source-generation stage. The candidate contains complete source code in the required JSON code field, not a routing plan or executable tool list. Check the requested behavior, inputs, dependencies and source constraints. Do not demand a file_edit operation or completed execution in this candidate; the application stages and validates the source afterward. Runtime validity requires actual sandbox checks.'},
             {'role':'user','content':json.dumps(messages,ensure_ascii=False)}])
         try:

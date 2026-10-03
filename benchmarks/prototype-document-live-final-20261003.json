@@ -1,0 +1,4746 @@
+{
+  "request": "Create a text document in Knowledge explaining artificial intelligence, machine learning, and deep learning, including their relationship and examples. Name it ai_ml_dl_concepts.txt.",
+  "history": [
+    "user: Create a Python folder for receipt parsing.",
+    "assistant: The previous request could not finish."
+  ],
+  "latency_seconds": 144.90884730000016,
+  "result": {
+    "task_id": "1a3b35e062fe42fdac3fa5219ad58bd1",
+    "status": "completed",
+    "answer": "Completed: document create ai_ml_dl_concepts.txt.",
+    "plan": {
+      "action": "application_tools",
+      "response": "",
+      "document_scope": "focused",
+      "target": "",
+      "expression": "",
+      "_worker_route": "text"
+    },
+    "result": {
+      "state": "completed",
+      "answer": "Completed: document create ai_ml_dl_concepts.txt.",
+      "workspace_id": "11fe321f6753499f95b71b274cf0e2e3",
+      "operations": [
+        {
+          "tool": "document_create",
+          "target": "ai_ml_dl_concepts.txt",
+          "result": {
+            "status": "indexed",
+            "document_id": "82d8a7a960aaea453db722553e746ae79db95a43e540730a3da500590d88d6a9",
+            "display_name": "ai_ml_dl_concepts.txt",
+            "active_hash": "39a840ce2bf08d8fc68d25c3e7173807883021fde7336500bb8c81694129518b",
+            "folder": "",
+            "embedding_revision": "5c38ec7c405ec4b44b94cc5a9bb96e735b38267a",
+            "chunk_count": 7,
+            "source_extension": ".txt",
+            "warnings": [],
+            "indexing_status": "indexed",
+            "usable_pages": 1
+          }
+        }
+      ]
+    },
+    "downloads": {},
+    "workspace_id": "11fe321f6753499f95b71b274cf0e2e3",
+    "steps": [
+      {
+        "name": "plan",
+        "at": 1791037660.901109,
+        "details": {
+          "workspace": "11fe321f6753499f95b71b274cf0e2e3",
+          "action": "application_tools"
+        }
+      },
+      {
+        "name": "document_create",
+        "at": 1791037803.7302866,
+        "details": {
+          "target": "ai_ml_dl_concepts.txt"
+        }
+      }
+    ],
+    "routing": {
+      "decision": {
+        "request_id": "6363c1d2f947459587b8fd283b923a47",
+        "intent": "application_tools",
+        "capability": "text",
+        "modality": "text",
+        "candidate_models": [
+          {
+            "model_id": "Qwen/Qwen3.5-4B",
+            "registry_key": "text",
+            "display_name": "Qwen3.5 4B",
+            "capabilities": [
+              "text",
+              "calculation"
+            ],
+            "modalities": [
+              "text"
+            ],
+            "context_limit": 16384,
+            "admissible": true,
+            "admission": {
+              "status": "conditional",
+              "reasons": [],
+              "reason_codes": [],
+              "conditions": [
+                "Model peak system-memory requirement is not measured",
+                "Model peak GPU-memory requirement is not measured",
+                "Incremental context/KV allocation for the resident model is not measured",
+                "Peak resource measurements do not cover the configured context/KV settings",
+                "Peak resource measurements do not cover the configured KV types"
+              ],
+              "condition_codes": [
+                "peak_ram_unmeasured",
+                "peak_gpu_unmeasured",
+                "resident_incremental_kv_unmeasured",
+                "context_profile_unmeasured",
+                "kv_profile_unmeasured"
+              ],
+              "observed": {
+                "sampled_at": 1791037701.6944225,
+                "available_memory_mib": 5059.03515625,
+                "gpu_free_mib": 955.0,
+                "gpu_total_mib": 4094.0,
+                "gpu_device": "0",
+                "source": "psutil+nvidia-smi",
+                "errors": []
+              },
+              "requirements": {
+                "system_memory_mib": null,
+                "gpu_memory_mib": null,
+                "measured_context": null,
+                "configured_context": 16384,
+                "required_context": 3272,
+                "kv_configuration": "q8_0/q8_0",
+                "measured_kv_configuration": null,
+                "memory_reserve_mib": 256,
+                "gpu_reserve_mib": 256
+              }
+            },
+            "quality": null,
+            "latency_seconds": null,
+            "switch_seconds": 0.0,
+            "measured_cost": null,
+            "rejection_codes": [],
+            "runtime_alias": "sovereign-text",
+            "runtime": "llama.cpp",
+            "quantization": "Q4_K_M",
+            "license_id": "Apache-2.0",
+            "license_reviewed": true,
+            "worker_roles": [
+              "reasoning"
+            ],
+            "model_file": "Qwen3.5-4B-Q4_K_M.gguf",
+            "projector_file": null,
+            "revision": "e87f176479d0855a907a41277aca2f8ee7a09523",
+            "measurement_scope": "text.CLARIFICATION",
+            "validated_history": {
+              "successes": 0,
+              "failures": 0,
+              "unknown": 0,
+              "validated_samples": 0,
+              "observations": 0,
+              "success_rate": null,
+              "coverage": null,
+              "wilson95": null,
+              "minimum_samples": 20,
+              "latency_seconds": null,
+              "latency_seconds_samples": 0,
+              "switches": null,
+              "switches_samples": 0,
+              "load_seconds": null,
+              "load_seconds_samples": 0
+            }
+          },
+          {
+            "model_id": "Qwen/Qwen3.5-2B",
+            "registry_key": "vision",
+            "display_name": "Qwen3.5 2B Vision",
+            "capabilities": [
+              "vision"
+            ],
+            "modalities": [
+              "text",
+              "image"
+            ],
+            "context_limit": 16384,
+            "admissible": false,
+            "admission": {
+              "status": "conditional",
+              "reasons": [],
+              "reason_codes": [],
+              "conditions": [
+                "Model peak system-memory requirement is not measured",
+                "Model peak GPU-memory requirement is not measured",
+                "Peak resource measurements do not cover the configured context/KV settings",
+                "Peak resource measurements do not cover the configured KV types"
+              ],
+              "condition_codes": [
+                "peak_ram_unmeasured",
+                "peak_gpu_unmeasured",
+                "context_profile_unmeasured",
+                "kv_profile_unmeasured"
+              ],
+              "observed": {
+                "sampled_at": 1791037701.6944225,
+                "available_memory_mib": 5059.03515625,
+                "gpu_free_mib": 955.0,
+                "gpu_total_mib": 4094.0,
+                "gpu_device": "0",
+                "source": "psutil+nvidia-smi",
+                "errors": []
+              },
+              "requirements": {
+                "system_memory_mib": null,
+                "gpu_memory_mib": null,
+                "measured_context": null,
+                "configured_context": 16384,
+                "required_context": 3272,
+                "kv_configuration": "f16/f16",
+                "measured_kv_configuration": null,
+                "memory_reserve_mib": 256,
+                "gpu_reserve_mib": 256
+              }
+            },
+            "quality": null,
+            "latency_seconds": null,
+            "switch_seconds": null,
+            "measured_cost": null,
+            "rejection_codes": [
+              "unsupported_capability",
+              "unsuitable_worker_role"
+            ],
+            "runtime_alias": "sovereign-vision",
+            "runtime": "llama.cpp",
+            "quantization": "Q4_K_M",
+            "license_id": "Apache-2.0",
+            "license_reviewed": true,
+            "worker_roles": [
+              "vision"
+            ],
+            "model_file": "vision-qwen3.5-2b/Qwen3.5-2B-Q4_K_M.gguf",
+            "projector_file": "vision-qwen3.5-2b/mmproj-F16.gguf",
+            "revision": "f6d5376be1edb4d416d56da11e5397a961aca8ae",
+            "measurement_scope": "text.CLARIFICATION"
+          },
+          {
+            "model_id": "Qwen/Qwen2.5-Coder-3B-Instruct",
+            "registry_key": "code",
+            "display_name": "Qwen2.5 Coder 3B",
+            "capabilities": [
+              "code"
+            ],
+            "modalities": [
+              "text"
+            ],
+            "context_limit": 16384,
+            "admissible": false,
+            "admission": {
+              "status": "conditional",
+              "reasons": [],
+              "reason_codes": [],
+              "conditions": [
+                "Model peak system-memory requirement is not measured",
+                "Model peak GPU-memory requirement is not measured",
+                "Peak resource measurements do not cover the configured context/KV settings",
+                "Peak resource measurements do not cover the configured KV types"
+              ],
+              "condition_codes": [
+                "peak_ram_unmeasured",
+                "peak_gpu_unmeasured",
+                "context_profile_unmeasured",
+                "kv_profile_unmeasured"
+              ],
+              "observed": {
+                "sampled_at": 1791037701.6944225,
+                "available_memory_mib": 5059.03515625,
+                "gpu_free_mib": 955.0,
+                "gpu_total_mib": 4094.0,
+                "gpu_device": "0",
+                "source": "psutil+nvidia-smi",
+                "errors": []
+              },
+              "requirements": {
+                "system_memory_mib": null,
+                "gpu_memory_mib": null,
+                "measured_context": null,
+                "configured_context": 16384,
+                "required_context": 3272,
+                "kv_configuration": "q8_0/q8_0",
+                "measured_kv_configuration": null,
+                "memory_reserve_mib": 256,
+                "gpu_reserve_mib": 256
+              }
+            },
+            "quality": null,
+            "latency_seconds": null,
+            "switch_seconds": null,
+            "measured_cost": null,
+            "rejection_codes": [
+              "unsupported_capability",
+              "unsuitable_worker_role"
+            ],
+            "runtime_alias": "sovereign-code",
+            "runtime": "llama.cpp",
+            "quantization": "Q4_K_M",
+            "license_id": "qwen-research",
+            "license_reviewed": true,
+            "worker_roles": [
+              "code"
+            ],
+            "model_file": "qwen2.5-coder-3b-instruct-q4_k_m.gguf",
+            "projector_file": null,
+            "revision": "f74adce6aa16316c625447af059dbebe4983757c",
+            "measurement_scope": "text.CLARIFICATION"
+          },
+          {
+            "model_id": "google/gemma-4-E2B-it",
+            "registry_key": "text-light",
+            "display_name": "Gemma 4 E2B",
+            "capabilities": [
+              "text",
+              "calculation"
+            ],
+            "modalities": [
+              "text"
+            ],
+            "context_limit": 16384,
+            "admissible": false,
+            "admission": {
+              "status": "conditional",
+              "reasons": [],
+              "reason_codes": [],
+              "conditions": [
+                "Model peak system-memory requirement is not measured",
+                "Model peak GPU-memory requirement is not measured",
+                "Peak resource measurements do not cover the configured context/KV settings",
+                "Peak resource measurements do not cover the configured KV types"
+              ],
+              "condition_codes": [
+                "peak_ram_unmeasured",
+                "peak_gpu_unmeasured",
+                "context_profile_unmeasured",
+                "kv_profile_unmeasured"
+              ],
+              "observed": {
+                "sampled_at": 1791037701.6944225,
+                "available_memory_mib": 5059.03515625,
+                "gpu_free_mib": 955.0,
+                "gpu_total_mib": 4094.0,
+                "gpu_device": "0",
+                "source": "psutil+nvidia-smi",
+                "errors": []
+              },
+              "requirements": {
+                "system_memory_mib": null,
+                "gpu_memory_mib": null,
+                "measured_context": null,
+                "configured_context": 16384,
+                "required_context": 3272,
+                "kv_configuration": "q8_0/q8_0",
+                "measured_kv_configuration": null,
+                "memory_reserve_mib": 256,
+                "gpu_reserve_mib": 256
+              }
+            },
+            "quality": null,
+            "latency_seconds": null,
+            "switch_seconds": null,
+            "measured_cost": null,
+            "rejection_codes": [
+              "unsuitable_worker_role"
+            ],
+            "runtime_alias": "sovereign-text-light",
+            "runtime": "llama.cpp",
+            "quantization": "Q4_K_M",
+            "license_id": "Apache-2.0",
+            "license_reviewed": true,
+            "worker_roles": [
+              "lightweight"
+            ],
+            "model_file": "gemma-4-E2B-it-Q4_K_M.gguf",
+            "projector_file": null,
+            "revision": "0314792d7f1f7e229411f620751375812bb9faf2",
+            "measurement_scope": "text.CLARIFICATION"
+          }
+        ],
+        "candidate_rejection_reasons": {
+          "Qwen/Qwen3.5-2B": [
+            "unsupported_capability",
+            "unsuitable_worker_role"
+          ],
+          "Qwen/Qwen2.5-Coder-3B-Instruct": [
+            "unsupported_capability",
+            "unsuitable_worker_role"
+          ],
+          "google/gemma-4-E2B-it": [
+            "unsuitable_worker_role"
+          ]
+        },
+        "selected_model": "Qwen/Qwen3.5-4B",
+        "runtime_alias": "sovereign-text",
+        "route_reason": "Worker role reasoning; hard compatibility passed; resource admission conditional. verified residency",
+        "required_context": 3272,
+        "available_context": 16384,
+        "required_context_scope": {
+          "documents": false,
+          "project": false
+        },
+        "available_context_scope": {
+          "document_ids": [],
+          "workspace_id": "11fe321f6753499f95b71b274cf0e2e3",
+          "workspace_file_count": 0
+        },
+        "resource_admission": {
+          "status": "conditional",
+          "reasons": [],
+          "reason_codes": [],
+          "conditions": [
+            "Model peak system-memory requirement is not measured",
+            "Model peak GPU-memory requirement is not measured",
+            "Incremental context/KV allocation for the resident model is not measured",
+            "Peak resource measurements do not cover the configured context/KV settings",
+            "Peak resource measurements do not cover the configured KV types"
+          ],
+          "condition_codes": [
+            "peak_ram_unmeasured",
+            "peak_gpu_unmeasured",
+            "resident_incremental_kv_unmeasured",
+            "context_profile_unmeasured",
+            "kv_profile_unmeasured"
+          ],
+          "observed": {
+            "sampled_at": 1791037701.6944225,
+            "available_memory_mib": 5059.03515625,
+            "gpu_free_mib": 955.0,
+            "gpu_total_mib": 4094.0,
+            "gpu_device": "0",
+            "source": "psutil+nvidia-smi",
+            "errors": []
+          },
+          "requirements": {
+            "system_memory_mib": null,
+            "gpu_memory_mib": null,
+            "measured_context": null,
+            "configured_context": 16384,
+            "required_context": 3272,
+            "kv_configuration": "q8_0/q8_0",
+            "measured_kv_configuration": null,
+            "memory_reserve_mib": 256,
+            "gpu_reserve_mib": 256
+          }
+        },
+        "current_residency": "Qwen/Qwen3.5-4B",
+        "switch_required": false,
+        "classifier_time": 0.002412600000297971,
+        "routing_time": 0.9790022000006502,
+        "model_load_time": null,
+        "inference_time": 138.98404,
+        "validation_time": null,
+        "fallback": null,
+        "errors": [],
+        "classification": {
+          "predicted": null,
+          "decision": "defer_to_planner",
+          "method": "disabled_evaluated_cpu",
+          "score": null,
+          "margin": null,
+          "classifier_time_ms": 0.0017000002117129043,
+          "production_enabled": false,
+          "mutation_authorized": false,
+          "reason": "CPU candidates have not passed independent safety and quality release gates"
+        },
+        "stages": [
+          {
+            "stage": "model_selection",
+            "capability": "text",
+            "modality": "text",
+            "required_context": null,
+            "selected_model": "Qwen/Qwen3.5-4B",
+            "candidate_models": [
+              {
+                "model_id": "Qwen/Qwen3.5-4B",
+                "registry_key": "text",
+                "display_name": "Qwen3.5 4B",
+                "capabilities": [
+                  "text",
+                  "calculation"
+                ],
+                "modalities": [
+                  "text"
+                ],
+                "context_limit": 16384,
+                "admissible": true,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Incremental context/KV allocation for the resident model is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "resident_incremental_kv_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037659.0056586,
+                    "available_memory_mib": 5263.0546875,
+                    "gpu_free_mib": 955.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": null,
+                    "kv_configuration": "q8_0/q8_0",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": 0.0,
+                "measured_cost": null,
+                "rejection_codes": [],
+                "runtime_alias": "sovereign-text",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "Apache-2.0",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "reasoning"
+                ],
+                "model_file": "Qwen3.5-4B-Q4_K_M.gguf",
+                "projector_file": null,
+                "revision": "e87f176479d0855a907a41277aca2f8ee7a09523",
+                "measurement_scope": "text.CLARIFICATION",
+                "validated_history": {
+                  "successes": 0,
+                  "failures": 0,
+                  "unknown": 0,
+                  "validated_samples": 0,
+                  "observations": 0,
+                  "success_rate": null,
+                  "coverage": null,
+                  "wilson95": null,
+                  "minimum_samples": 20,
+                  "latency_seconds": null,
+                  "latency_seconds_samples": 0,
+                  "switches": null,
+                  "switches_samples": 0,
+                  "load_seconds": null,
+                  "load_seconds_samples": 0
+                }
+              },
+              {
+                "model_id": "Qwen/Qwen3.5-2B",
+                "registry_key": "vision",
+                "display_name": "Qwen3.5 2B Vision",
+                "capabilities": [
+                  "vision"
+                ],
+                "modalities": [
+                  "text",
+                  "image"
+                ],
+                "context_limit": 16384,
+                "admissible": false,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037659.0056586,
+                    "available_memory_mib": 5263.0546875,
+                    "gpu_free_mib": 955.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": null,
+                    "kv_configuration": "f16/f16",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": null,
+                "measured_cost": null,
+                "rejection_codes": [
+                  "unsupported_capability",
+                  "unsuitable_worker_role"
+                ],
+                "runtime_alias": "sovereign-vision",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "Apache-2.0",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "vision"
+                ],
+                "model_file": "vision-qwen3.5-2b/Qwen3.5-2B-Q4_K_M.gguf",
+                "projector_file": "vision-qwen3.5-2b/mmproj-F16.gguf",
+                "revision": "f6d5376be1edb4d416d56da11e5397a961aca8ae",
+                "measurement_scope": "text.CLARIFICATION"
+              },
+              {
+                "model_id": "Qwen/Qwen2.5-Coder-3B-Instruct",
+                "registry_key": "code",
+                "display_name": "Qwen2.5 Coder 3B",
+                "capabilities": [
+                  "code"
+                ],
+                "modalities": [
+                  "text"
+                ],
+                "context_limit": 16384,
+                "admissible": false,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037659.0056586,
+                    "available_memory_mib": 5263.0546875,
+                    "gpu_free_mib": 955.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": null,
+                    "kv_configuration": "q8_0/q8_0",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": null,
+                "measured_cost": null,
+                "rejection_codes": [
+                  "unsupported_capability",
+                  "unsuitable_worker_role"
+                ],
+                "runtime_alias": "sovereign-code",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "qwen-research",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "code"
+                ],
+                "model_file": "qwen2.5-coder-3b-instruct-q4_k_m.gguf",
+                "projector_file": null,
+                "revision": "f74adce6aa16316c625447af059dbebe4983757c",
+                "measurement_scope": "text.CLARIFICATION"
+              },
+              {
+                "model_id": "google/gemma-4-E2B-it",
+                "registry_key": "text-light",
+                "display_name": "Gemma 4 E2B",
+                "capabilities": [
+                  "text",
+                  "calculation"
+                ],
+                "modalities": [
+                  "text"
+                ],
+                "context_limit": 16384,
+                "admissible": false,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037659.0056586,
+                    "available_memory_mib": 5263.0546875,
+                    "gpu_free_mib": 955.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": null,
+                    "kv_configuration": "q8_0/q8_0",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": null,
+                "measured_cost": null,
+                "rejection_codes": [
+                  "unsuitable_worker_role"
+                ],
+                "runtime_alias": "sovereign-text-light",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "Apache-2.0",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "lightweight"
+                ],
+                "model_file": "gemma-4-E2B-it-Q4_K_M.gguf",
+                "projector_file": null,
+                "revision": "0314792d7f1f7e229411f620751375812bb9faf2",
+                "measurement_scope": "text.CLARIFICATION"
+              }
+            ],
+            "candidate_rejection_reasons": {
+              "Qwen/Qwen3.5-2B": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "Qwen/Qwen2.5-Coder-3B-Instruct": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "google/gemma-4-E2B-it": [
+                "unsuitable_worker_role"
+              ]
+            },
+            "route_reason": "Worker role reasoning; hard compatibility passed; resource admission conditional. verified residency",
+            "available_context": 16384,
+            "resource_admission": {
+              "status": "conditional",
+              "reasons": [],
+              "reason_codes": [],
+              "conditions": [
+                "Model peak system-memory requirement is not measured",
+                "Model peak GPU-memory requirement is not measured",
+                "Incremental context/KV allocation for the resident model is not measured",
+                "Peak resource measurements do not cover the configured context/KV settings",
+                "Peak resource measurements do not cover the configured KV types"
+              ],
+              "condition_codes": [
+                "peak_ram_unmeasured",
+                "peak_gpu_unmeasured",
+                "resident_incremental_kv_unmeasured",
+                "context_profile_unmeasured",
+                "kv_profile_unmeasured"
+              ],
+              "observed": {
+                "sampled_at": 1791037659.0056586,
+                "available_memory_mib": 5263.0546875,
+                "gpu_free_mib": 955.0,
+                "gpu_total_mib": 4094.0,
+                "gpu_device": "0",
+                "source": "psutil+nvidia-smi",
+                "errors": []
+              },
+              "requirements": {
+                "system_memory_mib": null,
+                "gpu_memory_mib": null,
+                "measured_context": null,
+                "configured_context": 16384,
+                "required_context": null,
+                "kv_configuration": "q8_0/q8_0",
+                "measured_kv_configuration": null,
+                "memory_reserve_mib": 256,
+                "gpu_reserve_mib": 256
+              }
+            },
+            "current_residency": "Qwen/Qwen3.5-4B",
+            "switch_required": false,
+            "routing_time": 0.13704020000022865,
+            "fallback": null,
+            "candidate_rejection_codes": {
+              "Qwen/Qwen3.5-2B": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "Qwen/Qwen2.5-Coder-3B-Instruct": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "google/gemma-4-E2B-it": [
+                "unsuitable_worker_role"
+              ]
+            },
+            "failure_category": null,
+            "selection_policy": "worker_role_hard_constraints_hysteresis_v2",
+            "selection_evidence": {
+              "status": "incomplete",
+              "comparison": [
+                "verified residency"
+              ],
+              "quality_comparable": false,
+              "quality_threshold": null,
+              "quality_threshold_source": null,
+              "registered_candidates": 4,
+              "admissible_candidates": 1,
+              "task_affinity": null,
+              "unknown_metrics_policy": "not comparable; never fabricated",
+              "worker_role": "reasoning",
+              "task_type": "CLARIFICATION",
+              "hysteresis": {
+                "previous_model": "Qwen/Qwen3.5-4B",
+                "retained_current": true,
+                "cost_evidence": "incomplete",
+                "net_latency_gain_seconds": null
+              },
+              "validated_history_status": "insufficient; baseline retained"
+            },
+            "worker_role": "reasoning",
+            "is_warm": true
+          },
+          {
+            "stage": "runtime_lease",
+            "model_load_time": null,
+            "switch_required": false,
+            "current_residency": "sovereign-text",
+            "selected_model": "sovereign-text",
+            "selected_model_id": "Qwen/Qwen3.5-4B",
+            "model_file": "Qwen3.5-4B-Q4_K_M.gguf",
+            "state": "Ready",
+            "available_context": 16384
+          },
+          {
+            "stage": "model_selection",
+            "capability": "text",
+            "modality": "text",
+            "required_context": 2460,
+            "selected_model": "Qwen/Qwen3.5-4B",
+            "candidate_models": [
+              {
+                "model_id": "Qwen/Qwen3.5-4B",
+                "registry_key": "text",
+                "display_name": "Qwen3.5 4B",
+                "capabilities": [
+                  "text",
+                  "calculation"
+                ],
+                "modalities": [
+                  "text"
+                ],
+                "context_limit": 16384,
+                "admissible": true,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Incremental context/KV allocation for the resident model is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "resident_incremental_kv_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037659.0056586,
+                    "available_memory_mib": 5263.0546875,
+                    "gpu_free_mib": 955.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": 2460,
+                    "kv_configuration": "q8_0/q8_0",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": 0.0,
+                "measured_cost": null,
+                "rejection_codes": [],
+                "runtime_alias": "sovereign-text",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "Apache-2.0",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "reasoning"
+                ],
+                "model_file": "Qwen3.5-4B-Q4_K_M.gguf",
+                "projector_file": null,
+                "revision": "e87f176479d0855a907a41277aca2f8ee7a09523",
+                "measurement_scope": "text.CLARIFICATION",
+                "validated_history": {
+                  "successes": 0,
+                  "failures": 0,
+                  "unknown": 0,
+                  "validated_samples": 0,
+                  "observations": 0,
+                  "success_rate": null,
+                  "coverage": null,
+                  "wilson95": null,
+                  "minimum_samples": 20,
+                  "latency_seconds": null,
+                  "latency_seconds_samples": 0,
+                  "switches": null,
+                  "switches_samples": 0,
+                  "load_seconds": null,
+                  "load_seconds_samples": 0
+                }
+              },
+              {
+                "model_id": "Qwen/Qwen3.5-2B",
+                "registry_key": "vision",
+                "display_name": "Qwen3.5 2B Vision",
+                "capabilities": [
+                  "vision"
+                ],
+                "modalities": [
+                  "text",
+                  "image"
+                ],
+                "context_limit": 16384,
+                "admissible": false,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037659.0056586,
+                    "available_memory_mib": 5263.0546875,
+                    "gpu_free_mib": 955.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": 2460,
+                    "kv_configuration": "f16/f16",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": null,
+                "measured_cost": null,
+                "rejection_codes": [
+                  "unsupported_capability",
+                  "unsuitable_worker_role"
+                ],
+                "runtime_alias": "sovereign-vision",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "Apache-2.0",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "vision"
+                ],
+                "model_file": "vision-qwen3.5-2b/Qwen3.5-2B-Q4_K_M.gguf",
+                "projector_file": "vision-qwen3.5-2b/mmproj-F16.gguf",
+                "revision": "f6d5376be1edb4d416d56da11e5397a961aca8ae",
+                "measurement_scope": "text.CLARIFICATION"
+              },
+              {
+                "model_id": "Qwen/Qwen2.5-Coder-3B-Instruct",
+                "registry_key": "code",
+                "display_name": "Qwen2.5 Coder 3B",
+                "capabilities": [
+                  "code"
+                ],
+                "modalities": [
+                  "text"
+                ],
+                "context_limit": 16384,
+                "admissible": false,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037659.0056586,
+                    "available_memory_mib": 5263.0546875,
+                    "gpu_free_mib": 955.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": 2460,
+                    "kv_configuration": "q8_0/q8_0",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": null,
+                "measured_cost": null,
+                "rejection_codes": [
+                  "unsupported_capability",
+                  "unsuitable_worker_role"
+                ],
+                "runtime_alias": "sovereign-code",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "qwen-research",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "code"
+                ],
+                "model_file": "qwen2.5-coder-3b-instruct-q4_k_m.gguf",
+                "projector_file": null,
+                "revision": "f74adce6aa16316c625447af059dbebe4983757c",
+                "measurement_scope": "text.CLARIFICATION"
+              },
+              {
+                "model_id": "google/gemma-4-E2B-it",
+                "registry_key": "text-light",
+                "display_name": "Gemma 4 E2B",
+                "capabilities": [
+                  "text",
+                  "calculation"
+                ],
+                "modalities": [
+                  "text"
+                ],
+                "context_limit": 16384,
+                "admissible": false,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037659.0056586,
+                    "available_memory_mib": 5263.0546875,
+                    "gpu_free_mib": 955.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": 2460,
+                    "kv_configuration": "q8_0/q8_0",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": null,
+                "measured_cost": null,
+                "rejection_codes": [
+                  "unsuitable_worker_role"
+                ],
+                "runtime_alias": "sovereign-text-light",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "Apache-2.0",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "lightweight"
+                ],
+                "model_file": "gemma-4-E2B-it-Q4_K_M.gguf",
+                "projector_file": null,
+                "revision": "0314792d7f1f7e229411f620751375812bb9faf2",
+                "measurement_scope": "text.CLARIFICATION"
+              }
+            ],
+            "candidate_rejection_reasons": {
+              "Qwen/Qwen3.5-2B": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "Qwen/Qwen2.5-Coder-3B-Instruct": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "google/gemma-4-E2B-it": [
+                "unsuitable_worker_role"
+              ]
+            },
+            "route_reason": "Worker role reasoning; hard compatibility passed; resource admission conditional. verified residency",
+            "available_context": 16384,
+            "resource_admission": {
+              "status": "conditional",
+              "reasons": [],
+              "reason_codes": [],
+              "conditions": [
+                "Model peak system-memory requirement is not measured",
+                "Model peak GPU-memory requirement is not measured",
+                "Incremental context/KV allocation for the resident model is not measured",
+                "Peak resource measurements do not cover the configured context/KV settings",
+                "Peak resource measurements do not cover the configured KV types"
+              ],
+              "condition_codes": [
+                "peak_ram_unmeasured",
+                "peak_gpu_unmeasured",
+                "resident_incremental_kv_unmeasured",
+                "context_profile_unmeasured",
+                "kv_profile_unmeasured"
+              ],
+              "observed": {
+                "sampled_at": 1791037659.0056586,
+                "available_memory_mib": 5263.0546875,
+                "gpu_free_mib": 955.0,
+                "gpu_total_mib": 4094.0,
+                "gpu_device": "0",
+                "source": "psutil+nvidia-smi",
+                "errors": []
+              },
+              "requirements": {
+                "system_memory_mib": null,
+                "gpu_memory_mib": null,
+                "measured_context": null,
+                "configured_context": 16384,
+                "required_context": 2460,
+                "kv_configuration": "q8_0/q8_0",
+                "measured_kv_configuration": null,
+                "memory_reserve_mib": 256,
+                "gpu_reserve_mib": 256
+              }
+            },
+            "current_residency": "Qwen/Qwen3.5-4B",
+            "switch_required": false,
+            "routing_time": 0.09092289999989589,
+            "fallback": null,
+            "candidate_rejection_codes": {
+              "Qwen/Qwen3.5-2B": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "Qwen/Qwen2.5-Coder-3B-Instruct": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "google/gemma-4-E2B-it": [
+                "unsuitable_worker_role"
+              ]
+            },
+            "failure_category": null,
+            "selection_policy": "worker_role_hard_constraints_hysteresis_v2",
+            "selection_evidence": {
+              "status": "incomplete",
+              "comparison": [
+                "verified residency"
+              ],
+              "quality_comparable": false,
+              "quality_threshold": null,
+              "quality_threshold_source": null,
+              "registered_candidates": 4,
+              "admissible_candidates": 1,
+              "task_affinity": null,
+              "unknown_metrics_policy": "not comparable; never fabricated",
+              "worker_role": "reasoning",
+              "task_type": "CLARIFICATION",
+              "hysteresis": {
+                "previous_model": "Qwen/Qwen3.5-4B",
+                "retained_current": true,
+                "cost_evidence": "incomplete",
+                "net_latency_gain_seconds": null
+              },
+              "validated_history_status": "insufficient; baseline retained"
+            },
+            "worker_role": "reasoning",
+            "is_warm": true
+          },
+          {
+            "stage": "runtime_lease",
+            "model_load_time": null,
+            "switch_required": false,
+            "current_residency": "sovereign-text",
+            "selected_model": "sovereign-text",
+            "selected_model_id": "Qwen/Qwen3.5-4B",
+            "model_file": "Qwen3.5-4B-Q4_K_M.gguf",
+            "state": "Ready",
+            "available_context": 16384
+          },
+          {
+            "stage": "inference",
+            "prompt_tokens": 2012,
+            "completion_tokens": 10,
+            "model_request_time": 1.5241431999997985,
+            "runtime_timings": {
+              "cache_n": 2008,
+              "prompt_n": 4,
+              "prompt_ms": 635.536,
+              "prompt_per_token_ms": 158.884,
+              "prompt_per_second": 6.293899952166361,
+              "predicted_n": 10,
+              "predicted_ms": 624.631,
+              "predicted_per_token_ms": 69.40344444444445,
+              "predicted_per_second": 14.408506782404332
+            }
+          },
+          {
+            "stage": "intent",
+            "action": "application_tools",
+            "source": "bounded_model_planner"
+          },
+          {
+            "stage": "model_selection",
+            "capability": "text",
+            "modality": "text",
+            "required_context": null,
+            "selected_model": "Qwen/Qwen3.5-4B",
+            "candidate_models": [
+              {
+                "model_id": "Qwen/Qwen3.5-4B",
+                "registry_key": "text",
+                "display_name": "Qwen3.5 4B",
+                "capabilities": [
+                  "text",
+                  "calculation"
+                ],
+                "modalities": [
+                  "text"
+                ],
+                "context_limit": 16384,
+                "admissible": true,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Incremental context/KV allocation for the resident model is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "resident_incremental_kv_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037661.0579321,
+                    "available_memory_mib": 5251.58203125,
+                    "gpu_free_mib": 954.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": null,
+                    "kv_configuration": "q8_0/q8_0",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": 0.0,
+                "measured_cost": null,
+                "rejection_codes": [],
+                "runtime_alias": "sovereign-text",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "Apache-2.0",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "reasoning"
+                ],
+                "model_file": "Qwen3.5-4B-Q4_K_M.gguf",
+                "projector_file": null,
+                "revision": "e87f176479d0855a907a41277aca2f8ee7a09523",
+                "measurement_scope": "text.CLARIFICATION",
+                "validated_history": {
+                  "successes": 0,
+                  "failures": 0,
+                  "unknown": 0,
+                  "validated_samples": 0,
+                  "observations": 0,
+                  "success_rate": null,
+                  "coverage": null,
+                  "wilson95": null,
+                  "minimum_samples": 20,
+                  "latency_seconds": null,
+                  "latency_seconds_samples": 0,
+                  "switches": null,
+                  "switches_samples": 0,
+                  "load_seconds": null,
+                  "load_seconds_samples": 0
+                }
+              },
+              {
+                "model_id": "Qwen/Qwen3.5-2B",
+                "registry_key": "vision",
+                "display_name": "Qwen3.5 2B Vision",
+                "capabilities": [
+                  "vision"
+                ],
+                "modalities": [
+                  "text",
+                  "image"
+                ],
+                "context_limit": 16384,
+                "admissible": false,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037661.0579321,
+                    "available_memory_mib": 5251.58203125,
+                    "gpu_free_mib": 954.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": null,
+                    "kv_configuration": "f16/f16",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": null,
+                "measured_cost": null,
+                "rejection_codes": [
+                  "unsupported_capability",
+                  "unsuitable_worker_role"
+                ],
+                "runtime_alias": "sovereign-vision",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "Apache-2.0",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "vision"
+                ],
+                "model_file": "vision-qwen3.5-2b/Qwen3.5-2B-Q4_K_M.gguf",
+                "projector_file": "vision-qwen3.5-2b/mmproj-F16.gguf",
+                "revision": "f6d5376be1edb4d416d56da11e5397a961aca8ae",
+                "measurement_scope": "text.CLARIFICATION"
+              },
+              {
+                "model_id": "Qwen/Qwen2.5-Coder-3B-Instruct",
+                "registry_key": "code",
+                "display_name": "Qwen2.5 Coder 3B",
+                "capabilities": [
+                  "code"
+                ],
+                "modalities": [
+                  "text"
+                ],
+                "context_limit": 16384,
+                "admissible": false,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037661.0579321,
+                    "available_memory_mib": 5251.58203125,
+                    "gpu_free_mib": 954.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": null,
+                    "kv_configuration": "q8_0/q8_0",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": null,
+                "measured_cost": null,
+                "rejection_codes": [
+                  "unsupported_capability",
+                  "unsuitable_worker_role"
+                ],
+                "runtime_alias": "sovereign-code",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "qwen-research",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "code"
+                ],
+                "model_file": "qwen2.5-coder-3b-instruct-q4_k_m.gguf",
+                "projector_file": null,
+                "revision": "f74adce6aa16316c625447af059dbebe4983757c",
+                "measurement_scope": "text.CLARIFICATION"
+              },
+              {
+                "model_id": "google/gemma-4-E2B-it",
+                "registry_key": "text-light",
+                "display_name": "Gemma 4 E2B",
+                "capabilities": [
+                  "text",
+                  "calculation"
+                ],
+                "modalities": [
+                  "text"
+                ],
+                "context_limit": 16384,
+                "admissible": false,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037661.0579321,
+                    "available_memory_mib": 5251.58203125,
+                    "gpu_free_mib": 954.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": null,
+                    "kv_configuration": "q8_0/q8_0",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": null,
+                "measured_cost": null,
+                "rejection_codes": [
+                  "unsuitable_worker_role"
+                ],
+                "runtime_alias": "sovereign-text-light",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "Apache-2.0",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "lightweight"
+                ],
+                "model_file": "gemma-4-E2B-it-Q4_K_M.gguf",
+                "projector_file": null,
+                "revision": "0314792d7f1f7e229411f620751375812bb9faf2",
+                "measurement_scope": "text.CLARIFICATION"
+              }
+            ],
+            "candidate_rejection_reasons": {
+              "Qwen/Qwen3.5-2B": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "Qwen/Qwen2.5-Coder-3B-Instruct": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "google/gemma-4-E2B-it": [
+                "unsuitable_worker_role"
+              ]
+            },
+            "route_reason": "Worker role reasoning; hard compatibility passed; resource admission conditional. verified residency",
+            "available_context": 16384,
+            "resource_admission": {
+              "status": "conditional",
+              "reasons": [],
+              "reason_codes": [],
+              "conditions": [
+                "Model peak system-memory requirement is not measured",
+                "Model peak GPU-memory requirement is not measured",
+                "Incremental context/KV allocation for the resident model is not measured",
+                "Peak resource measurements do not cover the configured context/KV settings",
+                "Peak resource measurements do not cover the configured KV types"
+              ],
+              "condition_codes": [
+                "peak_ram_unmeasured",
+                "peak_gpu_unmeasured",
+                "resident_incremental_kv_unmeasured",
+                "context_profile_unmeasured",
+                "kv_profile_unmeasured"
+              ],
+              "observed": {
+                "sampled_at": 1791037661.0579321,
+                "available_memory_mib": 5251.58203125,
+                "gpu_free_mib": 954.0,
+                "gpu_total_mib": 4094.0,
+                "gpu_device": "0",
+                "source": "psutil+nvidia-smi",
+                "errors": []
+              },
+              "requirements": {
+                "system_memory_mib": null,
+                "gpu_memory_mib": null,
+                "measured_context": null,
+                "configured_context": 16384,
+                "required_context": null,
+                "kv_configuration": "q8_0/q8_0",
+                "measured_kv_configuration": null,
+                "memory_reserve_mib": 256,
+                "gpu_reserve_mib": 256
+              }
+            },
+            "current_residency": "Qwen/Qwen3.5-4B",
+            "switch_required": false,
+            "routing_time": 0.1592118000003211,
+            "fallback": null,
+            "candidate_rejection_codes": {
+              "Qwen/Qwen3.5-2B": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "Qwen/Qwen2.5-Coder-3B-Instruct": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "google/gemma-4-E2B-it": [
+                "unsuitable_worker_role"
+              ]
+            },
+            "failure_category": null,
+            "selection_policy": "worker_role_hard_constraints_hysteresis_v2",
+            "selection_evidence": {
+              "status": "incomplete",
+              "comparison": [
+                "verified residency"
+              ],
+              "quality_comparable": false,
+              "quality_threshold": null,
+              "quality_threshold_source": null,
+              "registered_candidates": 4,
+              "admissible_candidates": 1,
+              "task_affinity": null,
+              "unknown_metrics_policy": "not comparable; never fabricated",
+              "worker_role": "reasoning",
+              "task_type": "CLARIFICATION",
+              "hysteresis": {
+                "previous_model": "Qwen/Qwen3.5-4B",
+                "retained_current": true,
+                "cost_evidence": "incomplete",
+                "net_latency_gain_seconds": null
+              },
+              "validated_history_status": "insufficient; baseline retained"
+            },
+            "worker_role": "reasoning",
+            "is_warm": true
+          },
+          {
+            "stage": "runtime_lease",
+            "model_load_time": null,
+            "switch_required": false,
+            "current_residency": "sovereign-text",
+            "selected_model": "sovereign-text",
+            "selected_model_id": "Qwen/Qwen3.5-4B",
+            "model_file": "Qwen3.5-4B-Q4_K_M.gguf",
+            "state": "Ready",
+            "available_context": 16384
+          },
+          {
+            "stage": "model_selection",
+            "capability": "text",
+            "modality": "text",
+            "required_context": 2339,
+            "selected_model": "Qwen/Qwen3.5-4B",
+            "candidate_models": [
+              {
+                "model_id": "Qwen/Qwen3.5-4B",
+                "registry_key": "text",
+                "display_name": "Qwen3.5 4B",
+                "capabilities": [
+                  "text",
+                  "calculation"
+                ],
+                "modalities": [
+                  "text"
+                ],
+                "context_limit": 16384,
+                "admissible": true,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Incremental context/KV allocation for the resident model is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "resident_incremental_kv_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037661.0579321,
+                    "available_memory_mib": 5251.58203125,
+                    "gpu_free_mib": 954.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": 2339,
+                    "kv_configuration": "q8_0/q8_0",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": 0.0,
+                "measured_cost": null,
+                "rejection_codes": [],
+                "runtime_alias": "sovereign-text",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "Apache-2.0",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "reasoning"
+                ],
+                "model_file": "Qwen3.5-4B-Q4_K_M.gguf",
+                "projector_file": null,
+                "revision": "e87f176479d0855a907a41277aca2f8ee7a09523",
+                "measurement_scope": "text.CLARIFICATION",
+                "validated_history": {
+                  "successes": 0,
+                  "failures": 0,
+                  "unknown": 0,
+                  "validated_samples": 0,
+                  "observations": 0,
+                  "success_rate": null,
+                  "coverage": null,
+                  "wilson95": null,
+                  "minimum_samples": 20,
+                  "latency_seconds": null,
+                  "latency_seconds_samples": 0,
+                  "switches": null,
+                  "switches_samples": 0,
+                  "load_seconds": null,
+                  "load_seconds_samples": 0
+                }
+              },
+              {
+                "model_id": "Qwen/Qwen3.5-2B",
+                "registry_key": "vision",
+                "display_name": "Qwen3.5 2B Vision",
+                "capabilities": [
+                  "vision"
+                ],
+                "modalities": [
+                  "text",
+                  "image"
+                ],
+                "context_limit": 16384,
+                "admissible": false,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037661.0579321,
+                    "available_memory_mib": 5251.58203125,
+                    "gpu_free_mib": 954.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": 2339,
+                    "kv_configuration": "f16/f16",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": null,
+                "measured_cost": null,
+                "rejection_codes": [
+                  "unsupported_capability",
+                  "unsuitable_worker_role"
+                ],
+                "runtime_alias": "sovereign-vision",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "Apache-2.0",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "vision"
+                ],
+                "model_file": "vision-qwen3.5-2b/Qwen3.5-2B-Q4_K_M.gguf",
+                "projector_file": "vision-qwen3.5-2b/mmproj-F16.gguf",
+                "revision": "f6d5376be1edb4d416d56da11e5397a961aca8ae",
+                "measurement_scope": "text.CLARIFICATION"
+              },
+              {
+                "model_id": "Qwen/Qwen2.5-Coder-3B-Instruct",
+                "registry_key": "code",
+                "display_name": "Qwen2.5 Coder 3B",
+                "capabilities": [
+                  "code"
+                ],
+                "modalities": [
+                  "text"
+                ],
+                "context_limit": 16384,
+                "admissible": false,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037661.0579321,
+                    "available_memory_mib": 5251.58203125,
+                    "gpu_free_mib": 954.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": 2339,
+                    "kv_configuration": "q8_0/q8_0",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": null,
+                "measured_cost": null,
+                "rejection_codes": [
+                  "unsupported_capability",
+                  "unsuitable_worker_role"
+                ],
+                "runtime_alias": "sovereign-code",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "qwen-research",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "code"
+                ],
+                "model_file": "qwen2.5-coder-3b-instruct-q4_k_m.gguf",
+                "projector_file": null,
+                "revision": "f74adce6aa16316c625447af059dbebe4983757c",
+                "measurement_scope": "text.CLARIFICATION"
+              },
+              {
+                "model_id": "google/gemma-4-E2B-it",
+                "registry_key": "text-light",
+                "display_name": "Gemma 4 E2B",
+                "capabilities": [
+                  "text",
+                  "calculation"
+                ],
+                "modalities": [
+                  "text"
+                ],
+                "context_limit": 16384,
+                "admissible": false,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037661.0579321,
+                    "available_memory_mib": 5251.58203125,
+                    "gpu_free_mib": 954.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": 2339,
+                    "kv_configuration": "q8_0/q8_0",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": null,
+                "measured_cost": null,
+                "rejection_codes": [
+                  "unsuitable_worker_role"
+                ],
+                "runtime_alias": "sovereign-text-light",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "Apache-2.0",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "lightweight"
+                ],
+                "model_file": "gemma-4-E2B-it-Q4_K_M.gguf",
+                "projector_file": null,
+                "revision": "0314792d7f1f7e229411f620751375812bb9faf2",
+                "measurement_scope": "text.CLARIFICATION"
+              }
+            ],
+            "candidate_rejection_reasons": {
+              "Qwen/Qwen3.5-2B": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "Qwen/Qwen2.5-Coder-3B-Instruct": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "google/gemma-4-E2B-it": [
+                "unsuitable_worker_role"
+              ]
+            },
+            "route_reason": "Worker role reasoning; hard compatibility passed; resource admission conditional. verified residency",
+            "available_context": 16384,
+            "resource_admission": {
+              "status": "conditional",
+              "reasons": [],
+              "reason_codes": [],
+              "conditions": [
+                "Model peak system-memory requirement is not measured",
+                "Model peak GPU-memory requirement is not measured",
+                "Incremental context/KV allocation for the resident model is not measured",
+                "Peak resource measurements do not cover the configured context/KV settings",
+                "Peak resource measurements do not cover the configured KV types"
+              ],
+              "condition_codes": [
+                "peak_ram_unmeasured",
+                "peak_gpu_unmeasured",
+                "resident_incremental_kv_unmeasured",
+                "context_profile_unmeasured",
+                "kv_profile_unmeasured"
+              ],
+              "observed": {
+                "sampled_at": 1791037661.0579321,
+                "available_memory_mib": 5251.58203125,
+                "gpu_free_mib": 954.0,
+                "gpu_total_mib": 4094.0,
+                "gpu_device": "0",
+                "source": "psutil+nvidia-smi",
+                "errors": []
+              },
+              "requirements": {
+                "system_memory_mib": null,
+                "gpu_memory_mib": null,
+                "measured_context": null,
+                "configured_context": 16384,
+                "required_context": 2339,
+                "kv_configuration": "q8_0/q8_0",
+                "measured_kv_configuration": null,
+                "memory_reserve_mib": 256,
+                "gpu_reserve_mib": 256
+              }
+            },
+            "current_residency": "Qwen/Qwen3.5-4B",
+            "switch_required": false,
+            "routing_time": 0.08570120000013048,
+            "fallback": null,
+            "candidate_rejection_codes": {
+              "Qwen/Qwen3.5-2B": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "Qwen/Qwen2.5-Coder-3B-Instruct": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "google/gemma-4-E2B-it": [
+                "unsuitable_worker_role"
+              ]
+            },
+            "failure_category": null,
+            "selection_policy": "worker_role_hard_constraints_hysteresis_v2",
+            "selection_evidence": {
+              "status": "incomplete",
+              "comparison": [
+                "verified residency"
+              ],
+              "quality_comparable": false,
+              "quality_threshold": null,
+              "quality_threshold_source": null,
+              "registered_candidates": 4,
+              "admissible_candidates": 1,
+              "task_affinity": null,
+              "unknown_metrics_policy": "not comparable; never fabricated",
+              "worker_role": "reasoning",
+              "task_type": "CLARIFICATION",
+              "hysteresis": {
+                "previous_model": "Qwen/Qwen3.5-4B",
+                "retained_current": true,
+                "cost_evidence": "incomplete",
+                "net_latency_gain_seconds": null
+              },
+              "validated_history_status": "insufficient; baseline retained"
+            },
+            "worker_role": "reasoning",
+            "is_warm": true
+          },
+          {
+            "stage": "runtime_lease",
+            "model_load_time": null,
+            "switch_required": false,
+            "current_residency": "sovereign-text",
+            "selected_model": "sovereign-text",
+            "selected_model_id": "Qwen/Qwen3.5-4B",
+            "model_file": "Qwen3.5-4B-Q4_K_M.gguf",
+            "state": "Ready",
+            "available_context": 16384
+          },
+          {
+            "stage": "inference",
+            "prompt_tokens": 227,
+            "completion_tokens": 207,
+            "model_request_time": 14.363280199999735,
+            "runtime_timings": {
+              "cache_n": 158,
+              "prompt_n": 69,
+              "prompt_ms": 757.539,
+              "prompt_per_token_ms": 10.978826086956522,
+              "prompt_per_second": 91.08441941603006,
+              "predicted_n": 207,
+              "predicted_ms": 13448.494,
+              "predicted_per_token_ms": 65.28395145631069,
+              "predicted_per_second": 15.317700256995318
+            }
+          },
+          {
+            "stage": "model_selection",
+            "capability": "text",
+            "modality": "text",
+            "required_context": 3087,
+            "selected_model": "Qwen/Qwen3.5-4B",
+            "candidate_models": [
+              {
+                "model_id": "Qwen/Qwen3.5-4B",
+                "registry_key": "text",
+                "display_name": "Qwen3.5 4B",
+                "capabilities": [
+                  "text",
+                  "calculation"
+                ],
+                "modalities": [
+                  "text"
+                ],
+                "context_limit": 16384,
+                "admissible": true,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Incremental context/KV allocation for the resident model is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "resident_incremental_kv_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037675.8807557,
+                    "available_memory_mib": 5062.3671875,
+                    "gpu_free_mib": 954.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": 3087,
+                    "kv_configuration": "q8_0/q8_0",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": 0.0,
+                "measured_cost": null,
+                "rejection_codes": [],
+                "runtime_alias": "sovereign-text",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "Apache-2.0",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "reasoning"
+                ],
+                "model_file": "Qwen3.5-4B-Q4_K_M.gguf",
+                "projector_file": null,
+                "revision": "e87f176479d0855a907a41277aca2f8ee7a09523",
+                "measurement_scope": "text.CLARIFICATION",
+                "validated_history": {
+                  "successes": 0,
+                  "failures": 0,
+                  "unknown": 0,
+                  "validated_samples": 0,
+                  "observations": 0,
+                  "success_rate": null,
+                  "coverage": null,
+                  "wilson95": null,
+                  "minimum_samples": 20,
+                  "latency_seconds": null,
+                  "latency_seconds_samples": 0,
+                  "switches": null,
+                  "switches_samples": 0,
+                  "load_seconds": null,
+                  "load_seconds_samples": 0
+                }
+              },
+              {
+                "model_id": "Qwen/Qwen3.5-2B",
+                "registry_key": "vision",
+                "display_name": "Qwen3.5 2B Vision",
+                "capabilities": [
+                  "vision"
+                ],
+                "modalities": [
+                  "text",
+                  "image"
+                ],
+                "context_limit": 16384,
+                "admissible": false,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037675.8807557,
+                    "available_memory_mib": 5062.3671875,
+                    "gpu_free_mib": 954.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": 3087,
+                    "kv_configuration": "f16/f16",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": null,
+                "measured_cost": null,
+                "rejection_codes": [
+                  "unsupported_capability",
+                  "unsuitable_worker_role"
+                ],
+                "runtime_alias": "sovereign-vision",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "Apache-2.0",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "vision"
+                ],
+                "model_file": "vision-qwen3.5-2b/Qwen3.5-2B-Q4_K_M.gguf",
+                "projector_file": "vision-qwen3.5-2b/mmproj-F16.gguf",
+                "revision": "f6d5376be1edb4d416d56da11e5397a961aca8ae",
+                "measurement_scope": "text.CLARIFICATION"
+              },
+              {
+                "model_id": "Qwen/Qwen2.5-Coder-3B-Instruct",
+                "registry_key": "code",
+                "display_name": "Qwen2.5 Coder 3B",
+                "capabilities": [
+                  "code"
+                ],
+                "modalities": [
+                  "text"
+                ],
+                "context_limit": 16384,
+                "admissible": false,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037675.8807557,
+                    "available_memory_mib": 5062.3671875,
+                    "gpu_free_mib": 954.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": 3087,
+                    "kv_configuration": "q8_0/q8_0",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": null,
+                "measured_cost": null,
+                "rejection_codes": [
+                  "unsupported_capability",
+                  "unsuitable_worker_role"
+                ],
+                "runtime_alias": "sovereign-code",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "qwen-research",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "code"
+                ],
+                "model_file": "qwen2.5-coder-3b-instruct-q4_k_m.gguf",
+                "projector_file": null,
+                "revision": "f74adce6aa16316c625447af059dbebe4983757c",
+                "measurement_scope": "text.CLARIFICATION"
+              },
+              {
+                "model_id": "google/gemma-4-E2B-it",
+                "registry_key": "text-light",
+                "display_name": "Gemma 4 E2B",
+                "capabilities": [
+                  "text",
+                  "calculation"
+                ],
+                "modalities": [
+                  "text"
+                ],
+                "context_limit": 16384,
+                "admissible": false,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037675.8807557,
+                    "available_memory_mib": 5062.3671875,
+                    "gpu_free_mib": 954.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": 3087,
+                    "kv_configuration": "q8_0/q8_0",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": null,
+                "measured_cost": null,
+                "rejection_codes": [
+                  "unsuitable_worker_role"
+                ],
+                "runtime_alias": "sovereign-text-light",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "Apache-2.0",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "lightweight"
+                ],
+                "model_file": "gemma-4-E2B-it-Q4_K_M.gguf",
+                "projector_file": null,
+                "revision": "0314792d7f1f7e229411f620751375812bb9faf2",
+                "measurement_scope": "text.CLARIFICATION"
+              }
+            ],
+            "candidate_rejection_reasons": {
+              "Qwen/Qwen3.5-2B": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "Qwen/Qwen2.5-Coder-3B-Instruct": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "google/gemma-4-E2B-it": [
+                "unsuitable_worker_role"
+              ]
+            },
+            "route_reason": "Worker role reasoning; hard compatibility passed; resource admission conditional. verified residency",
+            "available_context": 16384,
+            "resource_admission": {
+              "status": "conditional",
+              "reasons": [],
+              "reason_codes": [],
+              "conditions": [
+                "Model peak system-memory requirement is not measured",
+                "Model peak GPU-memory requirement is not measured",
+                "Incremental context/KV allocation for the resident model is not measured",
+                "Peak resource measurements do not cover the configured context/KV settings",
+                "Peak resource measurements do not cover the configured KV types"
+              ],
+              "condition_codes": [
+                "peak_ram_unmeasured",
+                "peak_gpu_unmeasured",
+                "resident_incremental_kv_unmeasured",
+                "context_profile_unmeasured",
+                "kv_profile_unmeasured"
+              ],
+              "observed": {
+                "sampled_at": 1791037675.8807557,
+                "available_memory_mib": 5062.3671875,
+                "gpu_free_mib": 954.0,
+                "gpu_total_mib": 4094.0,
+                "gpu_device": "0",
+                "source": "psutil+nvidia-smi",
+                "errors": []
+              },
+              "requirements": {
+                "system_memory_mib": null,
+                "gpu_memory_mib": null,
+                "measured_context": null,
+                "configured_context": 16384,
+                "required_context": 3087,
+                "kv_configuration": "q8_0/q8_0",
+                "measured_kv_configuration": null,
+                "memory_reserve_mib": 256,
+                "gpu_reserve_mib": 256
+              }
+            },
+            "current_residency": "Qwen/Qwen3.5-4B",
+            "switch_required": false,
+            "routing_time": 0.1570769999998447,
+            "fallback": null,
+            "candidate_rejection_codes": {
+              "Qwen/Qwen3.5-2B": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "Qwen/Qwen2.5-Coder-3B-Instruct": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "google/gemma-4-E2B-it": [
+                "unsuitable_worker_role"
+              ]
+            },
+            "failure_category": null,
+            "selection_policy": "worker_role_hard_constraints_hysteresis_v2",
+            "selection_evidence": {
+              "status": "incomplete",
+              "comparison": [
+                "verified residency"
+              ],
+              "quality_comparable": false,
+              "quality_threshold": null,
+              "quality_threshold_source": null,
+              "registered_candidates": 4,
+              "admissible_candidates": 1,
+              "task_affinity": null,
+              "unknown_metrics_policy": "not comparable; never fabricated",
+              "worker_role": "reasoning",
+              "task_type": "CLARIFICATION",
+              "hysteresis": {
+                "previous_model": "Qwen/Qwen3.5-4B",
+                "retained_current": true,
+                "cost_evidence": "incomplete",
+                "net_latency_gain_seconds": null
+              },
+              "validated_history_status": "insufficient; baseline retained"
+            },
+            "worker_role": "reasoning",
+            "is_warm": true
+          },
+          {
+            "stage": "runtime_lease",
+            "model_load_time": null,
+            "switch_required": false,
+            "current_residency": "sovereign-text",
+            "selected_model": "sovereign-text",
+            "selected_model_id": "Qwen/Qwen3.5-4B",
+            "model_file": "Qwen3.5-4B-Q4_K_M.gguf",
+            "state": "Ready",
+            "available_context": 16384
+          },
+          {
+            "stage": "inference",
+            "prompt_tokens": 1999,
+            "completion_tokens": 313,
+            "model_request_time": 21.458550800000012,
+            "runtime_timings": {
+              "cache_n": 1868,
+              "prompt_n": 131,
+              "prompt_ms": 422.983,
+              "prompt_per_token_ms": 3.2288778625954198,
+              "prompt_per_second": 309.70511817259796,
+              "predicted_n": 313,
+              "predicted_ms": 20859.652,
+              "predicted_per_token_ms": 66.85785897435896,
+              "predicted_per_second": 14.957104749398505
+            }
+          },
+          {
+            "stage": "model_selection",
+            "capability": "text",
+            "modality": "text",
+            "required_context": 2966,
+            "selected_model": "Qwen/Qwen3.5-4B",
+            "candidate_models": [
+              {
+                "model_id": "Qwen/Qwen3.5-4B",
+                "registry_key": "text",
+                "display_name": "Qwen3.5 4B",
+                "capabilities": [
+                  "text",
+                  "calculation"
+                ],
+                "modalities": [
+                  "text"
+                ],
+                "context_limit": 16384,
+                "admissible": true,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Incremental context/KV allocation for the resident model is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "resident_incremental_kv_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037697.6113064,
+                    "available_memory_mib": 5050.64453125,
+                    "gpu_free_mib": 953.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": 2966,
+                    "kv_configuration": "q8_0/q8_0",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": 0.0,
+                "measured_cost": null,
+                "rejection_codes": [],
+                "runtime_alias": "sovereign-text",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "Apache-2.0",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "reasoning"
+                ],
+                "model_file": "Qwen3.5-4B-Q4_K_M.gguf",
+                "projector_file": null,
+                "revision": "e87f176479d0855a907a41277aca2f8ee7a09523",
+                "measurement_scope": "text.CLARIFICATION",
+                "validated_history": {
+                  "successes": 0,
+                  "failures": 0,
+                  "unknown": 0,
+                  "validated_samples": 0,
+                  "observations": 0,
+                  "success_rate": null,
+                  "coverage": null,
+                  "wilson95": null,
+                  "minimum_samples": 20,
+                  "latency_seconds": null,
+                  "latency_seconds_samples": 0,
+                  "switches": null,
+                  "switches_samples": 0,
+                  "load_seconds": null,
+                  "load_seconds_samples": 0
+                }
+              },
+              {
+                "model_id": "Qwen/Qwen3.5-2B",
+                "registry_key": "vision",
+                "display_name": "Qwen3.5 2B Vision",
+                "capabilities": [
+                  "vision"
+                ],
+                "modalities": [
+                  "text",
+                  "image"
+                ],
+                "context_limit": 16384,
+                "admissible": false,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037697.6113064,
+                    "available_memory_mib": 5050.64453125,
+                    "gpu_free_mib": 953.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": 2966,
+                    "kv_configuration": "f16/f16",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": null,
+                "measured_cost": null,
+                "rejection_codes": [
+                  "unsupported_capability",
+                  "unsuitable_worker_role"
+                ],
+                "runtime_alias": "sovereign-vision",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "Apache-2.0",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "vision"
+                ],
+                "model_file": "vision-qwen3.5-2b/Qwen3.5-2B-Q4_K_M.gguf",
+                "projector_file": "vision-qwen3.5-2b/mmproj-F16.gguf",
+                "revision": "f6d5376be1edb4d416d56da11e5397a961aca8ae",
+                "measurement_scope": "text.CLARIFICATION"
+              },
+              {
+                "model_id": "Qwen/Qwen2.5-Coder-3B-Instruct",
+                "registry_key": "code",
+                "display_name": "Qwen2.5 Coder 3B",
+                "capabilities": [
+                  "code"
+                ],
+                "modalities": [
+                  "text"
+                ],
+                "context_limit": 16384,
+                "admissible": false,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037697.6113064,
+                    "available_memory_mib": 5050.64453125,
+                    "gpu_free_mib": 953.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": 2966,
+                    "kv_configuration": "q8_0/q8_0",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": null,
+                "measured_cost": null,
+                "rejection_codes": [
+                  "unsupported_capability",
+                  "unsuitable_worker_role"
+                ],
+                "runtime_alias": "sovereign-code",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "qwen-research",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "code"
+                ],
+                "model_file": "qwen2.5-coder-3b-instruct-q4_k_m.gguf",
+                "projector_file": null,
+                "revision": "f74adce6aa16316c625447af059dbebe4983757c",
+                "measurement_scope": "text.CLARIFICATION"
+              },
+              {
+                "model_id": "google/gemma-4-E2B-it",
+                "registry_key": "text-light",
+                "display_name": "Gemma 4 E2B",
+                "capabilities": [
+                  "text",
+                  "calculation"
+                ],
+                "modalities": [
+                  "text"
+                ],
+                "context_limit": 16384,
+                "admissible": false,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037697.6113064,
+                    "available_memory_mib": 5050.64453125,
+                    "gpu_free_mib": 953.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": 2966,
+                    "kv_configuration": "q8_0/q8_0",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": null,
+                "measured_cost": null,
+                "rejection_codes": [
+                  "unsuitable_worker_role"
+                ],
+                "runtime_alias": "sovereign-text-light",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "Apache-2.0",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "lightweight"
+                ],
+                "model_file": "gemma-4-E2B-it-Q4_K_M.gguf",
+                "projector_file": null,
+                "revision": "0314792d7f1f7e229411f620751375812bb9faf2",
+                "measurement_scope": "text.CLARIFICATION"
+              }
+            ],
+            "candidate_rejection_reasons": {
+              "Qwen/Qwen3.5-2B": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "Qwen/Qwen2.5-Coder-3B-Instruct": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "google/gemma-4-E2B-it": [
+                "unsuitable_worker_role"
+              ]
+            },
+            "route_reason": "Worker role reasoning; hard compatibility passed; resource admission conditional. verified residency",
+            "available_context": 16384,
+            "resource_admission": {
+              "status": "conditional",
+              "reasons": [],
+              "reason_codes": [],
+              "conditions": [
+                "Model peak system-memory requirement is not measured",
+                "Model peak GPU-memory requirement is not measured",
+                "Incremental context/KV allocation for the resident model is not measured",
+                "Peak resource measurements do not cover the configured context/KV settings",
+                "Peak resource measurements do not cover the configured KV types"
+              ],
+              "condition_codes": [
+                "peak_ram_unmeasured",
+                "peak_gpu_unmeasured",
+                "resident_incremental_kv_unmeasured",
+                "context_profile_unmeasured",
+                "kv_profile_unmeasured"
+              ],
+              "observed": {
+                "sampled_at": 1791037697.6113064,
+                "available_memory_mib": 5050.64453125,
+                "gpu_free_mib": 953.0,
+                "gpu_total_mib": 4094.0,
+                "gpu_device": "0",
+                "source": "psutil+nvidia-smi",
+                "errors": []
+              },
+              "requirements": {
+                "system_memory_mib": null,
+                "gpu_memory_mib": null,
+                "measured_context": null,
+                "configured_context": 16384,
+                "required_context": 2966,
+                "kv_configuration": "q8_0/q8_0",
+                "measured_kv_configuration": null,
+                "memory_reserve_mib": 256,
+                "gpu_reserve_mib": 256
+              }
+            },
+            "current_residency": "Qwen/Qwen3.5-4B",
+            "switch_required": false,
+            "routing_time": 0.14081020000003264,
+            "fallback": null,
+            "candidate_rejection_codes": {
+              "Qwen/Qwen3.5-2B": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "Qwen/Qwen2.5-Coder-3B-Instruct": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "google/gemma-4-E2B-it": [
+                "unsuitable_worker_role"
+              ]
+            },
+            "failure_category": null,
+            "selection_policy": "worker_role_hard_constraints_hysteresis_v2",
+            "selection_evidence": {
+              "status": "incomplete",
+              "comparison": [
+                "verified residency"
+              ],
+              "quality_comparable": false,
+              "quality_threshold": null,
+              "quality_threshold_source": null,
+              "registered_candidates": 4,
+              "admissible_candidates": 1,
+              "task_affinity": null,
+              "unknown_metrics_policy": "not comparable; never fabricated",
+              "worker_role": "reasoning",
+              "task_type": "CLARIFICATION",
+              "hysteresis": {
+                "previous_model": "Qwen/Qwen3.5-4B",
+                "retained_current": true,
+                "cost_evidence": "incomplete",
+                "net_latency_gain_seconds": null
+              },
+              "validated_history_status": "insufficient; baseline retained"
+            },
+            "worker_role": "reasoning",
+            "is_warm": true
+          },
+          {
+            "stage": "runtime_lease",
+            "model_load_time": null,
+            "switch_required": false,
+            "current_residency": "sovereign-text",
+            "selected_model": "sovereign-text",
+            "selected_model_id": "Qwen/Qwen3.5-4B",
+            "model_file": "Qwen3.5-4B-Q4_K_M.gguf",
+            "state": "Ready",
+            "available_context": 16384
+          },
+          {
+            "stage": "inference",
+            "prompt_tokens": 2134,
+            "completion_tokens": 19,
+            "model_request_time": 3.8390173000002505,
+            "runtime_timings": {
+              "cache_n": 1016,
+              "prompt_n": 1118,
+              "prompt_ms": 2380.022,
+              "prompt_per_token_ms": 2.1288211091234346,
+              "prompt_per_second": 469.7435569923303,
+              "predicted_n": 19,
+              "predicted_ms": 1245.94,
+              "predicted_per_token_ms": 69.2188888888889,
+              "predicted_per_second": 14.44692360787839
+            }
+          },
+          {
+            "stage": "semantic_review",
+            "attempt": 1,
+            "verdict": "accept",
+            "issues": []
+          },
+          {
+            "stage": "model_selection",
+            "capability": "text",
+            "modality": "text",
+            "required_context": null,
+            "selected_model": "Qwen/Qwen3.5-4B",
+            "candidate_models": [
+              {
+                "model_id": "Qwen/Qwen3.5-4B",
+                "registry_key": "text",
+                "display_name": "Qwen3.5 4B",
+                "capabilities": [
+                  "text",
+                  "calculation"
+                ],
+                "modalities": [
+                  "text"
+                ],
+                "context_limit": 16384,
+                "admissible": true,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Incremental context/KV allocation for the resident model is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "resident_incremental_kv_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037701.6944225,
+                    "available_memory_mib": 5059.03515625,
+                    "gpu_free_mib": 955.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": null,
+                    "kv_configuration": "q8_0/q8_0",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": 0.0,
+                "measured_cost": null,
+                "rejection_codes": [],
+                "runtime_alias": "sovereign-text",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "Apache-2.0",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "reasoning"
+                ],
+                "model_file": "Qwen3.5-4B-Q4_K_M.gguf",
+                "projector_file": null,
+                "revision": "e87f176479d0855a907a41277aca2f8ee7a09523",
+                "measurement_scope": "text.CLARIFICATION",
+                "validated_history": {
+                  "successes": 0,
+                  "failures": 0,
+                  "unknown": 0,
+                  "validated_samples": 0,
+                  "observations": 0,
+                  "success_rate": null,
+                  "coverage": null,
+                  "wilson95": null,
+                  "minimum_samples": 20,
+                  "latency_seconds": null,
+                  "latency_seconds_samples": 0,
+                  "switches": null,
+                  "switches_samples": 0,
+                  "load_seconds": null,
+                  "load_seconds_samples": 0
+                }
+              },
+              {
+                "model_id": "Qwen/Qwen3.5-2B",
+                "registry_key": "vision",
+                "display_name": "Qwen3.5 2B Vision",
+                "capabilities": [
+                  "vision"
+                ],
+                "modalities": [
+                  "text",
+                  "image"
+                ],
+                "context_limit": 16384,
+                "admissible": false,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037701.6944225,
+                    "available_memory_mib": 5059.03515625,
+                    "gpu_free_mib": 955.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": null,
+                    "kv_configuration": "f16/f16",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": null,
+                "measured_cost": null,
+                "rejection_codes": [
+                  "unsupported_capability",
+                  "unsuitable_worker_role"
+                ],
+                "runtime_alias": "sovereign-vision",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "Apache-2.0",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "vision"
+                ],
+                "model_file": "vision-qwen3.5-2b/Qwen3.5-2B-Q4_K_M.gguf",
+                "projector_file": "vision-qwen3.5-2b/mmproj-F16.gguf",
+                "revision": "f6d5376be1edb4d416d56da11e5397a961aca8ae",
+                "measurement_scope": "text.CLARIFICATION"
+              },
+              {
+                "model_id": "Qwen/Qwen2.5-Coder-3B-Instruct",
+                "registry_key": "code",
+                "display_name": "Qwen2.5 Coder 3B",
+                "capabilities": [
+                  "code"
+                ],
+                "modalities": [
+                  "text"
+                ],
+                "context_limit": 16384,
+                "admissible": false,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037701.6944225,
+                    "available_memory_mib": 5059.03515625,
+                    "gpu_free_mib": 955.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": null,
+                    "kv_configuration": "q8_0/q8_0",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": null,
+                "measured_cost": null,
+                "rejection_codes": [
+                  "unsupported_capability",
+                  "unsuitable_worker_role"
+                ],
+                "runtime_alias": "sovereign-code",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "qwen-research",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "code"
+                ],
+                "model_file": "qwen2.5-coder-3b-instruct-q4_k_m.gguf",
+                "projector_file": null,
+                "revision": "f74adce6aa16316c625447af059dbebe4983757c",
+                "measurement_scope": "text.CLARIFICATION"
+              },
+              {
+                "model_id": "google/gemma-4-E2B-it",
+                "registry_key": "text-light",
+                "display_name": "Gemma 4 E2B",
+                "capabilities": [
+                  "text",
+                  "calculation"
+                ],
+                "modalities": [
+                  "text"
+                ],
+                "context_limit": 16384,
+                "admissible": false,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037701.6944225,
+                    "available_memory_mib": 5059.03515625,
+                    "gpu_free_mib": 955.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": null,
+                    "kv_configuration": "q8_0/q8_0",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": null,
+                "measured_cost": null,
+                "rejection_codes": [
+                  "unsuitable_worker_role"
+                ],
+                "runtime_alias": "sovereign-text-light",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "Apache-2.0",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "lightweight"
+                ],
+                "model_file": "gemma-4-E2B-it-Q4_K_M.gguf",
+                "projector_file": null,
+                "revision": "0314792d7f1f7e229411f620751375812bb9faf2",
+                "measurement_scope": "text.CLARIFICATION"
+              }
+            ],
+            "candidate_rejection_reasons": {
+              "Qwen/Qwen3.5-2B": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "Qwen/Qwen2.5-Coder-3B-Instruct": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "google/gemma-4-E2B-it": [
+                "unsuitable_worker_role"
+              ]
+            },
+            "route_reason": "Worker role reasoning; hard compatibility passed; resource admission conditional. verified residency",
+            "available_context": 16384,
+            "resource_admission": {
+              "status": "conditional",
+              "reasons": [],
+              "reason_codes": [],
+              "conditions": [
+                "Model peak system-memory requirement is not measured",
+                "Model peak GPU-memory requirement is not measured",
+                "Incremental context/KV allocation for the resident model is not measured",
+                "Peak resource measurements do not cover the configured context/KV settings",
+                "Peak resource measurements do not cover the configured KV types"
+              ],
+              "condition_codes": [
+                "peak_ram_unmeasured",
+                "peak_gpu_unmeasured",
+                "resident_incremental_kv_unmeasured",
+                "context_profile_unmeasured",
+                "kv_profile_unmeasured"
+              ],
+              "observed": {
+                "sampled_at": 1791037701.6944225,
+                "available_memory_mib": 5059.03515625,
+                "gpu_free_mib": 955.0,
+                "gpu_total_mib": 4094.0,
+                "gpu_device": "0",
+                "source": "psutil+nvidia-smi",
+                "errors": []
+              },
+              "requirements": {
+                "system_memory_mib": null,
+                "gpu_memory_mib": null,
+                "measured_context": null,
+                "configured_context": 16384,
+                "required_context": null,
+                "kv_configuration": "q8_0/q8_0",
+                "measured_kv_configuration": null,
+                "memory_reserve_mib": 256,
+                "gpu_reserve_mib": 256
+              }
+            },
+            "current_residency": "Qwen/Qwen3.5-4B",
+            "switch_required": false,
+            "routing_time": 0.14324949999991077,
+            "fallback": null,
+            "candidate_rejection_codes": {
+              "Qwen/Qwen3.5-2B": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "Qwen/Qwen2.5-Coder-3B-Instruct": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "google/gemma-4-E2B-it": [
+                "unsuitable_worker_role"
+              ]
+            },
+            "failure_category": null,
+            "selection_policy": "worker_role_hard_constraints_hysteresis_v2",
+            "selection_evidence": {
+              "status": "incomplete",
+              "comparison": [
+                "verified residency"
+              ],
+              "quality_comparable": false,
+              "quality_threshold": null,
+              "quality_threshold_source": null,
+              "registered_candidates": 4,
+              "admissible_candidates": 1,
+              "task_affinity": null,
+              "unknown_metrics_policy": "not comparable; never fabricated",
+              "worker_role": "reasoning",
+              "task_type": "CLARIFICATION",
+              "hysteresis": {
+                "previous_model": "Qwen/Qwen3.5-4B",
+                "retained_current": true,
+                "cost_evidence": "incomplete",
+                "net_latency_gain_seconds": null
+              },
+              "validated_history_status": "insufficient; baseline retained"
+            },
+            "worker_role": "reasoning",
+            "is_warm": true
+          },
+          {
+            "stage": "runtime_lease",
+            "model_load_time": null,
+            "switch_required": false,
+            "current_residency": "sovereign-text",
+            "selected_model": "sovereign-text",
+            "selected_model_id": "Qwen/Qwen3.5-4B",
+            "model_file": "Qwen3.5-4B-Q4_K_M.gguf",
+            "state": "Ready",
+            "available_context": 16384
+          },
+          {
+            "stage": "model_selection",
+            "capability": "text",
+            "modality": "text",
+            "required_context": 3272,
+            "selected_model": "Qwen/Qwen3.5-4B",
+            "candidate_models": [
+              {
+                "model_id": "Qwen/Qwen3.5-4B",
+                "registry_key": "text",
+                "display_name": "Qwen3.5 4B",
+                "capabilities": [
+                  "text",
+                  "calculation"
+                ],
+                "modalities": [
+                  "text"
+                ],
+                "context_limit": 16384,
+                "admissible": true,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Incremental context/KV allocation for the resident model is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "resident_incremental_kv_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037701.6944225,
+                    "available_memory_mib": 5059.03515625,
+                    "gpu_free_mib": 955.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": 3272,
+                    "kv_configuration": "q8_0/q8_0",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": 0.0,
+                "measured_cost": null,
+                "rejection_codes": [],
+                "runtime_alias": "sovereign-text",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "Apache-2.0",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "reasoning"
+                ],
+                "model_file": "Qwen3.5-4B-Q4_K_M.gguf",
+                "projector_file": null,
+                "revision": "e87f176479d0855a907a41277aca2f8ee7a09523",
+                "measurement_scope": "text.CLARIFICATION",
+                "validated_history": {
+                  "successes": 0,
+                  "failures": 0,
+                  "unknown": 0,
+                  "validated_samples": 0,
+                  "observations": 0,
+                  "success_rate": null,
+                  "coverage": null,
+                  "wilson95": null,
+                  "minimum_samples": 20,
+                  "latency_seconds": null,
+                  "latency_seconds_samples": 0,
+                  "switches": null,
+                  "switches_samples": 0,
+                  "load_seconds": null,
+                  "load_seconds_samples": 0
+                }
+              },
+              {
+                "model_id": "Qwen/Qwen3.5-2B",
+                "registry_key": "vision",
+                "display_name": "Qwen3.5 2B Vision",
+                "capabilities": [
+                  "vision"
+                ],
+                "modalities": [
+                  "text",
+                  "image"
+                ],
+                "context_limit": 16384,
+                "admissible": false,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037701.6944225,
+                    "available_memory_mib": 5059.03515625,
+                    "gpu_free_mib": 955.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": 3272,
+                    "kv_configuration": "f16/f16",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": null,
+                "measured_cost": null,
+                "rejection_codes": [
+                  "unsupported_capability",
+                  "unsuitable_worker_role"
+                ],
+                "runtime_alias": "sovereign-vision",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "Apache-2.0",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "vision"
+                ],
+                "model_file": "vision-qwen3.5-2b/Qwen3.5-2B-Q4_K_M.gguf",
+                "projector_file": "vision-qwen3.5-2b/mmproj-F16.gguf",
+                "revision": "f6d5376be1edb4d416d56da11e5397a961aca8ae",
+                "measurement_scope": "text.CLARIFICATION"
+              },
+              {
+                "model_id": "Qwen/Qwen2.5-Coder-3B-Instruct",
+                "registry_key": "code",
+                "display_name": "Qwen2.5 Coder 3B",
+                "capabilities": [
+                  "code"
+                ],
+                "modalities": [
+                  "text"
+                ],
+                "context_limit": 16384,
+                "admissible": false,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037701.6944225,
+                    "available_memory_mib": 5059.03515625,
+                    "gpu_free_mib": 955.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": 3272,
+                    "kv_configuration": "q8_0/q8_0",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": null,
+                "measured_cost": null,
+                "rejection_codes": [
+                  "unsupported_capability",
+                  "unsuitable_worker_role"
+                ],
+                "runtime_alias": "sovereign-code",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "qwen-research",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "code"
+                ],
+                "model_file": "qwen2.5-coder-3b-instruct-q4_k_m.gguf",
+                "projector_file": null,
+                "revision": "f74adce6aa16316c625447af059dbebe4983757c",
+                "measurement_scope": "text.CLARIFICATION"
+              },
+              {
+                "model_id": "google/gemma-4-E2B-it",
+                "registry_key": "text-light",
+                "display_name": "Gemma 4 E2B",
+                "capabilities": [
+                  "text",
+                  "calculation"
+                ],
+                "modalities": [
+                  "text"
+                ],
+                "context_limit": 16384,
+                "admissible": false,
+                "admission": {
+                  "status": "conditional",
+                  "reasons": [],
+                  "reason_codes": [],
+                  "conditions": [
+                    "Model peak system-memory requirement is not measured",
+                    "Model peak GPU-memory requirement is not measured",
+                    "Peak resource measurements do not cover the configured context/KV settings",
+                    "Peak resource measurements do not cover the configured KV types"
+                  ],
+                  "condition_codes": [
+                    "peak_ram_unmeasured",
+                    "peak_gpu_unmeasured",
+                    "context_profile_unmeasured",
+                    "kv_profile_unmeasured"
+                  ],
+                  "observed": {
+                    "sampled_at": 1791037701.6944225,
+                    "available_memory_mib": 5059.03515625,
+                    "gpu_free_mib": 955.0,
+                    "gpu_total_mib": 4094.0,
+                    "gpu_device": "0",
+                    "source": "psutil+nvidia-smi",
+                    "errors": []
+                  },
+                  "requirements": {
+                    "system_memory_mib": null,
+                    "gpu_memory_mib": null,
+                    "measured_context": null,
+                    "configured_context": 16384,
+                    "required_context": 3272,
+                    "kv_configuration": "q8_0/q8_0",
+                    "measured_kv_configuration": null,
+                    "memory_reserve_mib": 256,
+                    "gpu_reserve_mib": 256
+                  }
+                },
+                "quality": null,
+                "latency_seconds": null,
+                "switch_seconds": null,
+                "measured_cost": null,
+                "rejection_codes": [
+                  "unsuitable_worker_role"
+                ],
+                "runtime_alias": "sovereign-text-light",
+                "runtime": "llama.cpp",
+                "quantization": "Q4_K_M",
+                "license_id": "Apache-2.0",
+                "license_reviewed": true,
+                "worker_roles": [
+                  "lightweight"
+                ],
+                "model_file": "gemma-4-E2B-it-Q4_K_M.gguf",
+                "projector_file": null,
+                "revision": "0314792d7f1f7e229411f620751375812bb9faf2",
+                "measurement_scope": "text.CLARIFICATION"
+              }
+            ],
+            "candidate_rejection_reasons": {
+              "Qwen/Qwen3.5-2B": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "Qwen/Qwen2.5-Coder-3B-Instruct": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "google/gemma-4-E2B-it": [
+                "unsuitable_worker_role"
+              ]
+            },
+            "route_reason": "Worker role reasoning; hard compatibility passed; resource admission conditional. verified residency",
+            "available_context": 16384,
+            "resource_admission": {
+              "status": "conditional",
+              "reasons": [],
+              "reason_codes": [],
+              "conditions": [
+                "Model peak system-memory requirement is not measured",
+                "Model peak GPU-memory requirement is not measured",
+                "Incremental context/KV allocation for the resident model is not measured",
+                "Peak resource measurements do not cover the configured context/KV settings",
+                "Peak resource measurements do not cover the configured KV types"
+              ],
+              "condition_codes": [
+                "peak_ram_unmeasured",
+                "peak_gpu_unmeasured",
+                "resident_incremental_kv_unmeasured",
+                "context_profile_unmeasured",
+                "kv_profile_unmeasured"
+              ],
+              "observed": {
+                "sampled_at": 1791037701.6944225,
+                "available_memory_mib": 5059.03515625,
+                "gpu_free_mib": 955.0,
+                "gpu_total_mib": 4094.0,
+                "gpu_device": "0",
+                "source": "psutil+nvidia-smi",
+                "errors": []
+              },
+              "requirements": {
+                "system_memory_mib": null,
+                "gpu_memory_mib": null,
+                "measured_context": null,
+                "configured_context": 16384,
+                "required_context": 3272,
+                "kv_configuration": "q8_0/q8_0",
+                "measured_kv_configuration": null,
+                "memory_reserve_mib": 256,
+                "gpu_reserve_mib": 256
+              }
+            },
+            "current_residency": "Qwen/Qwen3.5-4B",
+            "switch_required": false,
+            "routing_time": 0.06498940000028597,
+            "fallback": null,
+            "candidate_rejection_codes": {
+              "Qwen/Qwen3.5-2B": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "Qwen/Qwen2.5-Coder-3B-Instruct": [
+                "unsupported_capability",
+                "unsuitable_worker_role"
+              ],
+              "google/gemma-4-E2B-it": [
+                "unsuitable_worker_role"
+              ]
+            },
+            "failure_category": null,
+            "selection_policy": "worker_role_hard_constraints_hysteresis_v2",
+            "selection_evidence": {
+              "status": "incomplete",
+              "comparison": [
+                "verified residency"
+              ],
+              "quality_comparable": false,
+              "quality_threshold": null,
+              "quality_threshold_source": null,
+              "registered_candidates": 4,
+              "admissible_candidates": 1,
+              "task_affinity": null,
+              "unknown_metrics_policy": "not comparable; never fabricated",
+              "worker_role": "reasoning",
+              "task_type": "CLARIFICATION",
+              "hysteresis": {
+                "previous_model": "Qwen/Qwen3.5-4B",
+                "retained_current": true,
+                "cost_evidence": "incomplete",
+                "net_latency_gain_seconds": null
+              },
+              "validated_history_status": "insufficient; baseline retained"
+            },
+            "worker_role": "reasoning",
+            "is_warm": true
+          },
+          {
+            "stage": "runtime_lease",
+            "model_load_time": null,
+            "switch_required": false,
+            "current_residency": "sovereign-text",
+            "selected_model": "sovereign-text",
+            "selected_model_id": "Qwen/Qwen3.5-4B",
+            "model_file": "Qwen3.5-4B-Q4_K_M.gguf",
+            "state": "Ready",
+            "available_context": 16384
+          },
+          {
+            "stage": "inference",
+            "prompt_tokens": 136,
+            "completion_tokens": 1563,
+            "model_request_time": 98.71343590000015,
+            "runtime_timings": {
+              "cache_n": 0,
+              "prompt_n": 136,
+              "prompt_ms": 689.822,
+              "prompt_per_token_ms": 5.072220588235294,
+              "prompt_per_second": 197.15230885648762,
+              "predicted_n": 1563,
+              "predicted_ms": 97919.421,
+              "predicted_per_token_ms": 62.688489756722156,
+              "predicted_per_second": 15.951891709000199
+            }
+          }
+        ],
+        "model_request_time": 139.89842739999995,
+        "lease_time": 0.6273274999998648,
+        "total_time": 144.88149509999994,
+        "evidence_required": false,
+        "evidence_used": false,
+        "knowledge_scope": {
+          "connected": false,
+          "mode": "off",
+          "permitted_document_count": 0
+        },
+        "retrieval": {
+          "required": false,
+          "status": "not_required",
+          "document_count": 0,
+          "passage_count": 0,
+          "candidate_count": 0
+        },
+        "tool_candidates": [
+          {
+            "name": "document_create",
+            "status": "executed",
+            "reason": "Current operation wording checked; target and scope validated by tool"
+          }
+        ],
+        "failure_layer": null,
+        "validation": null,
+        "events": [
+          {
+            "event": "REQUEST_RECEIVED",
+            "elapsed_ms": 0.010899999779212521
+          },
+          {
+            "event": "CLASSIFICATION_COMPLETED",
+            "elapsed_ms": 1.5095999997356557
+          },
+          {
+            "event": "MODEL_SELECTION_COMPLETED",
+            "elapsed_ms": 157.6046000000133
+          },
+          {
+            "event": "MODEL_READY",
+            "elapsed_ms": 239.13859999993292
+          },
+          {
+            "event": "MODEL_SELECTION_COMPLETED",
+            "elapsed_ms": 426.281999999901
+          },
+          {
+            "event": "MODEL_READY",
+            "elapsed_ms": 519.0598999997746
+          },
+          {
+            "event": "MODEL_SELECTION_COMPLETED",
+            "elapsed_ms": 2210.0365999999667
+          },
+          {
+            "event": "MODEL_READY",
+            "elapsed_ms": 2274.0939000000253
+          },
+          {
+            "event": "MODEL_SELECTION_COMPLETED",
+            "elapsed_ms": 2400.9195999997246
+          },
+          {
+            "event": "MODEL_READY",
+            "elapsed_ms": 2463.358900000003
+          },
+          {
+            "event": "MODEL_SELECTION_COMPLETED",
+            "elapsed_ms": 17031.366400000024
+          },
+          {
+            "event": "MODEL_READY",
+            "elapsed_ms": 17131.58059999978
+          },
+          {
+            "event": "MODEL_SELECTION_COMPLETED",
+            "elapsed_ms": 38763.80699999981
+          },
+          {
+            "event": "MODEL_READY",
+            "elapsed_ms": 38843.34069999977
+          },
+          {
+            "event": "MODEL_SELECTION_COMPLETED",
+            "elapsed_ms": 42845.44819999974
+          },
+          {
+            "event": "MODEL_READY",
+            "elapsed_ms": 42912.53649999999
+          },
+          {
+            "event": "MODEL_SELECTION_COMPLETED",
+            "elapsed_ms": 42997.39499999987
+          },
+          {
+            "event": "MODEL_READY",
+            "elapsed_ms": 43076.974300000074
+          },
+          {
+            "event": "TOOL_COMPLETED",
+            "elapsed_ms": 144874.61859999984
+          },
+          {
+            "event": "REQUEST_COMPLETED",
+            "elapsed_ms": 144881.50229999973
+          }
+        ],
+        "selection_policy": "worker_role_hard_constraints_hysteresis_v2",
+        "selection_evidence": {
+          "status": "incomplete",
+          "comparison": [
+            "verified residency"
+          ],
+          "quality_comparable": false,
+          "quality_threshold": null,
+          "quality_threshold_source": null,
+          "registered_candidates": 4,
+          "admissible_candidates": 1,
+          "task_affinity": null,
+          "unknown_metrics_policy": "not comparable; never fabricated",
+          "worker_role": "reasoning",
+          "task_type": "CLARIFICATION",
+          "hysteresis": {
+            "previous_model": "Qwen/Qwen3.5-4B",
+            "retained_current": true,
+            "cost_evidence": "incomplete",
+            "net_latency_gain_seconds": null
+          },
+          "validated_history_status": "insufficient; baseline retained"
+        },
+        "workflow": "MULTI_STEP",
+        "worker_role": "reasoning",
+        "is_warm": true,
+        "current_stage": "UNVERIFIED",
+        "completion_status": "unverified",
+        "selected_tool": "document_create",
+        "candidate_rejection_codes": {
+          "Qwen/Qwen3.5-2B": [
+            "unsupported_capability",
+            "unsuitable_worker_role"
+          ],
+          "Qwen/Qwen2.5-Coder-3B-Instruct": [
+            "unsupported_capability",
+            "unsuitable_worker_role"
+          ],
+          "google/gemma-4-E2B-it": [
+            "unsuitable_worker_role"
+          ]
+        },
+        "prefill_time": 4.885902000000001,
+        "generation_time": 134.098138,
+        "retrieval_time": null,
+        "original_request": "Create a text document in Knowledge explaining artificial intelligence, machine learning, and deep learning, including their relationship and examples. Name it ai_ml_dl_concepts.txt.",
+        "normalized_request": "Create a text document in Knowledge explaining artificial intelligence, machine learning, and deep learning, including their relationship and examples. Name it ai_ml_dl_concepts.txt.",
+        "task_type": "CLARIFICATION",
+        "complexity": "simple",
+        "coding_context": {
+          "active_file_present": false,
+          "workspace_available": false,
+          "repository_scope": "none",
+          "estimated_context_size": null,
+          "number_of_files_requested": 1,
+          "visual_input_present": false,
+          "modality": "text",
+          "is_follow_up": false,
+          "explicit_error_present": false,
+          "language_hints": [],
+          "execution_requested": false,
+          "validation_required": false,
+          "mechanical_rename": false
+        },
+        "normalization_time": null,
+        "timings": {
+          "normalization_ms": null,
+          "classification_ms": 2.412600000297971,
+          "routing_ms": 979.0022000006502,
+          "retrieval_ms": null,
+          "load_ms": null,
+          "switch_ms": null,
+          "prefill_ms": 4885.902000000001,
+          "generation_ms": 134098.138,
+          "validation_ms": null,
+          "total_ms": 144881.49509999994
+        }
+      }
+    },
+    "completion": {
+      "state": "unverified",
+      "achieved": false,
+      "response_delivered": true,
+      "checks": {},
+      "limitations": [
+        "A returned answer or successful workflow does not prove the entire user goal."
+      ]
+    },
+    "supervisor": {
+      "supervisor_id": "b6dcce0693b44ec2ac1ff231f6d6da27",
+      "goal": "Create a text document in Knowledge explaining artificial intelligence, machine learning, and deep learning, including their relationship and examples. Name it ai_ml_dl_concepts.txt.",
+      "context": {
+        "workspace_id": "11fe321f6753499f95b71b274cf0e2e3",
+        "document_ids": [],
+        "reference_history": [
+          "user: Create a Python folder for receipt parsing.",
+          "assistant: The previous request could not finish."
+        ]
+      },
+      "created_at": 1791037658.8404884,
+      "elapsed_seconds": 144.89,
+      "limits": {
+        "model_calls": 64,
+        "tool_calls": 12,
+        "model_switches": 4,
+        "seconds": 300
+      },
+      "counts": {
+        "model_calls": 5,
+        "tool_calls": 1,
+        "model_switches": 0
+      },
+      "task_state": {
+        "task_id": "b6dcce0693b44ec2ac1ff231f6d6da27",
+        "original_request": "Create a text document in Knowledge explaining artificial intelligence, machine learning, and deep learning, including their relationship and examples. Name it ai_ml_dl_concepts.txt.",
+        "normalized_request": "Create a text document in Knowledge explaining artificial intelligence, machine learning, and deep learning, including their relationship and examples. Name it ai_ml_dl_concepts.txt.",
+        "conversation_context": [
+          "user: Create a Python folder for receipt parsing.",
+          "assistant: The previous request could not finish."
+        ],
+        "follow_up_context": null,
+        "intent": "application_tools",
+        "workflow": "MULTI_STEP",
+        "modality": "text",
+        "workspace": "11fe321f6753499f95b71b274cf0e2e3",
+        "knowledge_scope": [],
+        "requested_deliverables": [],
+        "success_conditions": [],
+        "current_stage": "UNVERIFIED",
+        "current_action": "document_create",
+        "active_worker": "Qwen/Qwen3.5-4B",
+        "plan": {
+          "action": "application_tools",
+          "target": "",
+          "document_scope": "focused"
+        },
+        "observations": [
+          {
+            "completion_checks": {}
+          }
+        ],
+        "tool_results": [
+          {
+            "tool": "document_create",
+            "status": "returned"
+          }
+        ],
+        "evidence": [],
+        "repair_count": 0,
+        "replan_count": 0,
+        "completion_status": "unverified",
+        "blockers": [
+          "A returned answer or successful workflow does not prove the entire user goal."
+        ],
+        "cancellation_state": false,
+        "timestamps": {
+          "received": 1791037658.8404884,
+          "updated": 1791037803.740288,
+          "finished": 1791037803.740288
+        },
+        "task_type": "CLARIFICATION",
+        "complexity": "simple",
+        "model_history_context": {
+          "task_type": "CLARIFICATION",
+          "complexity": "simple",
+          "language": "unknown",
+          "context_scope": "none"
+        },
+        "resource_admission": {
+          "status": "conditional",
+          "reasons": [],
+          "reason_codes": [],
+          "conditions": [
+            "Model peak system-memory requirement is not measured",
+            "Model peak GPU-memory requirement is not measured",
+            "Incremental context/KV allocation for the resident model is not measured",
+            "Peak resource measurements do not cover the configured context/KV settings",
+            "Peak resource measurements do not cover the configured KV types"
+          ],
+          "condition_codes": [
+            "peak_ram_unmeasured",
+            "peak_gpu_unmeasured",
+            "resident_incremental_kv_unmeasured",
+            "context_profile_unmeasured",
+            "kv_profile_unmeasured"
+          ],
+          "observed": {
+            "sampled_at": 1791037701.6944225,
+            "available_memory_mib": 5059.03515625,
+            "gpu_free_mib": 955.0,
+            "gpu_total_mib": 4094.0,
+            "gpu_device": "0",
+            "source": "psutil+nvidia-smi",
+            "errors": []
+          },
+          "requirements": {
+            "system_memory_mib": null,
+            "gpu_memory_mib": null,
+            "measured_context": null,
+            "configured_context": 16384,
+            "required_context": 3272,
+            "kv_configuration": "q8_0/q8_0",
+            "measured_kv_configuration": null,
+            "memory_reserve_mib": 256,
+            "gpu_reserve_mib": 256
+          }
+        },
+        "worker_role": "reasoning",
+        "model_switch_count": 0,
+        "tool_call_count": 1,
+        "inference_call_count": 5,
+        "event_count": 70
+      },
+      "events": [
+        {
+          "event": "GENERATION_COMPLETED",
+          "stage": "OBSERVING",
+          "at": 1791037675.6784518,
+          "details": {}
+        },
+        {
+          "operation": "model_calls",
+          "count": 3,
+          "elapsed_seconds": 16.843
+        },
+        {
+          "event": "MODEL_SELECTION_COMPLETED",
+          "stage": "OBSERVING",
+          "at": 1791037675.8837552,
+          "details": {
+            "intent": "application_tools",
+            "workflow": "MULTI_STEP",
+            "selected_model": "Qwen/Qwen3.5-4B",
+            "selected_tool": null
+          }
+        },
+        {
+          "event": "MODEL_CANDIDATES_FILTERED",
+          "stage": "ROUTING",
+          "at": 1791037675.8877637,
+          "details": {
+            "selected_model": "Qwen/Qwen3.5-4B"
+          }
+        },
+        {
+          "event": "RESOURCE_ADMITTED",
+          "stage": "WAITING_FOR_RESOURCE",
+          "at": 1791037675.889768,
+          "details": {
+            "resource_admission": {
+              "status": "conditional",
+              "reasons": [],
+              "reason_codes": [],
+              "conditions": [
+                "Model peak system-memory requirement is not measured",
+                "Model peak GPU-memory requirement is not measured",
+                "Incremental context/KV allocation for the resident model is not measured",
+                "Peak resource measurements do not cover the configured context/KV settings",
+                "Peak resource measurements do not cover the configured KV types"
+              ],
+              "condition_codes": [
+                "peak_ram_unmeasured",
+                "peak_gpu_unmeasured",
+                "resident_incremental_kv_unmeasured",
+                "context_profile_unmeasured",
+                "kv_profile_unmeasured"
+              ],
+              "observed": {
+                "sampled_at": 1791037675.8807557,
+                "available_memory_mib": 5062.3671875,
+                "gpu_free_mib": 954.0,
+                "gpu_total_mib": 4094.0,
+                "gpu_device": "0",
+                "source": "psutil+nvidia-smi",
+                "errors": []
+              },
+              "requirements": {
+                "system_memory_mib": null,
+                "gpu_memory_mib": null,
+                "measured_context": null,
+                "configured_context": 16384,
+                "required_context": 3087,
+                "kv_configuration": "q8_0/q8_0",
+                "measured_kv_configuration": null,
+                "memory_reserve_mib": 256,
+                "gpu_reserve_mib": 256
+              }
+            }
+          }
+        },
+        {
+          "event": "MODEL_SELECTED",
+          "stage": "ROUTING",
+          "at": 1791037675.8927655,
+          "details": {
+            "selected_model": "Qwen/Qwen3.5-4B",
+            "worker_role": "reasoning"
+          }
+        },
+        {
+          "event": "MODEL_READY",
+          "stage": "EXECUTING",
+          "at": 1791037675.9800916,
+          "details": {
+            "selected_model": "Qwen/Qwen3.5-4B"
+          }
+        },
+        {
+          "event": "MODEL_READY",
+          "stage": "EXECUTING",
+          "at": 1791037675.9841042,
+          "details": {
+            "intent": "application_tools",
+            "workflow": "MULTI_STEP",
+            "selected_model": "Qwen/Qwen3.5-4B",
+            "selected_tool": null
+          }
+        },
+        {
+          "event": "GENERATION_STARTED",
+          "stage": "EXECUTING",
+          "at": 1791037675.9881015,
+          "details": {}
+        },
+        {
+          "event": "GENERATION_COMPLETED",
+          "stage": "OBSERVING",
+          "at": 1791037697.44325,
+          "details": {}
+        },
+        {
+          "operation": "model_calls",
+          "count": 4,
+          "elapsed_seconds": 38.609
+        },
+        {
+          "event": "MODEL_SELECTION_COMPLETED",
+          "stage": "OBSERVING",
+          "at": 1791037697.6163058,
+          "details": {
+            "intent": "application_tools",
+            "workflow": "MULTI_STEP",
+            "selected_model": "Qwen/Qwen3.5-4B",
+            "selected_tool": null
+          }
+        },
+        {
+          "event": "MODEL_CANDIDATES_FILTERED",
+          "stage": "ROUTING",
+          "at": 1791037697.619313,
+          "details": {
+            "selected_model": "Qwen/Qwen3.5-4B"
+          }
+        },
+        {
+          "event": "RESOURCE_ADMITTED",
+          "stage": "WAITING_FOR_RESOURCE",
+          "at": 1791037697.6213086,
+          "details": {
+            "resource_admission": {
+              "status": "conditional",
+              "reasons": [],
+              "reason_codes": [],
+              "conditions": [
+                "Model peak system-memory requirement is not measured",
+                "Model peak GPU-memory requirement is not measured",
+                "Incremental context/KV allocation for the resident model is not measured",
+                "Peak resource measurements do not cover the configured context/KV settings",
+                "Peak resource measurements do not cover the configured KV types"
+              ],
+              "condition_codes": [
+                "peak_ram_unmeasured",
+                "peak_gpu_unmeasured",
+                "resident_incremental_kv_unmeasured",
+                "context_profile_unmeasured",
+                "kv_profile_unmeasured"
+              ],
+              "observed": {
+                "sampled_at": 1791037697.6113064,
+                "available_memory_mib": 5050.64453125,
+                "gpu_free_mib": 953.0,
+                "gpu_total_mib": 4094.0,
+                "gpu_device": "0",
+                "source": "psutil+nvidia-smi",
+                "errors": []
+              },
+              "requirements": {
+                "system_memory_mib": null,
+                "gpu_memory_mib": null,
+                "measured_context": null,
+                "configured_context": 16384,
+                "required_context": 2966,
+                "kv_configuration": "q8_0/q8_0",
+                "measured_kv_configuration": null,
+                "memory_reserve_mib": 256,
+                "gpu_reserve_mib": 256
+              }
+            }
+          }
+        },
+        {
+          "event": "MODEL_SELECTED",
+          "stage": "ROUTING",
+          "at": 1791037697.623814,
+          "details": {
+            "selected_model": "Qwen/Qwen3.5-4B",
+            "worker_role": "reasoning"
+          }
+        },
+        {
+          "event": "MODEL_READY",
+          "stage": "EXECUTING",
+          "at": 1791037697.6932862,
+          "details": {
+            "selected_model": "Qwen/Qwen3.5-4B"
+          }
+        },
+        {
+          "event": "MODEL_READY",
+          "stage": "EXECUTING",
+          "at": 1791037697.696283,
+          "details": {
+            "intent": "application_tools",
+            "workflow": "MULTI_STEP",
+            "selected_model": "Qwen/Qwen3.5-4B",
+            "selected_tool": null
+          }
+        },
+        {
+          "event": "GENERATION_STARTED",
+          "stage": "EXECUTING",
+          "at": 1791037697.6992855,
+          "details": {}
+        },
+        {
+          "event": "GENERATION_COMPLETED",
+          "stage": "OBSERVING",
+          "at": 1791037701.5333748,
+          "details": {}
+        },
+        {
+          "operation": "tool_calls",
+          "count": 1,
+          "elapsed_seconds": 42.687
+        },
+        {
+          "event": "TOOL_SELECTED",
+          "stage": "ROUTING",
+          "at": 1791037701.5413702,
+          "details": {
+            "selected_tool": "document_create"
+          }
+        },
+        {
+          "event": "TOOL_STARTED",
+          "stage": "EXECUTING",
+          "at": 1791037701.5453708,
+          "details": {
+            "selected_tool": "document_create"
+          }
+        },
+        {
+          "event": "MODEL_SELECTION_COMPLETED",
+          "stage": "EXECUTING",
+          "at": 1791037701.6984227,
+          "details": {
+            "intent": "application_tools",
+            "workflow": "MULTI_STEP",
+            "selected_model": "Qwen/Qwen3.5-4B",
+            "selected_tool": null
+          }
+        },
+        {
+          "event": "MODEL_CANDIDATES_FILTERED",
+          "stage": "ROUTING",
+          "at": 1791037701.7004232,
+          "details": {
+            "selected_model": "Qwen/Qwen3.5-4B"
+          }
+        },
+        {
+          "event": "RESOURCE_ADMITTED",
+          "stage": "WAITING_FOR_RESOURCE",
+          "at": 1791037701.7034228,
+          "details": {
+            "resource_admission": {
+              "status": "conditional",
+              "reasons": [],
+              "reason_codes": [],
+              "conditions": [
+                "Model peak system-memory requirement is not measured",
+                "Model peak GPU-memory requirement is not measured",
+                "Incremental context/KV allocation for the resident model is not measured",
+                "Peak resource measurements do not cover the configured context/KV settings",
+                "Peak resource measurements do not cover the configured KV types"
+              ],
+              "condition_codes": [
+                "peak_ram_unmeasured",
+                "peak_gpu_unmeasured",
+                "resident_incremental_kv_unmeasured",
+                "context_profile_unmeasured",
+                "kv_profile_unmeasured"
+              ],
+              "observed": {
+                "sampled_at": 1791037701.6944225,
+                "available_memory_mib": 5059.03515625,
+                "gpu_free_mib": 955.0,
+                "gpu_total_mib": 4094.0,
+                "gpu_device": "0",
+                "source": "psutil+nvidia-smi",
+                "errors": []
+              },
+              "requirements": {
+                "system_memory_mib": null,
+                "gpu_memory_mib": null,
+                "measured_context": null,
+                "configured_context": 16384,
+                "required_context": null,
+                "kv_configuration": "q8_0/q8_0",
+                "measured_kv_configuration": null,
+                "memory_reserve_mib": 256,
+                "gpu_reserve_mib": 256
+              }
+            }
+          }
+        },
+        {
+          "event": "MODEL_SELECTED",
+          "stage": "ROUTING",
+          "at": 1791037701.7054226,
+          "details": {
+            "selected_model": "Qwen/Qwen3.5-4B",
+            "worker_role": "reasoning"
+          }
+        },
+        {
+          "event": "MODEL_READY",
+          "stage": "EXECUTING",
+          "at": 1791037701.7624326,
+          "details": {
+            "selected_model": "Qwen/Qwen3.5-4B"
+          }
+        },
+        {
+          "event": "MODEL_READY",
+          "stage": "EXECUTING",
+          "at": 1791037701.7654262,
+          "details": {
+            "intent": "application_tools",
+            "workflow": "MULTI_STEP",
+            "selected_model": "Qwen/Qwen3.5-4B",
+            "selected_tool": "document_create"
+          }
+        },
+        {
+          "operation": "model_calls",
+          "count": 5,
+          "elapsed_seconds": 42.937
+        },
+        {
+          "event": "MODEL_SELECTION_COMPLETED",
+          "stage": "EXECUTING",
+          "at": 1791037701.8496268,
+          "details": {
+            "intent": "application_tools",
+            "workflow": "MULTI_STEP",
+            "selected_model": "Qwen/Qwen3.5-4B",
+            "selected_tool": "document_create"
+          }
+        },
+        {
+          "event": "MODEL_CANDIDATES_FILTERED",
+          "stage": "ROUTING",
+          "at": 1791037701.8526285,
+          "details": {
+            "selected_model": "Qwen/Qwen3.5-4B"
+          }
+        },
+        {
+          "event": "RESOURCE_ADMITTED",
+          "stage": "WAITING_FOR_RESOURCE",
+          "at": 1791037701.8546321,
+          "details": {
+            "resource_admission": {
+              "status": "conditional",
+              "reasons": [],
+              "reason_codes": [],
+              "conditions": [
+                "Model peak system-memory requirement is not measured",
+                "Model peak GPU-memory requirement is not measured",
+                "Incremental context/KV allocation for the resident model is not measured",
+                "Peak resource measurements do not cover the configured context/KV settings",
+                "Peak resource measurements do not cover the configured KV types"
+              ],
+              "condition_codes": [
+                "peak_ram_unmeasured",
+                "peak_gpu_unmeasured",
+                "resident_incremental_kv_unmeasured",
+                "context_profile_unmeasured",
+                "kv_profile_unmeasured"
+              ],
+              "observed": {
+                "sampled_at": 1791037701.6944225,
+                "available_memory_mib": 5059.03515625,
+                "gpu_free_mib": 955.0,
+                "gpu_total_mib": 4094.0,
+                "gpu_device": "0",
+                "source": "psutil+nvidia-smi",
+                "errors": []
+              },
+              "requirements": {
+                "system_memory_mib": null,
+                "gpu_memory_mib": null,
+                "measured_context": null,
+                "configured_context": 16384,
+                "required_context": 3272,
+                "kv_configuration": "q8_0/q8_0",
+                "measured_kv_configuration": null,
+                "memory_reserve_mib": 256,
+                "gpu_reserve_mib": 256
+              }
+            }
+          }
+        },
+        {
+          "event": "MODEL_SELECTED",
+          "stage": "ROUTING",
+          "at": 1791037701.8575428,
+          "details": {
+            "selected_model": "Qwen/Qwen3.5-4B",
+            "worker_role": "reasoning"
+          }
+        },
+        {
+          "event": "MODEL_READY",
+          "stage": "EXECUTING",
+          "at": 1791037701.9252472,
+          "details": {
+            "selected_model": "Qwen/Qwen3.5-4B"
+          }
+        },
+        {
+          "event": "MODEL_READY",
+          "stage": "EXECUTING",
+          "at": 1791037701.9293354,
+          "details": {
+            "intent": "application_tools",
+            "workflow": "MULTI_STEP",
+            "selected_model": "Qwen/Qwen3.5-4B",
+            "selected_tool": "document_create"
+          }
+        },
+        {
+          "event": "GENERATION_STARTED",
+          "stage": "EXECUTING",
+          "at": 1791037701.9313397,
+          "details": {}
+        },
+        {
+          "event": "GENERATION_COMPLETED",
+          "stage": "OBSERVING",
+          "at": 1791037800.6379552,
+          "details": {}
+        },
+        {
+          "event": "TOOL_COMPLETED",
+          "stage": "OBSERVING",
+          "at": 1791037803.7232854,
+          "details": {
+            "selected_tool": "document_create",
+            "tool_results": {
+              "tool": "document_create",
+              "status": "returned"
+            }
+          }
+        },
+        {
+          "event": "TOOL_COMPLETED",
+          "stage": "OBSERVING",
+          "at": 1791037803.7272873,
+          "details": {
+            "intent": "application_tools",
+            "workflow": "MULTI_STEP",
+            "selected_model": "Qwen/Qwen3.5-4B",
+            "selected_tool": "document_create"
+          }
+        },
+        {
+          "event": "REQUEST_COMPLETED",
+          "stage": "UNVERIFIED",
+          "at": 1791037803.740288,
+          "completion_status": "unverified"
+        }
+      ],
+      "completion": {
+        "state": "unverified",
+        "achieved": false,
+        "response_delivered": true,
+        "checks": {},
+        "limitations": [
+          "A returned answer or successful workflow does not prove the entire user goal."
+        ]
+      },
+      "outcome": "unverified",
+      "code_task_view": {
+        "task_id": "b6dcce0693b44ec2ac1ff231f6d6da27",
+        "context": {
+          "original_request": "Create a text document in Knowledge explaining artificial intelligence, machine learning, and deep learning, including their relationship and examples. Name it ai_ml_dl_concepts.txt.",
+          "resolved_request": "Create a text document in Knowledge explaining artificial intelligence, machine learning, and deep learning, including their relationship and examples. Name it ai_ml_dl_concepts.txt.",
+          "workspace": "11fe321f6753499f95b71b274cf0e2e3",
+          "target": null,
+          "active_file": null,
+          "relevant_symbols": [],
+          "related_files": [],
+          "diagnostics": [],
+          "current_changes": [],
+          "previous_tool_result": null,
+          "current_model": "Qwen/Qwen3.5-4B",
+          "task_stage": "UNVERIFIED",
+          "context_scope": []
+        },
+        "task_type": "CLARIFICATION",
+        "complexity": "simple",
+        "current_stage": "UNVERIFIED",
+        "active_worker": "Qwen/Qwen3.5-4B",
+        "plan": {
+          "action": "application_tools",
+          "target": "",
+          "document_scope": "focused"
+        },
+        "observations": [
+          {
+            "completion_checks": {}
+          }
+        ],
+        "tool_results": [
+          {
+            "tool": "document_create",
+            "status": "returned"
+          }
+        ],
+        "current_candidate": null,
+        "candidate_hash": null,
+        "repair_count": 0,
+        "model_switch_count": 0,
+        "completion_status": "unverified",
+        "cancellation": false,
+        "blocker": [
+          "A returned answer or successful workflow does not prove the entire user goal."
+        ],
+        "timestamps": {
+          "received": 1791037658.8404884,
+          "updated": 1791037803.740288,
+          "finished": 1791037803.740288
+        }
+      }
+    }
+  },
+  "created_documents": [
+    {
+      "name": "ai_ml_dl_concepts.txt",
+      "text": "AI_ML_DL_CONCEPTS.txt\n\n================================================================================\nARTIFICIAL INTELLIGENCE (AI), MACHINE LEARNING (ML), AND DEEP LEARNING (DL)\nA Comprehensive Guide to Concepts, Relationships, and Applications\n================================================================================\n\n1. OVERVIEW\n-----------\nArtificial Intelligence (AI), Machine Learning (ML), and Deep Learning (DL) represent a hierarchy of technologies that have revolutionized modern computing. While often used interchangeably in casual conversation, they refer to distinct concepts with specific scopes and capabilities. Understanding their relationship is crucial for grasping how modern systems learn, reason, and make decisions.\n\n2. ARTIFICIAL INTELLIGENCE (AI)\n--------------------------------\nDefinition:\nArtificial Intelligence is the broadest field of study. It refers to the simulation of human intelligence in machines that are programmed to think and learn like humans. The goal of AI is to create systems capable of performing tasks that typically require human intelligence, such as visual perception, speech recognition, decision-making, and language translation.\n\nKey Characteristics:\n- **Goal-Oriented:** AI systems are designed to achieve specific goals.\n- **Adaptive:** Modern AI can adapt to new situations and learn from experience.\n- **Problem-Solving:** AI excels at solving complex problems that are difficult for humans.\n\nHistorical Context:\n- **Rule-Based AI (Early Era):** Early AI relied on explicit rules programmed by humans (e.g., chess programs). This approach is now considered a subset of traditional programming rather than true learning.\n- **Modern AI:** Today, AI encompasses both traditional rule-based systems and data-driven approaches like Machine Learning.\n\nExamples of AI:\n- Virtual assistants (e.g., Siri, Alexa).\n- Recommendation engines (e.g., Netflix, Spotify).\n- Autonomous vehicles.\n- Fraud detection systems in banking.\n\n3. MACHINE LEARNING (ML)\n------------------------\nDefinition:\nMachine Learning is a subset of Artificial Intelligence. It focuses on the development of algorithms that allow computers to learn from data without being explicitly programmed for every specific task. Instead of following rigid instructions, ML models identify patterns in data and make predictions or decisions based on those patterns.\n\nKey Characteristics:\n- **Data-Driven:** ML relies heavily on large datasets for training.\n- **Statistical Nature:** It uses statistical techniques to find correlations and trends.\n- **Generalization:** The goal is to generalize from training data to unseen data.\n\nTypes of Machine Learning:\n- **Supervised Learning:** The model is trained on labeled data (input-output pairs). Examples include regression (predicting numbers) and classification (categorizing items).\n- **Unsupervised Learning:** The model learns from unlabeled data to find hidden structures or patterns. Examples include clustering and dimensionality reduction.\n- **Reinforcement Learning:** An agent learns to make decisions by performing actions in an environment to maximize a reward signal.\n\nExamples of ML:\n- Spam filters in email clients.\n- Credit scoring models.\n- Image recognition for facial unlock features.\n- Stock market prediction algorithms.\n\n4. DEEP LEARNING (DL)\n---------------------\nDefinition:\nDeep Learning is a specialized subset of Machine Learning. It uses artificial neural networks with many layers (hence \"deep\") to simulate the human brain's structure and function. These networks are capable of learning hierarchical representations of data, allowing them to automatically extract features from raw input data.\n\nKey Characteristics:\n- **Neural Networks:** Based on interconnected nodes (neurons) organized in layers.\n- **Feature Extraction:** DL can automatically learn features from raw data (e.g., pixels in an image) without manual feature engineering.\n- **High Computational Cost:** Requires significant computational power (GPUs/TPUs) and large amounts of data.\n- **High Accuracy:** Often outperforms traditional ML methods on complex tasks like image and speech recognition.\n\nTypes of Deep Learning Architectures:\n- **Convolutional Neural Networks (CNNs):** Specialized for processing grid-like data, such as images.\n- **Recurrent Neural Networks (RNNs) & Transformers:** Designed for sequential data, such as text and time-series data.\n- **Generative Models:** Used to create new data (e.g., images, text) that resembles the training data.\n\nExamples of Deep Learning:\n- Self-driving cars (object detection and path planning).\n- Medical imaging analysis (detecting tumors in X-rays).\n- Natural Language Processing (chatbots, machine translation).\n- Generative Adversarial Networks (GANs) for creating realistic images.\n\n5. THE RELATIONSHIP BETWEEN AI, ML, AND DL\n-----------------------------------------\nThe relationship between these three concepts can be visualized as a nested hierarchy:\n\n    ARTIFICIAL INTELLIGENCE (AI)\n    |<-------------------------->\n    |                          |\n    |                          v\n    |                    MACHINE LEARNING (ML)\n    |                          |<------------------->\n    |                          |                    |\n    |                          |                    v\n    |                          |                DEEP LEARNING (DL)\n\nExplanation:\n- **AI is the umbrella term.** It represents the overarching goal of creating intelligent machines.\n- **ML is a method within AI.** It provides the framework for machines to learn from data rather than being explicitly programmed.\n- **DL is a specific type of ML.** It uses deep neural networks to handle complex, unstructured data with high accuracy.\n\nAnalogy:\nThink of building a house:\n- **AI** is the concept of \"building a functional home.\"\n- **ML** is the architectural plan and the construction methods used to build it.\n- **DL** is the specific use of advanced, automated machinery (like 3D printers) to construct complex, intricate parts of the house that would be too difficult for manual labor.\n\n6. COMPARATIVE ANALYSIS\n-----------------------\nFeature              | AI                  | ML                  | DL\n---------------------|---------------------|--------------------|------------------\nScope                | Broadest field      | Subset of AI       | Subset of ML\nData Requirement     | Varies             | High               | Very High\nFeature Engineering  | Manual or Auto      | Manual (often)     | Automatic\nComputational Cost   | Low to Medium      | Medium             | High\nPrimary Task         | Reasoning, Decision | Prediction, Pattern| Complex Recognition\n\n7. FUTURE OUTLOOK\n-----------------\n- **Integration:** The lines between these fields are blurring. AI systems will increasingly rely on ML and DL for core functionality.\n- **Edge AI:** Moving ML and DL models to devices (smartphones, IoT sensors) for real-time processing.\n- **Explainable AI (XAI):** A growing focus on making AI and DL models more transparent and understandable to humans.\n- **Ethical AI:** Ensuring fairness, bias mitigation, and accountability in AI systems.\n\n8. CONCLUSION\n-------------\nArtificial Intelligence, Machine Learning, and Deep Learning are not isolated technologies but interconnected pillars of modern technology. AI defines the vision, ML provides the learning mechanism, and DL offers the powerful tools to process complex data. As data availability increases and computational power grows, the capabilities of these technologies will continue to expand, transforming industries and daily life.\n\n================================================================================\nEND OF DOCUMENT\n================================================================================\n"
+    }
+  ],
+  "isolated": true
+}

@@ -280,6 +280,120 @@ class TestCache(unittest.TestCase):
         self.assertIsNone(cache.get('x'))
 ''',
     },
+    'cf11': {
+        'starting': '''def add(a, b):
+    return a + b
+
+def multiply(a, b):
+    return a * b
+''',
+        'reference': '''def add(a, b):
+    return a + b
+
+def subtract(a, b):
+    return a - b
+
+def multiply(a, b):
+    return a * b
+''',
+        'tests': '''import unittest, solution
+class TestArithmetic(unittest.TestCase):
+    def test_symbols(self):
+        self.assertTrue(all(callable(getattr(solution, n, None)) for n in ('add','subtract','multiply')))
+        self.assertFalse(hasattr(solution, 'divide'))
+    def test_values(self):
+        self.assertEqual(solution.add(-3,2), -1)
+        self.assertEqual(solution.subtract(-3,2), -5)
+        self.assertEqual(solution.multiply(-3,2), -6)
+''',
+    },
+    'cf12': {
+        'starting': '''import csv, io
+def parse_csv(text):
+    return [line.split(',') for line in text.splitlines() if line]
+''',
+        'reference': '''import csv, io
+def parse_csv(text):
+    rows = list(csv.reader(io.StringIO(text, newline='')))
+    if not rows:
+        return []
+    return [rows[0], *(row for row in rows[1:] if row)]
+''',
+        'tests': '''import unittest
+from solution import parse_csv
+class TestCSV(unittest.TestCase):
+    def test_header_and_empty(self):
+        self.assertEqual(parse_csv('name,value\\n\\nAlice,1\\n'), [['name','value'],['Alice','1']])
+    def test_multiline_and_empty_field(self):
+        self.assertEqual(parse_csv('name,note\\nBob,"two\\nlines"\\nCara,\\n'),
+                         [['name','note'],['Bob','two\\nlines'],['Cara','']])
+    def test_header_only(self):
+        self.assertEqual(parse_csv('name,value\\n'), [['name','value']])
+''',
+    },
+    'cf13': {
+        'starting': '''import hmac
+def compare_secret(candidate, stored):
+    return hmac.compare_digest(candidate, stored)
+
+def verify_password(candidate, stored):
+    return compare_secret(candidate, stored)
+''',
+        'reference': '''import hmac
+def compare_secret(candidate, stored):
+    return hmac.compare_digest(candidate, stored)
+
+def verify_password(candidate, stored):
+    matched = compare_secret(candidate, stored)
+    return bool(matched and len(candidate) >= 8)
+''',
+        'tests': '''import contextlib, inspect, io, unittest
+from solution import compare_secret, verify_password
+class TestPassword(unittest.TestCase):
+    def test_short(self):
+        self.assertIs(verify_password('abc', 'abc'), False)
+    def test_valid(self):
+        self.assertIs(verify_password('longpass', 'longpass'), True)
+        self.assertIs(verify_password('longpass', 'different'), False)
+    def test_compare_preserved(self):
+        self.assertTrue(compare_secret('same','same'))
+        self.assertIn('compare_digest', inspect.getsource(compare_secret))
+    def test_no_secret_output(self):
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output), contextlib.redirect_stderr(output):
+            verify_password('confidential-password', 'confidential-password')
+        self.assertEqual(output.getvalue(), '')
+''',
+    },
+    'cf14': {
+        'starting': '''def filter_range(events, start, end):
+    return [event for event in events if start <= event['at'] <= end]
+''',
+        'reference': '''def filter_range(events, start, end):
+    values = [start, end, *(event['at'] for event in events)]
+    if any(value.tzinfo is None or value.utcoffset() is None for value in values):
+        raise ValueError('naive datetime is not allowed')
+    return [event for event in events if start <= event['at'] < end]
+''',
+        'tests': '''import unittest
+from datetime import datetime, timezone, timedelta
+from solution import filter_range
+class TestRange(unittest.TestCase):
+    def test_timezones_and_edges(self):
+        start = datetime(2026, 1, 1, tzinfo=timezone.utc)
+        end = start + timedelta(hours=2)
+        plus_two = timezone(timedelta(hours=2))
+        events = [{'id':'before','at':start-timedelta(seconds=1)},
+                  {'id':'start','at':start.astimezone(plus_two)},
+                  {'id':'middle','at':start+timedelta(hours=1)},
+                  {'id':'end','at':end}]
+        self.assertEqual([event['id'] for event in filter_range(events,start,end)], ['start','middle'])
+    def test_naive_rejected(self):
+        start = datetime(2026,1,1,tzinfo=timezone.utc)
+        with self.assertRaises(ValueError):
+            filter_range([{'at':datetime(2026,1,1)}], start, start+timedelta(days=1))
+''',
+    },
     'cf18': {
         'starting': '''def pass_report(rows, columns):
     return {name: {'passed': sum(float(row[name]) > 25 for row in rows), 'total': len(rows)} for name in columns}

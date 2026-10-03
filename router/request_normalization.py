@@ -5,6 +5,22 @@ import re
 CORRECTIONS={'creat':'create','maintanance':'maintenance','calcluate':'calculate','shwo':'show',
              'teh':'the','thi':'this','thsi':'this'}
 PROTECTED=re.compile(r'''```[\s\S]*?```|`[^`\n]*`|"[^"\n]*"|(?<!\w)'[^'\n]*'(?!\w)|\u201c[^\u201d\n]*\u201d|\S*[\\/@.:]\S*|\b\w*\d\w*\b''')
+# A conservative command vocabulary, not subject/task-specific substitutions.
+# Only one missing letter or adjacent transposition is recoverable. Longer
+# inflections and arbitrary substitutions remain ambiguous, not authorization.
+COMMAND_WORDS=frozenset(('create','generate','modify','change','repair','update',
+    'replace','implement','rename','refactor','restore','explain','describe','review'))
+COMMAND_POSITION=re.compile(r'(?:^|[;\n]|\b(?:and(?:\s+then)?|then)\b)\s*(?:please\s+)?'
+    r'(?:(?:can|could|would|will)\s+you\s+(?:please\s+)?|i\s+(?:want|need)\s+you\s+to\s+)?$',re.I)
+
+def _command_correction(word,prefix):
+    if len(word)<5 or word in COMMAND_WORDS or not COMMAND_POSITION.search(prefix):return None
+    candidates=[]
+    for canonical in COMMAND_WORDS:
+        missing=(len(canonical)==len(word)+1 and any(canonical[:i]+canonical[i+1:]==word for i in range(len(canonical))))
+        swapped=(len(canonical)==len(word) and any(word[:i]+word[i+1]+word[i]+word[i+2:]==canonical for i in range(len(word)-1)))
+        if missing or swapped:candidates.append(canonical)
+    return candidates[0] if len(candidates)==1 else None
 
 @dataclass(frozen=True)
 class NormalizedRequest:
@@ -40,7 +56,7 @@ def normalize_request(request):
     changes=[]
     def replace(match):
         word=match.group()
-        correction=CORRECTIONS.get(word.casefold())
+        correction=CORRECTIONS.get(word.casefold()) or _command_correction(word.casefold(),request[:match.start()])
         if not correction or any(start<=match.start()<end for start,end in spans):return word
         correction=correction.capitalize() if word[0].isupper() else correction
         changes.append({'start':match.start(),'original':word,'normalized':correction})

@@ -1,5 +1,7 @@
 # Hybrid CodeAgent development fixtures
 
+The final six-arm comparison freezes A-E service orchestration and gives every arm the same current `CodingWorkspace.run_project` and `run` tool handlers, sandbox and validation boundaries. F alone uses the hybrid service runner/cache. Frozen workflow source remains hash-checked reference evidence, not an active tool implementation. This measures orchestration with common current boundaries, not a historical full-binary deployment. Earlier preserved pilot results retain their original methodology and are not rewritten.
+
 100 development cases, 25 contract clusters: 20 new computational behavior contracts repeated across task modes and five related synthetic visual-board layouts. Cases are distinct tasks, not 100 independent algorithms. Mode counts: 15 explanations, 15 edits, 15 debugging repairs, 15 implementations, 10 refactor/multifile, 10 architectural CLI/service tasks, 10 context-heavy edits, five explicit scoped follow-ups and five vision tasks. Selected requests include spelling noise.
 
 The author inspected V2 development schema and examples. No held-out fixtures or outputs were read. Contracts are newly authored, but task templates, basic programming patterns and cross-mode repetitions are correlated with prior development tasks. Comparisons require paired cases and clustering by contract. Five visual contracts also share one layout family, so their apparent cluster count overstates visual independence.

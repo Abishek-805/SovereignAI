@@ -5,7 +5,7 @@ const path=require('node:path');
 const os=require('node:os');
 const crypto=require('node:crypto');
 const {chromium}=require('../frontend/llama-ui/node_modules/playwright');
-const base='http://127.0.0.1:8088',out=path.resolve('benchmarks/hybrid-browser-acceptance');
+const base='http://127.0.0.1:8088',out=path.resolve(process.argv[2]||'benchmarks/hybrid-browser-acceptance');
 const ensure=(value,message)=>{if(!value)throw Error(message)};
 async function api(route,body){const response=await fetch(base+route,{method:body?'POST':'GET',headers:{'Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});const data=await response.json();ensure(response.ok,JSON.stringify(data));return data;}
 const python=String.raw`

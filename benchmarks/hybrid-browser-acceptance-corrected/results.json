@@ -1,0 +1,94 @@
+{
+  "fixtureOnly": true,
+  "modelCalls": 0,
+  "dockerCalls": 0,
+  "checks": [
+    {
+      "name": "Selected workspace explorer scope",
+      "passed": true
+    },
+    {
+      "name": "Real staged API draft renders review; canonical bytes unchanged; no fake validation",
+      "passed": true
+    },
+    {
+      "name": "Real Job API public progress and code preview rendered from fixture",
+      "passed": true
+    }
+  ],
+  "pageErrors": [],
+  "limitations": [
+    "Synthetic draft and public preview fixture through real backend; no generated-code execution or live inference demonstrated."
+  ],
+  "fixture": {
+    "workspace": "3526d071e3fb449a9c72f8ba06982403",
+    "other": "e99b74397c514149b5a9452f771e8a09",
+    "task": "12b38dbbe34743e9904fa407319eebad",
+    "job": "533949bdf79546a7939bcb8f94a8f3f2",
+    "before": "def value():\n    return 1\n",
+    "fixture_only": true,
+    "model_calls": 0
+  },
+  "networkErrors": [
+    {
+      "console": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+    },
+    {
+      "console": "[PWA] SW registration error: TypeError: Cannot read properties of undefined (reading 'waiting')\n    at http://127.0.0.1:8088/_app/immutable/chunks/BBnX5xw4.js:2:2886"
+    },
+    {
+      "url": "http://127.0.0.1:8088/workbench/info",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8088/workbench/info",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8088/status",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8088/workbench/info",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8088/props?autoload=false",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8088/workbench/info",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:8088/_app/immutable/chunks/C87Zz9sl.js",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "console": "Error fetching server properties: Error: Server is not running or unreachable\n    at qd (http://127.0.0.1:8088/_app/immutable/chunks/BJmidKiw.js:40:7269)\n    at async http://127.0.0.1:8088/_app/immutable/chunks/BJmidKiw.js:31:18192"
+    },
+    {
+      "console": "Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+    },
+    {
+      "console": "[PWA] SW registration error: TypeError: Cannot read properties of undefined (reading 'waiting')\n    at http://127.0.0.1:8088/_app/immutable/chunks/BBnX5xw4.js:2:2886"
+    }
+  ],
+  "builtIndexSha256": "873899503f1f0c30d14ce877f1842cf64707a778c463cc4ce37c470dcf87895f",
+  "passed": true,
+  "backendLogs": "Fixture imports starting\r\nFixture Workbench created\r\n"
+}

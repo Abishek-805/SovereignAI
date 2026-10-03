@@ -887,6 +887,16 @@ class CodingWorkspace:
         return entries
 
     @staticmethod
+    def _literal_file_mentioned(instruction, name, *, ignore_case=False):
+        """Match exact paths, permitting a sentence-final dot as punctuation.
+
+        A dot followed by a path character still extends the filename. Both
+        slash styles exclude basename matches inside a longer path.
+        """
+        pattern = r'(?<![\w./\\-])' + re.escape(name) + r'(?=$|[^\w./\\-]|\.(?=$|[^\w./\\-]))'
+        return re.search(pattern, instruction, re.I if ignore_case else 0) is not None
+
+    @staticmethod
     def _direct_target_plan(instruction, target, files, assets):
         """Resolve only a clear source-file operation; never infer additional scope."""
         from router.tool_registry import explicit_operation_requested
@@ -1035,7 +1045,7 @@ class CodingWorkspace:
         deletion_verb=re.search(r'\b(delete|remove|erase)\b',instruction,re.I)
         explicit_delete=bool(deletion_verb)
         deletion_clause=re.split(r'\b(?:keep|leave)\b',instruction[deletion_verb.end():],maxsplit=1,flags=re.I)[0] if deletion_verb else ''
-        named_for_delete=[name for name in files if re.search(r'(?<![\w./-])'+re.escape(name)+r'(?![\w./-])',deletion_clause,re.I)]
+        named_for_delete=[name for name in files if self._literal_file_mentioned(deletion_clause, name, ignore_case=True)]
         simple_delete=(explicit_delete and len(named_for_delete)==1 and
                        not re.search(r'\b(create|add|edit|modify|update|rename|move|copy|fix)\b',instruction,re.I))
         direct_plan = self._direct_target_plan(instruction, target, files, assets)
@@ -1058,7 +1068,7 @@ class CodingWorkspace:
             operations=[{**item,'action':'create','replacements':[]} for item in operations]
             scope='new_files'
         if scope=='existing_files':
-            named_paths={name for name in files if re.search(r'(?<![\w./-])'+re.escape(name)+r'(?![\w./-])',instruction)}
+            named_paths={name for name in files if self._literal_file_mentioned(instruction, name)}
             if named_paths and any(operation['action'] in {'edit','delete'} and operation['path'] not in named_paths for operation in operations):
                 raise WorkbenchError('generation_format','The plan changes a file outside the explicitly named targets; the project was left unchanged')
         if scope=='new_files' and any(operation['action'] in {'edit','delete'} for operation in operations):

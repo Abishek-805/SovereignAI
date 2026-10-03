@@ -1,7 +1,8 @@
 """Six-arm isolated comparison; E uses frozen pre-hybrid coding entry points.
 
 All arms share runtime settings, tools, Docker and independent oracle harness.
-Only F uses the new runner; E restores exact V2 service/workflow source methods.
+Only F uses the new runner; A-E restore exact V2 service orchestration methods.
+Every arm uses current CodingWorkspace tool handlers; frozen workflow is reference only.
 This isolates orchestration, not a historical full-binary deployment comparison.
 """
 import hashlib
@@ -13,6 +14,7 @@ import types
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+from workflows.coding_workspace import CodingWorkspace
 
 def load(name, path):
     spec = importlib.util.spec_from_file_location(name, path)
@@ -29,23 +31,22 @@ DIRECTORY = ROOT/'benchmarks/hybrid-code-agent'
 
 def configure_arm(workbench, arm):
     v2.configure_arm(workbench, arm)
-    if arm == 'F':
-        return
     manifest = json.loads((DIRECTORY/'baseline-source.json').read_text())
     for name, expected in manifest['sha256'].items():
         if hashlib.sha256((DIRECTORY/name).read_bytes()).hexdigest() != expected:
             raise ValueError('Frozen baseline source mismatch')
+    workbench.coding.run_project = types.MethodType(CodingWorkspace.run_project, workbench.coding)
+    workbench.coding.run = types.MethodType(CodingWorkspace.run, workbench.coding)
+    if arm == 'F':
+        return
     service = load('hybrid_frozen_service', DIRECTORY/'baseline-service.py')
-    workflow = load('hybrid_frozen_workflow', DIRECTORY/'baseline-coding-workspace.py')
     workbench.run_coding_project_task = types.MethodType(service.Workbench.run_coding_project_task, workbench)
-    workbench.coding.run_project = types.MethodType(workflow.CodingWorkspace.run_project, workbench.coding)
-    workbench.coding.run = types.MethodType(workflow.CodingWorkspace.run, workbench.coding)
 
 def provenance(dataset, args, settings, registry):
     result = original_provenance(dataset, args, settings, registry)
     for path in [Path(__file__).resolve(), *DIRECTORY.glob('baseline-*')]:
         result['production_sha256'][path.relative_to(ROOT).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
-    result['comparison_policy'] = 'A/B/C pinned, D prior broker, E frozen V2 coding entrypoints, F hybrid; common current runtime/oracles; history disabled'
+    result['comparison_policy'] = 'A/B/C pinned, D prior broker, A-E frozen V2 service orchestration, F hybrid; identical current CodingWorkspace.run_project/run tools, sandbox/validation and oracles; history disabled; not a historical full-binary comparison'
     return result
 
 def main():

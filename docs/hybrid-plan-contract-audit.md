@@ -1,0 +1,38 @@
+# Initial live plan-contract audit
+
+Read-only audit, 2026-10-03. No models, Docker, held-out fixtures, or live reruns were used. Only this document was added; production, benchmark harness, settings and frozen results were not changed.
+
+## Evidence and provenance
+
+Evidence: `benchmarks/hybrid-live-acceptance-20261003.json`, rows `rename` and `architecture`; their `operational_result.error`, `telemetry.task_state.plan`, `routing_observation.stages`, and validation trajectories. Fixture definitions are `benchmarks/verify-hybrid-live.py:33-45`. The result records `backend\\model.py` SHA256 `20b57ee0c7e52417fd372c49903e8dd0e899391b8432214ea2b1da0e831a6a48`, identical to the inspected file. `git diff 89fb7fe9b4f654438d0efcb41c78329b1ab3c29d -- backend/model.py` is empty: the inspected model contract also matches that frozen baseline revision. `benchmarks/hybrid-code-agent/baseline-source.json` identifies that revision, but its explicit file manifest only covers service and coding-workspace snapshots.
+
+The raw trace records review verdicts and issues, not the rejected workspace-operation candidate contents. A strategic proposal is present for architecture; it is a different artifact from the workspace-operation plan. Consequently neither failure proves that a fully correct operation plan was rejected, nor that an operation plan omitted every requirement claimed by its reviewer.
+
+## Rename: an unsatisfiable reviewer repair request
+
+The fixture asks to rename local variable `total` to `subtotal` in `amount.py`, preserving behavior. Its original source assigns and returns `total`. The three recorded semantic reviews all say `revise`; each demands a nonempty `replacements` entry for `total` to `subtotal`. The final error is `semantic_uncertainty`. No generated-source validation trajectory is recorded.
+
+`LocalModel.plan_workspace_edit`, `backend/model.py:764-765`, selects the full literal replacement grammar only for the expressions `replace ... with` or `change ... to`. This rename wording therefore selects `COMPACT_WORKSPACE_PLAN_GRAMMAR`. At `backend/model.py:99-116`, that grammar allows an omitted replacement field or an empty replacement array; it cannot emit the nonempty replacements demanded by the reviewer. Retrying with reviewer feedback retains the original payload and grammar (`backend/model.py:305-310`). This is a concrete schema/feedback contradiction, independent of whether the unknown candidate otherwise preserved the rename intent in its reason.
+
+The application review contract already says that omitted/empty replacements delegate implementation to source generation and are valid edits (`backend/model.py:770-777`). Nonempty literal replacements are optional. Thus the reviewer also contradicts the explicit current-stage contract. **Unknown:** whether the candidate's reason actually included `subtotal`, covered the right file, or was otherwise semantically adequate. The reviewer mentions its omission, but its candidate is not retained, so that part cannot be independently verified.
+
+## Architecture: both real strategy drift and stage confusion
+
+The fixture requires `Catalog.get_price(name)` in `catalog.py` and a function `invoice(names, catalog)` in `billing.py`, preserving missing-name `KeyError` and avoiding duplicated price storage. The recorded strategic proposal instead specifies an `Invoice` class with constructor and `total()` method. That is an actual observed interface contradiction with the request, not a hypothetical false-positive review. The service records the proposal and passes it as bounded reference history before Coder implementation (`backend/service.py:915-918`). The controlling request remains present; whether Coder corrected this mistaken proposal is unknown because its operation candidate was not recorded.
+
+The first operation-plan review demands file responsibilities; that could be a valid missing-intent finding, particularly because the user explicitly requests responsibilities before implementation. The second and third reviews additionally demand implementation details and “actual code changes”. This latter requirement conflicts with the explicit intermediate-plan contract (`backend/model.py:770-777`), which says complete source and validation occur downstream and must not be required in the plan. The schema supplies `action`, `path`, `reason`, optional replacements, and scope; it has no source-code or dedicated responsibility field (`backend/model.py:99-116, 788-794`). The planner asks for short reasons and separates creative source generation from planning (`backend/model.py:739-748`). Demanding complete implementation in that artifact is incompatible with its stage. **Unknown:** whether the candidate's operation reasons sufficiently assigned responsibilities; the trace does not justify blanket acceptance of it.
+
+Three `revise` reviews are recorded, terminating in `semantic_uncertainty`, with no source-validation trajectory. Architecture's recorded worker observations show reasoning Qwen3.5-4B followed by Qwen2.5-Coder-3B; rename uses Coder. These are planner/reviewer failures before sandbox validation, not evidence of a Docker failure or a successful repair.
+
+## Why the existing contract did not prevent this
+
+`_planned_completion` promotes application-authored stage contracts into the review system message and explicitly distinguishes downstream implementation (`backend/model.py:268-276`). The safeguard exists; the live reviewer failed to obey it. Review uses the payload's same model alias (`backend/model.py:283-285`), rather than a demonstrably independent verifier. Its issue strings have no typed field/stage attribution. Validation checks string types and verdicts, but not whether the requested correction is expressible by the candidate schema (`backend/model.py:289-303`). Its trace preserves issues, but not the rejected candidate (`backend/model.py:295-297`). These are general limitations; this audit does not establish their frequency across other models or tasks.
+
+## Supported improvement design, not implemented here
+
+1. Represent the intermediate artifact's schema, responsibilities and deferred obligations explicitly in reviewer input. Require each rejection to identify an existing candidate field and a current-stage obligation, with evidence from the controlling request. Keep requested interfaces such as `invoice` authoritative over reference proposals.
+2. Validate review feedback against the artifact contract before repair. A demand for a field/value forbidden by the active grammar or for downstream complete source should trigger a bounded review-contract correction, not silently accept the candidate or repeatedly issue an impossible planner repair. Keep scope/path/destructive-action checks mandatory.
+3. Preserve privacy-bounded rejected candidate artifacts (or a suitably redacted structured representation) alongside stage, grammar identity/hash, model identity, attempt and review issues. This enables distinguishing genuine omission from reviewer stage confusion without changing acceptance standards.
+4. Add contract regressions for valid delegated implementation, genuine missing targets/responsibilities, reference-proposal interface drift, grammar-inexpressible reviewer repairs, and unauthorized scope expansion. Test across artifact types rather than special-casing these requests or keywords. Recheck resulting code through fresh generation, real Docker validation, revision checks and reviewed publication.
+
+More retries alone cannot satisfy a forbidden nonempty replacement schema and do not establish correctness. A future live retest is necessary to measure improvements; this audit makes no new verified-success claim and leaves frozen acceptance data intact.

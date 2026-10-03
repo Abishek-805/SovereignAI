@@ -68,3 +68,13 @@ Installed model weights were not trained or replaced. The same worker's semantic
 Rename and architecture reviewers incorrectly demanded implementation details in an intermediate operation plan; that is recorded as model/planning failure, not suppressed or counted as validation success. Subsequent source inspection also found that the new plan cache omitted the existing `project` scope; its compatibility correction and regression are tracked separately, without overwriting the initial live result.
 
 Browser/API fixture acceptance passed three checks on the actual permitted port 8088 with zero model/Docker calls; screenshots and limitations are preserved under benchmarks/hybrid-browser-acceptance. The independent initial-live audit is docs/hybrid-initial-live-audit.md. Final backend regression after project-scope correction: 1092 passed, 7 skipped, one existing deprecation warning, 207.42 seconds.
+
+### Development pilot and general corrections
+
+The preserved 92b1e7b development pilot completed 71 F-only cases: 52 PASS, 2 PARTIAL, 17 FAIL. It is not a six-arm comparison. One real failed candidate repeated unchanged and stopped; successful automatic repair remains unverified. An earlier Docker interruption and cold resume are preserved separately. No held-out results were used for these corrections.
+
+General corrections now admit sentence punctuation around literal file paths without weakening scope, give intermediate-plan review a typed stage contract with one bounded feedback correction, conservatively normalize missing-letter/transposed imperative words, and supply bounded selected-workspace metadata to interpretation fallback. Original requests and publication authority remain unchanged; model weights are unchanged.
+
+The final comparison harness gives all six arms the identical current coding tools. A–E retain frozen service orchestration; F uses the hybrid service. This is a common-runtime orchestration comparison, not six historical binary deployments.
+
+Current verification after corrections: backend 1,143 passed / 7 skipped; frontend 728 passed; Svelte zero errors/warnings; production build passed; Docker isolation 18/18 passed. Corrected built-browser fixture acceptance passed three checks, with zero inference/Docker calls. Its retained status 503 and service-worker warnings prevent claims about live generation or PWA behavior. Corrected live model acceptance and complete paired comparison remain NOT VERIFIED pending execution.

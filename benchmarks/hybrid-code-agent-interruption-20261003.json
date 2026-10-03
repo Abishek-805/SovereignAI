@@ -1,0 +1,10 @@
+{
+  "Reason": "User interrupted tool wait; benchmark process absent and Docker Linux engine unavailable",
+  "Head": "92b1e7b7aa130d72616676228111b9a5c64a972f",
+  "CompletedRows": 51,
+  "IncompleteCase": "hybrid-dev-052",
+  "SourceSHA256": "B19941F9A701371F06BFB7263F3C6D0D0358386AB9704DF1CB19CC026EE06769",
+  "RecordedUTC": "2026-10-03T08:13:44.8562117Z",
+  "Classification": "ENVIRONMENT_FAILURE",
+  "HistoricalRowsPreserved": true
+}

@@ -1,0 +1,508 @@
+{
+  "arms": {
+    "A": {
+      "failure_layers": {},
+      "failure_sequences": {
+        "interpretation": "Actual failed trusted container check precedes terminal proposal error; this does not establish a repair call unless timestamped telemetry proves generation after validation.",
+        "post_validation_generation_proven": 0,
+        "validation_failure_then_terminal_proposal_failure": 0
+      },
+      "latency_observed_rows": 0,
+      "latency_p50_seconds": null,
+      "latency_p95_seconds": null,
+      "max_sampled_ram_mib": null,
+      "max_sampled_vram_mib": null,
+      "model_calls": 0,
+      "model_calls_unknown_rows": 0,
+      "model_switches": 0,
+      "model_switches_unknown_rows": 0,
+      "n": 0,
+      "outcome": {
+        "FAIL": 0,
+        "PARTIAL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "repair_independent_recovery": 0,
+      "repair_observed": 0,
+      "routing": {
+        "complexity": {
+          "correct": 0,
+          "incorrect": 0,
+          "unknown": 0
+        },
+        "task_type": {
+          "correct": 0,
+          "incorrect": 0,
+          "unknown": 0
+        },
+        "worker_role": {
+          "correct": 0,
+          "incorrect": 0,
+          "suitable": 0,
+          "unknown": 0,
+          "unsuitable": 0
+        }
+      },
+      "semantic": {
+        "FAIL": 0,
+        "PARTIAL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "task_completion": {
+        "FAIL": 0,
+        "PARTIAL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "trusted": {
+        "FAIL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "trusted_or_reviewed_contract_interval": {
+        "cluster_count": 0,
+        "interval": null,
+        "reason": "fewer than two evaluated development contracts"
+      }
+    },
+    "B": {
+      "failure_layers": {},
+      "failure_sequences": {
+        "interpretation": "Actual failed trusted container check precedes terminal proposal error; this does not establish a repair call unless timestamped telemetry proves generation after validation.",
+        "post_validation_generation_proven": 0,
+        "validation_failure_then_terminal_proposal_failure": 0
+      },
+      "latency_observed_rows": 0,
+      "latency_p50_seconds": null,
+      "latency_p95_seconds": null,
+      "max_sampled_ram_mib": null,
+      "max_sampled_vram_mib": null,
+      "model_calls": 0,
+      "model_calls_unknown_rows": 0,
+      "model_switches": 0,
+      "model_switches_unknown_rows": 0,
+      "n": 0,
+      "outcome": {
+        "FAIL": 0,
+        "PARTIAL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "repair_independent_recovery": 0,
+      "repair_observed": 0,
+      "routing": {
+        "complexity": {
+          "correct": 0,
+          "incorrect": 0,
+          "unknown": 0
+        },
+        "task_type": {
+          "correct": 0,
+          "incorrect": 0,
+          "unknown": 0
+        },
+        "worker_role": {
+          "correct": 0,
+          "incorrect": 0,
+          "suitable": 0,
+          "unknown": 0,
+          "unsuitable": 0
+        }
+      },
+      "semantic": {
+        "FAIL": 0,
+        "PARTIAL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "task_completion": {
+        "FAIL": 0,
+        "PARTIAL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "trusted": {
+        "FAIL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "trusted_or_reviewed_contract_interval": {
+        "cluster_count": 0,
+        "interval": null,
+        "reason": "fewer than two evaluated development contracts"
+      }
+    },
+    "C": {
+      "failure_layers": {},
+      "failure_sequences": {
+        "interpretation": "Actual failed trusted container check precedes terminal proposal error; this does not establish a repair call unless timestamped telemetry proves generation after validation.",
+        "post_validation_generation_proven": 0,
+        "validation_failure_then_terminal_proposal_failure": 0
+      },
+      "latency_observed_rows": 0,
+      "latency_p50_seconds": null,
+      "latency_p95_seconds": null,
+      "max_sampled_ram_mib": null,
+      "max_sampled_vram_mib": null,
+      "model_calls": 0,
+      "model_calls_unknown_rows": 0,
+      "model_switches": 0,
+      "model_switches_unknown_rows": 0,
+      "n": 0,
+      "outcome": {
+        "FAIL": 0,
+        "PARTIAL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "repair_independent_recovery": 0,
+      "repair_observed": 0,
+      "routing": {
+        "complexity": {
+          "correct": 0,
+          "incorrect": 0,
+          "unknown": 0
+        },
+        "task_type": {
+          "correct": 0,
+          "incorrect": 0,
+          "unknown": 0
+        },
+        "worker_role": {
+          "correct": 0,
+          "incorrect": 0,
+          "suitable": 0,
+          "unknown": 0,
+          "unsuitable": 0
+        }
+      },
+      "semantic": {
+        "FAIL": 0,
+        "PARTIAL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "task_completion": {
+        "FAIL": 0,
+        "PARTIAL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "trusted": {
+        "FAIL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "trusted_or_reviewed_contract_interval": {
+        "cluster_count": 0,
+        "interval": null,
+        "reason": "fewer than two evaluated development contracts"
+      }
+    },
+    "D": {
+      "failure_layers": {},
+      "failure_sequences": {
+        "interpretation": "Actual failed trusted container check precedes terminal proposal error; this does not establish a repair call unless timestamped telemetry proves generation after validation.",
+        "post_validation_generation_proven": 0,
+        "validation_failure_then_terminal_proposal_failure": 0
+      },
+      "latency_observed_rows": 0,
+      "latency_p50_seconds": null,
+      "latency_p95_seconds": null,
+      "max_sampled_ram_mib": null,
+      "max_sampled_vram_mib": null,
+      "model_calls": 0,
+      "model_calls_unknown_rows": 0,
+      "model_switches": 0,
+      "model_switches_unknown_rows": 0,
+      "n": 0,
+      "outcome": {
+        "FAIL": 0,
+        "PARTIAL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "repair_independent_recovery": 0,
+      "repair_observed": 0,
+      "routing": {
+        "complexity": {
+          "correct": 0,
+          "incorrect": 0,
+          "unknown": 0
+        },
+        "task_type": {
+          "correct": 0,
+          "incorrect": 0,
+          "unknown": 0
+        },
+        "worker_role": {
+          "correct": 0,
+          "incorrect": 0,
+          "suitable": 0,
+          "unknown": 0,
+          "unsuitable": 0
+        }
+      },
+      "semantic": {
+        "FAIL": 0,
+        "PARTIAL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "task_completion": {
+        "FAIL": 0,
+        "PARTIAL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "trusted": {
+        "FAIL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "trusted_or_reviewed_contract_interval": {
+        "cluster_count": 0,
+        "interval": null,
+        "reason": "fewer than two evaluated development contracts"
+      }
+    },
+    "E": {
+      "failure_layers": {},
+      "failure_sequences": {
+        "interpretation": "Actual failed trusted container check precedes terminal proposal error; this does not establish a repair call unless timestamped telemetry proves generation after validation.",
+        "post_validation_generation_proven": 0,
+        "validation_failure_then_terminal_proposal_failure": 0
+      },
+      "latency_observed_rows": 0,
+      "latency_p50_seconds": null,
+      "latency_p95_seconds": null,
+      "max_sampled_ram_mib": null,
+      "max_sampled_vram_mib": null,
+      "model_calls": 0,
+      "model_calls_unknown_rows": 0,
+      "model_switches": 0,
+      "model_switches_unknown_rows": 0,
+      "n": 0,
+      "outcome": {
+        "FAIL": 0,
+        "PARTIAL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "repair_independent_recovery": 0,
+      "repair_observed": 0,
+      "routing": {
+        "complexity": {
+          "correct": 0,
+          "incorrect": 0,
+          "unknown": 0
+        },
+        "task_type": {
+          "correct": 0,
+          "incorrect": 0,
+          "unknown": 0
+        },
+        "worker_role": {
+          "correct": 0,
+          "incorrect": 0,
+          "suitable": 0,
+          "unknown": 0,
+          "unsuitable": 0
+        }
+      },
+      "semantic": {
+        "FAIL": 0,
+        "PARTIAL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "task_completion": {
+        "FAIL": 0,
+        "PARTIAL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "trusted": {
+        "FAIL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "trusted_or_reviewed_contract_interval": {
+        "cluster_count": 0,
+        "interval": null,
+        "reason": "fewer than two evaluated development contracts"
+      }
+    },
+    "F": {
+      "failure_layers": {
+        "MODEL_FAILURE": 13,
+        "TOOL_FAILURE": 1,
+        "UNKNOWN": 56,
+        "VALIDATION_FAILURE": 1
+      },
+      "failure_sequences": {
+        "interpretation": "Actual failed trusted container check precedes terminal proposal error; this does not establish a repair call unless timestamped telemetry proves generation after validation.",
+        "post_validation_generation_proven": 0,
+        "validation_failure_then_terminal_proposal_failure": 1
+      },
+      "latency_observed_rows": 71,
+      "latency_p50_seconds": 24.641540200000236,
+      "latency_p95_seconds": 48.68740330000003,
+      "max_sampled_ram_mib": 3506.609375,
+      "max_sampled_vram_mib": 3496.0,
+      "model_calls": 208,
+      "model_calls_unknown_rows": 0,
+      "model_switches": 25,
+      "model_switches_unknown_rows": 0,
+      "n": 71,
+      "outcome": {
+        "FAIL": 17,
+        "PARTIAL": 2,
+        "PASS": 52,
+        "UNKNOWN": 0
+      },
+      "repair_independent_recovery": 0,
+      "repair_observed": 1,
+      "routing": {
+        "complexity": {
+          "correct": 61,
+          "incorrect": 10,
+          "unknown": 0
+        },
+        "task_type": {
+          "correct": 69,
+          "incorrect": 2,
+          "unknown": 0
+        },
+        "worker_role": {
+          "correct": 0,
+          "incorrect": 0,
+          "suitable": 71,
+          "unknown": 0,
+          "unsuitable": 0
+        }
+      },
+      "semantic": {
+        "FAIL": 1,
+        "PARTIAL": 2,
+        "PASS": 11,
+        "UNKNOWN": 57
+      },
+      "task_completion": {
+        "FAIL": 17,
+        "PARTIAL": 2,
+        "PASS": 52,
+        "UNKNOWN": 0
+      },
+      "trusted": {
+        "FAIL": 2,
+        "PASS": 41,
+        "UNKNOWN": 28
+      },
+      "trusted_or_reviewed_contract_interval": {
+        "cluster_count": 20,
+        "confidence": 0.95,
+        "interval": [
+          0.6666666666666666,
+          0.8406589673913042
+        ],
+        "method": "case-weighted contract cluster percentile bootstrap",
+        "repetitions": 1000,
+        "seed": 1729
+      }
+    }
+  },
+  "comparison_scope": "F versus A\u2013E; trusted final gates or exact-answer-hash semantic reviews; no model self-agreement",
+  "paired": {
+    "F_vs_A": {
+      "both_decisive": 0,
+      "cases": 0,
+      "interpretation": "Descriptive paired task outcomes; fixed-order arms do not establish causal switching benefit",
+      "transitions": {}
+    },
+    "F_vs_B": {
+      "both_decisive": 0,
+      "cases": 0,
+      "interpretation": "Descriptive paired task outcomes; fixed-order arms do not establish causal switching benefit",
+      "transitions": {}
+    },
+    "F_vs_C": {
+      "both_decisive": 0,
+      "cases": 0,
+      "interpretation": "Descriptive paired task outcomes; fixed-order arms do not establish causal switching benefit",
+      "transitions": {}
+    },
+    "F_vs_D": {
+      "both_decisive": 0,
+      "cases": 0,
+      "interpretation": "Descriptive paired task outcomes; fixed-order arms do not establish causal switching benefit",
+      "transitions": {}
+    },
+    "F_vs_E": {
+      "both_decisive": 0,
+      "cases": 0,
+      "interpretation": "Descriptive paired task outcomes; fixed-order arms do not establish causal switching benefit",
+      "transitions": {}
+    }
+  },
+  "report_state": "RUNNING",
+  "scope": "offline observations; incomplete report rows and unreviewed answers remain UNKNOWN",
+  "switch_effects": {
+    "A": {
+      "HARMFUL": 0,
+      "HELPFUL": 0,
+      "NEUTRAL": 0,
+      "UNKNOWN": 0,
+      "necessary": 0,
+      "observed": 0,
+      "reason": "Only explicit hard constraint evidence establishes necessity; no equivalent same-state switch/no-switch experiment is recorded"
+    },
+    "B": {
+      "HARMFUL": 0,
+      "HELPFUL": 0,
+      "NEUTRAL": 0,
+      "UNKNOWN": 0,
+      "necessary": 0,
+      "observed": 0,
+      "reason": "Only explicit hard constraint evidence establishes necessity; no equivalent same-state switch/no-switch experiment is recorded"
+    },
+    "C": {
+      "HARMFUL": 0,
+      "HELPFUL": 0,
+      "NEUTRAL": 0,
+      "UNKNOWN": 0,
+      "necessary": 0,
+      "observed": 0,
+      "reason": "Only explicit hard constraint evidence establishes necessity; no equivalent same-state switch/no-switch experiment is recorded"
+    },
+    "D": {
+      "HARMFUL": 0,
+      "HELPFUL": 0,
+      "NEUTRAL": 0,
+      "UNKNOWN": 0,
+      "necessary": 0,
+      "observed": 0,
+      "reason": "Only explicit hard constraint evidence establishes necessity; no equivalent same-state switch/no-switch experiment is recorded"
+    },
+    "E": {
+      "HARMFUL": 0,
+      "HELPFUL": 0,
+      "NEUTRAL": 0,
+      "UNKNOWN": 0,
+      "necessary": 0,
+      "observed": 0,
+      "reason": "Only explicit hard constraint evidence establishes necessity; no equivalent same-state switch/no-switch experiment is recorded"
+    },
+    "F": {
+      "HARMFUL": 0,
+      "HELPFUL": 0,
+      "NEUTRAL": 0,
+      "UNKNOWN": 25,
+      "necessary": 0,
+      "observed": 25,
+      "reason": "Only explicit hard constraint evidence establishes necessity; no equivalent same-state switch/no-switch experiment is recorded"
+    }
+  }
+}

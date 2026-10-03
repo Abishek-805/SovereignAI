@@ -922,9 +922,27 @@ class Workbench:
             alias=specs[capability].alias if capability in specs else 'sovereign-text'
             if not routed:
                 direct=(image_path is not None or smart and role=='code') and explicit_operation_requested(instruction,'file_edit')
+                # Interpretation receives actual, bounded scope metadata. A
+                # selected project supplies context, never mutation authority.
+                interpretation_files=[]
+                if (not direct and not (smart and coding.task_type in {'EXPLAIN','REVIEW'}) and workspace_id
+                        and (target or coding.features.get('number_of_files_requested'))):
+                    available=self.coding.get(workspace_id)['files']
+                    available=sorted(available,key=lambda item:(item['name']!=target,item['name']))
+                    remaining=8000
+                    for item in available[:32]:
+                        metadata={'name':item['name'],'language':item.get('language'),
+                                  'active_file':item['name']==target}
+                        size=len(json.dumps(metadata,ensure_ascii=False))
+                        if size>remaining:break
+                        interpretation_files.append(metadata);remaining-=size
+                interpretation_history=[]
+                for entry in list(history or [])[-6:]:
+                    text=entry if isinstance(entry,str) else json.dumps(entry,ensure_ascii=False)
+                    interpretation_history.append(text if len(text)<=2000 else text[:2000]+' [reference excerpt; remaining content omitted]')
                 intent=({'action':'edit_code'} if direct else
                         {'action':'inspect_code'} if smart and coding.task_type in {'EXPLAIN','REVIEW'} else
-                        self.model.plan_task(instruction,[],[],[]))
+                        self.model.plan_task(instruction,[],interpretation_files,interpretation_history))
                 if job and job.cancel.is_set():
                     raise WorkbenchError('cancelled', 'Task stopped during request interpretation')
                 if intent['action']=='answer':
@@ -951,7 +969,8 @@ class Workbench:
                     response=generator(instruction,files=excerpts) if callable(generator) else self.model.plan_task(instruction,[],excerpts,[])['response']
                     return {'state':'answered','answer':response,
                             'routing':{'capability':capability,'model':alias,'reason':'Read project excerpts for the requested explanation'}}
-                if intent['action']!='edit_code':raise WorkbenchError('needs_input','Use Agent for document questions and calculations')
+                if intent['action']!='edit_code':raise WorkbenchError('needs_input',
+                    'This code workspace cannot execute the interpreted action '+str(intent['action'])+'. Specify the requested code change or use Agent for that action.')
             from router.tool_registry import explicit_operation_requested
             if not explicit_operation_requested(instruction,'file_edit'):
                 raise WorkbenchError('needs_input','Specify the requested code change; classification alone cannot authorize an edit')

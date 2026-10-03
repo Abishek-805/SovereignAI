@@ -9,8 +9,8 @@
     "complete": false,
     "pilot_run_project_fixtures": 10,
     "code_fidelity_task_drafts": 20,
-    "code_fidelity_draft_sha256": "0910bfdd4eb518e699eb584d3728e2128713dbc5dcc11576118f95947a269650",
-    "code_fidelity_docker_authoring_controls": 3,
+    "code_fidelity_draft_sha256": "d97ce3f54b29975e2de2c2b671424f7bbf3419578de33c52dac3b26336a46aa3",
+    "code_fidelity_docker_authoring_controls": 7,
     "code_fidelity_oracles_complete": false,
     "code_fidelity_evaluation_complete": false
   },

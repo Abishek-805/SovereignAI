@@ -1,7 +1,7 @@
 {
   "name": "Code Fidelity & Repair authoring controls",
   "status": "AUTHORING_CONTROLS_ONLY",
-  "task_manifest_sha256": "0910bfdd4eb518e699eb584d3728e2128713dbc5dcc11576118f95947a269650",
+  "task_manifest_sha256": "d97ce3f54b29975e2de2c2b671424f7bbf3419578de33c52dac3b26336a46aa3",
   "sandbox_image_id": "sha256:5370db5915e0774ba92a758199430a762f2cbc45515ed2958ca8e9a58faef272",
   "cases": [
     {
@@ -10,7 +10,7 @@
         "executed": true,
         "exit_code": 1,
         "stdout": "",
-        "stderr": "test_missing_number_raises (test_contract.TestInvoice.test_missing_number_raises) ... FAIL\ntest_missing_total_raises (test_contract.TestInvoice.test_missing_total_raises) ... FAIL\ntest_no_false_total (test_contract.TestInvoice.test_no_false_total) ... FAIL\ntest_valid (test_contract.TestInvoice.test_valid) ... ok\n\n======================================================================\nFAIL: test_missing_number_raises (test_contract.TestInvoice.test_missing_number_raises)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 7, in test_missing_number_raises\n    with self.assertRaisesRegex(KeyError, 'invoice_number'):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: KeyError not raised\n\n======================================================================\nFAIL: test_missing_total_raises (test_contract.TestInvoice.test_missing_total_raises)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 10, in test_missing_total_raises\n    with self.assertRaisesRegex(KeyError, 'total'):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: KeyError not raised\n\n======================================================================\nFAIL: test_no_false_total (test_contract.TestInvoice.test_no_false_total)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 13, in test_no_false_total\n    with self.assertRaises(KeyError):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: KeyError not raised\n\n----------------------------------------------------------------------\nRan 4 tests in 0.001s\n\nFAILED (failures=3)\n",
+        "stderr": "test_missing_number_raises (test_contract.TestInvoice.test_missing_number_raises) ... FAIL\ntest_missing_total_raises (test_contract.TestInvoice.test_missing_total_raises) ... FAIL\ntest_no_false_total (test_contract.TestInvoice.test_no_false_total) ... FAIL\ntest_valid (test_contract.TestInvoice.test_valid) ... ok\n\n======================================================================\nFAIL: test_missing_number_raises (test_contract.TestInvoice.test_missing_number_raises)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 7, in test_missing_number_raises\n    with self.assertRaisesRegex(KeyError, 'invoice_number'):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: KeyError not raised\n\n======================================================================\nFAIL: test_missing_total_raises (test_contract.TestInvoice.test_missing_total_raises)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 10, in test_missing_total_raises\n    with self.assertRaisesRegex(KeyError, 'total'):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: KeyError not raised\n\n======================================================================\nFAIL: test_no_false_total (test_contract.TestInvoice.test_no_false_total)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 13, in test_no_false_total\n    with self.assertRaises(KeyError):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: KeyError not raised\n\n----------------------------------------------------------------------\nRan 4 tests in 0.002s\n\nFAILED (failures=3)\n",
         "file_sha256": "b5bbb56dac6efe41260df6d5b285551d3e7eaab8f1ab79de8dce1f42b515a654",
         "private_test_sha256": "b7c974c6fc62f33a77ee863773e5926364da3bd48f15670f59ea3903d90b1ca3"
       },
@@ -18,9 +18,47 @@
         "executed": true,
         "exit_code": 0,
         "stdout": "",
-        "stderr": "test_missing_number_raises (test_contract.TestInvoice.test_missing_number_raises) ... ok\ntest_missing_total_raises (test_contract.TestInvoice.test_missing_total_raises) ... ok\ntest_no_false_total (test_contract.TestInvoice.test_no_false_total) ... ok\ntest_valid (test_contract.TestInvoice.test_valid) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.001s\n\nOK\n",
+        "stderr": "test_missing_number_raises (test_contract.TestInvoice.test_missing_number_raises) ... ok\ntest_missing_total_raises (test_contract.TestInvoice.test_missing_total_raises) ... ok\ntest_no_false_total (test_contract.TestInvoice.test_no_false_total) ... ok\ntest_valid (test_contract.TestInvoice.test_valid) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.000s\n\nOK\n",
         "file_sha256": "76bb9a4782ec3ec93587884e5023abc707292ecb4a0f12ebe4c4528a33f025e6",
         "private_test_sha256": "b7c974c6fc62f33a77ee863773e5926364da3bd48f15670f59ea3903d90b1ca3"
+      }
+    },
+    {
+      "task_id": "cf02",
+      "starting": {
+        "executed": true,
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "test_bad_json (test_contract.TestSettings.test_bad_json) ... FAIL\ntest_missing_independent (test_contract.TestSettings.test_missing_independent) ... FAIL\ntest_valid_overlay (test_contract.TestSettings.test_valid_overlay) ... FAIL\n\n======================================================================\nFAIL: test_bad_json (test_contract.TestSettings.test_bad_json)\n----------------------------------------------------------------------\njson.decoder.JSONDecodeError: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 21, in test_bad_json\n    with self.assertRaisesRegex(ValueError, 'bad.json'):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: \"bad.json\" does not match \"Expecting property name enclosed in double quotes: line 1 column 2 (char 1)\"\n\n======================================================================\nFAIL: test_missing_independent (test_contract.TestSettings.test_missing_independent)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 9, in test_missing_independent\n    self.assertIsNot(out, defaults)\nAssertionError: unexpectedly identical: {'theme': 'dark'}\n\n======================================================================\nFAIL: test_valid_overlay (test_contract.TestSettings.test_valid_overlay)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 15, in test_valid_overlay\n    self.assertEqual(read_settings(path, defaults), {'theme':'light','font':12})\nAssertionError: {'theme': 'light'} != {'theme': 'light', 'font': 12}\n- {'theme': 'light'}\n+ {'font': 12, 'theme': 'light'}\n?  ++++++++++++\n\n\n----------------------------------------------------------------------\nRan 3 tests in 0.005s\n\nFAILED (failures=3)\n",
+        "file_sha256": "600904216f333b893c092ceb99494e47196b339ca3b5def4ee4887f925a1343d",
+        "private_test_sha256": "10d46294f7496eace497d184f7878d9c8110a2c02ebbeca1bf3f6f48b1063527"
+      },
+      "reference": {
+        "executed": true,
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "test_bad_json (test_contract.TestSettings.test_bad_json) ... ok\ntest_missing_independent (test_contract.TestSettings.test_missing_independent) ... ok\ntest_valid_overlay (test_contract.TestSettings.test_valid_overlay) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.001s\n\nOK\n",
+        "file_sha256": "ff4426fe4c527ee0508f6531b47d0b8ef4bcb0c1b9c546c5de472cb9387e1fe8",
+        "private_test_sha256": "10d46294f7496eace497d184f7878d9c8110a2c02ebbeca1bf3f6f48b1063527"
+      }
+    },
+    {
+      "task_id": "cf03",
+      "starting": {
+        "executed": true,
+        "exit_code": 1,
+        "stdout": "26\n",
+        "stderr": "test_boundaries (test_contract.TestBoundedCLI.test_boundaries) ... ok\ntest_cli_error_no_traceback (test_contract.TestBoundedCLI.test_cli_error_no_traceback) ... FAIL\ntest_cli_success (test_contract.TestBoundedCLI.test_cli_success) ... ok\ntest_rejection (test_contract.TestBoundedCLI.test_rejection) ... \n  test_rejection (test_contract.TestBoundedCLI.test_rejection) (value='-1') ... FAIL\n  test_rejection (test_contract.TestBoundedCLI.test_rejection) (value='26') ... FAIL\n\n======================================================================\nFAIL: test_cli_error_no_traceback (test_contract.TestBoundedCLI.test_cli_error_no_traceback)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 14, in test_cli_error_no_traceback\n    self.assertNotEqual(main(['26','25']), 0)\nAssertionError: 0 == 0\n\n======================================================================\nFAIL: test_rejection (test_contract.TestBoundedCLI.test_rejection) (value='-1')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 9, in test_rejection\n    with self.subTest(value=value), self.assertRaises(ValueError):\n                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ValueError not raised\n\n======================================================================\nFAIL: test_rejection (test_contract.TestBoundedCLI.test_rejection) (value='26')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 9, in test_rejection\n    with self.subTest(value=value), self.assertRaises(ValueError):\n                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ValueError not raised\n\n----------------------------------------------------------------------\nRan 4 tests in 0.002s\n\nFAILED (failures=3)\n",
+        "file_sha256": "9dffad54e355ac2ee9cdd628ea56132f5cf98c7acc842b5ee06648844f389820",
+        "private_test_sha256": "a8ab9eff573c88adf34e1ca487a55f0489fa4af097b080f0152ec4d3b3a0e645"
+      },
+      "reference": {
+        "executed": true,
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "test_boundaries (test_contract.TestBoundedCLI.test_boundaries) ... ok\ntest_cli_error_no_traceback (test_contract.TestBoundedCLI.test_cli_error_no_traceback) ... ok\ntest_cli_success (test_contract.TestBoundedCLI.test_cli_success) ... ok\ntest_rejection (test_contract.TestBoundedCLI.test_rejection) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.001s\n\nOK\n",
+        "file_sha256": "b221198fbb2fe5c4613d0726d61d913d24325804a42452aaf815abcddd9765c2",
+        "private_test_sha256": "a8ab9eff573c88adf34e1ca487a55f0489fa4af097b080f0152ec4d3b3a0e645"
       }
     },
     {
@@ -37,9 +75,47 @@
         "executed": true,
         "exit_code": 0,
         "stdout": "",
-        "stderr": "test_empty (test_contract.TestInvoiceCSV.test_empty) ... ok\ntest_preserved_symbols (test_contract.TestInvoiceCSV.test_preserved_symbols) ... ok\ntest_round_trip (test_contract.TestInvoiceCSV.test_round_trip) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nOK\n",
+        "stderr": "test_empty (test_contract.TestInvoiceCSV.test_empty) ... ok\ntest_preserved_symbols (test_contract.TestInvoiceCSV.test_preserved_symbols) ... ok\ntest_round_trip (test_contract.TestInvoiceCSV.test_round_trip) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.002s\n\nOK\n",
         "file_sha256": "1173c516955ce9bc70fb09749d4770813badadbc46140943887bdd247c31dfdb",
         "private_test_sha256": "c469a2da721f0f8ff84b1ac0ec13d4b8bd1927a80403f217623462e577e96972"
+      }
+    },
+    {
+      "task_id": "cf05",
+      "starting": {
+        "executed": true,
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "test_empty (test_contract.TestContacts.test_empty) ... FAIL\ntest_existing (test_contract.TestContacts.test_existing) ... ok\ntest_prefix (test_contract.TestContacts.test_prefix) ... FAIL\n\n======================================================================\nFAIL: test_empty (test_contract.TestContacts.test_empty)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 12, in test_empty\n    self.assertEqual(search_contacts(''), ['ALAN','Alice','Bob'])\nAssertionError: Lists differ: ['Alice', 'ALAN', 'Bob'] != ['ALAN', 'Alice', 'Bob']\n\nFirst differing element 0:\n'Alice'\n'ALAN'\n\n- ['Alice', 'ALAN', 'Bob']\n+ ['ALAN', 'Alice', 'Bob']\n\n======================================================================\nFAIL: test_prefix (test_contract.TestContacts.test_prefix)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 9, in test_prefix\n    self.assertEqual(search_contacts('al'), ['ALAN','Alice'])\nAssertionError: Lists differ: [] != ['ALAN', 'Alice']\n\nSecond list contains 2 additional elements.\nFirst extra element 0:\n'ALAN'\n\n- []\n+ ['ALAN', 'Alice']\n\n----------------------------------------------------------------------\nRan 3 tests in 0.001s\n\nFAILED (failures=2)\n",
+        "file_sha256": "9a5f1d5a6e05cfbd425e2c1d88f9c21089896e7f7bc7a4889ab671334f897e0f",
+        "private_test_sha256": "4c7dd7ff8a5c53a1ffe44fcbfe5ae3b93517a0decc2272845e589812b2e1e098"
+      },
+      "reference": {
+        "executed": true,
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "test_empty (test_contract.TestContacts.test_empty) ... ok\ntest_existing (test_contract.TestContacts.test_existing) ... ok\ntest_prefix (test_contract.TestContacts.test_prefix) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nOK\n",
+        "file_sha256": "496f54edf9fea7959485ee2c710404ec632f740b23c163c49db410ed222c2ca7",
+        "private_test_sha256": "4c7dd7ff8a5c53a1ffe44fcbfe5ae3b93517a0decc2272845e589812b2e1e098"
+      }
+    },
+    {
+      "task_id": "cf06",
+      "starting": {
+        "executed": true,
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "test_eviction_and_refresh (test_contract.TestCache.test_eviction_and_refresh) ... FAIL\ntest_update_size_and_delete (test_contract.TestCache.test_update_size_and_delete) ... ok\n\n======================================================================\nFAIL: test_eviction_and_refresh (test_contract.TestCache.test_eviction_and_refresh)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 10, in test_eviction_and_refresh\n    self.assertIsNone(cache.get('b'))\nAssertionError: 2 is not None\n\n----------------------------------------------------------------------\nRan 2 tests in 0.001s\n\nFAILED (failures=1)\n",
+        "file_sha256": "87602c2c8f51b441840404ee67c7c1dba4169ab0c046f03dcfe473f8dbebe47e",
+        "private_test_sha256": "8ef6464119a8614871233aff719924636c06a6ed2445ad84a64fe8062657a6b4"
+      },
+      "reference": {
+        "executed": true,
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "test_eviction_and_refresh (test_contract.TestCache.test_eviction_and_refresh) ... ok\ntest_update_size_and_delete (test_contract.TestCache.test_update_size_and_delete) ... ok\n\n----------------------------------------------------------------------\nRan 2 tests in 0.000s\n\nOK\n",
+        "file_sha256": "721483ed60c929da1dd3236b111cbbe78c9b0613cc6d8544899e35b0eae435e2",
+        "private_test_sha256": "8ef6464119a8614871233aff719924636c06a6ed2445ad84a64fe8062657a6b4"
       }
     },
     {
@@ -48,7 +124,7 @@
         "executed": true,
         "exit_code": 1,
         "stdout": "",
-        "stderr": "test_boundary_and_missing (test_contract.TestPassReport.test_boundary_and_missing) ... ERROR\ntest_empty (test_contract.TestPassReport.test_empty) ... ERROR\ntest_nan_is_invalid (test_contract.TestPassReport.test_nan_is_invalid) ... ERROR\n\n======================================================================\nERROR: test_boundary_and_missing (test_contract.TestPassReport.test_boundary_and_missing)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 6, in test_boundary_and_missing\n    out = pass_report(rows, ['WAT1','WAT2'])\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/output/project/solution.py\", line 2, in pass_report\n    return {name: {'passed': sum(float(row[name]) > 25 for row in rows), 'total': len(rows)} for name in columns}\n                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/output/project/solution.py\", line 2, in <genexpr>\n    return {name: {'passed': sum(float(row[name]) > 25 for row in rows), 'total': len(rows)} for name in columns}\n                                 ^^^^^^^^^^^^^^^^\nValueError: could not convert string to float: 'bad'\n\n======================================================================\nERROR: test_empty (test_contract.TestPassReport.test_empty)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 10, in test_empty\n    self.assertEqual(pass_report([], ['CAT'])['CAT']['percentage'], None)\n                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^\nKeyError: 'percentage'\n\n======================================================================\nERROR: test_nan_is_invalid (test_contract.TestPassReport.test_nan_is_invalid)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 12, in test_nan_is_invalid\n    self.assertEqual(pass_report([{'A': float('nan')}], ['A'])['A']['invalid'], 1)\n                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^\nKeyError: 'invalid'\n\n----------------------------------------------------------------------\nRan 3 tests in 0.002s\n\nFAILED (errors=3)\n",
+        "stderr": "test_boundary_and_missing (test_contract.TestPassReport.test_boundary_and_missing) ... ERROR\ntest_empty (test_contract.TestPassReport.test_empty) ... ERROR\ntest_nan_is_invalid (test_contract.TestPassReport.test_nan_is_invalid) ... ERROR\n\n======================================================================\nERROR: test_boundary_and_missing (test_contract.TestPassReport.test_boundary_and_missing)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 6, in test_boundary_and_missing\n    out = pass_report(rows, ['WAT1','WAT2'])\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/output/project/solution.py\", line 2, in pass_report\n    return {name: {'passed': sum(float(row[name]) > 25 for row in rows), 'total': len(rows)} for name in columns}\n                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/output/project/solution.py\", line 2, in <genexpr>\n    return {name: {'passed': sum(float(row[name]) > 25 for row in rows), 'total': len(rows)} for name in columns}\n                                 ^^^^^^^^^^^^^^^^\nValueError: could not convert string to float: 'bad'\n\n======================================================================\nERROR: test_empty (test_contract.TestPassReport.test_empty)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 10, in test_empty\n    self.assertEqual(pass_report([], ['CAT'])['CAT']['percentage'], None)\n                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^\nKeyError: 'percentage'\n\n======================================================================\nERROR: test_nan_is_invalid (test_contract.TestPassReport.test_nan_is_invalid)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 12, in test_nan_is_invalid\n    self.assertEqual(pass_report([{'A': float('nan')}], ['A'])['A']['invalid'], 1)\n                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^\nKeyError: 'invalid'\n\n----------------------------------------------------------------------\nRan 3 tests in 0.001s\n\nFAILED (errors=3)\n",
         "file_sha256": "d4d9721698dce70cbe788e23712c045f4d5167adec7fdf8e0753709a3ec2dad1",
         "private_test_sha256": "7d24bc41e59c6ee50971c4003dbcc04904ee1af46551fb98908e417f32855655"
       },

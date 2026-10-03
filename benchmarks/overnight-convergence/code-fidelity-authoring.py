@@ -48,6 +48,105 @@ class TestInvoice(unittest.TestCase):
             parse_invoice('note: total 44\\ninvoice_number: C')
 ''',
     },
+    'cf02': {
+        'starting': '''import json
+from pathlib import Path
+
+def read_settings(path, defaults):
+    if not Path(path).exists():
+        return defaults
+    return json.loads(Path(path).read_text())
+''',
+        'reference': '''import json
+from pathlib import Path
+
+def read_settings(path, defaults):
+    result = dict(defaults)
+    try:
+        data = json.loads(Path(path).read_text(encoding='utf-8'))
+    except FileNotFoundError:
+        return result
+    except json.JSONDecodeError as exc:
+        raise ValueError(f'{path}: malformed JSON') from exc
+    if not isinstance(data, dict):
+        raise ValueError(f'{path}: settings must be an object')
+    result.update(data)
+    return result
+''',
+        'tests': '''import tempfile, unittest
+from pathlib import Path
+from solution import read_settings
+class TestSettings(unittest.TestCase):
+    def test_missing_independent(self):
+        defaults = {'theme':'dark'}
+        out = read_settings('/output/absent-settings.json', defaults)
+        self.assertEqual(out, defaults)
+        self.assertIsNot(out, defaults)
+    def test_valid_overlay(self):
+        with tempfile.TemporaryDirectory(dir='/output') as folder:
+            path = Path(folder)/'settings.json'
+            path.write_text('{"theme":"light"}')
+            defaults = {'theme':'dark','font':12}
+            self.assertEqual(read_settings(path, defaults), {'theme':'light','font':12})
+            self.assertEqual(defaults, {'theme':'dark','font':12})
+    def test_bad_json(self):
+        with tempfile.TemporaryDirectory(dir='/output') as folder:
+            path = Path(folder)/'bad.json'
+            path.write_text('{')
+            with self.assertRaisesRegex(ValueError, 'bad.json'):
+                read_settings(path, {})
+''',
+    },
+    'cf03': {
+        'starting': '''def parse_bounded_int(value, maximum):
+    return int(value)
+
+def main(argv):
+    print(parse_bounded_int(argv[0], int(argv[1])))
+    return 0
+''',
+        'reference': '''def parse_bounded_int(value, maximum):
+    try:
+        number = int(value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError('not an integer') from exc
+    if str(number) != str(value).strip() or number < 0 or number > maximum:
+        raise ValueError('integer outside allowed range')
+    return number
+
+def main(argv):
+    import sys
+    try:
+        if len(argv) != 2:
+            raise ValueError('expected value and maximum')
+        print(parse_bounded_int(argv[0], int(argv[1])))
+        return 0
+    except ValueError as exc:
+        print(str(exc), file=sys.stderr)
+        return 2
+''',
+        'tests': '''import contextlib, io, unittest
+from solution import parse_bounded_int, main
+class TestBoundedCLI(unittest.TestCase):
+    def test_boundaries(self):
+        self.assertEqual(parse_bounded_int('0', 25), 0)
+        self.assertEqual(parse_bounded_int('25', 25), 25)
+    def test_rejection(self):
+        for value in ('-1','26','2.5','abc'):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                parse_bounded_int(value, 25)
+    def test_cli_error_no_traceback(self):
+        error = io.StringIO()
+        with contextlib.redirect_stderr(error):
+            self.assertNotEqual(main(['26','25']), 0)
+        self.assertNotIn('Traceback', error.getvalue())
+    def test_cli_success(self):
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            self.assertEqual(main(['25','25']), 0)
+        self.assertEqual(output.getvalue().strip(), '25')
+''',
+    },
     'cf04': {
         'starting': '''def calculate_tax(subtotal, rate):
     return round(subtotal * rate, 2)
@@ -85,6 +184,100 @@ class TestInvoiceCSV(unittest.TestCase):
         self.assertEqual(list(csv.reader(io.StringIO(export_invoice(rows)))), [['item','amount'], *rows])
     def test_empty(self):
         self.assertEqual(list(csv.reader(io.StringIO(export_invoice([])))), [['item','amount']])
+''',
+    },
+    'cf05': {
+        'starting': '''CONTACTS = {'Alice':'111', 'ALAN':'222', 'Bob':'333'}
+
+def get_contact(name):
+    return CONTACTS.get(name)
+
+def list_contacts():
+    return sorted(CONTACTS)
+
+def search_contacts(prefix):
+    return [name for name in CONTACTS if name.startswith(prefix)]
+''',
+        'reference': '''CONTACTS = {'Alice':'111', 'ALAN':'222', 'Bob':'333'}
+
+def get_contact(name):
+    return CONTACTS.get(name)
+
+def list_contacts():
+    return sorted(CONTACTS)
+
+def search_contacts(prefix):
+    return sorted(name for name in CONTACTS if name.casefold().startswith(prefix.casefold()))
+''',
+        'tests': '''import unittest
+from solution import get_contact, list_contacts, search_contacts
+class TestContacts(unittest.TestCase):
+    def test_existing(self):
+        self.assertEqual(get_contact('Alice'), '111')
+        self.assertIsNone(get_contact('alice'))
+        self.assertEqual(list_contacts(), ['ALAN','Alice','Bob'])
+    def test_prefix(self):
+        self.assertEqual(search_contacts('al'), ['ALAN','Alice'])
+        self.assertEqual(search_contacts('BO'), ['Bob'])
+    def test_empty(self):
+        self.assertEqual(search_contacts(''), ['ALAN','Alice','Bob'])
+''',
+    },
+    'cf06': {
+        'starting': '''from collections import OrderedDict
+class LRUCache:
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.data = OrderedDict()
+    def put(self, key, value):
+        self.data[key] = value
+        if len(self.data) > self.capacity:
+            self.data.popitem(last=True)
+    def get(self, key):
+        return self.data.get(key)
+    def delete(self, key):
+        return self.data.pop(key, None) is not None
+''',
+        'reference': '''from collections import OrderedDict
+class LRUCache:
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.data = OrderedDict()
+    def put(self, key, value):
+        self.data[key] = value
+        self.data.move_to_end(key)
+        if len(self.data) > self.capacity:
+            self.data.popitem(last=False)
+    def get(self, key):
+        if key not in self.data:
+            return None
+        self.data.move_to_end(key)
+        return self.data[key]
+    def delete(self, key):
+        if key not in self.data:
+            return False
+        del self.data[key]
+        return True
+''',
+        'tests': '''import unittest
+from solution import LRUCache
+class TestCache(unittest.TestCase):
+    def test_eviction_and_refresh(self):
+        cache = LRUCache(2)
+        self.assertIsNone(cache.put('a',1))
+        cache.put('b',2)
+        self.assertEqual(cache.get('a'),1)
+        cache.put('c',3)
+        self.assertIsNone(cache.get('b'))
+        self.assertEqual(cache.get('a'),1)
+    def test_update_size_and_delete(self):
+        cache = LRUCache(1)
+        cache.put('x',1)
+        cache.put('x',2)
+        self.assertEqual(len(cache.data),1)
+        self.assertTrue(cache.delete('x'))
+        self.assertFalse(cache.delete('x'))
+        self.assertIsNone(cache.get('x'))
 ''',
     },
     'cf18': {

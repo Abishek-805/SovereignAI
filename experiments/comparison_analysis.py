@@ -67,10 +67,14 @@ def main():
         common=sorted(set(data[a]) & set(data[b]))
         for category in (None,*sorted({t['category'] for t in tasks})):
             ids=[i for i in common if category is None or data[a][i]['category']==category]
-            wins=sum(data[a][i]['status']=='PASS' and data[b][i]['status']!='PASS' for i in ids)
-            losses=sum(data[b][i]['status']=='PASS' and data[a][i]['status']!='PASS' for i in ids)
+            eligible=[i for i in ids if data[a][i]['status']!='BLOCKED' and data[b][i]['status']!='BLOCKED']
+            wins=sum(data[a][i]['status']=='PASS' and data[b][i]['status']!='PASS' for i in eligible)
+            losses=sum(data[b][i]['status']=='PASS' and data[a][i]['status']!='PASS' for i in eligible)
             pairs.append({'a':a,'b':b,'category':category or 'all','paired_tasks':len(ids),
-                          'a_only_pass':wins,'b_only_pass':losses,'ties':len(ids)-wins-losses,
+                          'pairs_without_blocks':len(eligible),'pairs_with_block':len(ids)-len(eligible),
+                          'a_only_pass':wins,'b_only_pass':losses,'ties_without_blocks':len(eligible)-wins-losses,
+                          'a_blocked':sum(data[a][i]['status']=='BLOCKED' for i in ids),
+                          'b_blocked':sum(data[b][i]['status']=='BLOCKED' for i in ids),
                           'median_paired_latency_difference_a_minus_b':statistics.median(data[a][i]['latency']-data[b][i]['latency'] for i in ids) if ids else None})
     complete=all(s['coverage']==40 and s['supplemental_coverage']==40 for s in summaries)
     result={'status':'INCOMPLETE','executions_and_candidate_replays_complete':complete,

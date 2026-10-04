@@ -1,6 +1,8 @@
 """Task isolation checks; these tests execute no generated code."""
 import json
 import unittest
+import tempfile
+from pathlib import Path
 from dataclasses import FrozenInstanceError
 from experiments.task_kernel import TaskRoot
 from experiments.minimal_execution import MinimalKernel, TaskBudget, project_map
@@ -67,6 +69,20 @@ class TaskKernelTests(unittest.TestCase):
     def test_budget_rejects_nonfinite_deadline(self):
         with self.assertRaises(ValueError):
             TaskBudget(timeout_seconds=float('nan'))
+
+    def test_plain_output_parsed_and_trajectory_saved(self):
+        class Adapter:
+            last_usage = {'completion_tokens':1}
+            def generate(self, messages, **settings):
+                return '{"action":"finish","reason":"done"}'
+        validator = lambda *args: {'docker_executed':True,'exit_code':0,'stdout':'ok','stderr':''}
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder)/'trajectory.json'
+            kernel = MinimalKernel(self.make_task(),{},Adapter(),None,validator,record_path=path)
+            self.assertEqual(kernel.run()['state'],'READY_FOR_REVIEW')
+            saved = json.loads(path.read_text())
+            self.assertEqual(saved['events'][0]['model_output'],'{"action":"finish","reason":"done"}')
+            self.assertEqual(saved['events'][1]['observation']['exit_code'],0)
 
 
 if __name__ == '__main__':

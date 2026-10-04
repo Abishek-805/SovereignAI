@@ -31,7 +31,11 @@
   "replacement_kernel": {
     "status": "ISOLATED_INTEGRATION_CONTROL_PASSED",
     "production_migrated": false,
-    "task_isolation_unit_checks": 8,
+    "task_isolation_unit_checks": 9,
+    "plain_output_adapter": true,
+    "kernel_owned_action_parsing": true,
+    "atomic_trajectory_checkpoints": true,
+    "comparison_mix": {"run_project":8,"bug_fix":8,"multifile":8,"new_feature":8,"repair_verify":8},
     "scripted_docker_repair_controls": 1,
     "model_driven_runs": 0,
     "streaming_adapter_implemented": true,

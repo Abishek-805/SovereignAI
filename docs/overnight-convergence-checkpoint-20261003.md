@@ -4,6 +4,8 @@ Status: **IN PROGRESS. No production candidate selected.** This record is separa
 
 ## Latest user-directed milestone — replacement kernel
 
+Latest checkpoint: model transport now returns plain output; action parsing and the action prompt live in the kernel. Atomic trajectory snapshots record raw model output, actions, actual observations, counters, workspace revision and terminal status. Nine unit checks pass, including parsing and saved trajectory contents. The comparison task mix is now eight cases in each of run-project, bug fixing, multi-file implementation, new features and repair/verification. The earlier blocked live pilot remains the only live adapter attempt; no comparison scores exist.
+
 The latest instructions supersede the earlier 100-task authoring target with a 40-task comparison: first current/new architecture using fixed Qwen2.5-Coder-3B, then models on the frozen kernel. Production migration remains prohibited. The isolated `experiments/` kernel now supports structured read, patch, exec and finish actions, deterministic project facts, a single outer budget and mandatory Docker validation. Patches are JSON change lists with base-content hashes; command execution uses disposable snapshots, so persistent edits must use the patch action. Eight unit checks pass. A scripted Docker integration control rejected early completion, supplied the real assertion error, accepted a repair only after validation and checked budget exhaustion. This is adapter/control evidence only. Model-driven runs and the 40-task comparison are incomplete. Resource measurements, streaming model adapter and cancellation remain outstanding before comparison.
 
 ## Observed local baseline

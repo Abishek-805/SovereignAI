@@ -3,6 +3,12 @@ $projectRoot=Split-Path -Parent $PSScriptRoot
 Set-Location -LiteralPath $projectRoot
 $manifestPath=Join-Path $projectRoot 'benchmarks/model-comparison/install-manifest.json'
 $manifest=Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
+function Get-ComparisonHash([string]$path) {
+    $stream=[IO.File]::OpenRead($path)
+    $hasher=[Security.Cryptography.SHA256]::Create()
+    try { return ([BitConverter]::ToString($hasher.ComputeHash($stream))).Replace('-','').ToLowerInvariant() }
+    finally { $stream.Dispose(); $hasher.Dispose() }
+}
 try {
     foreach($candidate in $manifest.models) {
         $target=Join-Path $projectRoot $candidate.path
@@ -15,10 +21,10 @@ try {
                 Write-Output ($candidate.id+' download attempt '+$attempt+' incomplete')
             }
             if (!(Test-Path -LiteralPath $partial) -or (Get-Item -LiteralPath $partial).Length -ne $candidate.expected_bytes) {throw ($candidate.id+' download incomplete')}
-            if ((Get-FileHash -LiteralPath $partial -Algorithm SHA256).Hash.ToLowerInvariant() -ne $candidate.expected_sha256) {throw ($candidate.id+' SHA-256 mismatch')}
+            if ((Get-ComparisonHash $partial) -ne $candidate.expected_sha256) {throw ($candidate.id+' SHA-256 mismatch')}
             Move-Item -LiteralPath $partial -Destination $target
         }
-        if ((Get-Item -LiteralPath $target).Length -ne $candidate.expected_bytes -or (Get-FileHash -LiteralPath $target -Algorithm SHA256).Hash.ToLowerInvariant() -ne $candidate.expected_sha256) {throw ($candidate.id+' installed file does not match manifest')}
+        if ((Get-Item -LiteralPath $target).Length -ne $candidate.expected_bytes -or (Get-ComparisonHash $target) -ne $candidate.expected_sha256) {throw ($candidate.id+' installed file does not match manifest')}
         $candidate | Add-Member -NotePropertyName download_verified -NotePropertyValue $true -Force
         $manifest | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $manifestPath -Encoding utf8
         Write-Output ($candidate.id+' verified')

@@ -1,0 +1,105 @@
+{
+  "name": "Minimal kernel scripted Docker integration control",
+  "not_model_evidence": true,
+  "repair_control": {
+    "state": "READY_FOR_REVIEW",
+    "reason": "validation passed",
+    "task_id": "91a42952-4f48-487f-a167-b45d1e4e1799",
+    "workspace_revision": "snapshot-1",
+    "model": "scripted-control",
+    "counts": {
+      "model_calls": 3,
+      "tool_calls": 3,
+      "repair_attempts": 1,
+      "sandbox_runs": 2,
+      "output_tokens": 3
+    },
+    "events": [
+      {
+        "action": {
+          "action": "finish",
+          "reason": "done"
+        },
+        "observation": {
+          "command": "python check.py",
+          "docker_executed": true,
+          "exit_code": 1,
+          "stdout": "",
+          "stderr": "Traceback (most recent call last):\n  File \"/output/project/check.py\", line 2, in <module>\n    assert answer() == 42, \"expected 42, got %s\" % answer()\n           ^^^^^^^^^^^^^^\nAssertionError: expected 42, got 24\n",
+          "sandbox_image_id": "sha256:5370db5915e0774ba92a758199430a762f2cbc45515ed2958ca8e9a58faef272"
+        }
+      },
+      {
+        "action": {
+          "action": "apply_patch",
+          "patch": "[{\"path\": \"app.py\", \"before_sha256\": \"3493c491763ff3085233ec96a73b8c56011b14f4f3743f8f45534219a25c0315\", \"content\": \"def answer():\\n    return 42\\n\"}]"
+        },
+        "observation": {
+          "changed_files": [
+            "app.py"
+          ]
+        }
+      },
+      {
+        "action": {
+          "action": "finish",
+          "reason": "tests_passed"
+        },
+        "observation": {
+          "command": "python check.py",
+          "docker_executed": true,
+          "exit_code": 0,
+          "stdout": "validated 42\n",
+          "stderr": "",
+          "sandbox_image_id": "sha256:5370db5915e0774ba92a758199430a762f2cbc45515ed2958ca8e9a58faef272"
+        }
+      }
+    ],
+    "files": {
+      "app.py": "def answer():\n    return 42\n"
+    },
+    "elapsed_seconds": 14.784725600002275
+  },
+  "budget_control": {
+    "state": "BUDGET_EXHAUSTED",
+    "reason": "model budget",
+    "task_id": "91a42952-4f48-487f-a167-b45d1e4e1799",
+    "workspace_revision": "snapshot-1",
+    "model": "scripted-control",
+    "counts": {
+      "model_calls": 2,
+      "tool_calls": 2,
+      "repair_attempts": 0,
+      "sandbox_runs": 0,
+      "output_tokens": 2
+    },
+    "events": [
+      {
+        "action": {
+          "action": "read_file",
+          "path": "app.py"
+        },
+        "observation": {
+          "path": "app.py",
+          "content": "def answer():\n    return 24\n",
+          "sha256": "3493c491763ff3085233ec96a73b8c56011b14f4f3743f8f45534219a25c0315"
+        }
+      },
+      {
+        "action": {
+          "action": "read_file",
+          "path": "app.py"
+        },
+        "observation": {
+          "path": "app.py",
+          "content": "def answer():\n    return 24\n",
+          "sha256": "3493c491763ff3085233ec96a73b8c56011b14f4f3743f8f45534219a25c0315"
+        }
+      }
+    ],
+    "files": {
+      "app.py": "def answer():\n    return 24\n"
+    },
+    "elapsed_seconds": 0.004309700001613237
+  }
+}

@@ -27,8 +27,8 @@
   },
   "model_comparison_complete": false,
   "model_installation": {
-    "status": "RESUMABLE_BACKGROUND_DOWNLOAD",
-    "process_id": 33468,
+    "status": "HASH_VERIFIED_RUNTIME_API_CHECKS_COMPLETE",
+    "process_id": null,
     "manifest": "benchmarks/model-comparison/install-manifest.json",
     "compatibility_after_hash_verification": true
   },
@@ -41,13 +41,19 @@
     "plain_output_adapter": true,
     "kernel_owned_action_parsing": true,
     "atomic_trajectory_checkpoints": true,
-    "comparison_mix": {"run_project":8,"bug_fix":8,"multifile":8,"new_feature":8,"repair_verify":8},
+    "comparison_mix": {
+      "run_project": 8,
+      "bug_fix": 8,
+      "multifile": 8,
+      "new_feature": 8,
+      "repair_verify": 8
+    },
     "scripted_docker_repair_controls": 1,
-    "model_driven_runs": 0,
+    "model_driven_runs": "FIRST_15_TASK_TRANCHE_RUNNING",
     "streaming_adapter_implemented": true,
     "live_pilot_state": "BLOCKED_ACTIVE_MODEL_MISMATCH",
     "current_required_comparison_tasks": 40,
     "comparison_complete": false
   },
-  "next_gate": "Complete 40-task manifest and model adapter; compare current agent and minimal kernel with fixed Qwen2.5-Coder-3B before model comparison. The new user-approved 40-task plan supersedes the earlier 100-task target."
+  "next_gate": "Finish first authored tranche, complete remaining 40-task manifest and matched baseline; no production migration"
 }

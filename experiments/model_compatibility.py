@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import subprocess
 import time
+import sys
 import httpx
 import psutil
 
@@ -66,6 +67,11 @@ def main():
                     response.raise_for_status()
                     row.update(status='API_RESPONSE',response=response.json(),elapsed_seconds=time.monotonic()-started,
                                rss_bytes=psutil.Process(process.pid).memory_info().rss)
+                    if '--tasks' in sys.argv:
+                        from model_task_tranche import run
+                        task_rows = run(name, path)
+                        row['authored_task_count'] = len(task_rows)
+                        row['validated_task_passes'] = sum(r['result']['state']=='READY_FOR_REVIEW' for r in task_rows)
                     try:
                         row['gpu_observation']=subprocess.check_output(['nvidia-smi','--query-gpu=memory.used,memory.total',
                             '--format=csv,noheader,nounits'],text=True,timeout=3).strip()
@@ -74,7 +80,8 @@ def main():
                 finally:
                     if process.poll() is None:process.terminate()
                     process.wait(timeout=20)
-            (OUT/'compatibility.json').write_text(json.dumps({'not_task_quality_evidence':True,'rows':rows},indent=2))
+            result_name = 'task-tranche-runtime.json' if '--tasks' in sys.argv else 'compatibility.json'
+            (OUT/result_name).write_text(json.dumps({'not_task_quality_evidence':True,'rows':rows},indent=2))
             print(name,row['status'],flush=True)
     finally:
         if original and not servers():

@@ -1,0 +1,239 @@
+{
+  "not_task_quality_evidence": true,
+  "rows": [
+    {
+      "model": "coder",
+      "command": [
+        "C:\\Users\\ashek\\Desktop\\SovereignAI\\runtime\\llama-b11132\\llama-server.exe",
+        "-m",
+        "C:\\Users\\ashek\\Desktop\\SovereignAI\\models\\qwen2.5-coder-3b-instruct-q4_k_m.gguf",
+        "-c",
+        "4096",
+        "-ngl",
+        "999",
+        "-np",
+        "1",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8087"
+      ],
+      "status": "API_RESPONSE",
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "{\n  \"key\": true\n}"
+            }
+          }
+        ],
+        "created": 1791082850,
+        "model": "C:\\Users\\ashek\\Desktop\\SovereignAI\\models\\qwen2.5-coder-3b-instruct-q4_k_m.gguf",
+        "system_fingerprint": "b11132-633733d0a",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 13,
+          "prompt_tokens": 39,
+          "total_tokens": 52,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "id": "chatcmpl-7FcWj3lAHzUE3mSNjXaKVjuCSl6JvOVM",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 39,
+          "prompt_ms": 224.346,
+          "prompt_per_token_ms": 5.752461538461539,
+          "prompt_per_second": 173.83862426787195,
+          "predicted_n": 13,
+          "predicted_ms": 383.416,
+          "predicted_per_token_ms": 31.951333333333334,
+          "predicted_per_second": 31.297598430947065
+        }
+      },
+      "elapsed_seconds": 7.051808800002618,
+      "rss_bytes": 2389602304,
+      "gpu_observation": "3223, 4094"
+    },
+    {
+      "model": "granite",
+      "command": [
+        "C:\\Users\\ashek\\Desktop\\SovereignAI\\runtime\\llama-b11132\\llama-server.exe",
+        "-m",
+        "C:\\Users\\ashek\\Desktop\\SovereignAI\\models\\Granite-4.2-3B\\granite-4.2-3b-Q4_K_M.gguf",
+        "-c",
+        "4096",
+        "-ngl",
+        "999",
+        "-np",
+        "1",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8087"
+      ],
+      "status": "API_RESPONSE",
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "length",
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "",
+              "reasoning_content": "We are to return JSON with one key ready and value true.\n The instruction says: \"Return JSON with one key ready and value true.\"\n So we need a JSON object that has one key, say \"ready\", and its value is true.\n Alternatively, the key could be any name, but typically we might use \"ready\" as the key.\n However, the problem says: \"one key ready and value true\"\n It might mean the key is named \"ready\" and the value is true.\n\n Let's interpret: \n   We need a JSON object that has exactly one key, and that key is called"
+            }
+          }
+        ],
+        "created": 1791082857,
+        "model": "C:\\Users\\ashek\\Desktop\\SovereignAI\\models\\Granite-4.2-3B\\granite-4.2-3b-Q4_K_M.gguf",
+        "system_fingerprint": "b11132-633733d0a",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 128,
+          "prompt_tokens": 25,
+          "total_tokens": 153,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "id": "chatcmpl-MCTo7IgRXEiDxe6PqsnEvwbwnLOIFSpE",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 25,
+          "prompt_ms": 70.803,
+          "prompt_per_token_ms": 2.8321199999999997,
+          "prompt_per_second": 353.09238309111197,
+          "predicted_n": 128,
+          "predicted_ms": 3233.584,
+          "predicted_per_token_ms": 25.461291338582676,
+          "predicted_per_second": 39.27530566702458
+        }
+      },
+      "elapsed_seconds": 6.374466900000698,
+      "rss_bytes": 2546188288,
+      "gpu_observation": "3548, 4094"
+    },
+    {
+      "model": "mini-coder",
+      "command": [
+        "C:\\Users\\ashek\\Desktop\\SovereignAI\\runtime\\llama-b11132\\llama-server.exe",
+        "-m",
+        "C:\\Users\\ashek\\Desktop\\SovereignAI\\models\\mini-coder-1.7B\\mini-coder-1.7b-iq4_nl-imat.gguf",
+        "-c",
+        "4096",
+        "-ngl",
+        "999",
+        "-np",
+        "1",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8087"
+      ],
+      "status": "API_RESPONSE",
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "stop",
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "{\n  \"status\": true\n}"
+            }
+          }
+        ],
+        "created": 1791082862,
+        "model": "C:\\Users\\ashek\\Desktop\\SovereignAI\\models\\mini-coder-1.7B\\mini-coder-1.7b-iq4_nl-imat.gguf",
+        "system_fingerprint": "b11132-633733d0a",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 14,
+          "prompt_tokens": 18,
+          "total_tokens": 32,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "id": "chatcmpl-z0Ua8nSFVl9cl06dqHrbBZgxt1c8CiUN",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 18,
+          "prompt_ms": 289.596,
+          "prompt_per_token_ms": 16.08866666666667,
+          "prompt_per_second": 62.155554634732525,
+          "predicted_n": 14,
+          "predicted_ms": 341.181,
+          "predicted_per_token_ms": 26.244692307692308,
+          "predicted_per_second": 38.10294242645399
+        }
+      },
+      "elapsed_seconds": 3.6111735999947996,
+      "rss_bytes": 1511022592,
+      "gpu_observation": "2652, 4094"
+    },
+    {
+      "model": "qwen3.5",
+      "command": [
+        "C:\\Users\\ashek\\Desktop\\SovereignAI\\runtime\\llama-b11132\\llama-server.exe",
+        "-m",
+        "C:\\Users\\ashek\\Desktop\\SovereignAI\\models\\Qwen3.5-4B-Q4_K_M.gguf",
+        "-c",
+        "4096",
+        "-ngl",
+        "999",
+        "-np",
+        "1",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8087"
+      ],
+      "status": "API_RESPONSE",
+      "response": {
+        "choices": [
+          {
+            "finish_reason": "length",
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "",
+              "reasoning_content": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Input: \"Return JSON with one key ready and value true.\"\n    *   Task: Generate a JSON object.\n    *   Structure: One key, value `true`.\n    *   Output Format: JSON.\n\n2.  **Determine the Key:**\n    *   The prompt says \"one key ready\". It doesn't specify the key name.\n    *   Common practice for such requests is to use a generic key like \"ready\", \"status\", or \"success\".\n    *   However, the prompt says"
+            }
+          }
+        ],
+        "created": 1791082878,
+        "model": "C:\\Users\\ashek\\Desktop\\SovereignAI\\models\\Qwen3.5-4B-Q4_K_M.gguf",
+        "system_fingerprint": "b11132-633733d0a",
+        "object": "chat.completion",
+        "usage": {
+          "completion_tokens": 128,
+          "prompt_tokens": 20,
+          "total_tokens": 148,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "id": "chatcmpl-sjsVzsHXT8B1XCRfMsjUKOGLN9H1MhSd",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 20,
+          "prompt_ms": 1012.376,
+          "prompt_per_token_ms": 50.6188,
+          "prompt_per_second": 19.755505859483037,
+          "predicted_n": 128,
+          "predicted_ms": 5707.3,
+          "predicted_per_token_ms": 44.93937007874016,
+          "predicted_per_second": 22.252203318556933
+        }
+      },
+      "elapsed_seconds": 15.02847190000466,
+      "rss_bytes": 3337592832,
+      "gpu_observation": "3669, 4094"
+    }
+  ]
+}

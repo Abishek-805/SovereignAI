@@ -51,11 +51,11 @@ class Jobs:
                 with job.lock:
                     job.partial_answer='';job.partial_kind=None
                     job.completion=completion
-                    job.result=result;job.state='cancelled' if job.cancel.is_set() else 'failed' if result.get('state',result.get('status'))=='failed' else 'completed'
+                    job.result=result;job.state='cancelled' if job.cancel.is_set() else 'failed' if result.get('state',result.get('status'))=='failed' else 'blocked' if result.get('state',result.get('status'))=='blocked' else 'completed'
                     if job.cancel.is_set():job.completion={**completion,'state':'cancelled','achieved':False}
                     job.stage=('Stopped' if job.state=='cancelled' else 'Check failed' if job.state=='failed' else
                         {'awaiting_review':'Ready for review','needs_input':'Needs information',
-                         'failed':'Check failed','unverified':'Response ready','completed':'Finished'}.get(completion['state'],'Response ready'))
+                         'blocked':'Blocked','failed':'Check failed','unverified':'Response ready','completed':'Finished'}.get(completion['state'],'Response ready'))
             except Exception as exc:
                 with job.lock:
                     job.partial_answer='';job.partial_kind=None

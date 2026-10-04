@@ -117,7 +117,7 @@
 		></span>
 		<span class="trigger-copy"
 			><strong>{modelName}</strong>{#if connected}<small
-					>Router: {info?.routing?.mode === 'automatic' ? 'Automatic' : 'Checking…'} · {runtimeState}</small
+					>Router: {info?.routing?.mode === 'direct' || info?.routing?.mode === 'automatic' ? (info?.routing?.mode === 'direct' ? 'Direct' : 'Automatic') : 'Checking…'} · {runtimeState}</small
 				>{:else}<small
 					>{initializing ? 'Checking local runtime…' : 'Local backend disconnected'}</small
 				>{/if}</span
@@ -148,13 +148,13 @@
 				</div>
 				<div>
 					<span>Routing</span><strong
-						>{info?.routing?.mode === 'automatic'
+						>{info?.routing?.mode === 'direct' ? 'Direct hot model' : info?.routing?.mode === 'automatic'
 							? 'Automatic'
 							: initializing
 								? 'Checking…'
 								: 'Unavailable'}</strong
 					><small
-						>{info?.routing?.mode === 'automatic'
+						>{info?.routing?.mode === 'direct' ? 'One hot local worker' : info?.routing?.mode === 'automatic'
 							? 'Backend routing policy'
 							: initializing
 								? 'Reading local registry'

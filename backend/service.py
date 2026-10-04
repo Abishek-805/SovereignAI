@@ -61,14 +61,14 @@ class Workbench:
                     shutil.copy2(source, destination)
         self.store=store or Store(self.settings.data_dir/'index.sqlite',self.settings.max_chunks)
         self._embedder=embedder
-        self.model=model or LocalModel(self.settings.model_url,verify_semantics=True)
+        self.model=model or LocalModel(self.settings.model_url,verify_semantics=False)
         self.registry=registry or ModelRegistry(8087)
         self.router=CapabilityRouter(self.registry)
         from router.model_broker import ModelBroker
         from router.model_history import ModelHistory
         self.model_history=ModelHistory(self.settings.data_dir)
         self.broker=ModelBroker(self.registry,sampler=self.router.selector.sampler,policy=self.router.selector.policy,history=self.model_history)
-        self.routing_strategy='universal'
+        self.routing_strategy='direct'
         self.classifier=ConservativeCapabilityClassifier()
         self.tasks=TaskLedger(self.settings.data_dir)
         project_root = self.settings.project_dir or (Path.home() / 'Documents' / 'SovereignAI' / 'Projects'
@@ -144,7 +144,7 @@ class Workbench:
         named_sources=[name for name in source_names if name.casefold() in request.casefold()]
         code_subject=bool(named_sources or re.search(r'\b(?:code|function|variable|class|script|program|syntax|python|javascript|typescript|rust|java|html|css|refactor|debug|endpoint)\b',prose_request(normalized.normalized),re.I))
         clear_code_scope=bool(source_names and code_subject and not new_workspace_requested(request))
-        if getattr(self,'routing_strategy','universal')=='universal' and clear_code_scope:
+        if getattr(self,'routing_strategy','universal') in {'universal','direct'} and clear_code_scope:
             action=('inspect_code' if coding.task_type in {'EXPLAIN','REVIEW'} and files else
                     'edit_code' if 'code' in coding.steps and explicit_operation_requested(request,'file_edit') else None)
             if action:
@@ -221,7 +221,8 @@ class Workbench:
     def _lease(self,capability,required_context=None,worker_role=None):
         trace=CURRENT_ROUTE.get()
         select=getattr(self.router,'select_model',None)
-        if callable(select) and callable(getattr(self.registry,'installed',None)):
+        if (getattr(self,'routing_strategy','universal')!='direct'
+                and callable(select) and callable(getattr(self.registry,'installed',None))):
             route_start=time.perf_counter()
             verified=getattr(self.registry,'verified_residency',None)
             current=verified() if callable(verified) else self.registry._get_current_alias()
@@ -267,7 +268,7 @@ class Workbench:
                 if trace:trace.failure_layer='resource_admission' if data.get('failure_category')=='RESOURCE_FAILURE' else 'candidate_filter'
                 raise WorkbenchError('model_unavailable',data['route_reason'])
         else:
-            route=self.router.route_request(capability)
+            route=('vision' if capability=='vision' else 'text') if getattr(self,'routing_strategy','universal')=='direct' else self.router.route_request(capability)
         if trace:
             trace.runtime_alias=getattr(getattr(self.registry,'specs',{}).get(route),'alias',None)
             trace._context_admit=lambda required:self._lease(capability,required,worker_role)
@@ -474,6 +475,27 @@ class Workbench:
             started=time.perf_counter()
             if job and job.cancel.is_set():
                 raise WorkbenchError('cancelled', 'Task stopped')
+            from router.request_normalization import is_greeting
+            if is_greeting(question):force_documents=False
+            # Ordinary conversation needs one generation, not a routing generation.
+            # Explicit document references (including follow-ups) retain the grounded path.
+            evidence_request = re.search(r"\b(?:documents?|files?|spreadsheet|workbook|uploaded|knowledge|sources?|marks|scores|cohort)\b|\b(?:24[a-z]{3}\d{3})\b", question, re.I)
+            evidence_followup = bool(history and re.search(r"\b(?:those|these|that|same|previous|them|report|percentage)\b", question, re.I))
+            if (not force_documents and callable(getattr(self.model,'conversation_answer',None))
+                    and not evidence_request and not (document_ids and evidence_followup)):
+                route=self._lease('text',worker_role='reasoning')
+                if job:job.progress('Writing answer')
+                response=self.model.conversation_answer(question,history)
+                if job and job.cancel.is_set():raise WorkbenchError('cancelled','Task stopped')
+                trace=CURRENT_ROUTE.get()
+                if trace:
+                    trace.intent='answer'
+                    trace.evidence_required=False
+                    trace.evidence_used=False
+                    trace.retrieval={'required':False,'status':'not_required','document_count':0,'passage_count':0,'candidate_count':0}
+                return {'status':'conversation','answer':response,'sources':[],'completion_contract':'simple_conversation',
+                        'task_id':uuid4().hex,'timings':{'total_seconds':time.perf_counter()-started},
+                        'routing':{'capability':route,'model':getattr(self.registry.specs.get(route),'alias','sovereign-text')}}
             lease_start=time.perf_counter()
             from router.request_normalization import worker_role
             role=worker_role(question,documents=bool(document_ids),history=history)
@@ -921,7 +943,7 @@ class Workbench:
             specs=getattr(self.registry,'specs',{})
             alias=specs[capability].alias if capability in specs else 'sovereign-text'
             if not routed:
-                direct=(image_path is not None or smart and role=='code') and explicit_operation_requested(instruction,'file_edit')
+                direct=(image_path is not None or smart and role=='code' or getattr(self,'routing_strategy','universal')=='direct') and explicit_operation_requested(instruction,'file_edit')
                 # Interpretation receives actual, bounded scope metadata. A
                 # selected project supplies context, never mutation authority.
                 interpretation_files=[]
@@ -1065,6 +1087,17 @@ class Workbench:
     @supervised_task
     def execute_coding_file(self, workspace_id, target, job=None):
         from workflows.code_runtime import runner, desktop_requirements
+        if not target.strip():
+            from workflows.project_map import inspect_project
+            from backend.jobs import Job
+            project=inspect_project(self.coding.raw_files(workspace_id))
+            command=project['commands'].get('run')
+            if not command:raise WorkbenchError('needs_input','No unique documented project run command was found. Select an entrypoint or add a README/package run command.')
+            result=self.execute_terminal(workspace_id,command,job or Job('project_run'),cwd=project.get('cwd',''))
+            result['project_map']=project
+            if result.get('exit_code') in {126,127} and re.search(r'(?:command not found|not found|No such file)',result.get('stderr',''),re.I):
+                result.update(state='blocked',blocked_reason='DEPENDENCY',blocker=result['stderr'].strip())
+            return result
         if not self.ask_lock.acquire(blocking=False):
             raise WorkbenchError('busy','Another task is running')
         task = None
@@ -1134,7 +1167,7 @@ Path('/output/project-sync.json').write_bytes(payload)
                 try:manifest=json.loads(payload)
                 except (ValueError,TypeError):raise WorkbenchError('sandbox_output','Invalid terminal project changes')
                 changes=self.coding.apply_terminal_changes(workspace_id,files,manifest)
-            return {'state':'completed' if result.exit_code==0 else 'failed','exit_code':result.exit_code,'stdout':result.stdout,'stderr':result.stderr,'cwd':cwd,'workspace_id':workspace_id,**changes}
+            return {'state':'completed' if result.exit_code==0 else 'failed','exit_code':result.exit_code,'stdout':result.stdout,'stderr':result.stderr,'cwd':cwd,'workspace_id':workspace_id,'checks':{'container_executed':result.executed,'exit_success':result.exit_code==0},**changes}
         finally:self.ask_lock.release()
 
     @supervised_task
@@ -1223,6 +1256,10 @@ Path('/output/project-sync.json').write_bytes(payload)
                     'result':result,'downloads':{},'workspace_id':None,'steps':result['steps'],
                     'routing':{'capability':'calculation','model':'No model used',
                                'reason':'Arithmetic expression evaluated without loading a model'}}
+        if workspace_id and re.fullmatch(r'\s*(?:please\s+)?(?:run|execute|start)\s+(?:(?:this|the|current|selected)\s+)?project[.!]?\s*',goal,re.I):
+            result=self.execute_coding_file(workspace_id,'',job=job)
+            return {'status':result['state'],'answer':result.get('stdout','') or result.get('stderr',''),
+                    'result':result,'workspace_id':workspace_id,'downloads':{},'steps':[]}
         if job:job.progress('Understanding the request')
         task=self.tasks.create('automatic_task',document_ids or [])
         try:
@@ -1236,8 +1273,15 @@ Path('/output/project-sync.json').write_bytes(payload)
                     if error.code!='invalid_workspace':raise
                     workspace_metadata=[]
                     workspace_snapshot={'files':[],'folders':[]}
-                plan=self._request_plan(goal,selected_metadata,workspace_metadata,[item[:1000] for item in (history or [])[-16:] if isinstance(item,str)]+
-                                          [f'{len(document_ids or [])} indexed documents selected; workspace selected: {bool(workspace_id)}'])
+                artifact_kind=re.search(r'\b(?:create|generate|write|make)\b',goal,re.I) and re.search(r'\b(word|docx|excel|xlsx)\b',goal,re.I)
+                if artifact_kind and not re.search(r'\b(?:search|documents|sources|uploaded)\b',goal,re.I):
+                    extension='.docx' if artifact_kind.group(1).lower() in {'word','docx'} else '.xlsx'
+                    filename=re.search(r'(?<![\w/\\])([\w-]+'+re.escape(extension)+r')\b',goal,re.I)
+                    plan={'action':'application_tools','target':filename.group(1) if filename else 'generated_'+uuid4().hex[:8]+extension,'response':''}
+                    plan['_artifact_request']=True
+                else:
+                    plan=self._request_plan(goal,selected_metadata,workspace_metadata,[item[:1000] for item in (history or [])[-16:] if isinstance(item,str)]+
+                                              [f'{len(document_ids or [])} indexed documents selected; workspace selected: {bool(workspace_id)}'])
                 # The model receives the whole current request, project tree and
                 # recent conversation. No topic-specific routing overrides it.
             finally:self.ask_lock.release()
@@ -1261,11 +1305,12 @@ Path('/output/project-sync.json').write_bytes(payload)
                     # from the optional read/reference selection. No contents are read.
                     catalog=[{'name':doc['display_name'],'document_id':doc['document_id']} for doc in self.documents()]
                     schedules=[{'id':item['id'],'name':item['name'],'paused':item['paused']} for item in self.automations.list()]
-                    operations=self.model.plan_application_tools(
-                        goal,catalog,workspace_metadata,history,automations=schedules,
-                        folders=workspace_snapshot['folders'],
-                        project=({'name':workspace_snapshot['name'],'workspace_id':workspace_id}
-                                 if workspace_id and 'name' in workspace_snapshot else None))
+                    operations=([{'tool':'document_create','target':plan['target'],'value':goal,'input':''}] if plan.get('_artifact_request') else
+                        self.model.plan_application_tools(
+                            goal,catalog,workspace_metadata,history,automations=schedules,
+                            folders=workspace_snapshot['folders'],
+                            project=({'name':workspace_snapshot['name'],'workspace_id':workspace_id}
+                                     if workspace_id and 'name' in workspace_snapshot else None)))
                 finally:self.ask_lock.release()
                 result=ApplicationTools(self,workspace_id,job,document_ids,goal=goal,history=history).execute(operations,task)
                 checks={'workflow_returned':True,'workflow_succeeded':result['state']=='completed'}
@@ -1534,7 +1579,10 @@ Path('/output/project-sync.json').write_bytes(payload)
         routes={}
         for task_type in ('text','code','vision'):
             try:
-                if callable(getattr(self.registry,'verified_residency',None)):
+                if self.routing_strategy=='direct':
+                    capability='vision' if task_type=='vision' else 'text'
+                    routes[task_type]={'capability':capability,'model':specs[capability].alias}
+                elif callable(getattr(self.registry,'verified_residency',None)):
                     choice=self.broker.select('reasoning' if task_type=='text' else task_type,modality='image' if task_type=='vision' else 'text')
                     routes[task_type]={'capability':task_type,'model':choice.selected_model,'decision':choice.to_dict()}
                 elif callable(getattr(self.registry,'installed',None)):
@@ -1553,7 +1601,7 @@ Path('/output/project-sync.json').write_bytes(payload)
                {'name':'Maintenance artifacts','available':True},
                {'name':'Coding workspace / Docker','available':sandbox['ready']},
                {'name':'Vision','available':vision_assets_ready}]
-        return {'runtime':runtime,'models':models,'routing':{'mode':'automatic','routes':routes},'sandbox':sandbox,'tools':tools,
+        return {'runtime':runtime,'models':models,'routing':{'mode':'direct' if self.routing_strategy=='direct' else 'automatic','routes':routes},'sandbox':sandbox,'tools':tools,
                 'host':'127.0.0.1','network_proof':'not assessed by this status endpoint',
                 'model_registry':self.registry.records() if hasattr(self.registry,'records') else [],
                 'classification':{'production_enabled':False,'method':'disabled_evaluated_cpu','release_report':'docs/capability-classifier-evaluation-v2.md'}}

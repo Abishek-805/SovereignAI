@@ -79,7 +79,7 @@ def test_workbench_info_exposes_actual_capability_routes_and_model_files(service
     service.registry._model_paths=lambda spec:[tmp_path/spec.model_file]
     with client_for(service) as client:
         info=client.get('/workbench/info').json()
-    assert info['routing']['mode']=='automatic'
+    assert info['routing']['mode']=='direct'
     assert info['routing']['routes']['code']=={'capability':'text','model':'sovereign-text'}
     assert info['routing']['routes']['vision']=={'capability':'vision','model':'sovereign-vision'}
     assert {model['capability']:model['assets_present'] for model in info['models']}=={'text':True,'vision':False}

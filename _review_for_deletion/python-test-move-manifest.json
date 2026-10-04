@@ -1,0 +1,426 @@
+[
+  {
+    "source": "tests\\conftest.py",
+    "archive": "_review_for_deletion\\tests\\conftest.py"
+  },
+  {
+    "source": "tests\\test_agent_context_flow.py",
+    "archive": "_review_for_deletion\\tests\\test_agent_context_flow.py"
+  },
+  {
+    "source": "tests\\test_agent_history_contract.py",
+    "archive": "_review_for_deletion\\tests\\test_agent_history_contract.py"
+  },
+  {
+    "source": "tests\\test_answer.py",
+    "archive": "_review_for_deletion\\tests\\test_answer.py"
+  },
+  {
+    "source": "tests\\test_answer_repair.py",
+    "archive": "_review_for_deletion\\tests\\test_answer_repair.py"
+  },
+  {
+    "source": "tests\\test_api.py",
+    "archive": "_review_for_deletion\\tests\\test_api.py"
+  },
+  {
+    "source": "tests\\test_application_tools.py",
+    "archive": "_review_for_deletion\\tests\\test_application_tools.py"
+  },
+  {
+    "source": "tests\\test_auto_context.py",
+    "archive": "_review_for_deletion\\tests\\test_auto_context.py"
+  },
+  {
+    "source": "tests\\test_backup_restore.py",
+    "archive": "_review_for_deletion\\tests\\test_backup_restore.py"
+  },
+  {
+    "source": "tests\\test_calculator.py",
+    "archive": "_review_for_deletion\\tests\\test_calculator.py"
+  },
+  {
+    "source": "tests\\test_capability_classifier.py",
+    "archive": "_review_for_deletion\\tests\\test_capability_classifier.py"
+  },
+  {
+    "source": "tests\\test_chat_proxy_context.py",
+    "archive": "_review_for_deletion\\tests\\test_chat_proxy_context.py"
+  },
+  {
+    "source": "tests\\test_chat_proxy_telemetry.py",
+    "archive": "_review_for_deletion\\tests\\test_chat_proxy_telemetry.py"
+  },
+  {
+    "source": "tests\\test_code_agent.py",
+    "archive": "_review_for_deletion\\tests\\test_code_agent.py"
+  },
+  {
+    "source": "tests\\test_code_agent_state.py",
+    "archive": "_review_for_deletion\\tests\\test_code_agent_state.py"
+  },
+  {
+    "source": "tests\\test_code_plan_reuse.py",
+    "archive": "_review_for_deletion\\tests\\test_code_plan_reuse.py"
+  },
+  {
+    "source": "tests\\test_code_runtime_assets.py",
+    "archive": "_review_for_deletion\\tests\\test_code_runtime_assets.py"
+  },
+  {
+    "source": "tests\\test_coding_direct_target.py",
+    "archive": "_review_for_deletion\\tests\\test_coding_direct_target.py"
+  },
+  {
+    "source": "tests\\test_coding_generation_budget.py",
+    "archive": "_review_for_deletion\\tests\\test_coding_generation_budget.py"
+  },
+  {
+    "source": "tests\\test_coding_live.py",
+    "archive": "_review_for_deletion\\tests\\test_coding_live.py"
+  },
+  {
+    "source": "tests\\test_coding_project.py",
+    "archive": "_review_for_deletion\\tests\\test_coding_project.py"
+  },
+  {
+    "source": "tests\\test_coding_router.py",
+    "archive": "_review_for_deletion\\tests\\test_coding_router.py"
+  },
+  {
+    "source": "tests\\test_coding_supervisor.py",
+    "archive": "_review_for_deletion\\tests\\test_coding_supervisor.py"
+  },
+  {
+    "source": "tests\\test_coding_workspace.py",
+    "archive": "_review_for_deletion\\tests\\test_coding_workspace.py"
+  },
+  {
+    "source": "tests\\test_collection_overview.py",
+    "archive": "_review_for_deletion\\tests\\test_collection_overview.py"
+  },
+  {
+    "source": "tests\\test_cpu_routing_integration.py",
+    "archive": "_review_for_deletion\\tests\\test_cpu_routing_integration.py"
+  },
+  {
+    "source": "tests\\test_current_request_review.py",
+    "archive": "_review_for_deletion\\tests\\test_current_request_review.py"
+  },
+  {
+    "source": "tests\\test_deliverables.py",
+    "archive": "_review_for_deletion\\tests\\test_deliverables.py"
+  },
+  {
+    "source": "tests\\test_desktop.py",
+    "archive": "_review_for_deletion\\tests\\test_desktop.py"
+  },
+  {
+    "source": "tests\\test_document_management.py",
+    "archive": "_review_for_deletion\\tests\\test_document_management.py"
+  },
+  {
+    "source": "tests\\test_document_tables.py",
+    "archive": "_review_for_deletion\\tests\\test_document_tables.py"
+  },
+  {
+    "source": "tests\\test_editor_revisions.py",
+    "archive": "_review_for_deletion\\tests\\test_editor_revisions.py"
+  },
+  {
+    "source": "tests\\test_embedding.py",
+    "archive": "_review_for_deletion\\tests\\test_embedding.py"
+  },
+  {
+    "source": "tests\\test_eval_runner.py",
+    "archive": "_review_for_deletion\\tests\\test_eval_runner.py"
+  },
+  {
+    "source": "tests\\test_evidence_recovery.py",
+    "archive": "_review_for_deletion\\tests\\test_evidence_recovery.py"
+  },
+  {
+    "source": "tests\\test_experimental_task_kernel.py",
+    "archive": "_review_for_deletion\\tests\\test_experimental_task_kernel.py"
+  },
+  {
+    "source": "tests\\test_host_projects.py",
+    "archive": "_review_for_deletion\\tests\\test_host_projects.py"
+  },
+  {
+    "source": "tests\\test_hybrid_analysis.py",
+    "archive": "_review_for_deletion\\tests\\test_hybrid_analysis.py"
+  },
+  {
+    "source": "tests\\test_hybrid_benchmark.py",
+    "archive": "_review_for_deletion\\tests\\test_hybrid_benchmark.py"
+  },
+  {
+    "source": "tests\\test_hybrid_service.py",
+    "archive": "_review_for_deletion\\tests\\test_hybrid_service.py"
+  },
+  {
+    "source": "tests\\test_image_agent_jobs.py",
+    "archive": "_review_for_deletion\\tests\\test_image_agent_jobs.py"
+  },
+  {
+    "source": "tests\\test_ingest.py",
+    "archive": "_review_for_deletion\\tests\\test_ingest.py"
+  },
+  {
+    "source": "tests\\test_jobs.py",
+    "archive": "_review_for_deletion\\tests\\test_jobs.py"
+  },
+  {
+    "source": "tests\\test_knowledge_duplicates.py",
+    "archive": "_review_for_deletion\\tests\\test_knowledge_duplicates.py"
+  },
+  {
+    "source": "tests\\test_knowledge_folder.py",
+    "archive": "_review_for_deletion\\tests\\test_knowledge_folder.py"
+  },
+  {
+    "source": "tests\\test_legacy_shared_repair.py",
+    "archive": "_review_for_deletion\\tests\\test_legacy_shared_repair.py"
+  },
+  {
+    "source": "tests\\test_literal_file_scope.py",
+    "archive": "_review_for_deletion\\tests\\test_literal_file_scope.py"
+  },
+  {
+    "source": "tests\\test_local_model_launcher.py",
+    "archive": "_review_for_deletion\\tests\\test_local_model_launcher.py"
+  },
+  {
+    "source": "tests\\test_maintenance_workflow.py",
+    "archive": "_review_for_deletion\\tests\\test_maintenance_workflow.py"
+  },
+  {
+    "source": "tests\\test_manifest.py",
+    "archive": "_review_for_deletion\\tests\\test_manifest.py"
+  },
+  {
+    "source": "tests\\test_micro_controller_eval.py",
+    "archive": "_review_for_deletion\\tests\\test_micro_controller_eval.py"
+  },
+  {
+    "source": "tests\\test_model.py",
+    "archive": "_review_for_deletion\\tests\\test_model.py"
+  },
+  {
+    "source": "tests\\test_model_broker.py",
+    "archive": "_review_for_deletion\\tests\\test_model_broker.py"
+  },
+  {
+    "source": "tests\\test_model_history.py",
+    "archive": "_review_for_deletion\\tests\\test_model_history.py"
+  },
+  {
+    "source": "tests\\test_model_job_stream.py",
+    "archive": "_review_for_deletion\\tests\\test_model_job_stream.py"
+  },
+  {
+    "source": "tests\\test_model_router_replay.py",
+    "archive": "_review_for_deletion\\tests\\test_model_router_replay.py"
+  },
+  {
+    "source": "tests\\test_model_selection.py",
+    "archive": "_review_for_deletion\\tests\\test_model_selection.py"
+  },
+  {
+    "source": "tests\\test_native_chat_supervision.py",
+    "archive": "_review_for_deletion\\tests\\test_native_chat_supervision.py"
+  },
+  {
+    "source": "tests\\test_network_monitor.py",
+    "archive": "_review_for_deletion\\tests\\test_network_monitor.py"
+  },
+  {
+    "source": "tests\\test_noisy_command_context.py",
+    "archive": "_review_for_deletion\\tests\\test_noisy_command_context.py"
+  },
+  {
+    "source": "tests\\test_numeric_evidence_boundaries.py",
+    "archive": "_review_for_deletion\\tests\\test_numeric_evidence_boundaries.py"
+  },
+  {
+    "source": "tests\\test_ocr.py",
+    "archive": "_review_for_deletion\\tests\\test_ocr.py"
+  },
+  {
+    "source": "tests\\test_offline.py",
+    "archive": "_review_for_deletion\\tests\\test_offline.py"
+  },
+  {
+    "source": "tests\\test_operational_state_retention.py",
+    "archive": "_review_for_deletion\\tests\\test_operational_state_retention.py"
+  },
+  {
+    "source": "tests\\test_optional_table_review.py",
+    "archive": "_review_for_deletion\\tests\\test_optional_table_review.py"
+  },
+  {
+    "source": "tests\\test_outcome_rule_contract.py",
+    "archive": "_review_for_deletion\\tests\\test_outcome_rule_contract.py"
+  },
+  {
+    "source": "tests\\test_pdf_visuals.py",
+    "archive": "_review_for_deletion\\tests\\test_pdf_visuals.py"
+  },
+  {
+    "source": "tests\\test_planning_context.py",
+    "archive": "_review_for_deletion\\tests\\test_planning_context.py"
+  },
+  {
+    "source": "tests\\test_project_import_assets.py",
+    "archive": "_review_for_deletion\\tests\\test_project_import_assets.py"
+  },
+  {
+    "source": "tests\\test_project_migration_concurrency.py",
+    "archive": "_review_for_deletion\\tests\\test_project_migration_concurrency.py"
+  },
+  {
+    "source": "tests\\test_publication_boundary.py",
+    "archive": "_review_for_deletion\\tests\\test_publication_boundary.py"
+  },
+  {
+    "source": "tests\\test_publication_journal.py",
+    "archive": "_review_for_deletion\\tests\\test_publication_journal.py"
+  },
+  {
+    "source": "tests\\test_query_source_repair.py",
+    "archive": "_review_for_deletion\\tests\\test_query_source_repair.py"
+  },
+  {
+    "source": "tests\\test_report_publication.py",
+    "archive": "_review_for_deletion\\tests\\test_report_publication.py"
+  },
+  {
+    "source": "tests\\test_retrieve.py",
+    "archive": "_review_for_deletion\\tests\\test_retrieve.py"
+  },
+  {
+    "source": "tests\\test_review_contract.py",
+    "archive": "_review_for_deletion\\tests\\test_review_contract.py"
+  },
+  {
+    "source": "tests\\test_review_stage_contract.py",
+    "archive": "_review_for_deletion\\tests\\test_review_stage_contract.py"
+  },
+  {
+    "source": "tests\\test_router.py",
+    "archive": "_review_for_deletion\\tests\\test_router.py"
+  },
+  {
+    "source": "tests\\test_routing_strategy_harness.py",
+    "archive": "_review_for_deletion\\tests\\test_routing_strategy_harness.py"
+  },
+  {
+    "source": "tests\\test_routing_telemetry.py",
+    "archive": "_review_for_deletion\\tests\\test_routing_telemetry.py"
+  },
+  {
+    "source": "tests\\test_runtime_profile.py",
+    "archive": "_review_for_deletion\\tests\\test_runtime_profile.py"
+  },
+  {
+    "source": "tests\\test_sandbox_project_assets.py",
+    "archive": "_review_for_deletion\\tests\\test_sandbox_project_assets.py"
+  },
+  {
+    "source": "tests\\test_semantic_review.py",
+    "archive": "_review_for_deletion\\tests\\test_semantic_review.py"
+  },
+  {
+    "source": "tests\\test_service.py",
+    "archive": "_review_for_deletion\\tests\\test_service.py"
+  },
+  {
+    "source": "tests\\test_smart_code_analysis.py",
+    "archive": "_review_for_deletion\\tests\\test_smart_code_analysis.py"
+  },
+  {
+    "source": "tests\\test_smart_code_benchmark.py",
+    "archive": "_review_for_deletion\\tests\\test_smart_code_benchmark.py"
+  },
+  {
+    "source": "tests\\test_smart_code_service.py",
+    "archive": "_review_for_deletion\\tests\\test_smart_code_service.py"
+  },
+  {
+    "source": "tests\\test_smart_code_v2_analysis.py",
+    "archive": "_review_for_deletion\\tests\\test_smart_code_v2_analysis.py"
+  },
+  {
+    "source": "tests\\test_smart_code_v2_fixtures.py",
+    "archive": "_review_for_deletion\\tests\\test_smart_code_v2_fixtures.py"
+  },
+  {
+    "source": "tests\\test_source_quality.py",
+    "archive": "_review_for_deletion\\tests\\test_source_quality.py"
+  },
+  {
+    "source": "tests\\test_store.py",
+    "archive": "_review_for_deletion\\tests\\test_store.py"
+  },
+  {
+    "source": "tests\\test_structured.py",
+    "archive": "_review_for_deletion\\tests\\test_structured.py"
+  },
+  {
+    "source": "tests\\test_table_applicability.py",
+    "archive": "_review_for_deletion\\tests\\test_table_applicability.py"
+  },
+  {
+    "source": "tests\\test_task_completion.py",
+    "archive": "_review_for_deletion\\tests\\test_task_completion.py"
+  },
+  {
+    "source": "tests\\test_task_ledger.py",
+    "archive": "_review_for_deletion\\tests\\test_task_ledger.py"
+  },
+  {
+    "source": "tests\\test_task_mode_isolation.py",
+    "archive": "_review_for_deletion\\tests\\test_task_mode_isolation.py"
+  },
+  {
+    "source": "tests\\test_task_supervisor.py",
+    "archive": "_review_for_deletion\\tests\\test_task_supervisor.py"
+  },
+  {
+    "source": "tests\\test_terminal_project_sync.py",
+    "archive": "_review_for_deletion\\tests\\test_terminal_project_sync.py"
+  },
+  {
+    "source": "tests\\test_universal_agent_benchmark.py",
+    "archive": "_review_for_deletion\\tests\\test_universal_agent_benchmark.py"
+  },
+  {
+    "source": "tests\\test_universal_task_agent.py",
+    "archive": "_review_for_deletion\\tests\\test_universal_task_agent.py"
+  },
+  {
+    "source": "tests\\test_v2_benchmark.py",
+    "archive": "_review_for_deletion\\tests\\test_v2_benchmark.py"
+  },
+  {
+    "source": "tests\\test_v2_code_repair.py",
+    "archive": "_review_for_deletion\\tests\\test_v2_code_repair.py"
+  },
+  {
+    "source": "tests\\test_validation_feedback.py",
+    "archive": "_review_for_deletion\\tests\\test_validation_feedback.py"
+  },
+  {
+    "source": "tests\\test_vision.py",
+    "archive": "_review_for_deletion\\tests\\test_vision.py"
+  },
+  {
+    "source": "tests\\test_workspace_plan_stage.py",
+    "archive": "_review_for_deletion\\tests\\test_workspace_plan_stage.py"
+  },
+  {
+    "source": "tests\\test_workspace_query_regressions.py",
+    "archive": "_review_for_deletion\\tests\\test_workspace_query_regressions.py"
+  }
+]

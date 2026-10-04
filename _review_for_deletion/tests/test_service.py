@@ -99,6 +99,7 @@ def test_unknown_selection_and_empty_question(service):
     assert service.status()['generator']['is_sleeping'] is True
 
 def test_switch_resamples_resources_after_unloading_owned_resident(service):
+    service.routing_strategy='universal'  # Exercise the retained optional switching policy.
     events=[]
     blocked=SimpleNamespace(registry_key=None,to_dict=lambda:{'failure_category':'RESOURCE_FAILURE','route_reason':'Resident occupies capacity'})
     admitted=SimpleNamespace(registry_key='code',to_dict=lambda:{'route_reason':'Measured after unload'})

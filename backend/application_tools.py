@@ -12,7 +12,7 @@ from router.tool_registry import ToolRegistry, ToolContract
 OPERATIONS = {
     'project_create': 'Create a new managed coding project; target is its name. Subsequent file edits in this plan use the new project.',
     'project_delete': 'Delete the selected managed coding project only when the current request explicitly asks to delete that project.',
-    'document_create': 'Create a new text/Markdown document; target is its name, value its text.',
+    'document_create': 'Create a new TXT, Markdown, Word DOCX, or Excel XLSX document; target is a simple filename. For DOCX/XLSX value is the user content request; a deterministic generator creates the container.',
     'document_update': 'Update the text of one existing Knowledge TXT/Markdown document; target is its exact name, value is complete replacement text. Never create it again.',
     'document_import': 'Index a file already in the selected project; target is its relative path.',
     'document_rename': 'Rename one library document; target is current name, value is new name.',
@@ -45,6 +45,7 @@ class ApplicationTools:
         self.goal = goal
         self.history = history
         self.created_project_id = None
+        self.observations = []
         self.registry = ToolRegistry()
         for name in OPERATIONS:
             self.registry.register(name, lambda target, value='', input='', operation=name:
@@ -95,6 +96,47 @@ class ApplicationTools:
                 raise WorkbenchError('tool_input', 'Pause must be true or false')
             return self.service.automations.change(target,paused=value=='true',delete=operation=='automation_delete')
         if operation == 'document_create':
+            if Path(target).suffix.lower() in {'.docx','.xlsx'}:
+                if Path(target).name!=target or '/' in target or '\\' in target:
+                    raise WorkbenchError('invalid_file','Use a simple document filename')
+                import json
+                from workflows.generated_documents import generate, specification_schema
+                kind=Path(target).suffix.lower()
+                shape=({'title':'Title','sections':[{'heading':'Section','paragraphs':['Content'],'tables':[[['Column 1','Column 2'],['Value 1','Value 2']]]}]} if kind=='.docx' else {'sheets':[{'name':'Sheet1','rows':[['Column'],['Value']]}]})
+                if not self.service.ask_lock.acquire(blocking=False):raise WorkbenchError('busy','Another model task is running')
+                try:
+                    self.service._lease('text')
+                    response=self.service.model._public_completion({'model':'sovereign-text','messages':[
+                        {'role':'system','content':'You create office files. The response MUST be the document specification itself, not an action, tool call, plan, or wrapper. Return ONLY a JSON document specification, matching this shape: '+json.dumps(shape)+'. Include all requested content. Preserve explicitly requested sheet names, headers and row placement; do not add extra columns. Put totals in summary rows unless explicitly requested as a column. Do not write Python, Markdown fences or XML. Do not invent facts from documents. Formula cells begin with =; do not claim formulas were evaluated.'},
+                        {'role':'user','content':json.dumps({'document_request':value or self.goal,'prior_execution_results':self.observations})}],
+                        'temperature':0,'max_tokens':4096,'response_format':{'type':'json_schema','json_schema':{'name':'generated_document','strict':True,'schema':specification_schema(kind)}},
+                        'chat_template_kwargs':{'enable_thinking':False}},'source_candidate')
+                    choice=response['choices'][0]
+                    if choice['finish_reason']!='stop':raise WorkbenchError('generation_format','Document specification was incomplete')
+                    generated=choice['message']['content']
+                finally:self.service.ask_lock.release()
+                specification=json.loads(generated)
+                path=self.service.sources_dir/target
+                try:
+                    checks=generate(path,specification)
+                except WorkbenchError as error:
+                    if error.code!='generation_format':raise
+                    # One bounded repair using the exact rejected specification/error.
+                    if not self.service.ask_lock.acquire(blocking=False):raise WorkbenchError('busy','Another model task is running')
+                    try:
+                        self.service._lease('text')
+                        response=self.service.model._public_completion({'model':'sovereign-text','messages':[
+                            {'role':'system','content':'Repair the document specification itself, not an action or wrapper. Match this exact shape: '+json.dumps(shape)+'. Satisfy the original request and actual validation error. Preserve correct content. Return JSON only.'},
+                            {'role':'user','content':json.dumps({'original_request':self.goal,'specification':specification,'validation_error':str(error)})}],
+                            'temperature':0,'max_tokens':4096,'response_format':{'type':'json_schema','json_schema':{'name':'generated_document','strict':True,'schema':specification_schema(kind)}},'chat_template_kwargs':{'enable_thinking':False}},'source_candidate')
+                        if response['choices'][0]['finish_reason']!='stop':raise WorkbenchError('generation_format','Document repair was incomplete')
+                        specification=json.loads(response['choices'][0]['message']['content'])
+                    finally:self.service.ask_lock.release()
+                    checks=generate(path,specification)
+                    checks['repair_attempts']=1
+                result=self.service.import_file(path)
+                result['generation_checks']=checks
+                return result
             if Path(target).name != target or Path(target).suffix.lower() not in {'.txt', '.md'}:
                 raise WorkbenchError('invalid_file', 'Create a text or Markdown document with a simple filename')
             names={doc['display_name'].casefold() for doc in self.service.documents()}
@@ -288,6 +330,9 @@ class ApplicationTools:
                 trace.event('TOOL_COMPLETED' if trace.tool_candidates[index]['status']=='executed' else 'TOOL_FAILED')
             self.service.tasks.step(task, operation['tool'], {'target':operation['target']})
             results.append({'tool':operation['tool'], 'target':operation['target'], 'result':result})
+            self.observations.append({'tool':operation['tool'],'target':operation['target'],'state':result.get('state',result.get('status')),'exit_code':result.get('exit_code'),'stdout':str(result.get('stdout',''))[-4000:],'stderr':str(result.get('stderr',''))[-4000:],'checks':result.get('checks',{})})
+            if result.get('state',result.get('status'))=='blocked':
+                return {'state':'blocked','answer':result.get('blocker','Required dependency is unavailable'),'operations':results}
             if result.get('state', result.get('status')) == 'failed':
                 detail=result.get('stderr') or result.get('error') or result.get('validation_error') or 'The check did not pass.'
                 return {'state':'failed', 'answer':'The operation failed: '+str(detail)[-2000:]+' Later operations were not run.', 'operations':results}

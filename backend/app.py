@@ -67,6 +67,7 @@ class AskRequest(BaseModel):
 
 class DocumentJobRequest(AskRequest):
     kind: str=Field(pattern='^(ask|report)$')
+    force_documents: bool=False
 
 
 class RenameDocumentRequest(BaseModel):
@@ -370,7 +371,10 @@ def create_app(service=None):
 
     @app.post('/ask')
     def ask(payload:AskRequest):
-        return (service.ask(payload.question,payload.document_ids,payload.history)
+        from router.request_normalization import is_greeting
+        focused=bool(payload.document_ids) and not is_greeting(payload.question) and not re.search(r'\b(?:report|docx|word)\b',payload.question,re.I)
+        return (service.ask(payload.question,payload.document_ids,payload.history,force_documents=True)
+                if focused else service.ask(payload.question,payload.document_ids,payload.history)
                 if payload.history else service.ask(payload.question,payload.document_ids))
 
     @app.post('/vision/ask')
@@ -452,7 +456,7 @@ def create_app(service=None):
             if job.cancel.is_set():return {'state':'cancelled'}
             if payload.kind=='report':
                 return service.create_document_report(payload.question,payload.document_ids,payload.history,job=job)
-            return service.ask(payload.question,payload.document_ids,payload.history,job=job)
+            return service.ask(payload.question,payload.document_ids,payload.history,job=job,force_documents=True) if payload.force_documents else service.ask(payload.question,payload.document_ids,payload.history,job=job)
         return jobs.start('document',run)
 
     @app.post('/agent/jobs')

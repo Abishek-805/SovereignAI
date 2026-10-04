@@ -1180,8 +1180,7 @@ tool ::= ''' + names + '\n' + JSON_STRING_GRAMMAR
         if budget<128:
             raise WorkbenchError('context_budget','Conversation exceeds the model context budget')
         payload={'model':'sovereign-text','messages':messages,'temperature':0,'max_tokens':min(budget,768) if _simple else budget,'chat_template_kwargs':{'enable_thinking':False}}
-        result=(self._public_completion(payload,'plain_answer') if _simple else
-                self._planned_completion(payload,public_output='plain_answer'))
+        result=self._public_completion(payload,'plain_answer')
         try:
             choice=result['choices'][0]
             content=choice['message']['content']

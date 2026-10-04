@@ -6,7 +6,7 @@ from pathlib import PurePosixPath
 from backend.contracts import WorkbenchError
 
 LANGUAGES = {'.py':'Python', '.js':'JavaScript', '.mjs':'JavaScript', '.cjs':'JavaScript',
-             '.ts':'TypeScript', '.java':'Java', '.c':'C', '.cpp':'C++', '.cc':'C++',
+             '.ts':'TypeScript', '.tsx':'TypeScript JSX', '.jsx':'JavaScript JSX', '.java':'Java', '.c':'C', '.cpp':'C++', '.cc':'C++',
              '.go':'Go', '.rs':'Rust', '.php':'PHP', '.sh':'Shell',
              '.sql':'SQL', '.cxx':'C++', '.bash':'Shell',
              '.html':'HTML', '.htm':'HTML', '.css':'CSS', '.json':'JSON', '.md':'Markdown', '.txt':'Text'}
@@ -57,6 +57,13 @@ if suffix == '.py':
     else: compile(Path(target).read_text(), target, 'exec')
 elif suffix in ('.js','.mjs','.cjs'):
     command(['node', target] if run else ['node','--check',target])
+elif suffix in ('.jsx','.tsx'):
+    if run:
+        print('BLOCKED: JSX/TSX requires the project React/Vite build dependencies. Use the project package build command.',file=sys.stderr)
+        sys.exit(78)
+    package_root=subprocess.check_output(['npm','root','-g'],text=True).strip()
+    checker="const fs=require('fs'),ts=require(process.argv[1]+'/typescript'); const source=fs.readFileSync(process.argv[2],'utf8'); const result=ts.transpileModule(source,{fileName:process.argv[2],reportDiagnostics:true,compilerOptions:{jsx:ts.JsxEmit.ReactJSX,module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2020}}); const errors=(result.diagnostics||[]).filter(d=>d.category===ts.DiagnosticCategory.Error); for(const d of errors) console.error(ts.flattenDiagnosticMessageText(d.messageText,' ')); process.exit(errors.length?1:0);"
+    command(['node','-e',checker,package_root,target])
 elif suffix == '.ts':
     command(['tsc',target,'--target','es2020','--module','commonjs','--skipLibCheck','--outDir','/output/ts-build'])
     if run: command(['node', '/output/ts-build/'+Path(target).stem+'.js'])

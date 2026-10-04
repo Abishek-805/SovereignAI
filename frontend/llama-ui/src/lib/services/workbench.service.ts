@@ -10,7 +10,7 @@ export type WorkbenchInfo = {
 		capability: string; alias: string; model_id: string; quantization: string;
 		context: number; runtime: string; observed_gpu_mib: number | null; enabled: boolean; assets_present: boolean;
 	}>;
-	routing: { mode: 'automatic'; routes: Record<string, { capability: string | null; model: string | null }> };
+	routing: { mode: 'automatic' | 'direct'; routes: Record<string, { capability: string | null; model: string | null }> };
 	sandbox: {
 		ready: boolean; reason: string | null; image_id: string | null;
 		policy: {

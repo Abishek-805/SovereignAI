@@ -67,7 +67,7 @@ class ChatStore implements ChatStreamHost, ChatFlowsHost {
 			if(request.stop){await update({content:'Request cancelled.',knowledgeStatus:'Cancelled'});return;}
 			await update({knowledgeStatus:'Understanding request'});
 			const history=conversationsStore.activeMessages.filter(item=>item.id!==message.id).slice(-6).map(item=>`${item.role}: ${item.content.slice(0,1500)}`);
-			const started=await knowledgeJson(await fetch('/documents/jobs',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({kind:'ask',question,document_ids:documents.map(doc=>doc.id),history})}));
+			const started=await knowledgeJson(await fetch('/documents/jobs',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({kind:'ask',question,document_ids:documents.map(doc=>doc.id),history,force_documents:knowledgeContext.scope==='selected'})}));
 			request.id=started.job_id;
 			if(request.stop)await fetch('/coding/jobs/'+request.id+'/stop',{method:'POST'});
 			let job=await knowledgeJson(await fetch('/coding/jobs/'+request.id));

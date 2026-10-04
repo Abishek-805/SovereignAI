@@ -5,19 +5,17 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $runtimePath = Join-Path $PSScriptRoot 'runtime\llama-b11132\llama-server.exe'
-$modelPath = Join-Path $PSScriptRoot 'models\Qwen3-4B-Instruct-2507-Q4_K_M.gguf'
-$contextSize = '24576'
-$modelAlias = 'sovereign-text'
-$upgradedModelPath = Join-Path $PSScriptRoot 'models\gemma-4-E2B-it-Q4_K_M.gguf'
-if (Test-Path -LiteralPath $upgradedModelPath) {
-    $modelPath = $upgradedModelPath
-    $contextSize = '16384'
-}
-# Match default_specs: the reasoning upgrade moves the previous text worker
-# to its lightweight alias. Startup retains that smaller worker.
-if (Test-Path -LiteralPath (Join-Path $PSScriptRoot 'models\Qwen3.5-4B-Q4_K_M.gguf')) {
-    $modelAlias = 'sovereign-text-light'
-}
+# Use the same installed primary worker and context as the backend registry.
+$pythonPath = Join-Path $PSScriptRoot '.app-venv\Scripts\python.exe'
+Push-Location $PSScriptRoot
+try {
+    $modelConfiguration = & $pythonPath -c "import json; from router.model_registry import ModelRegistry; r=ModelRegistry(); s=r.specs['text']; print(json.dumps({'file':s.model_file,'alias':s.alias,'context':s.context}))"
+    if ($LASTEXITCODE -ne 0) { throw 'Could not read the configured local model registry.' }
+    $modelConfiguration = $modelConfiguration | ConvertFrom-Json
+} finally { Pop-Location }
+$modelPath = Join-Path (Join-Path $PSScriptRoot 'models') $modelConfiguration.file
+$contextSize = [string]$modelConfiguration.context
+$modelAlias = $modelConfiguration.alias
 $logDirectory = Join-Path $PSScriptRoot 'benchmarks'
 if (!(Test-Path -LiteralPath $runtimePath) -or !(Test-Path -LiteralPath $modelPath)) {
     throw 'Runtime or model is missing. Finish the setup download first.'

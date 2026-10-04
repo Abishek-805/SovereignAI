@@ -22,6 +22,16 @@ def action(attempt, observations):
     return Action('candidate', {'attempt': attempt})
 
 
+def test_checked_request_contract_can_repair_without_claiming_docker_execution():
+    result={'state':'failed','checks':{'request_contract_checked':True,'requested_target_present':False},
+            'stderr':'Candidate omitted helpers.py'}
+    observation=Observation.from_result(result)
+    assert not observation.validation_executed
+    assert repair_decision(observation,1,set()).retry
+    assert not repair_decision(observation,2,{repair_decision(observation,1,set()).fingerprint}).retry
+    assert repair_decision(Observation.from_result({'state':'completed','checks':{'request_contract_checked':True}}),1,set()).stop_reason=='unverified'
+
+
 def test_actual_failure_replayed_then_validated():
     agent, calls = runner([failed('TypeError: bad value'), {'state': 'completed', 'checks': {'container_executed': True}, 'validation_exit_code': 0}])
     seen = []

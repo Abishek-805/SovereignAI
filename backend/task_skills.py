@@ -10,6 +10,7 @@ COMPOSITIONS={
     'task-core':('chat',), 'chat':('chat',), 'rag':('rag',),
     'documents':('documents','artifacts'), 'spreadsheets':('spreadsheets',),
     'coding':('coding','project-runner','workspace'),
+    'source-generation':('coding',),
     'application-operations':('workspace','project-runner','documents','artifacts'),
     'structured-data':('spreadsheets',), 'project-runner':('project-runner',),
     'artifacts':('artifacts',), 'workspace':('workspace',)}

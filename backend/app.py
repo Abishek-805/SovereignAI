@@ -960,6 +960,15 @@ def create_app(service=None):
                             supervisor.record_event('CAPABILITY_CLASSIFIED',intent='CODE',workflow='CHAT',
                                                     current_action='generate_inline_code',worker_role='code')
                             selected=service._lease(capability)
+                    # Native streaming bypasses LocalModel._request. Apply the
+                    # same bounded skills before admission and forwarding.
+                    if isinstance(service.model,LocalModel) and isinstance(payload,dict) and not image:
+                        from backend.task_skills import skill_scope, inject
+                        with skill_scope('coding' if capability=='code' else 'chat'):
+                            guided,skills=inject(messages,service.model.skills_enabled)
+                        messages[:]=guided
+                        payload['messages']=guided
+                        if skills:trace.stages.append({'stage':'task_skills','skills':skills})
                     # Use the selected runtime's chat template and tokenizer, not a
                     # character estimate. Image patch-token expansion remains unknown.
                     if isinstance(service.model,LocalModel) and isinstance(payload,dict):

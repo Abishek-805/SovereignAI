@@ -4,6 +4,27 @@ from tests.test_service import service
 from backend.contracts import WorkbenchError
 
 
+def test_optional_escalation_continues_with_same_request_and_existing_attempt_budget(service,monkeypatch):
+    monkeypatch.setenv('SOVEREIGN_CODE_ESCALATION','1')
+    service.registry=SimpleNamespace(specs={'code':SimpleNamespace(identifier='small',alias='small'),
+        'text':SimpleNamespace(identifier='power',alias='power')},installed=lambda _:True,runtime_available=lambda _:True)
+    leases=[];attempts=[]
+    monkeypatch.setattr(service.coding,'raw_files',lambda _: {})
+    monkeypatch.setattr(service,'_lease',lambda capability,**kwargs:leases.append(capability) or capability)
+    monkeypatch.setattr(service,'_verified_coding_sandbox',lambda:SimpleNamespace(_ready=lambda:None))
+    def run(workspace,target,instruction,model,sandbox,ledger,**kwargs):
+        attempts.append((workspace,target,instruction,kwargs))
+        return ({'state':'failed','checks':{'container_executed':True},'validation_exit_code':1,'stderr':'NameError in main.py','diff':'current diff'}
+                if len(attempts)==1 else {'state':'completed','publication_state':'staged','checks':{'container_executed':True},'validation_exit_code':0})
+    monkeypatch.setattr(service.coding,'run_project',run)
+    result=service.run_coding_project_task('selected','main.py','Create a project with main.py, helpers.py and README.md',routed=True)
+    assert result['supervisor_attempts']==2
+    assert leases==['code','text']
+    assert attempts[0][:3]==attempts[1][:3]
+    assert attempts[1][3]['model_alias']=='power'
+    assert 'NameError in main.py' in attempts[1][3]['history'][-1]
+
+
 def test_unavailable_validation_stops_before_code_generation(service,monkeypatch):
     generated=[]
     def unavailable():

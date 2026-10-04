@@ -60,7 +60,8 @@ def repair_decision(observation: Observation, attempt: int, seen: set[str] | fro
     if observation.state != 'failed':
         validated = observation.state == 'completed' and observation.validation_executed and observation.validation_exit_code == 0
         return RepairDecision(False, 'validated' if validated else 'unverified' if observation.state == 'completed' else 'not_applicable')
-    if not observation.validation_executed:
+    contract_checked=observation.result.get('checks',{}).get('request_contract_checked') is True
+    if not observation.validation_executed and not contract_checked:
         return RepairDecision(False, 'validation_unavailable')
     fingerprint = failure_fingerprint(observation.feedback)
     if not observation.feedback:

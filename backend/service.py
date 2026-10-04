@@ -1040,11 +1040,44 @@ class Workbench:
             reusable_plan=None
 
             def before_attempt(attempt, observations):
+                nonlocal alias,capability
                 if self.coding.raw_files(workspace_id)!=original_revision:
                     if result is not None and result.get('task_id'):
                         result['repair_stop_reason']='workspace_conflict'
                         self.coding._save_result(workspace_id,result)
                     raise WorkbenchError('workspace_conflict','Workspace changed during repair; review the current files before retrying')
+                # Optional one-time escalation at a completed action boundary.
+                # It consumes an existing repair attempt, never adds a retry.
+                hard_task=coding.complexity=='complex' or (coding.features.get('number_of_files_requested') or 0)>1
+                feedback=(result or {}).get('stderr','')
+                fidelity_failure=((result or {}).get('checks',{}).get('requested_target_present') is False or
+                    bool(re.search(r'\b(?:NameError|SyntaxError|TypeError|ReferenceError|AssertionError)\b',feedback)))
+                if (attempt==2 and role=='code' and hard_task and fidelity_failure and
+                        os.environ.get('SOVEREIGN_CODE_ESCALATION','1')=='1'):
+                    power=self.registry.specs.get('text')
+                    current=self.registry.specs.get(capability)
+                    if (power and current and getattr(power,'identifier',None) and getattr(current,'identifier',None) and power.identifier!=current.identifier and
+                            self.registry.installed(power) and self.registry.runtime_available(power)):
+                        from workflows.project_map import inspect_project
+                        checkpoint={'original_request':instruction,'workspace_id':workspace_id,
+                            'revision':{name:hashlib.sha256(data).hexdigest() for name,data in original_revision.items()},
+                            'project_map':inspect_project(original_revision),
+                            'current_diff':(result or {}).get('diff','')[:12000],
+                            'diagnostics':{'stdout':(result or {}).get('stdout','')[-4000:],
+                                'stderr':(result or {}).get('stderr','')[-4000:],
+                                'exit_code':(result or {}).get('validation_exit_code'),
+                                'checks':(result or {}).get('checks',{})},
+                            'action_history':[{'state':item.state,'feedback':item.feedback} for item in observations]}
+                        operational_event('ESCALATION_CHECKPOINT',workflow='CODE',observations=checkpoint)
+                        if owner:owner.task_state['escalation_checkpoint']=checkpoint
+                        capability=self._lease('text',worker_role='reasoning')
+                        alias=self.registry.specs[capability].alias
+                        trace=CURRENT_ROUTE.get()
+                        if trace:
+                            trace.selected_model=self.registry.specs[capability].identifier
+                            trace.runtime_alias=alias
+                            trace.route_reason='One-time escalation after validated failure; original request and checkpoint preserved'
+                        operational_event('CODE_ESCALATED',workflow='CODE',selected_model=alias)
 
             def candidate_tool(attempt):
                 nonlocal result
@@ -1062,7 +1095,7 @@ class Workbench:
                 result['repair_count']=attempt-1
                 result['failure_fingerprints']=sorted(failures)
                 result['repair_stop_reason']=decision.stop_reason
-                reusable_plan=result.get('operation_plan')
+                reusable_plan=None if result.get('checks',{}).get('requested_target_present') is False else result.get('operation_plan')
                 candidates=[]
                 remaining=10000
                 for change in result.get('changes',[])[:8]:
@@ -1309,7 +1342,8 @@ Path('/output/project-sync.json').write_bytes(payload)
                     workspace_metadata=[]
                     workspace_snapshot={'files':[],'folders':[]}
                 artifact_kind=re.search(r'\b(?:create|generate|write|make)\b',goal,re.I) and re.search(r'\b(word|docx|excel|xlsx)\b',goal,re.I)
-                if artifact_kind and not re.search(r'\b(?:search|documents|sources|uploaded)\b',goal,re.I):
+                source_request=re.search(r'\b(?:search|retrieve|sources|uploaded|attached)\b|\b(?:my|these|selected|existing|provided)\s+documents\b',goal,re.I)
+                if artifact_kind and not source_request:
                     extension='.docx' if artifact_kind.group(1).lower() in {'word','docx'} else '.xlsx'
                     filename=re.search(r'(?<![\w/\\])([\w-]+'+re.escape(extension)+r')\b',goal,re.I)
                     plan={'action':'application_tools','target':filename.group(1) if filename else 'generated_'+uuid4().hex[:8]+extension,'response':''}

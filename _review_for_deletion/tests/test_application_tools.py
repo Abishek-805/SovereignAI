@@ -290,6 +290,18 @@ def test_create_knowledge_literal_text_needs_no_reference_connection(service,mon
     assert service.documents()[0]['display_name']=='acceptance.txt'
 
 
+def test_document_section_heading_is_not_a_source_requirement(service,monkeypatch):
+    from backend.application_tools import ApplicationTools
+    received=[]
+    def execute(self,operations,task):
+        received.extend(operations)
+        return {'state':'completed','answer':'Created','operations':[]}
+    monkeypatch.setattr(ApplicationTools,'execute',execute)
+    monkeypatch.setattr(service,'_request_plan',lambda *_:pytest.fail('A literal artifact does not need source planning'))
+    service.run_auto_agent('Create a Word document guide.docx with sections Documents and Execution.',[])
+    assert received[0]['tool']=='document_create' and received[0]['target']=='guide.docx'
+
+
 def test_classifier_examples_separate_compound_execution_and_literal_library_creation(monkeypatch):
     from backend.model import LocalModel
     import json

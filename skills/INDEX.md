@@ -16,3 +16,5 @@ Skills are procedures, not permissions. The existing workflow stage selects the 
 The shared [task contract](runtime/task-core/SKILL.md) accompanies the relevant skills. Only the selected stage's skills are injected, within a 6,500-character bound. Backend authorization, budgets, sandbox and validators remain authoritative. No arbitrary host Python, DuckDB, pandas or openpyxl tool is granted by these documents.
 
 The library is enabled by default after the development diagnostic. SOVEREIGN_TASK_SKILLS=1 explicitly enables it; =0 disables it. Loaded instruction hashes are recorded in model route telemetry and raw diagnostic requests.
+
+File-content generation selects the shared task contract plus coding only; project execution and workspace procedures remain selected at their respective workflow stages.

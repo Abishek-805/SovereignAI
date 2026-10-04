@@ -67,7 +67,8 @@ def test_grounded_answer_uses_verified_aggregate_and_readable_units(service,tmp_
     service.model.complete=lambda messages,max_tokens: captured.extend(messages) or {'result':{'status':'answered','answer':'1 student passed. [S1]'}}
     result=service.ask('How many passed?',[doc['document_id']],force_documents=True)
     assert result['table_query']['value']==1
-    assert 'scanned_rows' in captured[-1]['content']
+    assert not captured  # Authoritative aggregates need no prose generation.
+    assert 'Count: 1' in result['answer'] and '[S1]' in result['answer']
     assert _unsupported_numbers('36.5 out of 50 marks. [S1]',[{'label':'S1','text':'Total (50M): 36.5'}])==[]
 
 
@@ -176,4 +177,4 @@ def test_invalid_table_prose_displays_verified_records(service,tmp_path):
     assert '36.5' in result['answer'] and '12' in result['answer'] and '-999' not in result['answer']
     assert '24ALR001' in result['answer'] and '[S1]' in result['answer']
     assert result['checks']['presentation']=='verified_query_result'
-    assert result['checks']['repair']['outcome']=='verification_failed'
+    assert not result['checks'].get('repair',{}).get('attempted',False)

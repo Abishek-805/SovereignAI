@@ -6,6 +6,9 @@ const { chromium } = require('playwright');
   try {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
     await page.goto('http://127.0.0.1:8088/#/', { waitUntil: 'domcontentloaded' });
+    const knowledge = page.getByRole('switch', { name: 'Connect Knowledge' });
+    await knowledge.waitFor();
+    if (await knowledge.getAttribute('aria-checked') === 'true') await knowledge.click();
     const chat = page.getByRole('textbox', { name: 'Chat message' });
     await chat.fill('Reply with one short sentence about bubble sort.');
     const completion = page.waitForResponse((response) => response.url().endsWith('/v1/chat/completions') && response.request().method() === 'POST', { timeout: 90000 });

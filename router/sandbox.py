@@ -62,6 +62,7 @@ LOCAL_ENGINE = 'npipe:////./pipe/dockerDesktopLinuxEngine'
 SANDBOX_POLICY = {
     'backend': 'Docker Linux', 'network': 'none', 'user': '65534:65534',
     'filesystem': 'read-only root; isolated input/output mounts',
+    'output_execution': 'native executables allowed only inside the isolated output volume',
     'cpus': 1, 'memory_mb': 512, 'timeout_seconds': 120,
     'privileged': False, 'docker_socket': False,
 }
@@ -179,7 +180,7 @@ class CodeSandbox:
                     f"--user={SANDBOX_POLICY['user']}",
                     '--workdir=/output', '--env=PYTHONDONTWRITEBYTECODE=1', '--env=PYTHONUNBUFFERED=1',
                     '--mount', f'type=bind,src={inputs},dst=/input,readonly',
-                    '--tmpfs', f'/output:rw,nosuid,nodev,size={MAX_OUTPUT_VOLUME_BYTES},mode=1777',
+                    '--tmpfs', f'/output:rw,exec,nosuid,nodev,size={MAX_OUTPUT_VOLUME_BYTES},mode=1777',
                     self.image_id, 'sleep', '300']
             try:
                 subprocess.run(args, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, timeout=20, check=True)

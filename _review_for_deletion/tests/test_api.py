@@ -79,7 +79,7 @@ def test_workbench_info_exposes_actual_capability_routes_and_model_files(service
     service.registry._model_paths=lambda spec:[tmp_path/spec.model_file]
     with client_for(service) as client:
         info=client.get('/workbench/info').json()
-    assert info['routing']['mode']=='direct'
+    assert info['routing']['mode']=='automatic'
     assert info['routing']['routes']['code']=={'capability':'text','model':'sovereign-text'}
     assert info['routing']['routes']['vision']=={'capability':'vision','model':'sovereign-vision'}
     assert {model['capability']:model['assets_present'] for model in info['models']}=={'text':True,'vision':False}
@@ -147,7 +147,7 @@ def test_document_job_forwards_followup_context(service, monkeypatch):
 def test_code_job_uses_project_task_without_requiring_open_file(service, monkeypatch):
     workspace_id=service.coding.create('Project edit')['workspace_id']
     calls=[]
-    monkeypatch.setattr(service,'run_coding_project_task',lambda wid,target,instruction,job:
+    monkeypatch.setattr(service,'run_coding_project_task',lambda wid,target,instruction,job,routed=False:
                         calls.append((wid,target,instruction)) or {'state':'completed','changes':[]})
     with client_for(service) as client:
         job=client.post(f'/coding/workspaces/{workspace_id}/jobs',json={

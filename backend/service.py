@@ -68,7 +68,7 @@ class Workbench:
         from router.model_history import ModelHistory
         self.model_history=ModelHistory(self.settings.data_dir)
         self.broker=ModelBroker(self.registry,sampler=self.router.selector.sampler,policy=self.router.selector.policy,history=self.model_history)
-        self.routing_strategy='direct'
+        self.routing_strategy='capability'
         self.classifier=ConservativeCapabilityClassifier()
         self.tasks=TaskLedger(self.settings.data_dir)
         project_root = self.settings.project_dir or (Path.home() / 'Documents' / 'SovereignAI' / 'Projects'
@@ -144,7 +144,7 @@ class Workbench:
         named_sources=[name for name in source_names if name.casefold() in request.casefold()]
         code_subject=bool(named_sources or re.search(r'\b(?:code|function|variable|class|script|program|syntax|python|javascript|typescript|rust|java|html|css|refactor|debug|endpoint)\b',prose_request(normalized.normalized),re.I))
         clear_code_scope=bool(source_names and code_subject and not new_workspace_requested(request))
-        if getattr(self,'routing_strategy','universal') in {'universal','direct'} and clear_code_scope:
+        if getattr(self,'routing_strategy','universal') in {'universal','direct','capability'} and clear_code_scope:
             action=('inspect_code' if coding.task_type in {'EXPLAIN','REVIEW'} and files else
                     'edit_code' if 'code' in coding.steps and explicit_operation_requested(request,'file_edit') else None)
             if action:
@@ -221,7 +221,7 @@ class Workbench:
     def _lease(self,capability,required_context=None,worker_role=None):
         trace=CURRENT_ROUTE.get()
         select=getattr(self.router,'select_model',None)
-        if (getattr(self,'routing_strategy','universal')!='direct'
+        if (getattr(self,'routing_strategy','universal') not in {'direct','capability'}
                 and callable(select) and callable(getattr(self.registry,'installed',None))):
             route_start=time.perf_counter()
             verified=getattr(self.registry,'verified_residency',None)
@@ -268,7 +268,28 @@ class Workbench:
                 if trace:trace.failure_layer='resource_admission' if data.get('failure_category')=='RESOURCE_FAILURE' else 'candidate_filter'
                 raise WorkbenchError('model_unavailable',data['route_reason'])
         else:
-            route=('vision' if capability=='vision' else 'text') if getattr(self,'routing_strategy','universal')=='direct' else self.router.route_request(capability)
+            strategy=getattr(self,'routing_strategy','universal')
+            if strategy=='capability' and getattr(self.registry,'specs',None):
+                from backend.task_supervisor import CURRENT_SUPERVISOR
+                supervisor=CURRENT_SUPERVISOR.get()
+                selected=capability if capability in self.registry.specs else 'text'
+                pinned=supervisor.task_state.get('capability_worker') if supervisor else None
+                if pinned and capability=='code':selected=pinned
+                spec=self.registry.specs.get(selected)
+                available=bool(spec and spec.enabled and (not callable(getattr(self.registry,'installed',None)) or self.registry.installed(spec)))
+                if not available and capability=='vision':raise WorkbenchError('model_unavailable','The vision worker is not installed or enabled')
+                route=selected if available else 'text'
+                fallback_spec=self.registry.specs.get(route)
+                if not fallback_spec or not fallback_spec.enabled or callable(getattr(self.registry,'installed',None)) and not self.registry.installed(fallback_spec):
+                    raise WorkbenchError('model_unavailable','No installed worker can serve this capability')
+                if supervisor and capability=='code':supervisor.task_state['capability_worker']=route
+                if trace:
+                    trace.selection_policy='task_capability'
+                    trace.route_reason='Installed '+capability+' worker selected at a task boundary; repairs retain the worker'
+                    trace.candidate_models=[getattr(self.registry.specs[route],'identifier',route)]
+                    if not available:trace.fallback={'reason':'Requested worker is unavailable','selected':'text'}
+            else:
+                route=('vision' if capability=='vision' else 'text') if strategy=='direct' else self.router.route_request(capability)
         if trace:
             trace.runtime_alias=getattr(getattr(self.registry,'specs',{}).get(route),'alias',None)
             trace._context_admit=lambda required:self._lease(capability,required,worker_role)
@@ -285,7 +306,7 @@ class Workbench:
             # on_change synchronously persists state before the registry unloads.
             supervisor=CURRENT_SUPERVISOR.get()
             if supervisor is not None:supervisor.checkpoint()
-        lease=broker.acquire(selection,persist_before_swap=save_before_swap) if 'broker' in locals() else self.registry.acquire_lease(route)
+        lease=broker.acquire(selection,persist_before_swap=save_before_swap) if 'broker' in locals() else self.registry.acquire_lease(route,persist_before_swap=save_before_swap) if getattr(self,'routing_strategy','universal')=='capability' and callable(getattr(self.registry,'verified_residency',None)) else self.registry.acquire_lease(route)
         operational_event('MODEL_READY',selected_model=identity)
         if trace:
             trace.event('MODEL_READY')
@@ -901,7 +922,7 @@ class Workbench:
             from router.tool_registry import explicit_operation_requested
             smart=getattr(self,'routing_strategy','universal')=='universal'
             sandbox=None
-            if explicit_operation_requested(instruction,'file_edit') and coding.task_type not in {'EXPLAIN','REVIEW'}:
+            if routed or explicit_operation_requested(instruction,'file_edit') and coding.task_type not in {'EXPLAIN','REVIEW'}:
                 sandbox=self._verified_coding_sandbox()
                 sandbox._ready()
             role=coding.worker_role if smart and coding.worker_role else 'code'
@@ -943,7 +964,7 @@ class Workbench:
             specs=getattr(self.registry,'specs',{})
             alias=specs[capability].alias if capability in specs else 'sovereign-text'
             if not routed:
-                direct=(image_path is not None or smart and role=='code' or getattr(self,'routing_strategy','universal')=='direct') and explicit_operation_requested(instruction,'file_edit')
+                direct=(image_path is not None or smart and role=='code' or getattr(self,'routing_strategy','universal') in {'direct','capability'}) and explicit_operation_requested(instruction,'file_edit')
                 # Interpretation receives actual, bounded scope metadata. A
                 # selected project supplies context, never mutation authority.
                 interpretation_files=[]
@@ -1113,6 +1134,20 @@ class Workbench:
                     '. Docker has no access to the Windows camera or desktop. Run it locally with dependencies in a project virtual environment:\n'+command)
             sandbox = self._verified_coding_sandbox()
             files = self.coding.raw_files(workspace_id)
+            if target.lower().endswith('.py') and re.search(r'\b(?:from\s+flask\s+import|import\s+flask\b)',source['content']):
+                from workflows.web_preview import preview_request
+                if job:job.progress('Starting isolated Flask preview')
+                task=self.tasks.create('workspace_execution',[])
+                self.tasks.step(task,'docker_http',{'target':target,'path':'/'})
+                response=preview_request(self.coding,sandbox,self.settings.data_dir/'web-preview',workspace_id,target)
+                passed=response['status']<400
+                checks={'container_executed':True,'exit_success':passed,'http_response_success':passed}
+                if passed:self.tasks.complete(task,checks)
+                else:self.tasks.fail(task,'http_response_failed')
+                return {'task_id':task['task_id'],'state':task['state'],'exit_code':0 if passed else 1,
+                        'stdout':'Flask application served HTTP '+str(response['status'])+' in Docker. Use Run in the IDE for the interactive preview.',
+                        'stderr':'' if passed else response['body'][-4000:],
+                        'checks':checks,'web_preview':response}
             if job:
                 job.progress('Starting isolated program');sandbox.on_output=job.append;sandbox.cancel_event=job.cancel;sandbox.stdin_queue=job.input
             script = runner(target, mode='run')
@@ -1579,8 +1614,10 @@ Path('/output/project-sync.json').write_bytes(payload)
         routes={}
         for task_type in ('text','code','vision'):
             try:
-                if self.routing_strategy=='direct':
-                    capability='vision' if task_type=='vision' else 'text'
+                if self.routing_strategy in {'direct','capability'}:
+                    capability=(task_type if task_type in specs else 'text') if self.routing_strategy=='capability' else 'vision' if task_type=='vision' else 'text'
+                    installed=getattr(self.registry,'installed',None)
+                    if task_type!='vision' and callable(installed) and not installed(specs[capability]):capability='text'
                     routes[task_type]={'capability':capability,'model':specs[capability].alias}
                 elif callable(getattr(self.registry,'verified_residency',None)):
                     choice=self.broker.select('reasoning' if task_type=='text' else task_type,modality='image' if task_type=='vision' else 'text')

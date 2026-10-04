@@ -1,0 +1,19 @@
+# IDE audit and repairs — 2026-10-04
+
+Task-level capability selection now chooses the installed text, code, or vision worker. Coding repairs retain their worker. This restores actual model selection without a new planner or controller. A live edit used Qwen2.5-Coder-3B; a subsequent ordinary chat used Qwen3.5-4B. No model-quality ranking is implied.
+
+Cross-file read context is independent of write scope. The requested file and referenced modules receive context priority; publication still enforces the original allowed paths. The job API accepts an explicit edit operation, avoiding reclassification for typed edit requests. Ordinary assistant messages retain intent interpretation, so a question does not silently become a mutation.
+
+Execution repairs cover nested Python module execution/import paths, package-qualified Java classes and source lookup, nested TypeScript output paths, and Go package builds. Native binaries require an executable isolated output mount; it now explicitly enables execution while retaining network isolation, non-root execution, dropped capabilities, read-only inputs/root, and resource limits. Real Docker Python, Java, TypeScript, Go, and C checks produced the independently expected value 42.
+
+Project discovery recognizes a unique nested Python main guard and package-qualified Java commands. Existing safety gates, workspace identity, staging, and write scope are retained.
+
+The todo app failed because Flask was absent from the sandbox. The new pinned image includes Flask 3.1.2 and Flask-SQLAlchemy 3.1.1 and passed all 18 Docker isolation checks. Its CSS was copied into the expected static folder without deleting the original. Original project files were backed up under outputs/ide-audit/todo-before.
+
+Flask Run now opens a sandboxed IDE preview. Each application HTTP request executes through Flask's WSGI test client in a fresh network-disabled Docker container, rather than exposing a server port. SQLite preview state is stored separately under the backend data directory, keyed by workspace revision. This is an interactive development preview, not a production server. Unsupported frameworks, external databases, WebSockets, streaming responses, and arbitrary dependency installation are outside this adapter. Project edits invalidate preview state. Images and external JavaScript are not yet bundled by this Flask adapter.
+
+Evidence: outputs/ide-audit/summary.json, cross-file-docker.json, live-job.json, chat-route.json, todo-http.json. Preserved initial failures are separately labeled. The live code edit changed only main.py and passed supplied tests; its exact resulting output was inspected in the saved diff.
+
+Focused backend/source/sandbox checks passed 113 with 2 skips. Additional preview/API checks passed 67. These sets overlap and must not be summed. The frontend production build passed and Svelte checks reported zero errors and warnings. Browser testing confirmed that Run opens the styled todo application and creating a task updates the preview. The app also now renders completion styling, treats entered task text as data, and uses an in-page deletion dialog compatible with the sandboxed frame. This audit fixes demonstrated defects; it does not claim every possible IDE issue or generated program is correct.
+
+Final verification: the independent generated-candidate oracle produced `Result: 42`. The todo Run job completed with Docker execution, exit success, and HTTP response checks. Browser verification confirmed creation, completed styling, and the deletion dialog/cancel. Screenshot: outputs/ide-audit/todo-preview.jpg. The final frontend build passed; the latest service/API/preview subset passed 75 tests. An offline IDE now rechecks sandbox readiness, avoiding a permanently disabled Run button after startup interruptions.

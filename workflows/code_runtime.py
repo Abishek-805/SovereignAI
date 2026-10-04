@@ -33,7 +33,7 @@ def runner(target, mode='check', tests=False):
     if mode == 'run' and suffix in {'.html', '.htm', '.css'}:
         raise WorkbenchError('preview_required', 'HTML uses the Preview button beside Save. CSS is rendered by an HTML page, not run as a standalone program.')
     # Input paths are validated by CodingWorkspace and CodeSandbox before this script runs.
-    return '''import os, sys, subprocess, shutil, json
+    return '''import os, sys, subprocess, shutil, json, re
 from pathlib import Path
 target, suffix, mode, tests = json.loads(''' + repr(json.dumps([target,suffix,mode,tests])) + ''')
 root = Path('/output/project')
@@ -53,7 +53,11 @@ if suffix == '.py':
         suite = unittest.defaultTestLoader.discover(str(root), pattern='test_*.py')
         result = unittest.TextTestRunner(verbosity=2).run(suite)
         sys.exit(0 if result.testsRun and result.wasSuccessful() else 1)
-    if run: command(['python', target])
+    if run:
+        path=Path(target)
+        os.environ['PYTHONPATH']=str(root)+os.pathsep+str(root/path.parent)
+        parts=path.with_suffix('').parts
+        command(['python','-m','.'.join(parts)] if len(parts)>1 and all(part.isidentifier() for part in parts) else ['python',target])
     else: compile(Path(target).read_text(), target, 'exec')
 elif suffix in ('.js','.mjs','.cjs'):
     command(['node', target] if run else ['node','--check',target])
@@ -65,19 +69,22 @@ elif suffix in ('.jsx','.tsx'):
     checker="const fs=require('fs'),ts=require(process.argv[1]+'/typescript'); const source=fs.readFileSync(process.argv[2],'utf8'); const result=ts.transpileModule(source,{fileName:process.argv[2],reportDiagnostics:true,compilerOptions:{jsx:ts.JsxEmit.ReactJSX,module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2020}}); const errors=(result.diagnostics||[]).filter(d=>d.category===ts.DiagnosticCategory.Error); for(const d of errors) console.error(ts.flattenDiagnosticMessageText(d.messageText,' ')); process.exit(errors.length?1:0);"
     command(['node','-e',checker,package_root,target])
 elif suffix == '.ts':
-    command(['tsc',target,'--target','es2020','--module','commonjs','--skipLibCheck','--outDir','/output/ts-build'])
-    if run: command(['node', '/output/ts-build/'+Path(target).stem+'.js'])
+    command(['tsc',target,'--target','es2020','--module','commonjs','--skipLibCheck','--rootDir','.','--outDir','/output/ts-build'])
+    if run: command(['node', '/output/ts-build/'+str(Path(target).with_suffix('.js'))])
 elif suffix == '.java':
     Path('/output/classes').mkdir()
-    command(['javac','-J-Xmx128m','-d','/output/classes',target])
-    if run: command(['java','-Xmx128m','-XX:ReservedCodeCacheSize=32m','-XX:CompressedClassSpaceSize=32m','-cp','/output/classes',Path(target).stem])
+    command(['javac','-J-Xmx128m','-sourcepath',str(root)+os.pathsep+str(root/Path(target).parent),'-d','/output/classes',target])
+    package=re.search(r'(?m)^\\s*package\\s+([\\w.]+)\\s*;',Path(target).read_text())
+    classname=(package.group(1)+'.' if package else '')+Path(target).stem
+    if run: command(['java','-Xmx128m','-XX:ReservedCodeCacheSize=32m','-XX:CompressedClassSpaceSize=32m','-cp','/output/classes',classname])
 elif suffix in ('.c','.cpp','.cc','.cxx'):
     compiler = 'gcc' if suffix == '.c' else 'g++'
     command([compiler,target,'-o','/output/app'] if run else [compiler,'-fsyntax-only',target])
     if run: command(['/output/app'])
 elif suffix == '.go':
     os.environ['GOCACHE']='/opt/go-cache'
-    command(['go','build','-o','/output/app',target])
+    if not Path('go.mod').exists():os.environ['GO111MODULE']='off'
+    command(['go','build','-o','/output/app','./'+str(Path(target).parent)])
     if run: command(['/output/app'])
 elif suffix == '.rs':
     command(['rustc',target,'-o','/output/app'])

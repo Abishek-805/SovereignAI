@@ -144,11 +144,19 @@ class CodingTaskRequest(BaseModel):
 
 
 class WorkspaceJobRequest(BaseModel):
+    operation: str = Field(default='auto',pattern='^(auto|edit)$')
     kind: str = Field(pattern='^(run|edit|terminal)$')
     target: str = Field(default='',max_length=240)
     instruction: str = Field(default='',max_length=1000)
     command: str = Field(default='',max_length=4000)
     cwd: str = Field(default='',max_length=240)
+
+class WebPreviewRequest(BaseModel):
+    target: str = Field(min_length=1,max_length=240)
+    path: str = Field(default='/',max_length=2048)
+    method: str = Field(default='GET',pattern='^(GET|POST|PUT|PATCH|DELETE)$')
+    body: dict | list | None = None
+
 
 class JobInputRequest(BaseModel):
     text: str = Field(max_length=8000)
@@ -467,7 +475,13 @@ def create_app(service=None):
     def start_workspace_job(workspace_id:str,payload:WorkspaceJobRequest):
         service.coding.get(workspace_id)
         if payload.kind=='terminal' and not payload.command.strip():raise WorkbenchError('invalid_command','Enter a terminal command')
-        return jobs.start(payload.kind,lambda job: service.execute_terminal(workspace_id,payload.command,job,cwd=payload.cwd) if payload.kind=='terminal' else service.execute_coding_file(workspace_id,payload.target,job) if payload.kind=='run' else service.run_coding_project_task(workspace_id,payload.target,payload.instruction,job))
+        return jobs.start(payload.kind,lambda job: service.execute_terminal(workspace_id,payload.command,job,cwd=payload.cwd) if payload.kind=='terminal' else service.execute_coding_file(workspace_id,payload.target,job) if payload.kind=='run' else service.run_coding_project_task(workspace_id,payload.target,payload.instruction,job,routed=payload.operation=='edit'))
+
+    @app.post('/coding/workspaces/{workspace_id}/web-preview')
+    def web_preview(workspace_id:str,payload:WebPreviewRequest):
+        from workflows.web_preview import preview_request
+        return preview_request(service.coding,service._verified_coding_sandbox(),
+            service.settings.data_dir/'web-preview',workspace_id,payload.target,payload.path,payload.method,payload.body)
 
     @app.get('/coding/jobs/{job_id}')
     def read_workspace_job(job_id:str):return jobs.get(job_id).snapshot()

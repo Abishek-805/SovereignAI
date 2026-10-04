@@ -41,7 +41,7 @@ def test_execution_stages_large_mixed_project_assets_without_truncation(tmp_path
     run_args=next(args for args in calls if 'run' in args)
     assert '--ulimit=fsize=33554432:33554432' in run_args
     assert '--memory=512m' in run_args and '--memory-swap=512m' in run_args
-    assert any(arg.startswith('/output:rw,nosuid,nodev,size=') for arg in run_args)
+    assert any(arg.startswith('/output:rw,exec,nosuid,nodev,size=') for arg in run_args)
     assert samples['assets/photo.png'].endswith(b'p'*100)
 
 

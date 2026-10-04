@@ -1,0 +1,6 @@
+{
+  "name": "Isolated fixed-Coder live pilot",
+  "not_comparison_evidence": true,
+  "state": "BLOCKED",
+  "error": "RuntimeError: Active model differs from fixed task worker"
+}

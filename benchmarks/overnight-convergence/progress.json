@@ -34,6 +34,8 @@
     "task_isolation_unit_checks": 8,
     "scripted_docker_repair_controls": 1,
     "model_driven_runs": 0,
+    "streaming_adapter_implemented": true,
+    "live_pilot_state": "BLOCKED_ACTIVE_MODEL_MISMATCH",
     "current_required_comparison_tasks": 40,
     "comparison_complete": false
   },

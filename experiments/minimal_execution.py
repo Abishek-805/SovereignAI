@@ -142,7 +142,9 @@ class MinimalKernel:
                 if kind == 'read_file':
                     if action['path'] not in self.files:
                         raise ValueError('File is absent from task snapshot')
-                    latest = {'path':action['path'],'content':self.files[action['path']]}
+                    content = self.files[action['path']]
+                    latest = {'path':action['path'],'content':content,
+                              'sha256':hashlib.sha256(content.encode()).hexdigest()}
                 elif kind == 'apply_patch':
                     # Patch is JSON text: [{path, before_sha256, content}]. Null
                     # content deletes a named file; null digest creates a new one.

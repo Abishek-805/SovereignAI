@@ -99,3 +99,29 @@ def test_report_generation_is_task_instruction_not_required_source_evidence():
     assert 'never operational authorization' in messages[0]['content']
     normal=_messages('What is the threshold?',[])
     assert 'REPORT DRAFT CONTRACT' not in normal[0]['content']
+
+
+
+def test_verified_multi_assessment_counts_cannot_be_reassigned_by_prose(one_chunk):
+    import json
+    query={'table':'Inspection A','operation':'count','scanned_rows':4,'matched_rows':4,
+        'requested_outcome':'pass','value':1,'summaries':[
+            {'assessment':'Inspection A','column':'Result','value':1,'total':4},
+            {'assessment':'Inspection B','column':'Result','value':3,'total':4}]}
+    model=FakeModel()
+    model.output={'status':'answered','answer':'Inspection B had 1 passing record [S1].'}
+    passage=replace(one_chunk,query_result=query,text=json.dumps(query))
+    result=answer('How many passed each inspection?',[passage],model)
+    assert model.calls==[]
+    assert 'Inspection B | Result | 3 | 4' in result['answer']
+    assert result['checks']['presentation']=='verified_query_result'
+
+
+@pytest.mark.parametrize('operation',['count','sum','average','min','max'])
+def test_verified_scalar_queries_keep_tool_values(one_chunk,operation):
+    import json
+    query={'table':'Measurements','operation':operation,'scanned_rows':4,'matched_rows':4,'value':17}
+    model=FakeModel()
+    result=answer('Show the measurement result',[replace(one_chunk,query_result=query,text=json.dumps(query))],model)
+    assert model.calls==[]
+    assert ': 17.' in result['answer']

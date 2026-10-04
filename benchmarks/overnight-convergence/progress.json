@@ -26,6 +26,12 @@
     "full_agent_scaffold_comparison_complete": false
   },
   "model_comparison_complete": false,
+  "model_installation": {
+    "status": "RESUMABLE_BACKGROUND_DOWNLOAD",
+    "process_id": 33468,
+    "manifest": "benchmarks/model-comparison/install-manifest.json",
+    "compatibility_after_hash_verification": true
+  },
   "router_comparison_complete": false,
   "production_changes": 0,
   "replacement_kernel": {

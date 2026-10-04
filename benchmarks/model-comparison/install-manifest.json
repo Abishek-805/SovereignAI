@@ -1,0 +1,33 @@
+{
+  "status": "DOWNLOADING",
+  "production_models_replaced": false,
+  "models": [
+    {
+      "id": "granite-4.2-3b-q4_k_m",
+      "repository": "ibm-granite/granite-4.2-3b-GGUF",
+      "revision": "c40945d71cd90f249a56985e8155551a9188dc30",
+      "path": "models/Granite-4.2-3B/granite-4.2-3b-Q4_K_M.gguf",
+      "expected_bytes": 2244011552,
+      "expected_sha256": "e0406663965846ae22a403456eb826ccce5f450840491f71952f18a7cb78e7d5",
+      "runtime_verified": false
+    },
+    {
+      "id": "mini-coder-1.7b-iq4_nl",
+      "repository": "sizzlebop/mini-coder-1.7b-IQ4_NL-GGUF",
+      "revision": "59e704821fce313e7576ec8131d73106d5dbcb8a",
+      "path": "models/mini-coder-1.7B/mini-coder-1.7b-iq4_nl-imat.gguf",
+      "expected_bytes": 1054419264,
+      "expected_sha256": "1ef802fc1a821a38e838586576175f15d237b15fd96f28de9add48dfb349bf98",
+      "runtime_verified": false
+    }
+  ],
+  "comparison": {
+    "context_tokens": 4096,
+    "temperature": 0,
+    "one_heavy_server": true,
+    "production_migration": false,
+    "task_count_required": 40,
+    "task_manifest_complete": false,
+    "results_complete": false
+  }
+}

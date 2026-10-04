@@ -2,6 +2,10 @@
 
 Status: **IN PROGRESS. No production candidate selected.** This record is separate from the frozen historical benchmarks, held-out data and Phase D evidence. Branch: `codex/overnight-convergence`; baseline commit: `4f63cf6`.
 
+## Latest user-directed milestone — replacement kernel
+
+The latest instructions supersede the earlier 100-task authoring target with a 40-task comparison: first current/new architecture using fixed Qwen2.5-Coder-3B, then models on the frozen kernel. Production migration remains prohibited. The isolated `experiments/` kernel now supports structured read, patch, exec and finish actions, deterministic project facts, a single outer budget and mandatory Docker validation. Patches are JSON change lists with base-content hashes; command execution uses disposable snapshots, so persistent edits must use the patch action. Eight unit checks pass. A scripted Docker integration control rejected early completion, supplied the real assertion error, accepted a repair only after validation and checked budget exhaustion. This is adapter/control evidence only. Model-driven runs and the 40-task comparison are incomplete. Resource measurements, streaming model adapter and cancellation remain outstanding before comparison.
+
 ## Observed local baseline
 
 - Docker Desktop server responds with version 29.8.0. The running `llama-server.exe` at inspection time used `qwen2.5-coder-3b-instruct-q4_k_m.gguf`; one server process was visible. This is a point-in-time observation, not a continuous resource guarantee.

@@ -28,5 +28,14 @@
   "model_comparison_complete": false,
   "router_comparison_complete": false,
   "production_changes": 0,
-  "next_gate": "Author and validate new 100-task development manifest, then compare fixed-model scaffolds on the same tasks and Docker controls."
+  "replacement_kernel": {
+    "status": "ISOLATED_INTEGRATION_CONTROL_PASSED",
+    "production_migrated": false,
+    "task_isolation_unit_checks": 8,
+    "scripted_docker_repair_controls": 1,
+    "model_driven_runs": 0,
+    "current_required_comparison_tasks": 40,
+    "comparison_complete": false
+  },
+  "next_gate": "Complete 40-task manifest and model adapter; compare current agent and minimal kernel with fixed Qwen2.5-Coder-3B before model comparison. The new user-approved 40-task plan supersedes the earlier 100-task target."
 }

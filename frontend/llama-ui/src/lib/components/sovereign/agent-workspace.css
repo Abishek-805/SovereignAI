@@ -244,7 +244,8 @@
 .agent-chat .composer textarea {
 	display: block;
 	width: 100%;
-	min-height: 62px;
+	min-height: 40px;
+	height: auto;
 	max-height: 160px;
 	field-sizing: content;
 	resize: none;
@@ -253,7 +254,7 @@
 	box-shadow: none;
 	background: transparent;
 	color: var(--foreground);
-	padding: 10px 10px 6px;
+	padding: 6px 10px;
 	font:
 		14px/1.5 'Segoe UI',
 		system-ui,
@@ -543,3 +544,9 @@
 
 .agent-chat .agent-change-card > ul { margin: 0; padding-left: 20px; width: 100%; overflow-wrap: anywhere; }
 .agent-chat .agent-change-card > ul li { margin: 5px 0; }
+
+/* Keep collapsed document context adjacent to the input. */
+.agent-chat .composer .knowledge-context-chips { padding: 6px 10px 0; margin: 0; }
+.agent-chat .composer { display: block; }
+
+.agent-chat .composer .knowledge-context-chips details { margin: 0; padding: 0; }

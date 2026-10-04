@@ -207,13 +207,21 @@ def compile_outcome_query(intent,available,question,history=None):
         if not isinstance(threshold,(int,float)) or not math.isfinite(threshold) or intent.get('threshold_operator') not in {'gte','gt','lt','lte'}:
             raise WorkbenchError('invalid_query','Invalid numeric outcome rule')
         supplied=[float(v) for v in re.findall(r'(?<![\w.])-?\d+(?:\.\d+)?(?![\w.])',user_context)]
-        if threshold not in supplied: raise WorkbenchError('invalid_query','Outcome threshold must be supplied by the user')
-        if not intent.get('score_columns'): raise WorkbenchError('needs_input','Specify the assessment score columns for the numeric rule')
+        if threshold not in supplied:
+            # A proposed numeric rule is not evidence. Explicit source outcomes
+            # can answer the measure without that rule; retain the population
+            # and assessment scope and bind those recorded outcomes instead.
+            if outcomes:
+                threshold=None
+                applied_operator=None
+            else:
+                raise WorkbenchError('needs_input','The available records have no explicit outcome labels or user-supplied numeric rule. Supply the rule to calculate this outcome.')
+        if threshold is not None and not intent.get('score_columns'): raise WorkbenchError('needs_input','Specify the assessment score columns for the numeric rule')
         # Keep the user's literal rule separate from the requested numerator.
         # Derive its complement once, at the execution boundary, rather than
         # mutating conversational intent that a later follow-up may reuse.
         rule_outcome=intent.get('rule_outcome')
-        if rule_outcome in canonical:
+        if threshold is not None and rule_outcome in canonical:
             if polarity not in canonical:
                 raise WorkbenchError('needs_input','Specify whether the numeric rule measures passing or failing records')
             if rule_outcome!=polarity:

@@ -104,3 +104,28 @@ def test_followup_does_not_infer_unrelated_historical_cohorts():
     result=execute_query(table,plan)
     assert result['matched_rows']==2
     assert result['summaries'][0]['percentage']==50.0
+
+
+@pytest.mark.parametrize('operation', ['count', 'percentage'])
+def test_recorded_outcomes_do_not_require_invented_numeric_threshold(operation):
+    table={'name':'Inspection','columns':['Team','Status','Score'],'records':[
+        {'Team':'North','Status':'PASS','Score':7},
+        {'Team':'North','Status':'FAIL','Score':9},
+        {'Team':'South','Status':'PASS','Score':2}]}
+    intent={'operation':operation,'outcome':'pass','threshold':50,
+        'threshold_operator':'gte','rule_outcome':'pass','score_columns':['Score'],
+        'entity_values':['North']}
+    plan=compile_outcome_query(intent,{'T1':({'document_id':'d'},table)},
+        'How many North inspections passed?')
+    result=execute_query(table,plan)
+    assert plan['criteria']==[{'column':'Status','operator':'in','value':['PASS']}]
+    assert result['summaries'][0]['total']==2
+    assert result['summaries'][0].get('percentage',result.get('value')) in (50,1)
+
+
+def test_numeric_only_outcome_requires_evidence_for_rule():
+    from backend.contracts import WorkbenchError
+    table={'name':'Scores','columns':['Score'],'records':[{'Score':70}]}
+    with pytest.raises(WorkbenchError,match='no explicit outcome labels'):
+        compile_outcome_query({'outcome':'pass','threshold':50,'threshold_operator':'gte',
+            'score_columns':['Score']},{'T1':({'document_id':'d'},table)},'Count passed')

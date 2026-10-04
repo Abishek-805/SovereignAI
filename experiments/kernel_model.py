@@ -42,6 +42,9 @@ class LocalWorker:
         try:
             with httpx.Client(timeout=max(.1,seconds)) as client:
                 with client.stream('POST',self.endpoint+'/v1/chat/completions',json=payload) as response:
+                    if response.is_error:
+                        trace['http_status'] = response.status_code
+                        trace['http_error_body'] = response.read().decode('utf-8', errors='replace')[:16000]
                     response.raise_for_status()
                     for line in response.iter_lines():
                         if time.monotonic()-started >= seconds:

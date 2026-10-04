@@ -1,0 +1,14 @@
+{
+  "reason": "Missing API error body and per-task resources; affected arm stopped to repair evidence collection only",
+  "preserved_completed_tasks": [
+    "cf01",
+    "cf02",
+    "cf03",
+    "cf04",
+    "cf05",
+    "cf06"
+  ],
+  "interrupted_task": "cf11",
+  "kernel_changed": false,
+  "time": 1791083243.595623
+}

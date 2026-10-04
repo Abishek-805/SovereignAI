@@ -7,6 +7,8 @@ from pathlib import Path
 import subprocess
 import time
 import sys
+from datetime import datetime, timezone
+from benchmark_resources import ResourceSamples
 import httpx
 import psutil
 
@@ -42,14 +44,20 @@ def main():
                 ('mini-coder','models/mini-coder-1.7B/mini-coder-1.7b-iq4_nl-imat.gguf'),
                 ('qwen3.5','models/Qwen3.5-4B-Q4_K_M.gguf')]
     rows=[]
+    run_id = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
+    log_directory = OUT/'runtime-runs'/run_id
+    log_directory.mkdir(parents=True,exist_ok=True)
     try:
         for name,path in candidates:
             if servers():raise RuntimeError('Another heavy server appeared; abort')
             command=[str(ROOT/'runtime/llama-b11132/llama-server.exe'),'-m',str(ROOT/path),
                      '-c','4096','-ngl','999','-np','1','--host','127.0.0.1','--port','8087']
             row={'model':name,'command':command,'status':'STARTING'}
+            baseline = ResourceSamples(0)
+            baseline.sample()
+            row['baseline_resources'] = baseline.samples[-1]
             rows.append(row)
-            with (OUT/(name+'-stdout.log')).open('w') as out,(OUT/(name+'-stderr.log')).open('w') as err:
+            with (log_directory/(name+'-stdout.log')).open('w') as out,(log_directory/(name+'-stderr.log')).open('w') as err:
                 process=launch(command,out,err)
                 started=time.monotonic()
                 try:
@@ -61,6 +69,8 @@ def main():
                         except httpx.HTTPError:pass
                         time.sleep(.5)
                     else:raise TimeoutError('Runtime readiness deadline')
+                    row['load_seconds'] = time.monotonic()-started
+                    row['pid'] = process.pid
                     response=httpx.post('http://127.0.0.1:8087/v1/chat/completions',timeout=60,json={
                         'model':name,'messages':[{'role':'user','content':'Return JSON with one key ready and value true.'}],
                         'temperature':0,'max_tokens':128,'response_format':{'type':'json_object'}})
@@ -78,10 +88,15 @@ def main():
                     except Exception as error:row['gpu_observation_error']=type(error).__name__
                 except Exception as error:row.update(status='BLOCKED',error=type(error).__name__+': '+str(error))
                 finally:
+                    unloading = time.monotonic()
                     if process.poll() is None:process.terminate()
                     process.wait(timeout=20)
+                    row['unload_seconds'] = time.monotonic()-unloading
+                    row['final_returncode'] = process.returncode
+                    row['heavy_servers_after_unload'] = [p.pid for p in servers()]
             result_name = 'task-tranche-runtime.json' if '--tasks' in sys.argv else 'compatibility.json'
             (OUT/result_name).write_text(json.dumps({'not_task_quality_evidence':True,'rows':rows},indent=2))
+            (log_directory/'runtime-results.json').write_text(json.dumps({'rows':rows},indent=2))
             print(name,row['status'],flush=True)
     finally:
         if original and not servers():

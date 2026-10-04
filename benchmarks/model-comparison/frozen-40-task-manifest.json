@@ -1,0 +1,710 @@
+[
+  {
+    "category": "code_modification",
+    "private_test_sha256": "b7c974c6fc62f33a77ee863773e5926364da3bd48f15670f59ea3903d90b1ca3",
+    "request": "Implement parse_invoice(text) returning an invoice object. A missing invoice number must raise KeyError('invoice_number'), and a missing total must raise KeyError('total'); do not return an error object.",
+    "requirements": [
+      "parse_invoice remains callable",
+      "valid invoice number and total are parsed",
+      "missing number raises KeyError",
+      "missing total raises KeyError",
+      "unrelated text does not cause a false total"
+    ],
+    "starting_files": {
+      "solution.py": "def parse_invoice(text):\n    fields = dict(line.split(':', 1) for line in text.splitlines() if ':' in line)\n    if 'invoice_number' not in fields:\n        return {'error': 'invoice_number'}\n    return {'invoice_number': fields['invoice_number'].strip(), 'total': float(fields.get('total', 0))}\n"
+    },
+    "task_id": "cf01"
+  },
+  {
+    "category": "code_modification",
+    "private_test_sha256": "10d46294f7496eace497d184f7878d9c8110a2c02ebbeca1bf3f6f48b1063527",
+    "request": "Fix read_settings(path, defaults) so malformed JSON raises ValueError mentioning the path, a missing optional file returns an independent copy of defaults, and a valid JSON object overlays defaults without mutating the caller's dictionary.",
+    "requirements": [
+      "existing function signature remains",
+      "malformed JSON raises with path",
+      "missing file returns an independent copy of defaults",
+      "valid settings overlay defaults",
+      "caller defaults remain unchanged"
+    ],
+    "starting_files": {
+      "solution.py": "import json\nfrom pathlib import Path\n\ndef read_settings(path, defaults):\n    if not Path(path).exists():\n        return defaults\n    return json.loads(Path(path).read_text())\n"
+    },
+    "task_id": "cf02"
+  },
+  {
+    "category": "code_modification",
+    "private_test_sha256": "a8ab9eff573c88adf34e1ca487a55f0489fa4af097b080f0152ec4d3b3a0e645",
+    "request": "Implement parse_bounded_int(value, maximum) and keep main(argv) as the CLI entry. Values from zero through maximum are valid. Negative, noninteger and over-limit inputs raise ValueError; CLI errors exit nonzero without a Python traceback.",
+    "requirements": [
+      "parse_bounded_int and main remain public",
+      "error exits nonzero without traceback",
+      "zero accepted",
+      "maximum accepted",
+      "maximum plus one rejected"
+    ],
+    "starting_files": {
+      "solution.py": "def parse_bounded_int(value, maximum):\n    return int(value)\n\ndef main(argv):\n    print(parse_bounded_int(argv[0], int(argv[1])))\n    return 0\n"
+    },
+    "task_id": "cf03"
+  },
+  {
+    "category": "code_modification",
+    "private_test_sha256": "c469a2da721f0f8ff84b1ac0ec13d4b8bd1927a80403f217623462e577e96972",
+    "request": "Repair the invoice export so the CSV writer handles quoted commas. Keep the existing calculate_tax and invoice_total functions.",
+    "requirements": [
+      "both named functions remain",
+      "CSV round trips embedded commas and quotes",
+      "totals unchanged",
+      "no unrelated file deletion"
+    ],
+    "starting_files": {
+      "solution.py": "def calculate_tax(subtotal, rate):\n    return round(subtotal * rate, 2)\n\ndef invoice_total(subtotal, rate):\n    return round(subtotal + calculate_tax(subtotal, rate), 2)\n\ndef export_invoice(rows):\n    return 'item,amount\\n' + ''.join(f\"{item},{amount}\\n\" for item, amount in rows)\n"
+    },
+    "task_id": "cf04"
+  },
+  {
+    "category": "code_modification",
+    "private_test_sha256": "4c7dd7ff8a5c53a1ffe44fcbfe5ae3b93517a0decc2272845e589812b2e1e098",
+    "request": "Add search_contacts(prefix) returning alphabetically sorted matching names. Match case-insensitively; an empty prefix lists all contacts. Keep get_contact(name) exact and list_contacts() sorted.",
+    "requirements": [
+      "existing imports remain valid",
+      "search_contacts is case-insensitive",
+      "empty prefix returns all contacts in sorted order",
+      "get_contact retains exact-match behavior",
+      "list_contacts remains sorted"
+    ],
+    "starting_files": {
+      "solution.py": "CONTACTS = {'Alice':'111', 'ALAN':'222', 'Bob':'333'}\n\ndef get_contact(name):\n    return CONTACTS.get(name)\n\ndef list_contacts():\n    return sorted(CONTACTS)\n\ndef search_contacts(prefix):\n    return [name for name in CONTACTS if name.startswith(prefix)]\n"
+    },
+    "task_id": "cf05"
+  },
+  {
+    "category": "code_modification",
+    "private_test_sha256": "8ef6464119a8614871233aff719924636c06a6ed2445ad84a64fe8062657a6b4",
+    "request": "Repair LRUCache eviction while preserving put(key,value)->None, get(key)->value or None, and delete(key)->bool. A successful read refreshes recency; updating an existing key does not increase size.",
+    "requirements": [
+      "capacity never exceeded",
+      "recent read refreshes recency",
+      "deleted key remains absent",
+      "put returns None",
+      "delete returns bool",
+      "existing key update does not increase size"
+    ],
+    "starting_files": {
+      "solution.py": "from collections import OrderedDict\nclass LRUCache:\n    def __init__(self, capacity):\n        self.capacity = capacity\n        self.data = OrderedDict()\n    def put(self, key, value):\n        self.data[key] = value\n        if len(self.data) > self.capacity:\n            self.data.popitem(last=True)\n    def get(self, key):\n        return self.data.get(key)\n    def delete(self, key):\n        return self.data.pop(key, None) is not None\n"
+    },
+    "task_id": "cf06"
+  },
+  {
+    "category": "repair_verify",
+    "private_test_sha256": "55ead5ac4031119e1e42a05f5338d222cfca44e78be52151b61115f2fa3394cb",
+    "request": "A prior patch fixed multiply(a,b) but removed subtract(a,b). Restore subtract while preserving add and multiply. Handle negative operands; do not introduce divide.",
+    "requirements": [
+      "add, subtract and multiply importable",
+      "negative operands correct",
+      "division is not introduced",
+      "existing behavior remains"
+    ],
+    "starting_files": {
+      "solution.py": "def add(a, b):\n    return a + b\n\ndef multiply(a, b):\n    return a * b\n"
+    },
+    "task_id": "cf11"
+  },
+  {
+    "category": "repair_verify",
+    "private_test_sha256": "618f6c8624b85817fd6a6823a98dcbe12436c806d55e81d9ef9a98be2e3b1c66",
+    "request": "Repair parse_csv(text), which currently loses quoted multiline cells. Keep the header row, ignore only truly empty data rows, and preserve rows containing empty fields.",
+    "requirements": [
+      "header retained",
+      "truly empty data rows ignored",
+      "quoted newline cell retained",
+      "rows with empty fields retained"
+    ],
+    "starting_files": {
+      "solution.py": "import csv, io\ndef parse_csv(text):\n    return [line.split(',') for line in text.splitlines() if line]\n"
+    },
+    "task_id": "cf12"
+  },
+  {
+    "category": "repair_verify",
+    "private_test_sha256": "614457f87541fe53dbcdc37cfff97c78f1649fba0dbabaec6ca66573f3d559c8",
+    "request": "Repair verify_password(candidate, stored), requiring at least eight candidate characters while preserving the compare_secret(candidate, stored) hmac.compare_digest path. Return bool and never print secrets.",
+    "requirements": [
+      "short passwords rejected",
+      "valid password accepted",
+      "compare_secret retained and uses hmac.compare_digest",
+      "return type remains bool",
+      "secrets not printed"
+    ],
+    "starting_files": {
+      "solution.py": "import hmac\ndef compare_secret(candidate, stored):\n    return hmac.compare_digest(candidate, stored)\n\ndef verify_password(candidate, stored):\n    return compare_secret(candidate, stored)\n"
+    },
+    "task_id": "cf13"
+  },
+  {
+    "category": "repair_verify",
+    "private_test_sha256": "9bc18e5c55ce88f1bb398065dc15d50fcd844e3d084627c96c4d641b52e70f81",
+    "request": "Repair filter_range(events, start, end) for aware timestamps. Keep inclusive start and exclusive end. Reject naive datetime values with ValueError rather than guessing a timezone.",
+    "requirements": [
+      "aware timestamps compared consistently",
+      "inclusive start",
+      "exclusive end",
+      "naive input rejected with ValueError"
+    ],
+    "starting_files": {
+      "solution.py": "def filter_range(events, start, end):\n    return [event for event in events if start <= event['at'] <= end]\n"
+    },
+    "task_id": "cf14"
+  },
+  {
+    "category": "code_modification",
+    "private_test_sha256": "7d24bc41e59c6ee50971c4003dbcc04904ee1af46551fb98908e417f32855655",
+    "request": "Implement pass_report(rows, columns). For each assessment return passed, failed, missing, invalid, total and percentage. Scores below 25 fail; 25 passes. Missing values count as missing, nonnumeric and NaN as invalid. Use all rows as the percentage denominator; return None for an empty denominator.",
+    "requirements": [
+      "all assessment columns considered independently",
+      "score 25 passes",
+      "score 24 fails",
+      "missing and nonnumeric distinguished from fail",
+      "percentage uses all rows and is rounded to two decimals",
+      "empty denominator yields None"
+    ],
+    "starting_files": {
+      "solution.py": "def pass_report(rows, columns):\n    return {name: {'passed': sum(float(row[name]) > 25 for row in rows), 'total': len(rows)} for name in columns}\n"
+    },
+    "task_id": "cf18"
+  },
+  {
+    "category": "code_modification",
+    "private_test_sha256": "517f1b2a1d2854fef30716ad2e8f2c2b70a2f4be287e02658ac85fefddd92be9",
+    "request": "Repair failure_fingerprint in the supplied project module. When a traceback contains multiple exception lines, use the final exception as the signature; normalize any 64-character hex digest in that signature. Keep the public function and deterministic SHA-256 result.",
+    "requirements": [
+      "function preserved",
+      "last exception selected",
+      "64-hex digests normalized",
+      "line-number and path differences ignored when exception is unchanged",
+      "deterministic 64-hex output"
+    ],
+    "starting_files": {
+      "solution.py": "\"\"\"Stable signatures for observed validation errors; never generates feedback.\"\"\"\nimport hashlib\nimport re\n\ndef failure_fingerprint(feedback):\n    lines=str(feedback).strip().splitlines()\n    exceptions=[line.strip() for line in lines if re.fullmatch(r'[A-Za-z_][\\w.]*(?:Error|Exception)(?::.*)?',line.strip())]\n    signature=exceptions[0] if exceptions else str(feedback).strip()[-3000:]\n    # Diagnostic digests identify an observation, not the underlying failure.\n    signature=re.sub(r'\\b[a-fA-F0-9]{64}\\b','<digest>',signature)\n    return hashlib.sha256(signature.encode('utf-8')).hexdigest()\n"
+    },
+    "task_id": "cf21"
+  },
+  {
+    "category": "code_modification",
+    "private_test_sha256": "40739a577338b2cd9d8074565d02c87f92ec4ed69611ae97bfa3645c5fcb6025",
+    "request": "Repair source_issue in the supplied project module so an HTML file containing a self-closing element counts as markup. Keep ordinary start-tag handling and CSS/Python source checks intact.",
+    "requirements": [
+      "source_issue remains public",
+      "self-closing HTML element accepted",
+      "ordinary HTML tag still accepted",
+      "plain text HTML still rejected",
+      "other source checks preserved"
+    ],
+    "starting_files": {
+      "solution.py": "\"\"\"Content checks for generated source, independent of container syntax checks.\"\"\"\nimport ast\nimport re\nfrom html.parser import HTMLParser\nfrom pathlib import Path\n\n\nclass _Markup(HTMLParser):\n    def __init__(self):\n        super().__init__()\n        self.elements = 0\n\n    def handle_starttag(self, tag, attrs):\n        self.elements += 1\n\n    def handle_startendtag(self, tag, attrs):\n        return\n\n\ndef source_issue(path, content):\n    \"\"\"Reject unusable source before generation finishes; sandbox checks still follow.\"\"\"\n    suffix = Path(path).suffix.lower()\n    if not content.strip():\n        return 'The file is empty.'\n    if suffix in {'.md', '.txt', '.json'}:\n        return None\n    if suffix in {'.html', '.htm'}:\n        parser = _Markup()\n        parser.feed(content)\n        return None if parser.elements else 'HTML requires actual markup elements, not only comments or prose.'\n    if suffix == '.py':\n        try:\n            tree = ast.parse(content)\n        except SyntaxError as exc:\n            return f'Python syntax error on line {exc.lineno}: {exc.msg}.'\n        statements = [node for node in tree.body if not (isinstance(node, ast.Expr)\n                      and isinstance(node.value, ast.Constant) and isinstance(node.value.value, str))]\n        return None if statements else 'Python requires statements beyond comments and documentation strings.'\n    # Match string literals before comments so comment delimiters in strings\n    # remain source. This is a content gate, not a replacement language parser.\n    line_comment = r'--[^\\n]*' if suffix == '.sql' else (r'\\#[^\\n]*' if suffix in {'.sh', '.bash'} else r'//[^\\n]*')\n    tokens = re.compile(r'''\"(?:\\\\.|[^\"\\\\])*\"|'(?:\\\\.|[^'\\\\])*'|`(?:\\\\.|[^`\\\\])*`|/\\*.*?\\*/|''' + line_comment, re.S)\n    def strip_comment(match):\n        text = match.group()\n        return text if text[0] in {'\"', \"'\", '`'} else ''\n    remaining = tokens.sub(strip_comment, content).strip()\n    if suffix == '.css':\n        if not (re.search(r'\\{[^{}]*[\\w-]+\\s*:\\s*[^;}]+', remaining, re.S)\n                or re.search(r'@(import|charset|namespace)\\b[^;]+;', remaining, re.I)):\n            return 'CSS requires a style declaration or a stylesheet directive.'\n    return None if remaining else 'The source contains only comments.'\n\n\ndef intentional_non_source(instruction, path, operation_count):\n    \"\"\"Only a direct user request can authorize empty or comment-only output.\"\"\"\n    named = re.search(r'(?<![\\w./-])' + re.escape(path) + r'(?![\\w./-])', instruction, re.I)\n    return bool((named or operation_count == 1) and re.search(\n        r'\\b(?:empty|blank)\\s+(?:file|stylesheet|module)|\\b(?:comment[- ]only|only\\s+comments)\\b', instruction, re.I))\n\n\ndef generated_source_issue(path, content, instruction, before=None, operation_count=1):\n    \"\"\"Apply shared user-intent exceptions to both generation workflows.\"\"\"\n    if intentional_non_source(instruction, path, operation_count):\n        return None\n    if (before is not None and before.strip() and source_issue(path, before)\n            and content.strip() and re.search(r'\\bcomments?\\b', instruction, re.I)):\n        return None\n    return source_issue(path, content)\n"
+    },
+    "task_id": "cf22"
+  },
+  {
+    "category": "complex",
+    "private_test_sha256": "cdd6c88df2338441980157427f5ba480012ba1698b21365dc4176264d23c04ec",
+    "request": "Repair the existing multi-file receipt importer. Preserve parse_receipts(text), invoice_totals(receipts), and main(argv). Parse quoted CSV correctly, use Decimal for money, accept negative refunds, reject missing invoice_id/item/amount or invalid amount with ValueError, and write sorted JSON totals as decimal strings. Keep the existing CLI input/output arguments and all project files.",
+    "requirements": [
+      "three public symbols remain",
+      "quoted CSV round trips",
+      "Decimal totals",
+      "refunds accepted",
+      "malformed rows raise ValueError",
+      "sorted JSON CLI output",
+      "all project files preserved"
+    ],
+    "starting_files": {
+      "billing/__init__.py": "",
+      "billing/parser.py": "def parse_receipts(text):\n    lines = text.splitlines()[1:]\n    rows = []\n    for line in lines:\n        if not line.strip():\n            continue\n        invoice_id, item, amount = line.split(',')\n        rows.append({'invoice_id': invoice_id, 'item': item, 'amount': float(amount)})\n    return rows\n",
+      "billing/report.py": "def invoice_totals(receipts):\n    totals = {}\n    for row in receipts:\n        key = row['invoice_id']\n        totals[key] = totals.get(key, 0) + row['amount']\n    return totals\n",
+      "main.py": "import argparse\nfrom pathlib import Path\nfrom billing.parser import parse_receipts\nfrom billing.report import invoice_totals\n\ndef main(argv):\n    parser = argparse.ArgumentParser()\n    parser.add_argument('--input', required=True)\n    parser.add_argument('--output', required=True)\n    args = parser.parse_args(argv)\n    totals = invoice_totals(parse_receipts(Path(args.input).read_text()))\n    Path(args.output).write_text(str(totals))\n    return 0\n\nif __name__ == '__main__':\n    raise SystemExit(main(__import__('sys').argv[1:]))\n"
+    },
+    "task_id": "cp01"
+  },
+  {
+    "category": "complex",
+    "private_test_sha256": "6d9d67b58a7f35e5b46072809025d5c2eec9f375c4d278db86889ec3f2aef74a",
+    "request": "Repair the multi-file SQLite task queue. A worker must acknowledge a task only after its handler succeeds; acknowledged tasks must not run again after reopening the same database. Preserve QueueStore.add, QueueStore.next_task, QueueStore.ack and Worker.run_once, FIFO order, and the project files.",
+    "requirements": [
+      "four public methods preserved",
+      "ack persists across restart",
+      "unacknowledged task remains available",
+      "FIFO order",
+      "handler failure does not acknowledge",
+      "no unrelated file removal"
+    ],
+    "starting_files": {
+      "main.py": "from queuepkg.store import QueueStore\nfrom queuepkg.worker import Worker\n\ndef main(path, handler):\n    store = QueueStore(path)\n    try:\n        return Worker(store, handler).run_once()\n    finally:\n        store.close()\n",
+      "queuepkg/__init__.py": "",
+      "queuepkg/store.py": "import sqlite3\n\nclass QueueStore:\n    def __init__(self, path):\n        self.db = sqlite3.connect(path)\n        self.db.execute('CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY, payload TEXT, done INTEGER DEFAULT 0)')\n        self.db.commit()\n        self.acked = set()\n\n    def add(self, payload):\n        cursor = self.db.execute('INSERT INTO tasks(payload) VALUES (?)', (payload,))\n        self.db.commit()\n        return cursor.lastrowid\n\n    def next_task(self):\n        row = self.db.execute('SELECT id, payload FROM tasks WHERE done = 0 ORDER BY id LIMIT 1').fetchone()\n        return row\n\n    def ack(self, task_id):\n        self.acked.add(task_id)\n\n    def close(self):\n        self.db.close()\n",
+      "queuepkg/worker.py": "class Worker:\n    def __init__(self, store, handler):\n        self.store = store\n        self.handler = handler\n\n    def run_once(self):\n        task = self.store.next_task()\n        if task is None:\n            return False\n        task_id, payload = task\n        self.handler(payload)\n        self.store.ack(task_id)\n        return True\n"
+    },
+    "task_id": "cp02"
+  },
+  {
+    "category": "run_project",
+    "private_test_sha256": "ee698ac3d969fc0d39f1247d7e0aeb74bfdcb6bad3cd72bed371fe1d9ecaa714",
+    "request": "Inspect this project and run its documented entry point in Docker. Preserve every file and report the actual output. Do not run unused.py.",
+    "requirements": [
+      "read README.md",
+      "execute documented command",
+      "preserve all files",
+      "actual successful exit and exact stdout"
+    ],
+    "starting_files": {
+      "README.md": "Run from project root with `python main.py`. Expected stdout: 'inventory ready\\n'.\n",
+      "data.txt": "hello\n",
+      "main.py": "print('inventory ready')\n",
+      "settings.json": "{\"items\":[2,3,5]}",
+      "unused.py": "raise RuntimeError('This is not the entry point')\n"
+    },
+    "task_id": "rp01"
+  },
+  {
+    "category": "run_project",
+    "private_test_sha256": "ee698ac3d969fc0d39f1247d7e0aeb74bfdcb6bad3cd72bed371fe1d9ecaa714",
+    "request": "Inspect this project and run its documented entry point in Docker. Preserve every file and report the actual output. Do not run unused.py.",
+    "requirements": [
+      "read README.md",
+      "execute documented command",
+      "preserve all files",
+      "actual successful exit and exact stdout"
+    ],
+    "starting_files": {
+      "README.md": "Run from project root with `python bin/launch.py`. Expected stdout: 'nested ready\\n'.\n",
+      "bin/launch.py": "print('nested ready')\n",
+      "data.txt": "hello\n",
+      "settings.json": "{\"items\":[2,3,5]}",
+      "unused.py": "raise RuntimeError('This is not the entry point')\n"
+    },
+    "task_id": "rp02"
+  },
+  {
+    "category": "run_project",
+    "private_test_sha256": "ee698ac3d969fc0d39f1247d7e0aeb74bfdcb6bad3cd72bed371fe1d9ecaa714",
+    "request": "Inspect this project and run its documented entry point in Docker. Preserve every file and report the actual output. Do not run unused.py.",
+    "requirements": [
+      "read README.md",
+      "execute documented command",
+      "preserve all files",
+      "actual successful exit and exact stdout"
+    ],
+    "starting_files": {
+      "README.md": "Run from project root with `python entry.py --count 3`. Expected stdout: '3\\n'.\n",
+      "data.txt": "hello\n",
+      "entry.py": "import argparse\np=argparse.ArgumentParser(); p.add_argument('--count',type=int); a=p.parse_args(); print(sum(range(a.count)))\n",
+      "settings.json": "{\"items\":[2,3,5]}",
+      "unused.py": "raise RuntimeError('This is not the entry point')\n"
+    },
+    "task_id": "rp03"
+  },
+  {
+    "category": "run_project",
+    "private_test_sha256": "ee698ac3d969fc0d39f1247d7e0aeb74bfdcb6bad3cd72bed371fe1d9ecaa714",
+    "request": "Inspect this project and run its documented entry point in Docker. Preserve every file and report the actual output. Do not run unused.py.",
+    "requirements": [
+      "read README.md",
+      "execute documented command",
+      "preserve all files",
+      "actual successful exit and exact stdout"
+    ],
+    "starting_files": {
+      "README.md": "Run from project root with `python tool.py`. Expected stdout: 'HELLO\\n'.\n",
+      "data.txt": "hello\n",
+      "settings.json": "{\"items\":[2,3,5]}",
+      "tool.py": "from pathlib import Path\nprint(Path('data.txt').read_text().strip().upper())\n",
+      "unused.py": "raise RuntimeError('This is not the entry point')\n"
+    },
+    "task_id": "rp04"
+  },
+  {
+    "category": "run_project",
+    "private_test_sha256": "ee698ac3d969fc0d39f1247d7e0aeb74bfdcb6bad3cd72bed371fe1d9ecaa714",
+    "request": "Inspect this project and run its documented entry point in Docker. Preserve every file and report the actual output. Do not run unused.py.",
+    "requirements": [
+      "read README.md",
+      "execute documented command",
+      "preserve all files",
+      "actual successful exit and exact stdout"
+    ],
+    "starting_files": {
+      "README.md": "Run from project root with `python -m pkg`. Expected stdout: 'module ready\\n'.\n",
+      "data.txt": "hello\n",
+      "pkg/__init__.py": "",
+      "pkg/__main__.py": "print('module ready')\n",
+      "settings.json": "{\"items\":[2,3,5]}",
+      "unused.py": "raise RuntimeError('This is not the entry point')\n"
+    },
+    "task_id": "rp05"
+  },
+  {
+    "category": "run_project",
+    "private_test_sha256": "ee698ac3d969fc0d39f1247d7e0aeb74bfdcb6bad3cd72bed371fe1d9ecaa714",
+    "request": "Inspect this project and run its documented entry point in Docker. Preserve every file and report the actual output. Do not run unused.py.",
+    "requirements": [
+      "read README.md",
+      "execute documented command",
+      "preserve all files",
+      "actual successful exit and exact stdout"
+    ],
+    "starting_files": {
+      "README.md": "Run from project root with `python report.py red blue`. Expected stdout: 'red|blue\\n'.\n",
+      "data.txt": "hello\n",
+      "report.py": "import sys\nprint('|'.join(sys.argv[1:]))\n",
+      "settings.json": "{\"items\":[2,3,5]}",
+      "unused.py": "raise RuntimeError('This is not the entry point')\n"
+    },
+    "task_id": "rp06"
+  },
+  {
+    "category": "run_project",
+    "private_test_sha256": "ee698ac3d969fc0d39f1247d7e0aeb74bfdcb6bad3cd72bed371fe1d9ecaa714",
+    "request": "Inspect this project and run its documented entry point in Docker. Preserve every file and report the actual output. Do not run unused.py.",
+    "requirements": [
+      "read README.md",
+      "execute documented command",
+      "preserve all files",
+      "actual successful exit and exact stdout"
+    ],
+    "starting_files": {
+      "README.md": "Run from project root with `python -m app.runner`. Expected stdout: '17\\n'.\n",
+      "app/__init__.py": "",
+      "app/runner.py": "from .value import VALUE\nprint(VALUE)\n",
+      "app/value.py": "VALUE=17\n",
+      "data.txt": "hello\n",
+      "settings.json": "{\"items\":[2,3,5]}",
+      "unused.py": "raise RuntimeError('This is not the entry point')\n"
+    },
+    "task_id": "rp07"
+  },
+  {
+    "category": "run_project",
+    "private_test_sha256": "ee698ac3d969fc0d39f1247d7e0aeb74bfdcb6bad3cd72bed371fe1d9ecaa714",
+    "request": "Inspect this project and run its documented entry point in Docker. Preserve every file and report the actual output. Do not run unused.py.",
+    "requirements": [
+      "read README.md",
+      "execute documented command",
+      "preserve all files",
+      "actual successful exit and exact stdout"
+    ],
+    "starting_files": {
+      "README.md": "Run from project root with `python cli.py`. Expected stdout: '10\\n'.\n",
+      "cli.py": "import json\nfrom pathlib import Path\nprint(sum(json.loads(Path('settings.json').read_text())['items']))\n",
+      "data.txt": "hello\n",
+      "settings.json": "{\"items\":[2,3,5]}",
+      "unused.py": "raise RuntimeError('This is not the entry point')\n"
+    },
+    "task_id": "rp08"
+  },
+  {
+    "category": "multifile",
+    "private_test_sha256": "68a03e10f4854f9b8b2c2e0ede09252e375ae02740ea1ac314a8e3d0c1dc5310",
+    "request": "normalize_name(text) in core.py: strip edges, collapse internal whitespace, lowercase. rules.py exports unique_names(values), preserving first-occurrence order after normalization. app.py exports process(values) delegating to unique_names. Preserve sentinel.txt and the existing health() function. Use only Python standard library.",
+    "requirements": [
+      "normalize_name(text) in core.py: strip edges, collapse internal whitespace, lowercase. rules.py exports unique_names(values), preserving first-occurrence order after normalization. app.py exports process(values) delegating to unique_names.",
+      "health() returns \"ok\"",
+      "sentinel.txt unchanged",
+      "all three modules remain"
+    ],
+    "starting_files": {
+      "app.py": "import rules\ndef health():\n    return \"ok\"\n\ndef process(*args):\n    raise NotImplementedError\n",
+      "core.py": "# Implement core functions here.\n",
+      "rules.py": "import core\n",
+      "sentinel.txt": "KEEP\n"
+    },
+    "task_id": "mf01"
+  },
+  {
+    "category": "multifile",
+    "private_test_sha256": "0ab1e3b5d563377a42b7fd267ed0e2883c0b37d4e732eb134607b05669643377",
+    "request": "parse_pair(text) in core.py splits exactly one = into stripped nonempty key and value; otherwise raises ValueError. rules.py exports merge_pairs(lines) with last value winning. app.py process(lines) delegates to merge_pairs. Preserve sentinel.txt and the existing health() function. Use only Python standard library.",
+    "requirements": [
+      "parse_pair(text) in core.py splits exactly one = into stripped nonempty key and value; otherwise raises ValueError. rules.py exports merge_pairs(lines) with last value winning. app.py process(lines) delegates to merge_pairs.",
+      "health() returns \"ok\"",
+      "sentinel.txt unchanged",
+      "all three modules remain"
+    ],
+    "starting_files": {
+      "app.py": "import rules\ndef health():\n    return \"ok\"\n\ndef process(*args):\n    raise NotImplementedError\n",
+      "core.py": "# Implement core functions here.\n",
+      "rules.py": "import core\n",
+      "sentinel.txt": "KEEP\n"
+    },
+    "task_id": "mf02"
+  },
+  {
+    "category": "multifile",
+    "private_test_sha256": "f09ea63535c3064119ec7acc35dc6e92c1a7de17b37c8d96071d2f2c33c3c6df",
+    "request": "distance(point) in core.py returns Manhattan distance for an x,y pair. rules.py closest(points) returns the first point with minimum distance, or None if empty. app.py process(points) delegates to closest. Preserve sentinel.txt and the existing health() function. Use only Python standard library.",
+    "requirements": [
+      "distance(point) in core.py returns Manhattan distance for an x,y pair. rules.py closest(points) returns the first point with minimum distance, or None if empty. app.py process(points) delegates to closest.",
+      "health() returns \"ok\"",
+      "sentinel.txt unchanged",
+      "all three modules remain"
+    ],
+    "starting_files": {
+      "app.py": "import rules\ndef health():\n    return \"ok\"\n\ndef process(*args):\n    raise NotImplementedError\n",
+      "core.py": "# Implement core functions here.\n",
+      "rules.py": "import core\n",
+      "sentinel.txt": "KEEP\n"
+    },
+    "task_id": "mf03"
+  },
+  {
+    "category": "multifile",
+    "private_test_sha256": "dd1e1b8b070ebb473888323943f33cfb732cbe1b0fd8ab1a86ba23fec474728c",
+    "request": "parse_amount(text) in core.py returns decimal.Decimal, rejecting negative and nonfinite amounts with ValueError. rules.py total(values) sums parsed strings with Decimal. app.py process(values) returns total as a fixed-point string. Preserve sentinel.txt and the existing health() function. Use only Python standard library.",
+    "requirements": [
+      "parse_amount(text) in core.py returns decimal.Decimal, rejecting negative and nonfinite amounts with ValueError. rules.py total(values) sums parsed strings with Decimal. app.py process(values) returns total as a fixed-point string.",
+      "health() returns \"ok\"",
+      "sentinel.txt unchanged",
+      "all three modules remain"
+    ],
+    "starting_files": {
+      "app.py": "import rules\ndef health():\n    return \"ok\"\n\ndef process(*args):\n    raise NotImplementedError\n",
+      "core.py": "# Implement core functions here.\n",
+      "rules.py": "import core\n",
+      "sentinel.txt": "KEEP\n"
+    },
+    "task_id": "mf04"
+  },
+  {
+    "category": "multifile",
+    "private_test_sha256": "69bf9409754a5dfcc345ff5e1789e12057b806cff527a6794fb26f82fe9eac57",
+    "request": "overlaps(a,b) in core.py compares two half-open numeric intervals; touching endpoints do not overlap. rules.py conflicts(intervals) returns index pairs i<j that overlap in lexicographic order. app.py process delegates to conflicts. Preserve sentinel.txt and the existing health() function. Use only Python standard library.",
+    "requirements": [
+      "overlaps(a,b) in core.py compares two half-open numeric intervals; touching endpoints do not overlap. rules.py conflicts(intervals) returns index pairs i<j that overlap in lexicographic order. app.py process delegates to conflicts.",
+      "health() returns \"ok\"",
+      "sentinel.txt unchanged",
+      "all three modules remain"
+    ],
+    "starting_files": {
+      "app.py": "import rules\ndef health():\n    return \"ok\"\n\ndef process(*args):\n    raise NotImplementedError\n",
+      "core.py": "# Implement core functions here.\n",
+      "rules.py": "import core\n",
+      "sentinel.txt": "KEEP\n"
+    },
+    "task_id": "mf05"
+  },
+  {
+    "category": "multifile",
+    "private_test_sha256": "508d576113d5a0916752b252475e5ddce342be09f35ceb8cb7b355e85e72baed",
+    "request": "clean_word(text) in core.py lowercases and strips punctuation from the two edges. rules.py frequencies(words) counts nonempty cleaned words. app.py process(words) returns sorted (word,count) pairs. Preserve sentinel.txt and the existing health() function. Use only Python standard library.",
+    "requirements": [
+      "clean_word(text) in core.py lowercases and strips punctuation from the two edges. rules.py frequencies(words) counts nonempty cleaned words. app.py process(words) returns sorted (word,count) pairs.",
+      "health() returns \"ok\"",
+      "sentinel.txt unchanged",
+      "all three modules remain"
+    ],
+    "starting_files": {
+      "app.py": "import rules\ndef health():\n    return \"ok\"\n\ndef process(*args):\n    raise NotImplementedError\n",
+      "core.py": "# Implement core functions here.\n",
+      "rules.py": "import core\n",
+      "sentinel.txt": "KEEP\n"
+    },
+    "task_id": "mf06"
+  },
+  {
+    "category": "multifile",
+    "private_test_sha256": "fae0c4cec40bcdb4f350ddbbef035ddc72cd0122da70d26a75a27f8b5f0e5a18",
+    "request": "valid_port(value) in core.py accepts only int excluding bool, from 1 to 65535, else ValueError. rules.py ports(values) validates all and returns a sorted unique list. app.py process delegates to ports. Preserve sentinel.txt and the existing health() function. Use only Python standard library.",
+    "requirements": [
+      "valid_port(value) in core.py accepts only int excluding bool, from 1 to 65535, else ValueError. rules.py ports(values) validates all and returns a sorted unique list. app.py process delegates to ports.",
+      "health() returns \"ok\"",
+      "sentinel.txt unchanged",
+      "all three modules remain"
+    ],
+    "starting_files": {
+      "app.py": "import rules\ndef health():\n    return \"ok\"\n\ndef process(*args):\n    raise NotImplementedError\n",
+      "core.py": "# Implement core functions here.\n",
+      "rules.py": "import core\n",
+      "sentinel.txt": "KEEP\n"
+    },
+    "task_id": "mf07"
+  },
+  {
+    "category": "multifile",
+    "private_test_sha256": "56306197089d7eb33db6b51766995a28b5b6adf9d39305d1bca45c93a6dc4e65",
+    "request": "parse_date(text) in core.py parses ISO YYYY-MM-DD to datetime.date. rules.py earliest(values) returns earliest parsed date or None. app.py process returns ISO string or None. Preserve sentinel.txt and the existing health() function. Use only Python standard library.",
+    "requirements": [
+      "parse_date(text) in core.py parses ISO YYYY-MM-DD to datetime.date. rules.py earliest(values) returns earliest parsed date or None. app.py process returns ISO string or None.",
+      "health() returns \"ok\"",
+      "sentinel.txt unchanged",
+      "all three modules remain"
+    ],
+    "starting_files": {
+      "app.py": "import rules\ndef health():\n    return \"ok\"\n\ndef process(*args):\n    raise NotImplementedError\n",
+      "core.py": "# Implement core functions here.\n",
+      "rules.py": "import core\n",
+      "sentinel.txt": "KEEP\n"
+    },
+    "task_id": "mf08"
+  },
+  {
+    "category": "complex",
+    "private_test_sha256": "cf3fbd74e8fcb7c3e504f7c3dba72842dbd35713c8a8059abe28eac15804f747",
+    "request": "Implement topological_order(graph) in core.py for a dict of node to prerequisite list. Include referenced nodes missing keys; raise ValueError on cycles; lexicographically smallest ready node first. rules.py validate_order(graph,order) returns bool, including uniqueness and complete node coverage. app.py process(graph) computes order, validates it, returns the order. Preserve sentinel.txt and the existing health() function. Use only Python standard library.",
+    "requirements": [
+      "Implement topological_order(graph) in core.py for a dict of node to prerequisite list. Include referenced nodes missing keys; raise ValueError on cycles; lexicographically smallest ready node first. rules.py validate_order(graph,order) returns bool, including uniqueness and complete node coverage. app.py process(graph) computes order, validates it, returns the order.",
+      "health() returns \"ok\"",
+      "sentinel.txt unchanged",
+      "all three modules remain"
+    ],
+    "starting_files": {
+      "app.py": "import rules\ndef health():\n    return \"ok\"\n\ndef process(*args):\n    raise NotImplementedError\n",
+      "core.py": "# Implement core functions here.\n",
+      "rules.py": "import core\n",
+      "sentinel.txt": "KEEP\n"
+    },
+    "task_id": "cx01"
+  },
+  {
+    "category": "complex",
+    "private_test_sha256": "80430017aea02aa0ce3a41c4b68f23024d42acf5e10ece8895acf5a5c000e8fc",
+    "request": "Implement flatten(value) in core.py: flatten nested lists recursively, preserving non-list values including None; do not flatten tuples. rules.py chunks(values,size) returns lists of up to size items and rejects nonpositive or bool size with ValueError. app.py process(value,size) flattens then chunks. Preserve sentinel.txt and the existing health() function. Use only Python standard library.",
+    "requirements": [
+      "Implement flatten(value) in core.py: flatten nested lists recursively, preserving non-list values including None; do not flatten tuples. rules.py chunks(values,size) returns lists of up to size items and rejects nonpositive or bool size with ValueError. app.py process(value,size) flattens then chunks.",
+      "health() returns \"ok\"",
+      "sentinel.txt unchanged",
+      "all three modules remain"
+    ],
+    "starting_files": {
+      "app.py": "import rules\ndef health():\n    return \"ok\"\n\ndef process(*args):\n    raise NotImplementedError\n",
+      "core.py": "# Implement core functions here.\n",
+      "rules.py": "import core\n",
+      "sentinel.txt": "KEEP\n"
+    },
+    "task_id": "cx02"
+  },
+  {
+    "category": "complex",
+    "private_test_sha256": "a3c69f985654ed1e5be745350e5719efea98208ea720ec4f18896c097e328470",
+    "request": "Implement tokenize(text) in core.py with shlex.split. rules.py parse_options(tokens) accepts --key=value, --key value, and bare flags --key -> True; reject duplicate keys and positional tokens with ValueError. app.py process(text) tokenizes and parses. Preserve sentinel.txt and the existing health() function. Use only Python standard library.",
+    "requirements": [
+      "Implement tokenize(text) in core.py with shlex.split. rules.py parse_options(tokens) accepts --key=value, --key value, and bare flags --key -> True; reject duplicate keys and positional tokens with ValueError. app.py process(text) tokenizes and parses.",
+      "health() returns \"ok\"",
+      "sentinel.txt unchanged",
+      "all three modules remain"
+    ],
+    "starting_files": {
+      "app.py": "import rules\ndef health():\n    return \"ok\"\n\ndef process(*args):\n    raise NotImplementedError\n",
+      "core.py": "# Implement core functions here.\n",
+      "rules.py": "import core\n",
+      "sentinel.txt": "KEEP\n"
+    },
+    "task_id": "cx03"
+  },
+  {
+    "category": "complex",
+    "private_test_sha256": "93c5fced76353774b08a5999ef3465a477ccfe0d3856e032fc7abb38ae257198",
+    "request": "Implement decode_runs(pairs) in core.py expanding (value,count), reject negative or noninteger/bool counts with ValueError. rules.py encode_runs(values) compresses consecutive equal values to (value,count). app.py process(pairs) returns the canonical encode_runs(decode_runs(pairs)). Preserve sentinel.txt and the existing health() function. Use only Python standard library.",
+    "requirements": [
+      "Implement decode_runs(pairs) in core.py expanding (value,count), reject negative or noninteger/bool counts with ValueError. rules.py encode_runs(values) compresses consecutive equal values to (value,count). app.py process(pairs) returns the canonical encode_runs(decode_runs(pairs)).",
+      "health() returns \"ok\"",
+      "sentinel.txt unchanged",
+      "all three modules remain"
+    ],
+    "starting_files": {
+      "app.py": "import rules\ndef health():\n    return \"ok\"\n\ndef process(*args):\n    raise NotImplementedError\n",
+      "core.py": "# Implement core functions here.\n",
+      "rules.py": "import core\n",
+      "sentinel.txt": "KEEP\n"
+    },
+    "task_id": "cx04"
+  },
+  {
+    "category": "complex",
+    "private_test_sha256": "1d99232eaee37182d34d99425a692ebe45a384701c11339b4281f3f85ed230bd",
+    "request": "Implement parse_rows(text) in core.py using csv.DictReader, preserving quoted fields. rules.py summarize(rows) groups amounts by category using Decimal; missing category or invalid/nonfinite amount raises ValueError; negative refunds allowed. app.py process(text) returns dict sorted by category with fixed-point string totals. Preserve sentinel.txt and the existing health() function. Use only Python standard library.",
+    "requirements": [
+      "Implement parse_rows(text) in core.py using csv.DictReader, preserving quoted fields. rules.py summarize(rows) groups amounts by category using Decimal; missing category or invalid/nonfinite amount raises ValueError; negative refunds allowed. app.py process(text) returns dict sorted by category with fixed-point string totals.",
+      "health() returns \"ok\"",
+      "sentinel.txt unchanged",
+      "all three modules remain"
+    ],
+    "starting_files": {
+      "app.py": "import rules\ndef health():\n    return \"ok\"\n\ndef process(*args):\n    raise NotImplementedError\n",
+      "core.py": "# Implement core functions here.\n",
+      "rules.py": "import core\n",
+      "sentinel.txt": "KEEP\n"
+    },
+    "task_id": "cx05"
+  },
+  {
+    "category": "complex",
+    "private_test_sha256": "0ee4c0c95c1950f1338736f2dc352832a5ecedcb6979c80e433f688cc0b9af64",
+    "request": "Implement normalize_path(text) in core.py for safe POSIX relative paths: reject absolute paths, backslashes, .. segments, and empty paths with ValueError; remove . segments and repeated slashes. rules.py index_paths(values) deduplicates normalized paths, sorted. app.py process delegates to index_paths. Preserve sentinel.txt and the existing health() function. Use only Python standard library.",
+    "requirements": [
+      "Implement normalize_path(text) in core.py for safe POSIX relative paths: reject absolute paths, backslashes, .. segments, and empty paths with ValueError; remove . segments and repeated slashes. rules.py index_paths(values) deduplicates normalized paths, sorted. app.py process delegates to index_paths.",
+      "health() returns \"ok\"",
+      "sentinel.txt unchanged",
+      "all three modules remain"
+    ],
+    "starting_files": {
+      "app.py": "import rules\ndef health():\n    return \"ok\"\n\ndef process(*args):\n    raise NotImplementedError\n",
+      "core.py": "# Implement core functions here.\n",
+      "rules.py": "import core\n",
+      "sentinel.txt": "KEEP\n"
+    },
+    "task_id": "cx06"
+  },
+  {
+    "category": "complex",
+    "private_test_sha256": "7162ae0e904ccc726e9122f1b8509ca668f79fac8488dd5ac5f207a501c9c9c1",
+    "request": "Implement merge_intervals(intervals) in core.py: sort and merge overlapping or touching (start,end) ranges; reject end<start with ValueError. rules.py covered_length(intervals) returns union length using merge_intervals. app.py process returns {intervals: merged list, length: union length}. Preserve sentinel.txt and the existing health() function. Use only Python standard library.",
+    "requirements": [
+      "Implement merge_intervals(intervals) in core.py: sort and merge overlapping or touching (start,end) ranges; reject end<start with ValueError. rules.py covered_length(intervals) returns union length using merge_intervals. app.py process returns {intervals: merged list, length: union length}.",
+      "health() returns \"ok\"",
+      "sentinel.txt unchanged",
+      "all three modules remain"
+    ],
+    "starting_files": {
+      "app.py": "import rules\ndef health():\n    return \"ok\"\n\ndef process(*args):\n    raise NotImplementedError\n",
+      "core.py": "# Implement core functions here.\n",
+      "rules.py": "import core\n",
+      "sentinel.txt": "KEEP\n"
+    },
+    "task_id": "cx07"
+  },
+  {
+    "category": "complex",
+    "private_test_sha256": "68272ec0a1d2ed7254f87707f41d007823f40cfe613ae72451fe426777bbef00",
+    "request": "Implement resolve_alias(name,aliases) in core.py following aliases until terminal; cycles raise ValueError. rules.py resolve_all(names,aliases) preserves input order and duplicates. app.py process delegates to resolve_all. Preserve sentinel.txt and the existing health() function. Use only Python standard library.",
+    "requirements": [
+      "Implement resolve_alias(name,aliases) in core.py following aliases until terminal; cycles raise ValueError. rules.py resolve_all(names,aliases) preserves input order and duplicates. app.py process delegates to resolve_all.",
+      "health() returns \"ok\"",
+      "sentinel.txt unchanged",
+      "all three modules remain"
+    ],
+    "starting_files": {
+      "app.py": "import rules\ndef health():\n    return \"ok\"\n\ndef process(*args):\n    raise NotImplementedError\n",
+      "core.py": "# Implement core functions here.\n",
+      "rules.py": "import core\n",
+      "sentinel.txt": "KEEP\n"
+    },
+    "task_id": "cx08"
+  },
+  {
+    "category": "complex",
+    "private_test_sha256": "fbf32490fcd7e6e9d6b29796b2d7e0a67562cf8e9dde09f28895e3f314f0f3e3",
+    "request": "Implement parse_events(rows) in core.py returning (id,timestamp) pairs with timezone-aware datetime.fromisoformat; naive timestamps and missing id raise ValueError. rules.py latest_by_id(events) selects latest per id, preserving first encounter on equal time. app.py process(rows) returns sorted IDs mapped to ISO timestamps. Preserve sentinel.txt and the existing health() function. Use only Python standard library.",
+    "requirements": [
+      "Implement parse_events(rows) in core.py returning (id,timestamp) pairs with timezone-aware datetime.fromisoformat; naive timestamps and missing id raise ValueError. rules.py latest_by_id(events) selects latest per id, preserving first encounter on equal time. app.py process(rows) returns sorted IDs mapped to ISO timestamps.",
+      "health() returns \"ok\"",
+      "sentinel.txt unchanged",
+      "all three modules remain"
+    ],
+    "starting_files": {
+      "app.py": "import rules\ndef health():\n    return \"ok\"\n\ndef process(*args):\n    raise NotImplementedError\n",
+      "core.py": "# Implement core functions here.\n",
+      "rules.py": "import core\n",
+      "sentinel.txt": "KEEP\n"
+    },
+    "task_id": "cx09"
+  }
+]

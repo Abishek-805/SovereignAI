@@ -1,0 +1,25 @@
+{
+  "files": {
+    "experiments/minimal_execution.py": "65e5c8679b9b905e3c32a1064dbdb73f93ff1bb276723373ccf2828f1026a84b",
+    "experiments/task_kernel.py": "afcf2b0a47881c57a03552b52a3e503a51325e3174bfe86e6064baee0740c8c4",
+    "experiments/kernel_docker.py": "95d9c82240ddaf80d3875af7058392d6393062bd563f40e8c94d7fa82da6ae1d",
+    "experiments/kernel_model.py": "198249eab0ccad7a77832e3f92627170e5bdda47600711dfcef2110ecce1fe07",
+    "experiments/model_task_tranche.py": "aad4f5d96df6e64eae16c6f699aedd702e7dca09c70766a8e1a722855110097e",
+    "experiments/comparison_extra_tasks.py": "2118378236cdd730065986abbd0fa64817971d985a56fdb983d87bcae9850879",
+    "experiments/comparison_report.py": "8758c46cb4d1ee03079b3f78251acd866aafd34c4144d5b2354a061a8b21f38f",
+    "experiments/benchmark_resources.py": "e76dbb7391cdbedca13dfb0eaac3acc791ee43f3ab65461a1825d85723827abc",
+    "benchmarks/overnight-convergence/code-fidelity-authoring.py": "b9345887ee6bb94f9bdef31686444c04a11514ed38749cfdbc74475aae9446ee",
+    "benchmarks/overnight-convergence/complex-project-authoring.py": "7ed7dd22c612d0a83815a4c7abe9cd284d1c60dc9f58b128e575be534029c970",
+    "benchmarks/overnight-convergence/code-fidelity-tasks.json": "295102672d8b0dd9ae14a2b642c802eeb339d8b1e0498eb4057c1b897b7b8845",
+    "runtime/llama-b11132/llama-server.exe": "55638e21efcd8ae09e176cb670b0ce55ce2dcefa489d384202a536cc89004290"
+  },
+  "sandbox_image_id": "sha256:5370db5915e0774ba92a758199430a762f2cbc45515ed2958ca8e9a58faef272",
+  "context_tokens": 4096,
+  "temperature": 0,
+  "max_model_calls": 12,
+  "max_repair_attempts": 3,
+  "max_sandbox_runs": 12,
+  "timeout_seconds": 300,
+  "max_output_tokens": 12000,
+  "max_tool_calls": 40
+}

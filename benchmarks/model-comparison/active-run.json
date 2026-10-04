@@ -1,10 +1,11 @@
 {
-  "pid": 4908,
+  "pid": 28784,
   "command": "python experiments/model_compatibility.py --tasks",
-  "tranche_tasks": 15,
+  "tranche_tasks": 40,
   "models": 4,
   "full_40_task_comparison_complete": false,
   "production_modified": false,
-  "raw_directory": "benchmarks/model-comparison/task-tranche-1",
-  "constraint": "one heavy model; Docker generated-code execution"
+  "raw_directory": "benchmarks/model-comparison/fixed-40",
+  "constraint": "one heavy model; Docker generated-code execution",
+  "evidence_repairs_only": true
 }

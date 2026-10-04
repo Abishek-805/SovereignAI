@@ -49,11 +49,26 @@
       "repair_verify": 8
     },
     "scripted_docker_repair_controls": 1,
-    "model_driven_runs": "FIRST_15_TASK_TRANCHE_RUNNING",
+    "model_driven_runs": "FIXED_40_RUNNING",
     "streaming_adapter_implemented": true,
     "live_pilot_state": "BLOCKED_ACTIVE_MODEL_MISMATCH",
     "current_required_comparison_tasks": 40,
     "comparison_complete": false
   },
-  "next_gate": "Finish first authored tranche, complete remaining 40-task manifest and matched baseline; no production migration"
+  "next_gate": "Finish 160 fixed-kernel executions; semantic and oracle audit; no production migration",
+  "model_comparison_checkpoint": {
+    "pid": 28784,
+    "manifest": "benchmarks/model-comparison/frozen-40-task-manifest.json",
+    "contract": "benchmarks/model-comparison/frozen-experiment-contract.json",
+    "preserved_completed_coder_tasks": 6,
+    "semantic_reviewed_tasks": 6,
+    "missing_historical_resource_samples": 6,
+    "category_mix": {
+      "code_modification": 9,
+      "repair_verify": 4,
+      "complex": 11,
+      "run_project": 8,
+      "multifile": 8
+    }
+  }
 }

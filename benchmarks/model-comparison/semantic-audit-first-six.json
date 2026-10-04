@@ -1,0 +1,162 @@
+{
+  "review_type": "answer-bound direct trajectory inspection",
+  "full_audit_complete": false,
+  "rows": [
+    {
+      "task_id": "cf01",
+      "model": "coder",
+      "raw_sha256": "815eeb01e0997ea4f6608de81ae9ec54eb970dc9f872baad9438068df5182225",
+      "primary_failure": "ACTION_FORMAT",
+      "evidence_read": [
+        "solution.py"
+      ],
+      "request": "Implement parse_invoice(text) returning an invoice object. A missing invoice number must raise KeyError('invoice_number'), and a missing total must raise KeyError('total'); do not return an error object.",
+      "requirements": [
+        "parse_invoice remains callable",
+        "valid invoice number and total are parsed",
+        "missing number raises KeyError",
+        "missing total raises KeyError",
+        "unrelated text does not cause a false total"
+      ],
+      "observed_behavior": "Read solution.py; supplied patch as JSON array where frozen schema requires JSON string. No patch was accepted. Repeated FINISH revalidated the unchanged failing candidate.",
+      "model_belief": "Not inferred; only observable outputs evaluated",
+      "targeted_repair_applied": false,
+      "repair_damage": false,
+      "final_validation_passed": false,
+      "stale_context_or_wrong_workspace_evidence": false,
+      "secondary_failure": "budget exhausted",
+      "limitation": "Initial resource samples and exact HTTP error bodies were not recorded."
+    },
+    {
+      "task_id": "cf02",
+      "model": "coder",
+      "raw_sha256": "f39397d119b2cb0b62288c84b21e34aa0e44092376f0329ea5664ec2ff49d87c",
+      "primary_failure": "ACTION_FORMAT",
+      "evidence_read": [
+        "solution.py",
+        "solution.py",
+        "solution.py",
+        "solution.py",
+        "solution.py",
+        "solution.py",
+        "solution.py"
+      ],
+      "request": "Fix read_settings(path, defaults) so malformed JSON raises ValueError mentioning the path, a missing optional file returns an independent copy of defaults, and a valid JSON object overlays defaults without mutating the caller's dictionary.",
+      "requirements": [
+        "existing function signature remains",
+        "malformed JSON raises with path",
+        "missing file returns an independent copy of defaults",
+        "valid settings overlay defaults",
+        "caller defaults remain unchanged"
+      ],
+      "observed_behavior": "Read solution.py; supplied patch as JSON array where frozen schema requires JSON string. No patch was accepted. Repeated FINISH revalidated the unchanged failing candidate.",
+      "model_belief": "Not inferred; only observable outputs evaluated",
+      "targeted_repair_applied": false,
+      "repair_damage": false,
+      "final_validation_passed": false,
+      "stale_context_or_wrong_workspace_evidence": false,
+      "secondary_failure": "budget exhausted",
+      "limitation": "Initial resource samples and exact HTTP error bodies were not recorded."
+    },
+    {
+      "task_id": "cf03",
+      "model": "coder",
+      "raw_sha256": "d1bcdf7dba214e355350fc83d82e7d29556ed0c948f80995b642044a4ae2ed0a",
+      "primary_failure": "ACTION_FORMAT",
+      "evidence_read": [
+        "solution.py"
+      ],
+      "request": "Implement parse_bounded_int(value, maximum) and keep main(argv) as the CLI entry. Values from zero through maximum are valid. Negative, noninteger and over-limit inputs raise ValueError; CLI errors exit nonzero without a Python traceback.",
+      "requirements": [
+        "parse_bounded_int and main remain public",
+        "error exits nonzero without traceback",
+        "zero accepted",
+        "maximum accepted",
+        "maximum plus one rejected"
+      ],
+      "observed_behavior": "Read solution.py; supplied patch as JSON array where frozen schema requires JSON string. No patch was accepted. Repeated FINISH revalidated the unchanged failing candidate.",
+      "model_belief": "Not inferred; only observable outputs evaluated",
+      "targeted_repair_applied": false,
+      "repair_damage": false,
+      "final_validation_passed": false,
+      "stale_context_or_wrong_workspace_evidence": false,
+      "secondary_failure": "HTTP 400 with unavailable response body; root cause unproven",
+      "limitation": "Initial resource samples and exact HTTP error bodies were not recorded."
+    },
+    {
+      "task_id": "cf04",
+      "model": "coder",
+      "raw_sha256": "b6651d905c189461b5dc573d479bdc26b2640e757fbd24afc8e565b0d5b02981",
+      "primary_failure": "ACTION_FORMAT",
+      "evidence_read": [
+        "solution.py"
+      ],
+      "request": "Repair the invoice export so the CSV writer handles quoted commas. Keep the existing calculate_tax and invoice_total functions.",
+      "requirements": [
+        "both named functions remain",
+        "CSV round trips embedded commas and quotes",
+        "totals unchanged",
+        "no unrelated file deletion"
+      ],
+      "observed_behavior": "Read solution.py; supplied patch as JSON array where frozen schema requires JSON string. No patch was accepted. Repeated FINISH revalidated the unchanged failing candidate.",
+      "model_belief": "Not inferred; only observable outputs evaluated",
+      "targeted_repair_applied": false,
+      "repair_damage": false,
+      "final_validation_passed": false,
+      "stale_context_or_wrong_workspace_evidence": false,
+      "secondary_failure": "HTTP 400 with unavailable response body; root cause unproven",
+      "limitation": "Initial resource samples and exact HTTP error bodies were not recorded."
+    },
+    {
+      "task_id": "cf05",
+      "model": "coder",
+      "raw_sha256": "fe91e987b6af7045ed311df5de83f90f15586703c80f4a64ef59823f18a252ec",
+      "primary_failure": "ACTION_FORMAT",
+      "evidence_read": [
+        "solution.py"
+      ],
+      "request": "Add search_contacts(prefix) returning alphabetically sorted matching names. Match case-insensitively; an empty prefix lists all contacts. Keep get_contact(name) exact and list_contacts() sorted.",
+      "requirements": [
+        "existing imports remain valid",
+        "search_contacts is case-insensitive",
+        "empty prefix returns all contacts in sorted order",
+        "get_contact retains exact-match behavior",
+        "list_contacts remains sorted"
+      ],
+      "observed_behavior": "Read solution.py; supplied patch as JSON array where frozen schema requires JSON string. No patch was accepted. Repeated FINISH revalidated the unchanged failing candidate.",
+      "model_belief": "Not inferred; only observable outputs evaluated",
+      "targeted_repair_applied": false,
+      "repair_damage": false,
+      "final_validation_passed": false,
+      "stale_context_or_wrong_workspace_evidence": false,
+      "secondary_failure": "HTTP 400 with unavailable response body; root cause unproven",
+      "limitation": "Initial resource samples and exact HTTP error bodies were not recorded."
+    },
+    {
+      "task_id": "cf06",
+      "model": "coder",
+      "raw_sha256": "de7a3b7386612f7eafb428fab19c861501f6df23287a12f014d159f11b50c617",
+      "primary_failure": "ACTION_FORMAT",
+      "evidence_read": [
+        "solution.py"
+      ],
+      "request": "Repair LRUCache eviction while preserving put(key,value)->None, get(key)->value or None, and delete(key)->bool. A successful read refreshes recency; updating an existing key does not increase size.",
+      "requirements": [
+        "capacity never exceeded",
+        "recent read refreshes recency",
+        "deleted key remains absent",
+        "put returns None",
+        "delete returns bool",
+        "existing key update does not increase size"
+      ],
+      "observed_behavior": "Read solution.py; supplied patch as JSON array where frozen schema requires JSON string. No patch was accepted. Repeated FINISH revalidated the unchanged failing candidate.",
+      "model_belief": "Not inferred; only observable outputs evaluated",
+      "targeted_repair_applied": false,
+      "repair_damage": false,
+      "final_validation_passed": false,
+      "stale_context_or_wrong_workspace_evidence": false,
+      "secondary_failure": "budget exhausted",
+      "limitation": "Initial resource samples and exact HTTP error bodies were not recorded."
+    }
+  ]
+}

@@ -7,5 +7,6 @@
   "production_modified": false,
   "raw_directory": "benchmarks/model-comparison/fixed-40",
   "constraint": "one heavy model; Docker generated-code execution",
-  "evidence_repairs_only": true
+  "evidence_repairs_only": true,
+  "python_executable": "C:\\Python314\\python.exe"
 }

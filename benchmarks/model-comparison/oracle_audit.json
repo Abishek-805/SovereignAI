@@ -1,0 +1,640 @@
+{
+  "version": "v1-intent-audit",
+  "tasks": [
+    {
+      "task_id": "cf01",
+      "classification": "VALID",
+      "requirements": [
+        "parse_invoice remains callable",
+        "valid invoice number and total are parsed",
+        "missing number raises KeyError",
+        "missing total raises KeyError",
+        "unrelated text does not cause a false total"
+      ],
+      "private_oracle_sha256": "b7c974c6fc62f33a77ee863773e5926364da3bd48f15670f59ea3903d90b1ca3",
+      "gaps": [],
+      "ranking_use": "contract-tested evidence",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "cf02",
+      "classification": "VALID",
+      "requirements": [
+        "existing function signature remains",
+        "malformed JSON raises with path",
+        "missing file returns an independent copy of defaults",
+        "valid settings overlay defaults",
+        "caller defaults remain unchanged"
+      ],
+      "private_oracle_sha256": "10d46294f7496eace497d184f7878d9c8110a2c02ebbeca1bf3f6f48b1063527",
+      "gaps": [],
+      "ranking_use": "contract-tested evidence",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "cf03",
+      "classification": "VALID",
+      "requirements": [
+        "parse_bounded_int and main remain public",
+        "error exits nonzero without traceback",
+        "zero accepted",
+        "maximum accepted",
+        "maximum plus one rejected"
+      ],
+      "private_oracle_sha256": "a8ab9eff573c88adf34e1ca487a55f0489fa4af097b080f0152ec4d3b3a0e645",
+      "gaps": [],
+      "ranking_use": "contract-tested evidence",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "cf04",
+      "classification": "VALID",
+      "requirements": [
+        "both named functions remain",
+        "CSV round trips embedded commas and quotes",
+        "totals unchanged",
+        "no unrelated file deletion"
+      ],
+      "private_oracle_sha256": "c469a2da721f0f8ff84b1ac0ec13d4b8bd1927a80403f217623462e577e96972",
+      "gaps": [],
+      "ranking_use": "contract-tested evidence",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "cf05",
+      "classification": "VALID",
+      "requirements": [
+        "existing imports remain valid",
+        "search_contacts is case-insensitive",
+        "empty prefix returns all contacts in sorted order",
+        "get_contact retains exact-match behavior",
+        "list_contacts remains sorted"
+      ],
+      "private_oracle_sha256": "4c7dd7ff8a5c53a1ffe44fcbfe5ae3b93517a0decc2272845e589812b2e1e098",
+      "gaps": [],
+      "ranking_use": "contract-tested evidence",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "cf06",
+      "classification": "VALID",
+      "requirements": [
+        "capacity never exceeded",
+        "recent read refreshes recency",
+        "deleted key remains absent",
+        "put returns None",
+        "delete returns bool",
+        "existing key update does not increase size"
+      ],
+      "private_oracle_sha256": "8ef6464119a8614871233aff719924636c06a6ed2445ad84a64fe8062657a6b4",
+      "gaps": [],
+      "ranking_use": "contract-tested evidence",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "cf11",
+      "classification": "VALID",
+      "requirements": [
+        "add, subtract and multiply importable",
+        "negative operands correct",
+        "division is not introduced",
+        "existing behavior remains"
+      ],
+      "private_oracle_sha256": "55ead5ac4031119e1e42a05f5338d222cfca44e78be52151b61115f2fa3394cb",
+      "gaps": [],
+      "ranking_use": "contract-tested evidence",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "cf12",
+      "classification": "VALID",
+      "requirements": [
+        "header retained",
+        "truly empty data rows ignored",
+        "quoted newline cell retained",
+        "rows with empty fields retained"
+      ],
+      "private_oracle_sha256": "618f6c8624b85817fd6a6823a98dcbe12436c806d55e81d9ef9a98be2e3b1c66",
+      "gaps": [],
+      "ranking_use": "contract-tested evidence",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "cf13",
+      "classification": "VALID",
+      "requirements": [
+        "short passwords rejected",
+        "valid password accepted",
+        "compare_secret retained and uses hmac.compare_digest",
+        "return type remains bool",
+        "secrets not printed"
+      ],
+      "private_oracle_sha256": "614457f87541fe53dbcdc37cfff97c78f1649fba0dbabaec6ca66573f3d559c8",
+      "gaps": [],
+      "ranking_use": "contract-tested evidence",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "cf14",
+      "classification": "VALID",
+      "requirements": [
+        "aware timestamps compared consistently",
+        "inclusive start",
+        "exclusive end",
+        "naive input rejected with ValueError"
+      ],
+      "private_oracle_sha256": "9bc18e5c55ce88f1bb398065dc15d50fcd844e3d084627c96c4d641b52e70f81",
+      "gaps": [],
+      "ranking_use": "contract-tested evidence",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "cf18",
+      "classification": "VALID",
+      "requirements": [
+        "all assessment columns considered independently",
+        "score 25 passes",
+        "score 24 fails",
+        "missing and nonnumeric distinguished from fail",
+        "percentage uses all rows and is rounded to two decimals",
+        "empty denominator yields None"
+      ],
+      "private_oracle_sha256": "7d24bc41e59c6ee50971c4003dbcc04904ee1af46551fb98908e417f32855655",
+      "gaps": [],
+      "ranking_use": "contract-tested evidence",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "cf21",
+      "classification": "VALID",
+      "requirements": [
+        "function preserved",
+        "last exception selected",
+        "64-hex digests normalized",
+        "line-number and path differences ignored when exception is unchanged",
+        "deterministic 64-hex output"
+      ],
+      "private_oracle_sha256": "517f1b2a1d2854fef30716ad2e8f2c2b70a2f4be287e02658ac85fefddd92be9",
+      "gaps": [],
+      "ranking_use": "contract-tested evidence",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "cf22",
+      "classification": "VALID",
+      "requirements": [
+        "source_issue remains public",
+        "self-closing HTML element accepted",
+        "ordinary HTML tag still accepted",
+        "plain text HTML still rejected",
+        "other source checks preserved"
+      ],
+      "private_oracle_sha256": "40739a577338b2cd9d8074565d02c87f92ec4ed69611ae97bfa3645c5fcb6025",
+      "gaps": [],
+      "ranking_use": "contract-tested evidence",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "cp01",
+      "classification": "PARTIAL",
+      "requirements": [
+        "three public symbols remain",
+        "quoted CSV round trips",
+        "Decimal totals",
+        "refunds accepted",
+        "malformed rows raise ValueError",
+        "sorted JSON CLI output",
+        "all project files preserved"
+      ],
+      "private_oracle_sha256": "cdd6c88df2338441980157427f5ba480012ba1698b21365dc4176264d23c04ec",
+      "gaps": [
+        "Behavioral tests preserve imported public APIs but do not assert every original project file remains, including package initializer files."
+      ],
+      "ranking_use": "descriptive execution evidence only; exclude from strong ranking until supplemental verification",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "cp02",
+      "classification": "PARTIAL",
+      "requirements": [
+        "four public methods preserved",
+        "ack persists across restart",
+        "unacknowledged task remains available",
+        "FIFO order",
+        "handler failure does not acknowledge",
+        "no unrelated file removal"
+      ],
+      "private_oracle_sha256": "6d9d67b58a7f35e5b46072809025d5c2eec9f375c4d278db86889ec3f2aef74a",
+      "gaps": [
+        "Behavioral tests preserve imported public APIs but do not assert every original project file remains, including package initializer files."
+      ],
+      "ranking_use": "descriptive execution evidence only; exclude from strong ranking until supplemental verification",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "rp01",
+      "classification": "PARTIAL",
+      "requirements": [
+        "read README.md",
+        "execute documented command",
+        "preserve all files",
+        "actual successful exit and exact stdout"
+      ],
+      "private_oracle_sha256": "ee698ac3d969fc0d39f1247d7e0aeb74bfdcb6bad3cd72bed371fe1d9ecaa714",
+      "gaps": [
+        "Kernel validator proves README read, exact command/output and unchanged files, but does not assert the final user-facing report states the observed output. Old-control adapter requires separate command-identity audit."
+      ],
+      "ranking_use": "descriptive execution evidence only; exclude from strong ranking until supplemental verification",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "rp02",
+      "classification": "PARTIAL",
+      "requirements": [
+        "read README.md",
+        "execute documented command",
+        "preserve all files",
+        "actual successful exit and exact stdout"
+      ],
+      "private_oracle_sha256": "ee698ac3d969fc0d39f1247d7e0aeb74bfdcb6bad3cd72bed371fe1d9ecaa714",
+      "gaps": [
+        "Kernel validator proves README read, exact command/output and unchanged files, but does not assert the final user-facing report states the observed output. Old-control adapter requires separate command-identity audit."
+      ],
+      "ranking_use": "descriptive execution evidence only; exclude from strong ranking until supplemental verification",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "rp03",
+      "classification": "PARTIAL",
+      "requirements": [
+        "read README.md",
+        "execute documented command",
+        "preserve all files",
+        "actual successful exit and exact stdout"
+      ],
+      "private_oracle_sha256": "ee698ac3d969fc0d39f1247d7e0aeb74bfdcb6bad3cd72bed371fe1d9ecaa714",
+      "gaps": [
+        "Kernel validator proves README read, exact command/output and unchanged files, but does not assert the final user-facing report states the observed output. Old-control adapter requires separate command-identity audit."
+      ],
+      "ranking_use": "descriptive execution evidence only; exclude from strong ranking until supplemental verification",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "rp04",
+      "classification": "PARTIAL",
+      "requirements": [
+        "read README.md",
+        "execute documented command",
+        "preserve all files",
+        "actual successful exit and exact stdout"
+      ],
+      "private_oracle_sha256": "ee698ac3d969fc0d39f1247d7e0aeb74bfdcb6bad3cd72bed371fe1d9ecaa714",
+      "gaps": [
+        "Kernel validator proves README read, exact command/output and unchanged files, but does not assert the final user-facing report states the observed output. Old-control adapter requires separate command-identity audit."
+      ],
+      "ranking_use": "descriptive execution evidence only; exclude from strong ranking until supplemental verification",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "rp05",
+      "classification": "PARTIAL",
+      "requirements": [
+        "read README.md",
+        "execute documented command",
+        "preserve all files",
+        "actual successful exit and exact stdout"
+      ],
+      "private_oracle_sha256": "ee698ac3d969fc0d39f1247d7e0aeb74bfdcb6bad3cd72bed371fe1d9ecaa714",
+      "gaps": [
+        "Kernel validator proves README read, exact command/output and unchanged files, but does not assert the final user-facing report states the observed output. Old-control adapter requires separate command-identity audit."
+      ],
+      "ranking_use": "descriptive execution evidence only; exclude from strong ranking until supplemental verification",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "rp06",
+      "classification": "PARTIAL",
+      "requirements": [
+        "read README.md",
+        "execute documented command",
+        "preserve all files",
+        "actual successful exit and exact stdout"
+      ],
+      "private_oracle_sha256": "ee698ac3d969fc0d39f1247d7e0aeb74bfdcb6bad3cd72bed371fe1d9ecaa714",
+      "gaps": [
+        "Kernel validator proves README read, exact command/output and unchanged files, but does not assert the final user-facing report states the observed output. Old-control adapter requires separate command-identity audit."
+      ],
+      "ranking_use": "descriptive execution evidence only; exclude from strong ranking until supplemental verification",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "rp07",
+      "classification": "PARTIAL",
+      "requirements": [
+        "read README.md",
+        "execute documented command",
+        "preserve all files",
+        "actual successful exit and exact stdout"
+      ],
+      "private_oracle_sha256": "ee698ac3d969fc0d39f1247d7e0aeb74bfdcb6bad3cd72bed371fe1d9ecaa714",
+      "gaps": [
+        "Kernel validator proves README read, exact command/output and unchanged files, but does not assert the final user-facing report states the observed output. Old-control adapter requires separate command-identity audit."
+      ],
+      "ranking_use": "descriptive execution evidence only; exclude from strong ranking until supplemental verification",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "rp08",
+      "classification": "PARTIAL",
+      "requirements": [
+        "read README.md",
+        "execute documented command",
+        "preserve all files",
+        "actual successful exit and exact stdout"
+      ],
+      "private_oracle_sha256": "ee698ac3d969fc0d39f1247d7e0aeb74bfdcb6bad3cd72bed371fe1d9ecaa714",
+      "gaps": [
+        "Kernel validator proves README read, exact command/output and unchanged files, but does not assert the final user-facing report states the observed output. Old-control adapter requires separate command-identity audit."
+      ],
+      "ranking_use": "descriptive execution evidence only; exclude from strong ranking until supplemental verification",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "mf01",
+      "classification": "PARTIAL",
+      "requirements": [
+        "normalize_name(text) in core.py: strip edges, collapse internal whitespace, lowercase. rules.py exports unique_names(values), preserving first-occurrence order after normalization. app.py exports process(values) delegating to unique_names.",
+        "health() returns \"ok\"",
+        "sentinel.txt unchanged",
+        "all three modules remain"
+      ],
+      "private_oracle_sha256": "68a03e10f4854f9b8b2c2e0ede09252e375ae02740ea1ac314a8e3d0c1dc5310",
+      "gaps": [
+        "Exercises app.process and health but does not independently call the requested core/rules APIs or prove cross-module delegation. An app-only implementation could pass."
+      ],
+      "ranking_use": "descriptive execution evidence only; exclude from strong ranking until supplemental verification",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "mf02",
+      "classification": "PARTIAL",
+      "requirements": [
+        "parse_pair(text) in core.py splits exactly one = into stripped nonempty key and value; otherwise raises ValueError. rules.py exports merge_pairs(lines) with last value winning. app.py process(lines) delegates to merge_pairs.",
+        "health() returns \"ok\"",
+        "sentinel.txt unchanged",
+        "all three modules remain"
+      ],
+      "private_oracle_sha256": "0ab1e3b5d563377a42b7fd267ed0e2883c0b37d4e732eb134607b05669643377",
+      "gaps": [
+        "Exercises app.process and health but does not independently call the requested core/rules APIs or prove cross-module delegation. An app-only implementation could pass."
+      ],
+      "ranking_use": "descriptive execution evidence only; exclude from strong ranking until supplemental verification",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "mf03",
+      "classification": "PARTIAL",
+      "requirements": [
+        "distance(point) in core.py returns Manhattan distance for an x,y pair. rules.py closest(points) returns the first point with minimum distance, or None if empty. app.py process(points) delegates to closest.",
+        "health() returns \"ok\"",
+        "sentinel.txt unchanged",
+        "all three modules remain"
+      ],
+      "private_oracle_sha256": "f09ea63535c3064119ec7acc35dc6e92c1a7de17b37c8d96071d2f2c33c3c6df",
+      "gaps": [
+        "Exercises app.process and health but does not independently call the requested core/rules APIs or prove cross-module delegation. An app-only implementation could pass."
+      ],
+      "ranking_use": "descriptive execution evidence only; exclude from strong ranking until supplemental verification",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "mf04",
+      "classification": "PARTIAL",
+      "requirements": [
+        "parse_amount(text) in core.py returns decimal.Decimal, rejecting negative and nonfinite amounts with ValueError. rules.py total(values) sums parsed strings with Decimal. app.py process(values) returns total as a fixed-point string.",
+        "health() returns \"ok\"",
+        "sentinel.txt unchanged",
+        "all three modules remain"
+      ],
+      "private_oracle_sha256": "dd1e1b8b070ebb473888323943f33cfb732cbe1b0fd8ab1a86ba23fec474728c",
+      "gaps": [
+        "Exercises app.process and health but does not independently call the requested core/rules APIs or prove cross-module delegation. An app-only implementation could pass."
+      ],
+      "ranking_use": "descriptive execution evidence only; exclude from strong ranking until supplemental verification",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "mf05",
+      "classification": "PARTIAL",
+      "requirements": [
+        "overlaps(a,b) in core.py compares two half-open numeric intervals; touching endpoints do not overlap. rules.py conflicts(intervals) returns index pairs i<j that overlap in lexicographic order. app.py process delegates to conflicts.",
+        "health() returns \"ok\"",
+        "sentinel.txt unchanged",
+        "all three modules remain"
+      ],
+      "private_oracle_sha256": "69bf9409754a5dfcc345ff5e1789e12057b806cff527a6794fb26f82fe9eac57",
+      "gaps": [
+        "Exercises app.process and health but does not independently call the requested core/rules APIs or prove cross-module delegation. An app-only implementation could pass."
+      ],
+      "ranking_use": "descriptive execution evidence only; exclude from strong ranking until supplemental verification",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "mf06",
+      "classification": "PARTIAL",
+      "requirements": [
+        "clean_word(text) in core.py lowercases and strips punctuation from the two edges. rules.py frequencies(words) counts nonempty cleaned words. app.py process(words) returns sorted (word,count) pairs.",
+        "health() returns \"ok\"",
+        "sentinel.txt unchanged",
+        "all three modules remain"
+      ],
+      "private_oracle_sha256": "508d576113d5a0916752b252475e5ddce342be09f35ceb8cb7b355e85e72baed",
+      "gaps": [
+        "Exercises app.process and health but does not independently call the requested core/rules APIs or prove cross-module delegation. An app-only implementation could pass."
+      ],
+      "ranking_use": "descriptive execution evidence only; exclude from strong ranking until supplemental verification",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "mf07",
+      "classification": "PARTIAL",
+      "requirements": [
+        "valid_port(value) in core.py accepts only int excluding bool, from 1 to 65535, else ValueError. rules.py ports(values) validates all and returns a sorted unique list. app.py process delegates to ports.",
+        "health() returns \"ok\"",
+        "sentinel.txt unchanged",
+        "all three modules remain"
+      ],
+      "private_oracle_sha256": "fae0c4cec40bcdb4f350ddbbef035ddc72cd0122da70d26a75a27f8b5f0e5a18",
+      "gaps": [
+        "Exercises app.process and health but does not independently call the requested core/rules APIs or prove cross-module delegation. An app-only implementation could pass."
+      ],
+      "ranking_use": "descriptive execution evidence only; exclude from strong ranking until supplemental verification",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "mf08",
+      "classification": "PARTIAL",
+      "requirements": [
+        "parse_date(text) in core.py parses ISO YYYY-MM-DD to datetime.date. rules.py earliest(values) returns earliest parsed date or None. app.py process returns ISO string or None.",
+        "health() returns \"ok\"",
+        "sentinel.txt unchanged",
+        "all three modules remain"
+      ],
+      "private_oracle_sha256": "56306197089d7eb33db6b51766995a28b5b6adf9d39305d1bca45c93a6dc4e65",
+      "gaps": [
+        "Exercises app.process and health but does not independently call the requested core/rules APIs or prove cross-module delegation. An app-only implementation could pass."
+      ],
+      "ranking_use": "descriptive execution evidence only; exclude from strong ranking until supplemental verification",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "cx01",
+      "classification": "PARTIAL",
+      "requirements": [
+        "Implement topological_order(graph) in core.py for a dict of node to prerequisite list. Include referenced nodes missing keys; raise ValueError on cycles; lexicographically smallest ready node first. rules.py validate_order(graph,order) returns bool, including uniqueness and complete node coverage. app.py process(graph) computes order, validates it, returns the order.",
+        "health() returns \"ok\"",
+        "sentinel.txt unchanged",
+        "all three modules remain"
+      ],
+      "private_oracle_sha256": "cf3fbd74e8fcb7c3e504f7c3dba72842dbd35713c8a8059abe28eac15804f747",
+      "gaps": [
+        "Exercises app.process and health but does not independently call the requested core/rules APIs or prove cross-module delegation. An app-only implementation could pass."
+      ],
+      "ranking_use": "descriptive execution evidence only; exclude from strong ranking until supplemental verification",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "cx02",
+      "classification": "PARTIAL",
+      "requirements": [
+        "Implement flatten(value) in core.py: flatten nested lists recursively, preserving non-list values including None; do not flatten tuples. rules.py chunks(values,size) returns lists of up to size items and rejects nonpositive or bool size with ValueError. app.py process(value,size) flattens then chunks.",
+        "health() returns \"ok\"",
+        "sentinel.txt unchanged",
+        "all three modules remain"
+      ],
+      "private_oracle_sha256": "80430017aea02aa0ce3a41c4b68f23024d42acf5e10ece8895acf5a5c000e8fc",
+      "gaps": [
+        "Exercises app.process and health but does not independently call the requested core/rules APIs or prove cross-module delegation. An app-only implementation could pass."
+      ],
+      "ranking_use": "descriptive execution evidence only; exclude from strong ranking until supplemental verification",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "cx03",
+      "classification": "PARTIAL",
+      "requirements": [
+        "Implement tokenize(text) in core.py with shlex.split. rules.py parse_options(tokens) accepts --key=value, --key value, and bare flags --key -> True; reject duplicate keys and positional tokens with ValueError. app.py process(text) tokenizes and parses.",
+        "health() returns \"ok\"",
+        "sentinel.txt unchanged",
+        "all three modules remain"
+      ],
+      "private_oracle_sha256": "a3c69f985654ed1e5be745350e5719efea98208ea720ec4f18896c097e328470",
+      "gaps": [
+        "Exercises app.process and health but does not independently call the requested core/rules APIs or prove cross-module delegation. An app-only implementation could pass."
+      ],
+      "ranking_use": "descriptive execution evidence only; exclude from strong ranking until supplemental verification",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "cx04",
+      "classification": "PARTIAL",
+      "requirements": [
+        "Implement decode_runs(pairs) in core.py expanding (value,count), reject negative or noninteger/bool counts with ValueError. rules.py encode_runs(values) compresses consecutive equal values to (value,count). app.py process(pairs) returns the canonical encode_runs(decode_runs(pairs)).",
+        "health() returns \"ok\"",
+        "sentinel.txt unchanged",
+        "all three modules remain"
+      ],
+      "private_oracle_sha256": "93c5fced76353774b08a5999ef3465a477ccfe0d3856e032fc7abb38ae257198",
+      "gaps": [
+        "Exercises app.process and health but does not independently call the requested core/rules APIs or prove cross-module delegation. An app-only implementation could pass."
+      ],
+      "ranking_use": "descriptive execution evidence only; exclude from strong ranking until supplemental verification",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "cx05",
+      "classification": "PARTIAL",
+      "requirements": [
+        "Implement parse_rows(text) in core.py using csv.DictReader, preserving quoted fields. rules.py summarize(rows) groups amounts by category using Decimal; missing category or invalid/nonfinite amount raises ValueError; negative refunds allowed. app.py process(text) returns dict sorted by category with fixed-point string totals.",
+        "health() returns \"ok\"",
+        "sentinel.txt unchanged",
+        "all three modules remain"
+      ],
+      "private_oracle_sha256": "1d99232eaee37182d34d99425a692ebe45a384701c11339b4281f3f85ed230bd",
+      "gaps": [
+        "Exercises app.process and health but does not independently call the requested core/rules APIs or prove cross-module delegation. An app-only implementation could pass."
+      ],
+      "ranking_use": "descriptive execution evidence only; exclude from strong ranking until supplemental verification",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "cx06",
+      "classification": "PARTIAL",
+      "requirements": [
+        "Implement normalize_path(text) in core.py for safe POSIX relative paths: reject absolute paths, backslashes, .. segments, and empty paths with ValueError; remove . segments and repeated slashes. rules.py index_paths(values) deduplicates normalized paths, sorted. app.py process delegates to index_paths.",
+        "health() returns \"ok\"",
+        "sentinel.txt unchanged",
+        "all three modules remain"
+      ],
+      "private_oracle_sha256": "0ee4c0c95c1950f1338736f2dc352832a5ecedcb6979c80e433f688cc0b9af64",
+      "gaps": [
+        "Exercises app.process and health but does not independently call the requested core/rules APIs or prove cross-module delegation. An app-only implementation could pass."
+      ],
+      "ranking_use": "descriptive execution evidence only; exclude from strong ranking until supplemental verification",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "cx07",
+      "classification": "PARTIAL",
+      "requirements": [
+        "Implement merge_intervals(intervals) in core.py: sort and merge overlapping or touching (start,end) ranges; reject end<start with ValueError. rules.py covered_length(intervals) returns union length using merge_intervals. app.py process returns {intervals: merged list, length: union length}.",
+        "health() returns \"ok\"",
+        "sentinel.txt unchanged",
+        "all three modules remain"
+      ],
+      "private_oracle_sha256": "7162ae0e904ccc726e9122f1b8509ca668f79fac8488dd5ac5f207a501c9c9c1",
+      "gaps": [
+        "Exercises app.process and health but does not independently call the requested core/rules APIs or prove cross-module delegation. An app-only implementation could pass."
+      ],
+      "ranking_use": "descriptive execution evidence only; exclude from strong ranking until supplemental verification",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "cx08",
+      "classification": "PARTIAL",
+      "requirements": [
+        "Implement resolve_alias(name,aliases) in core.py following aliases until terminal; cycles raise ValueError. rules.py resolve_all(names,aliases) preserves input order and duplicates. app.py process delegates to resolve_all.",
+        "health() returns \"ok\"",
+        "sentinel.txt unchanged",
+        "all three modules remain"
+      ],
+      "private_oracle_sha256": "68272ec0a1d2ed7254f87707f41d007823f40cfe613ae72451fe426777bbef00",
+      "gaps": [
+        "Exercises app.process and health but does not independently call the requested core/rules APIs or prove cross-module delegation. An app-only implementation could pass."
+      ],
+      "ranking_use": "descriptive execution evidence only; exclude from strong ranking until supplemental verification",
+      "model_outcomes_inspected_for_this_audit": false
+    },
+    {
+      "task_id": "cx09",
+      "classification": "PARTIAL",
+      "requirements": [
+        "Implement parse_events(rows) in core.py returning (id,timestamp) pairs with timezone-aware datetime.fromisoformat; naive timestamps and missing id raise ValueError. rules.py latest_by_id(events) selects latest per id, preserving first encounter on equal time. app.py process(rows) returns sorted IDs mapped to ISO timestamps.",
+        "health() returns \"ok\"",
+        "sentinel.txt unchanged",
+        "all three modules remain"
+      ],
+      "private_oracle_sha256": "fbf32490fcd7e6e9d6b29796b2d7e0a67562cf8e9dde09f28895e3f314f0f3e3",
+      "gaps": [
+        "Exercises app.process and health but does not independently call the requested core/rules APIs or prove cross-module delegation. An app-only implementation could pass."
+      ],
+      "ranking_use": "descriptive execution evidence only; exclude from strong ranking until supplemental verification",
+      "model_outcomes_inspected_for_this_audit": false
+    }
+  ],
+  "valid": 13,
+  "partial": 27,
+  "invalid": 0,
+  "full_decision_gate_complete": false,
+  "repair_required": "Supplemental versioned validation of omitted obligations; preserve frozen v1 results."
+}

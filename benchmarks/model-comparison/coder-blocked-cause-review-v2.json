@@ -1,0 +1,369 @@
+{
+  "version": "blocked-cause-review-v2-server-log-correlation",
+  "model": "coder",
+  "blocked_tasks": 18,
+  "counts": {
+    "ENVIRONMENT": 0,
+    "DEPENDENCY": 0,
+    "SANDBOX": 0,
+    "VALIDATION": 0,
+    "RESOURCE": 17,
+    "TIMEOUT": 1,
+    "MODEL": 0
+  },
+  "unresolved_underlying_causes": 0,
+  "rows": [
+    {
+      "task_id": "cf03",
+      "original_state": "BLOCKED",
+      "original_outcome_preserved": true,
+      "raw_sha256": "d1bcdf7dba214e355350fc83d82e7d29556ed0c948f80995b642044a4ae2ed0a",
+      "blocked_cause": "RESOURCE",
+      "blocked_subtype": "CONTEXT_ASSEMBLY",
+      "confidence": "CORRELATED_ORIGINAL_SERVER_LOG_SEQUENCE",
+      "finding": "Original sequential six-task stdout has exactly these three HTTP-blocked tasks, in order. Its preserved single-worker server log has exactly three context-capacity rejection errors in matching order. Resource/context cause is supported by that correlation; original HTTP response bodies remain absent.",
+      "exact_terminal_error": "HTTPStatusError: Client error '400 Bad Request' for url 'http://127.0.0.1:8087/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+      "recorded_http_errors": [],
+      "preceding_action_format_errors_do_not_reclassify_terminal_block": true,
+      "count_as_fail": false,
+      "server_log_evidence": {
+        "path": "benchmarks\\model-comparison\\coder-stderr.log",
+        "sha256": "007e465cc2494995832cad3975ee111347c204dce68eb8cd005078343d6f0fa5",
+        "line": 229,
+        "exact_error": "2.03.632.611 E srv    send_error: task id = 2026, error: request (4247 tokens) exceeds the available context size (4096 tokens), try increasing it"
+      },
+      "correlation_limits": "No request-to-task identifier in original HTTP traces; sequence correlation is not a recovered response body."
+    },
+    {
+      "task_id": "cf04",
+      "original_state": "BLOCKED",
+      "original_outcome_preserved": true,
+      "raw_sha256": "b6651d905c189461b5dc573d479bdc26b2640e757fbd24afc8e565b0d5b02981",
+      "blocked_cause": "RESOURCE",
+      "blocked_subtype": "CONTEXT_ASSEMBLY",
+      "confidence": "CORRELATED_ORIGINAL_SERVER_LOG_SEQUENCE",
+      "finding": "Original sequential six-task stdout has exactly these three HTTP-blocked tasks, in order. Its preserved single-worker server log has exactly three context-capacity rejection errors in matching order. Resource/context cause is supported by that correlation; original HTTP response bodies remain absent.",
+      "exact_terminal_error": "HTTPStatusError: Client error '400 Bad Request' for url 'http://127.0.0.1:8087/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+      "recorded_http_errors": [],
+      "preceding_action_format_errors_do_not_reclassify_terminal_block": true,
+      "count_as_fail": false,
+      "server_log_evidence": {
+        "path": "benchmarks\\model-comparison\\coder-stderr.log",
+        "sha256": "007e465cc2494995832cad3975ee111347c204dce68eb8cd005078343d6f0fa5",
+        "line": 292,
+        "exact_error": "2.49.293.077 E srv    send_error: task id = 2678, error: request (4171 tokens) exceeds the available context size (4096 tokens), try increasing it"
+      },
+      "correlation_limits": "No request-to-task identifier in original HTTP traces; sequence correlation is not a recovered response body."
+    },
+    {
+      "task_id": "cf05",
+      "original_state": "BLOCKED",
+      "original_outcome_preserved": true,
+      "raw_sha256": "fe91e987b6af7045ed311df5de83f90f15586703c80f4a64ef59823f18a252ec",
+      "blocked_cause": "RESOURCE",
+      "blocked_subtype": "CONTEXT_ASSEMBLY",
+      "confidence": "CORRELATED_ORIGINAL_SERVER_LOG_SEQUENCE",
+      "finding": "Original sequential six-task stdout has exactly these three HTTP-blocked tasks, in order. Its preserved single-worker server log has exactly three context-capacity rejection errors in matching order. Resource/context cause is supported by that correlation; original HTTP response bodies remain absent.",
+      "exact_terminal_error": "HTTPStatusError: Client error '400 Bad Request' for url 'http://127.0.0.1:8087/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+      "recorded_http_errors": [],
+      "preceding_action_format_errors_do_not_reclassify_terminal_block": true,
+      "count_as_fail": false,
+      "server_log_evidence": {
+        "path": "benchmarks\\model-comparison\\coder-stderr.log",
+        "sha256": "007e465cc2494995832cad3975ee111347c204dce68eb8cd005078343d6f0fa5",
+        "line": 354,
+        "exact_error": "3.24.257.346 E srv    send_error: task id = 3122, error: request (4156 tokens) exceeds the available context size (4096 tokens), try increasing it"
+      },
+      "correlation_limits": "No request-to-task identifier in original HTTP traces; sequence correlation is not a recovered response body."
+    },
+    {
+      "task_id": "cf12",
+      "original_state": "BLOCKED",
+      "original_outcome_preserved": true,
+      "raw_sha256": "cb26f1a342d97b47eb3118028f33b44ebc47b073c3e961988411ccb5d6e91a17",
+      "blocked_cause": "RESOURCE",
+      "blocked_subtype": "CONTEXT_ASSEMBLY",
+      "confidence": "DIRECT_EVIDENCE",
+      "finding": "Runtime rejected a request larger than its fixed 4096-token context. This is a context-capacity block, not a demonstrated coding failure.",
+      "exact_terminal_error": "HTTPStatusError: Client error '400 Bad Request' for url 'http://127.0.0.1:8087/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+      "recorded_http_errors": [
+        {
+          "status": 400,
+          "body": "{\"error\":{\"code\":400,\"message\":\"request (4593 tokens) exceeds the available context size (4096 tokens), try increasing it\",\"type\":\"exceed_context_size_error\",\"n_prompt_tokens\":4593,\"n_ctx\":4096}}"
+        }
+      ],
+      "preceding_action_format_errors_do_not_reclassify_terminal_block": true,
+      "count_as_fail": false
+    },
+    {
+      "task_id": "cf14",
+      "original_state": "BLOCKED",
+      "original_outcome_preserved": true,
+      "raw_sha256": "8e2de99816b3a569290dbee9129454f3396e3de20ddb78f939d3b91591b24d7e",
+      "blocked_cause": "RESOURCE",
+      "blocked_subtype": "CONTEXT_ASSEMBLY",
+      "confidence": "DIRECT_EVIDENCE",
+      "finding": "Runtime rejected a request larger than its fixed 4096-token context. This is a context-capacity block, not a demonstrated coding failure.",
+      "exact_terminal_error": "HTTPStatusError: Client error '400 Bad Request' for url 'http://127.0.0.1:8087/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+      "recorded_http_errors": [
+        {
+          "status": 400,
+          "body": "{\"error\":{\"code\":400,\"message\":\"request (4621 tokens) exceeds the available context size (4096 tokens), try increasing it\",\"type\":\"exceed_context_size_error\",\"n_prompt_tokens\":4621,\"n_ctx\":4096}}"
+        }
+      ],
+      "preceding_action_format_errors_do_not_reclassify_terminal_block": true,
+      "count_as_fail": false
+    },
+    {
+      "task_id": "cf18",
+      "original_state": "BLOCKED",
+      "original_outcome_preserved": true,
+      "raw_sha256": "9cc879961ee7faf6a6f0af9e9906cb946f0476a399ccac4402b049615c026b83",
+      "blocked_cause": "RESOURCE",
+      "blocked_subtype": "CONTEXT_ASSEMBLY",
+      "confidence": "DIRECT_EVIDENCE",
+      "finding": "Runtime rejected a request larger than its fixed 4096-token context. This is a context-capacity block, not a demonstrated coding failure.",
+      "exact_terminal_error": "HTTPStatusError: Client error '400 Bad Request' for url 'http://127.0.0.1:8087/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+      "recorded_http_errors": [
+        {
+          "status": 400,
+          "body": "{\"error\":{\"code\":400,\"message\":\"request (4250 tokens) exceeds the available context size (4096 tokens), try increasing it\",\"type\":\"exceed_context_size_error\",\"n_prompt_tokens\":4250,\"n_ctx\":4096}}"
+        }
+      ],
+      "preceding_action_format_errors_do_not_reclassify_terminal_block": true,
+      "count_as_fail": false
+    },
+    {
+      "task_id": "cf21",
+      "original_state": "BLOCKED",
+      "original_outcome_preserved": true,
+      "raw_sha256": "0f47908003563d081e8b220bb920cb42c5c874d835506664ad8cbdef4b3baa8f",
+      "blocked_cause": "RESOURCE",
+      "blocked_subtype": "CONTEXT_ASSEMBLY",
+      "confidence": "DIRECT_EVIDENCE",
+      "finding": "Runtime rejected a request larger than its fixed 4096-token context. This is a context-capacity block, not a demonstrated coding failure.",
+      "exact_terminal_error": "HTTPStatusError: Client error '400 Bad Request' for url 'http://127.0.0.1:8087/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+      "recorded_http_errors": [
+        {
+          "status": 400,
+          "body": "{\"error\":{\"code\":400,\"message\":\"request (4293 tokens) exceeds the available context size (4096 tokens), try increasing it\",\"type\":\"exceed_context_size_error\",\"n_prompt_tokens\":4293,\"n_ctx\":4096}}"
+        }
+      ],
+      "preceding_action_format_errors_do_not_reclassify_terminal_block": true,
+      "count_as_fail": false
+    },
+    {
+      "task_id": "cf22",
+      "original_state": "BLOCKED",
+      "original_outcome_preserved": true,
+      "raw_sha256": "b816427e97829ffb252523362d52260cbf1329ea1e18952ef7fadae2766e8c40",
+      "blocked_cause": "RESOURCE",
+      "blocked_subtype": "CONTEXT_ASSEMBLY",
+      "confidence": "DIRECT_EVIDENCE",
+      "finding": "Runtime rejected a request larger than its fixed 4096-token context. This is a context-capacity block, not a demonstrated coding failure.",
+      "exact_terminal_error": "HTTPStatusError: Client error '400 Bad Request' for url 'http://127.0.0.1:8087/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+      "recorded_http_errors": [
+        {
+          "status": 400,
+          "body": "{\"error\":{\"code\":400,\"message\":\"request (4416 tokens) exceeds the available context size (4096 tokens), try increasing it\",\"type\":\"exceed_context_size_error\",\"n_prompt_tokens\":4416,\"n_ctx\":4096}}"
+        }
+      ],
+      "preceding_action_format_errors_do_not_reclassify_terminal_block": true,
+      "count_as_fail": false
+    },
+    {
+      "task_id": "cp01",
+      "original_state": "BLOCKED",
+      "original_outcome_preserved": true,
+      "raw_sha256": "ba000031a880fb640b6ba0cb20061f400d589049be251871ad4d15d03b57bb1d",
+      "blocked_cause": "RESOURCE",
+      "blocked_subtype": "CONTEXT_ASSEMBLY",
+      "confidence": "DIRECT_EVIDENCE",
+      "finding": "Runtime rejected a request larger than its fixed 4096-token context. This is a context-capacity block, not a demonstrated coding failure.",
+      "exact_terminal_error": "HTTPStatusError: Client error '400 Bad Request' for url 'http://127.0.0.1:8087/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+      "recorded_http_errors": [
+        {
+          "status": 400,
+          "body": "{\"error\":{\"code\":400,\"message\":\"request (4384 tokens) exceeds the available context size (4096 tokens), try increasing it\",\"type\":\"exceed_context_size_error\",\"n_prompt_tokens\":4384,\"n_ctx\":4096}}"
+        }
+      ],
+      "preceding_action_format_errors_do_not_reclassify_terminal_block": true,
+      "count_as_fail": false
+    },
+    {
+      "task_id": "cp02",
+      "original_state": "BLOCKED",
+      "original_outcome_preserved": true,
+      "raw_sha256": "f94b5b28f2153b5ff495d9ded85b24b8c66c11760b90a413dc2a2800b29e8c88",
+      "blocked_cause": "RESOURCE",
+      "blocked_subtype": "CONTEXT_ASSEMBLY",
+      "confidence": "DIRECT_EVIDENCE",
+      "finding": "Runtime rejected a request larger than its fixed 4096-token context. This is a context-capacity block, not a demonstrated coding failure.",
+      "exact_terminal_error": "HTTPStatusError: Client error '400 Bad Request' for url 'http://127.0.0.1:8087/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+      "recorded_http_errors": [
+        {
+          "status": 400,
+          "body": "{\"error\":{\"code\":400,\"message\":\"request (4374 tokens) exceeds the available context size (4096 tokens), try increasing it\",\"type\":\"exceed_context_size_error\",\"n_prompt_tokens\":4374,\"n_ctx\":4096}}"
+        }
+      ],
+      "preceding_action_format_errors_do_not_reclassify_terminal_block": true,
+      "count_as_fail": false
+    },
+    {
+      "task_id": "cx01",
+      "original_state": "BLOCKED",
+      "original_outcome_preserved": true,
+      "raw_sha256": "8a70b1957c6f19731f39ed34a61d70f7a33926d536799fbfec94a46ed6f22efe",
+      "blocked_cause": "RESOURCE",
+      "blocked_subtype": "CONTEXT_ASSEMBLY",
+      "confidence": "DIRECT_EVIDENCE",
+      "finding": "Runtime rejected a request larger than its fixed 4096-token context. This is a context-capacity block, not a demonstrated coding failure.",
+      "exact_terminal_error": "HTTPStatusError: Client error '400 Bad Request' for url 'http://127.0.0.1:8087/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+      "recorded_http_errors": [
+        {
+          "status": 400,
+          "body": "{\"error\":{\"code\":400,\"message\":\"request (4282 tokens) exceeds the available context size (4096 tokens), try increasing it\",\"type\":\"exceed_context_size_error\",\"n_prompt_tokens\":4282,\"n_ctx\":4096}}"
+        }
+      ],
+      "preceding_action_format_errors_do_not_reclassify_terminal_block": true,
+      "count_as_fail": false
+    },
+    {
+      "task_id": "cx06",
+      "original_state": "BLOCKED",
+      "original_outcome_preserved": true,
+      "raw_sha256": "0d5cbe328bd8bfd60ecb3e108707bddae403a0b6563b10266f8f48fe22ce5f68",
+      "blocked_cause": "RESOURCE",
+      "blocked_subtype": "CONTEXT_ASSEMBLY",
+      "confidence": "DIRECT_EVIDENCE",
+      "finding": "Runtime rejected a request larger than its fixed 4096-token context. This is a context-capacity block, not a demonstrated coding failure.",
+      "exact_terminal_error": "HTTPStatusError: Client error '400 Bad Request' for url 'http://127.0.0.1:8087/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+      "recorded_http_errors": [
+        {
+          "status": 400,
+          "body": "{\"error\":{\"code\":400,\"message\":\"request (4133 tokens) exceeds the available context size (4096 tokens), try increasing it\",\"type\":\"exceed_context_size_error\",\"n_prompt_tokens\":4133,\"n_ctx\":4096}}"
+        }
+      ],
+      "preceding_action_format_errors_do_not_reclassify_terminal_block": true,
+      "count_as_fail": false
+    },
+    {
+      "task_id": "cx09",
+      "original_state": "BLOCKED",
+      "original_outcome_preserved": true,
+      "raw_sha256": "f0fa6a810d6eec5bd14da1f020daa0eccac3a248521d9d009e0e5ee597bb1a63",
+      "blocked_cause": "RESOURCE",
+      "blocked_subtype": "CONTEXT_ASSEMBLY",
+      "confidence": "DIRECT_EVIDENCE",
+      "finding": "Runtime rejected a request larger than its fixed 4096-token context. This is a context-capacity block, not a demonstrated coding failure.",
+      "exact_terminal_error": "HTTPStatusError: Client error '400 Bad Request' for url 'http://127.0.0.1:8087/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+      "recorded_http_errors": [
+        {
+          "status": 400,
+          "body": "{\"error\":{\"code\":400,\"message\":\"request (4412 tokens) exceeds the available context size (4096 tokens), try increasing it\",\"type\":\"exceed_context_size_error\",\"n_prompt_tokens\":4412,\"n_ctx\":4096}}"
+        }
+      ],
+      "preceding_action_format_errors_do_not_reclassify_terminal_block": true,
+      "count_as_fail": false
+    },
+    {
+      "task_id": "mf01",
+      "original_state": "BLOCKED",
+      "original_outcome_preserved": true,
+      "raw_sha256": "55bd14b84b2fcdf9a9bbe3644f5edd2fb4fa57a0b254fcfc9cd8ba4ec0040519",
+      "blocked_cause": "TIMEOUT",
+      "blocked_subtype": "MODEL_GENERATION_DEADLINE",
+      "confidence": "DIRECT_EVIDENCE",
+      "finding": "Task deadline expired during model generation. No evidence of Docker, dependency, or validation failure caused the terminal block.",
+      "exact_terminal_error": "TimeoutError: Task deadline during model generation",
+      "recorded_http_errors": [],
+      "preceding_action_format_errors_do_not_reclassify_terminal_block": true,
+      "count_as_fail": false
+    },
+    {
+      "task_id": "mf03",
+      "original_state": "BLOCKED",
+      "original_outcome_preserved": true,
+      "raw_sha256": "ece2fda815ef57c644613fc3b93bb7fe2a21fb65d90621b0a1a9281d19def7a9",
+      "blocked_cause": "RESOURCE",
+      "blocked_subtype": "CONTEXT_ASSEMBLY",
+      "confidence": "DIRECT_EVIDENCE",
+      "finding": "Runtime rejected a request larger than its fixed 4096-token context. This is a context-capacity block, not a demonstrated coding failure.",
+      "exact_terminal_error": "HTTPStatusError: Client error '400 Bad Request' for url 'http://127.0.0.1:8087/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+      "recorded_http_errors": [
+        {
+          "status": 400,
+          "body": "{\"error\":{\"code\":400,\"message\":\"request (4338 tokens) exceeds the available context size (4096 tokens), try increasing it\",\"type\":\"exceed_context_size_error\",\"n_prompt_tokens\":4338,\"n_ctx\":4096}}"
+        }
+      ],
+      "preceding_action_format_errors_do_not_reclassify_terminal_block": true,
+      "count_as_fail": false
+    },
+    {
+      "task_id": "mf05",
+      "original_state": "BLOCKED",
+      "original_outcome_preserved": true,
+      "raw_sha256": "a7c2606e85bef7587c3ceb15e16adf7ae36c04dccd498ef98a16d9b407bd7bbf",
+      "blocked_cause": "RESOURCE",
+      "blocked_subtype": "CONTEXT_ASSEMBLY",
+      "confidence": "DIRECT_EVIDENCE",
+      "finding": "Runtime rejected a request larger than its fixed 4096-token context. This is a context-capacity block, not a demonstrated coding failure.",
+      "exact_terminal_error": "HTTPStatusError: Client error '400 Bad Request' for url 'http://127.0.0.1:8087/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+      "recorded_http_errors": [
+        {
+          "status": 400,
+          "body": "{\"error\":{\"code\":400,\"message\":\"request (4344 tokens) exceeds the available context size (4096 tokens), try increasing it\",\"type\":\"exceed_context_size_error\",\"n_prompt_tokens\":4344,\"n_ctx\":4096}}"
+        }
+      ],
+      "preceding_action_format_errors_do_not_reclassify_terminal_block": true,
+      "count_as_fail": false
+    },
+    {
+      "task_id": "mf06",
+      "original_state": "BLOCKED",
+      "original_outcome_preserved": true,
+      "raw_sha256": "13d344b51e27b3d5f13301e74a1abb8b464bb00b7a3f07dc5895bc8374abe59f",
+      "blocked_cause": "RESOURCE",
+      "blocked_subtype": "CONTEXT_ASSEMBLY",
+      "confidence": "DIRECT_EVIDENCE",
+      "finding": "Runtime rejected a request larger than its fixed 4096-token context. This is a context-capacity block, not a demonstrated coding failure.",
+      "exact_terminal_error": "HTTPStatusError: Client error '400 Bad Request' for url 'http://127.0.0.1:8087/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+      "recorded_http_errors": [
+        {
+          "status": 400,
+          "body": "{\"error\":{\"code\":400,\"message\":\"request (4185 tokens) exceeds the available context size (4096 tokens), try increasing it\",\"type\":\"exceed_context_size_error\",\"n_prompt_tokens\":4185,\"n_ctx\":4096}}"
+        }
+      ],
+      "preceding_action_format_errors_do_not_reclassify_terminal_block": true,
+      "count_as_fail": false
+    },
+    {
+      "task_id": "mf07",
+      "original_state": "BLOCKED",
+      "original_outcome_preserved": true,
+      "raw_sha256": "db28bd44f43a4f5a66cb75ee1e0b842d62e2a6d236c648994e088e6a80195dae",
+      "blocked_cause": "RESOURCE",
+      "blocked_subtype": "CONTEXT_ASSEMBLY",
+      "confidence": "DIRECT_EVIDENCE",
+      "finding": "Runtime rejected a request larger than its fixed 4096-token context. This is a context-capacity block, not a demonstrated coding failure.",
+      "exact_terminal_error": "HTTPStatusError: Client error '400 Bad Request' for url 'http://127.0.0.1:8087/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+      "recorded_http_errors": [
+        {
+          "status": 400,
+          "body": "{\"error\":{\"code\":400,\"message\":\"request (4323 tokens) exceeds the available context size (4096 tokens), try increasing it\",\"type\":\"exceed_context_size_error\",\"n_prompt_tokens\":4323,\"n_ctx\":4096}}"
+        }
+      ],
+      "preceding_action_format_errors_do_not_reclassify_terminal_block": true,
+      "count_as_fail": false
+    }
+  ],
+  "raw_evidence_modified": false,
+  "supersedes": "coder-blocked-cause-review.json",
+  "directly_confirmed_context_blocks": 14,
+  "server_log_correlated_context_blocks": 3,
+  "correlation_only_tasks": [
+    "cf03",
+    "cf04",
+    "cf05"
+  ]
+}

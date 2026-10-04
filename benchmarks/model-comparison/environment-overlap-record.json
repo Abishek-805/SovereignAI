@@ -1,0 +1,17 @@
+{
+  "event": "supplemental_oracle_control_Docker_activity",
+  "approximate_start_unix": 1791086515.4932618,
+  "last_control_completed_unix": 1791086560.8980737,
+  "affected_model": "granite",
+  "temporally_overlapping_tasks": [
+    {
+      "task_id": "cf06",
+      "state": "BUDGET_EXHAUSTED",
+      "reason": "model budget",
+      "elapsed_seconds": 270.5840154000034
+    }
+  ],
+  "one_heavy_model_invariant_maintained": true,
+  "effect_on_latency_or_outcome": "Not established; temporal overlap only. Do not infer causation.",
+  "original_evidence_preserved": true
+}

@@ -47,6 +47,16 @@ def main():
         if finished==40:break
         run([old_python,'experiments/old_workflow_control.py'],'old-workflow-control')
     finished=sum(1 for p in (OUT/'old-workflow').glob('*.json') if 'status' in json.loads(p.read_text()))
-    checkpoint('EXECUTIONS_COMPLETE_AUDIT_PENDING' if finished==40 else 'OLD_CONTROL_ENVIRONMENT_BLOCKED',old_workflow_coverage=finished)
+    if finished != 40:
+        checkpoint('OLD_CONTROL_ENVIRONMENT_BLOCKED',old_workflow_coverage=finished);return
+    # Supplemental validation retains every original trajectory and outcome.
+    # It is a candidate replay, not an estimate of repair with stronger feedback.
+    replay_code=run([old_python,'experiments/supplemental_oracle_replay.py'],'oracle-v2-replay')
+    if replay_code:
+        checkpoint('SUPPLEMENTAL_REPLAY_ENVIRONMENT_BLOCKED',exit_code=replay_code);return
+    audit_code=run([old_python,'experiments/trajectory_audit_pack.py'],'trajectory-audit-pack')
+    checkpoint('EXECUTIONS_AND_REPLAY_COMPLETE_SEMANTIC_AUDIT_PENDING',
+               old_workflow_coverage=finished,audit_pack_exit_code=audit_code,
+               independent_semantic_signoff=False)
 
 if __name__=='__main__':main()

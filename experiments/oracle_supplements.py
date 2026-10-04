@@ -18,11 +18,27 @@ API_CHECKS={
 'cx08':("resolve_alias", "resolve_all", "self.assertEqual(core.resolve_alias('a',{'a':'b','b':'c'}),'c'); self.assertRaises(ValueError,core.resolve_alias,'a',{'a':'a'}); self.assertEqual(rules.resolve_all(['a','x'],{'a':'b'}),['b','x'])"),
 'cx09':("parse_events", "latest_by_id", "from datetime import datetime; dt=datetime.fromisoformat('2024-01-01T00:00:00+00:00'); self.assertEqual(core.parse_events([{'id':'a','timestamp':dt.isoformat()}]),[('a',dt)]); self.assertRaises(ValueError,core.parse_events,[{'id':'a','timestamp':'2024-01-01'}]); self.assertTrue(rules.latest_by_id([('a',dt)]))"),
 }
+DELEGATION_INPUTS={
+    'mf01':([' A ','a'],),'mf02':(['a=1'],),'mf03':([(1,2),(0,0)],),
+    'mf05':([(0,2),(1,3)],),'mf07':([80,443],),
+    'cx06':(['a//b','./a/b','c'],),'cx08':(['a'],{'a':'b'})
+}
 
 def supplemental_test(task_id):
     if task_id not in API_CHECKS:return ''
     core_name,rules_name,assertions=API_CHECKS[task_id]
-    return ('import unittest\nimport core, rules\nclass SupplementalPublicAPI(unittest.TestCase):\n'
+    text = ('import unittest\nimport core, rules\nclass SupplementalPublicAPI(unittest.TestCase):\n'
             ' def test_independent_public_contract(self):\n  '+assertions+'\n'
             ' def test_symbols_remain_callable(self):\n'
             f'  self.assertTrue(callable(getattr(core,{core_name!r},None))); self.assertTrue(callable(getattr(rules,{rules_name!r},None)))\n')
+    if task_id in DELEGATION_INPUTS:
+        text += (' def test_explicit_app_delegation(self):\n'
+                 '  import app\n  from unittest.mock import Mock\n'
+                 f'  original=getattr(rules,{rules_name!r}); spy=Mock(wraps=original)\n'
+                 '  replacements=[]\n'
+                 '  for module in (rules,app):\n'
+                 '   for name,value in list(vars(module).items()):\n'
+                 '    if value is original: replacements.append((module,name,value)); setattr(module,name,spy)\n'
+                 f'  try: app.process(*{DELEGATION_INPUTS[task_id]!r}); self.assertGreater(spy.call_count,0)\n'
+                 '  finally:\n   for module,name,value in replacements: setattr(module,name,value)\n')
+    return text

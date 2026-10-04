@@ -1,0 +1,15 @@
+{
+  "version": "evidence-io-v1",
+  "unix_time": 1791090144.6495976,
+  "frozen_contract_unchanged": true,
+  "frozen_file_mismatches": [],
+  "evidence_io_sha256": "fa48251385b4393feb431609bf8fd493189434166b844feca1180f40b00bb0a2",
+  "driver_sha256": "ddeb95ee4d0ecb7b84dc9882f973e3a392b7acf147f07d39c7ef2c13c0c94a6b",
+  "selfcheck": [
+    "two transient sharing failures recover without content change",
+    "non-JSON replacement failure is not retried"
+  ],
+  "generation_retries_added": 0,
+  "task_clock_continues": true,
+  "maximum_added_collection_wait_seconds_per_replace": 1
+}

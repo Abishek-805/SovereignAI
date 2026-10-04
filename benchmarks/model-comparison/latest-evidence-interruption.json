@@ -1,0 +1,41 @@
+{
+  "reason": "Windows PermissionError on checkpoint atomic replacement",
+  "scope": "Evidence I/O only; unchanged frozen kernel, task fixtures, prompts, policy and budgets",
+  "interrupted_pairs": [
+    {
+      "model": "granite",
+      "task_id": "rp02"
+    },
+    {
+      "model": "mini-coder",
+      "task_id": "cf04"
+    }
+  ],
+  "archived": [
+    {
+      "path": "benchmarks\\model-comparison\\fixed-40\\granite\\rp02-trajectory.json",
+      "archived_path": "benchmarks\\model-comparison\\evidence-interruptions\\1791089992\\granite-rp02-trajectory.json",
+      "sha256": "e0395e5eac2168e63045a49a0713a64748ea9237569c0b0595a38897b31546ea"
+    },
+    {
+      "path": "benchmarks\\model-comparison\\fixed-40\\granite\\rp02-trajectory.json.tmp",
+      "archived_path": "benchmarks\\model-comparison\\evidence-interruptions\\1791089992\\granite-rp02-trajectory.json.tmp",
+      "sha256": "f74c71674763a8e1008932a22e9d73f9acbb92274f786f210fb36ba83b881315"
+    },
+    {
+      "path": "benchmarks\\model-comparison\\fixed-40\\mini-coder\\cf04-trajectory.json",
+      "archived_path": "benchmarks\\model-comparison\\evidence-interruptions\\1791089992\\mini-coder-cf04-trajectory.json",
+      "sha256": "2c9fdb97f69abf9704e48bec5fd44038cc10c1cf24f5785685cbed34798cbf1c"
+    },
+    {
+      "path": "benchmarks\\model-comparison\\fixed-40\\mini-coder\\cf04-trajectory.json.tmp",
+      "archived_path": "benchmarks\\model-comparison\\evidence-interruptions\\1791089992\\mini-coder-cf04-trajectory.json.tmp",
+      "sha256": "5b490b35ffa347ee477ecadb45df49af59dea0f1ecaa0a945b652ba146996197"
+    }
+  ],
+  "frozen_file_mismatches": [],
+  "completed_results_reused": true,
+  "count_interrupted_pairs_as_model_failures": false,
+  "io_fix": "Bounded 25ms evidence-file replacement retry, at most one second. Task clock continues.",
+  "independent_semantic_signoff": false
+}

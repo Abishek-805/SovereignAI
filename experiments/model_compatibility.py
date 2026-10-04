@@ -28,6 +28,10 @@ def launch(command, stdout, stderr):
 
 def main():
     OUT.mkdir(parents=True,exist_ok=True)
+    # Evidence I/O maintenance only; all frozen worker/fixture hashes stay exact.
+    if '--tasks' in sys.argv:
+        from evidence_io import install
+        install(ROOT)
     existing=servers()
     if len(existing)>1:raise RuntimeError('Multiple existing model servers; abort')
     original=existing[0].info['cmdline'] if existing else None

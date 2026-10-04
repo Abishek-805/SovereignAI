@@ -437,6 +437,51 @@ class TestPassReport(unittest.TestCase):
         self.assertEqual(pass_report([{'A': float('nan')}], ['A'])['A']['invalid'], 1)
 ''',
     },
+    'cf21': {
+        'source_path': 'router/validation_feedback.py',
+        'source_sha256': '55725e80075e7dd33cf83f34dcf23898b822f02cdeb83c859d3ebfae7e85cbd1',
+        'mutate_from': 'signature=exceptions[-1] if exceptions else',
+        'mutate_to': 'signature=exceptions[0] if exceptions else',
+        'tests': '''import hashlib, re, unittest
+from solution import failure_fingerprint
+class TestFingerprint(unittest.TestCase):
+    def test_final_exception(self):
+        final = 'ValueError: final failure'
+        expected = hashlib.sha256(final.encode()).hexdigest()
+        self.assertEqual(failure_fingerprint('KeyError: first\\n'+final), expected)
+    def test_digest_normalization(self):
+        prefix = 'RuntimeError: digest '
+        a = prefix + 'a'*64
+        b = prefix + 'b'*64
+        self.assertEqual(failure_fingerprint(a), failure_fingerprint(b))
+    def test_path_and_line_noise(self):
+        a = 'File /foo/a.py, line 3\\nRuntimeError: same'
+        b = 'File /bar/b.py, line 900\\nRuntimeError: same'
+        self.assertEqual(failure_fingerprint(a), failure_fingerprint(b))
+    def test_digest_format(self):
+        self.assertRegex(failure_fingerprint('error'), r'^[0-9a-f]{64}$')
+''',
+    },
+    'cf22': {
+        'source_path': 'workflows/source_quality.py',
+        'source_sha256': '25cc1a91358f406901508eb9e9fa2790cb72610074ec68742178e7cf322d97aa',
+        'mutate_from': '    def handle_startendtag(self, tag, attrs):\n        self.elements += 1\n',
+        'mutate_to': '    def handle_startendtag(self, tag, attrs):\n        return\n',
+        'tests': '''import unittest
+from solution import source_issue
+class TestSourceQuality(unittest.TestCase):
+    def test_self_closing_html(self):
+        self.assertIsNone(source_issue('view.html', '<img src="x"/>'))
+    def test_normal_html(self):
+        self.assertIsNone(source_issue('view.html', '<main>Hello</main>'))
+    def test_plain_text_html(self):
+        self.assertIsNotNone(source_issue('view.html', 'Only prose'))
+    def test_other_source_checks(self):
+        self.assertIsNone(source_issue('run.py', 'print(1)'))
+        self.assertIsNotNone(source_issue('run.py', '# only a comment'))
+        self.assertIsNone(source_issue('theme.css', 'body { color: red; }'))
+''',
+    },
 }
 
 
@@ -448,6 +493,15 @@ def main():
     sandbox._ready()
     records = []
     for task_id, case in CASES.items():
+        if 'source_path' in case:
+            source_bytes = (ROOT / case['source_path']).read_bytes()
+            if hashlib.sha256(source_bytes).hexdigest() != case['source_sha256']:
+                raise RuntimeError(f'Frozen source snapshot changed for {task_id}')
+            source = source_bytes.decode('utf-8')
+            if source.count(case['mutate_from']) != 1:
+                raise RuntimeError(f'Expected one mutation site for {task_id}')
+            case = {**case, 'reference': source,
+                    'starting': source.replace(case['mutate_from'], case['mutate_to'], 1)}
         pair = {}
         for arm in ('starting', 'reference'):
             files = {'solution.py': case[arm].encode(), 'test_contract.py': case['tests'].encode()}

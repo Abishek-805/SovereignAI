@@ -8,9 +8,10 @@
     "required_tasks": 100,
     "complete": false,
     "pilot_run_project_fixtures": 10,
-    "code_fidelity_task_drafts": 20,
-    "code_fidelity_draft_sha256": "4bdf4fed3a91e37ce432a2122ff60ac4fb145fd02b400bb1d24945f9f907d142",
-    "code_fidelity_docker_authoring_controls": 11,
+    "code_fidelity_task_drafts": 22,
+    "code_fidelity_draft_sha256": "295102672d8b0dd9ae14a2b642c802eeb339d8b1e0498eb4057c1b897b7b8845",
+    "code_fidelity_docker_authoring_controls": 13,
+    "real_source_snapshot_controls": 2,
     "code_fidelity_oracles_complete": false,
     "code_fidelity_evaluation_complete": false
   },

@@ -72,3 +72,17 @@ def test_supervisor_retries_actual_validation_without_publishing(service,monkeyp
     assert 'Actual sandbox validation failed' in calls[1][2][-1]
     assert result['state']==('failed' if repeat_error else 'completed')
     if not repeat_error:assert result['publication_state']=='staged'
+
+
+def test_npm_missing_command_reports_offline_linux_dependency_blocker(service,monkeypatch):
+    monkeypatch.setattr(service.coding,'raw_files',lambda _: {'package.json':b'{"scripts":{"build":"vite build"},"devDependencies":{"vite":"5.4.21"}}'})
+    raw={'state':'failed','exit_code':127,'stderr':'sh: vite: not found','stdout':'','checks':{'container_executed':True}}
+    monkeypatch.setattr(service,'execute_terminal',lambda *args,**kwargs:dict(raw))
+    from backend.jobs import Job
+    job=Job('run')
+    result=service.execute_coding_file('selected','',job)
+    assert result['state']=='blocked' and result['blocked_reason']=='DEPENDENCY'
+    assert result['stderr']==raw['stderr'] and result['exit_code']==127
+    assert 'package-lock.json' in result['blocker'] and 'Linux' in result['blocker']
+    assert 'Network access remains disabled' in result['blocker']
+    assert result['blocker'] in job.output

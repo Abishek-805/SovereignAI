@@ -1150,7 +1150,11 @@ class Workbench:
             result=self.execute_terminal(workspace_id,command,job or Job('project_run'),cwd=project.get('cwd',''))
             result['project_map']=project
             if result.get('exit_code') in {126,127} and re.search(r'(?:command not found|not found|No such file)',result.get('stderr',''),re.I):
-                result.update(state='blocked',blocked_reason='DEPENDENCY',blocker=result['stderr'].strip())
+                detail=result['stderr'].strip()
+                if project.get('package_manager')=='npm':
+                    detail+='\nOffline dependency blocker: the project command is unavailable in the Linux sandbox. Provision the package-lock.json dependency tree, including Linux-compatible native packages, in the approved offline sandbox image or bundle. Windows node_modules cannot supply Linux native binaries. Network access remains disabled; no build success was verified.'
+                result.update(state='blocked',blocked_reason='DEPENDENCY',blocker=detail)
+                if job:job.append('stderr','\n'+detail+'\n')
             return result
         if not self.ask_lock.acquire(blocking=False):
             raise WorkbenchError('busy','Another task is running')

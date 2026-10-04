@@ -3,7 +3,8 @@
 The planner selects only these registered operations. Names resolve uniquely at
 execution time; imports never grant the model arbitrary host filesystem access.
 """
-from pathlib import Path
+from pathlib import Path, PurePosixPath
+import shlex
 import re
 from backend.contracts import WorkbenchError
 from backend.jobs import Job
@@ -46,6 +47,8 @@ class ApplicationTools:
         self.history = history
         self.created_project_id = None
         self.observations = []
+        self.continuations = 0
+        self.attempted_operations = set()
         self.registry = ToolRegistry()
         for name in OPERATIONS:
             self.registry.register(name, lambda target, value='', input='', operation=name:
@@ -244,7 +247,54 @@ class ApplicationTools:
             return self.service.execute_coding_file(workspace, target, job=self.job)
         if not value.strip() or len(value) > 2000:
             raise WorkbenchError('tool_input', 'Provide a terminal command under 2,000 characters')
+        snapshot=self.service.coding.get(workspace)
+        # The selected project is already the execution root. Its display name
+        # is not an additional directory inside that root.
+        if target == snapshot.get('name') and target not in snapshot.get('folders',[]):
+            target=''
+        # Route a plain source invocation through the same typed execution
+        # adapter as the Run button. Compound shell commands/arguments retain
+        # their full terminal semantics; never silently discard them.
+        try: argv=shlex.split(value)
+        except ValueError: argv=[]
+        if len(argv)==2 and argv[0] in {'python','python3','node'} and not any(
+                token in value for token in (';', '|', '&', '>', '<', '$', '`', '\n')):
+            entry=str(PurePosixPath(target)/argv[1]) if target else argv[1]
+            supported_suffixes={ 'python':{'.py'}, 'python3':{'.py'}, 'node':{'.js','.mjs','.cjs'} }
+            if PurePosixPath(entry).suffix in supported_suffixes[argv[0]] and entry in {file['name'] for file in snapshot['files']}:
+                return self.service.execute_coding_file(workspace,entry,job=self.job)
         return self.service.execute_terminal(workspace, value, self.job, cwd=target)
+
+    def _continue(self, results, task):
+        """Resume the same bounded tool plan using actual results, not a new agent."""
+        planner=getattr(self.service.model,'plan_application_tools',None)
+        if not callable(planner) or self.continuations >= 2 or self.job.cancel.is_set():
+            return None
+        self.continuations += 1
+        self.job.progress('Checking execution results and remaining work')
+        snapshot=self.service.coding.get(self.workspace_id) if self.workspace_id else {'files':[], 'folders':[]}
+        if not self.service.ask_lock.acquire(blocking=False):
+            raise WorkbenchError('busy','Another model task is running')
+        try:
+            self.service._lease('text')
+            operations=planner(self.goal,
+                [{'name':d['display_name'],'document_id':d['document_id']} for d in self.service.documents()],
+                [{'name':f['name']} for f in snapshot['files']],self.history,
+                folders=snapshot['folders'],
+                project={'workspace_id':self.workspace_id,'name':snapshot.get('name','')},
+                observations=self.observations)
+        finally:
+            self.service.ask_lock.release()
+        self.service.tasks.step(task,'execution_continuation',{'attempt':self.continuations,'observations':self.observations[-8:]})
+        if not operations:
+            return None
+        if any(tuple(op.get(key,'') for key in ('tool','target','value','input')) in self.attempted_operations
+               for op in operations if isinstance(op,dict)):
+            return {'state':'failed','answer':'Execution stopped because the continuation repeated an already attempted action. No successful application run was inferred.',
+                    'workspace_id':self.workspace_id,'operations':results}
+        continued=self.execute(operations,task)
+        continued['operations']=results+continued.get('operations',[])
+        return continued
 
     def execute(self, operations, task):
         if not isinstance(operations, list) or not 1 <= len(operations) <= 8:
@@ -324,18 +374,31 @@ class ApplicationTools:
         results = []
         for index,operation in enumerate(operations):
             self.job.progress('Using ' + operation['tool'].replace('_', ' '))
-            result = self.registry.execute(operation['tool'], {key: operation[key] for key in ('target', 'value', 'input')})
+            self.attempted_operations.add(tuple(operation[key] for key in ('tool','target','value','input')))
+            try:
+                result = self.registry.execute(operation['tool'], {key: operation[key] for key in ('target', 'value', 'input')})
+            except WorkbenchError as error:
+                if operation['tool'] not in {'file_run','terminal'} or error.code not in {
+                        'invalid_file','invalid_command','preview_failed','tool_execution_failed'}:
+                    raise
+                result={'state':'failed','error':str(error),'error_code':error.code,'stderr':str(error)}
             if trace:
                 trace.tool_candidates[index]['status']='failed' if result.get('state',result.get('status'))=='failed' else 'executed'
                 trace.event('TOOL_COMPLETED' if trace.tool_candidates[index]['status']=='executed' else 'TOOL_FAILED')
             self.service.tasks.step(task, operation['tool'], {'target':operation['target']})
             results.append({'tool':operation['tool'], 'target':operation['target'], 'result':result})
-            self.observations.append({'tool':operation['tool'],'target':operation['target'],'state':result.get('state',result.get('status')),'exit_code':result.get('exit_code'),'stdout':str(result.get('stdout',''))[-4000:],'stderr':str(result.get('stderr',''))[-4000:],'checks':result.get('checks',{})})
+            self.observations.append({'tool':operation['tool'],'target':operation['target'],'state':result.get('state',result.get('status')),'exit_code':result.get('exit_code'),'stdout':str(result.get('stdout',''))[-4000:],'stderr':str(result.get('stderr',''))[-4000:],'checks':result.get('checks',{}),'command':operation['value'][:2000],'error':str(result.get('error',''))[-4000:]})
             if result.get('state',result.get('status'))=='blocked':
                 return {'state':'blocked','answer':result.get('blocker','Required dependency is unavailable'),'operations':results}
             if result.get('state', result.get('status')) == 'failed':
                 detail=result.get('stderr') or result.get('error') or result.get('validation_error') or 'The check did not pass.'
+                if operation['tool'] in {'file_run','terminal'}:
+                    continued=self._continue(results,task)
+                    if continued is not None:return continued
                 return {'state':'failed', 'answer':'The operation failed: '+str(detail)[-2000:]+' Later operations were not run.', 'operations':results}
+        if results and results[-1]['tool']=='terminal' and not results[-1]['result'].get('checks',{}).get('http_response_success'):
+            continued=self._continue(results,task)
+            if continued is not None:return continued
         def summary(result):
             actual_target=(result['result'].get('display_name',result['target'])
                            if result['tool']=='document_create' else result['target'])
@@ -361,5 +424,5 @@ class ApplicationTools:
             return label
         prefix=('Staged for review: ' if any(item['result'].get('publication_state')=='staged' and item['result'].get('changes') for item in results)
                 else 'Completed: ')
-        return {'state':'completed', 'answer':prefix + '; '.join(summary(result) for result in results) + '.',
+        return {'state':'completed', 'answer':prefix + '; '.join(summary(result).rstrip('.') for result in results) + '.',
             'workspace_id':self.workspace_id,'operations':results}

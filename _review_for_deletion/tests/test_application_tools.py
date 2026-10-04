@@ -428,3 +428,68 @@ def test_document_detail_expansion_keeps_current_text_and_uses_short_generation(
     assert result.startswith('Existing explanation.')
     assert result.strip().endswith('Additional details about forests and oceans.')
     assert calls[0][1] <= 768
+
+
+@pytest.mark.parametrize('initial_state', ['completed','failed'])
+def test_execution_continues_from_setup_or_error_with_original_goal(service,monkeypatch,initial_state):
+    workspace=service.coding.create('Execution continuation')['workspace_id']
+    service.coding.write(workspace,'app.py','print("ready")')
+    monkeypatch.setattr(service,'execute_terminal',lambda *args,**kwargs:
+        {'state':initial_state,'exit_code':0 if initial_state=='completed' else 127,
+         'stdout':'dependencies available' if initial_state=='completed' else '',
+         'stderr':'' if initial_state=='completed' else 'cd:: command not found'})
+    received=[]
+    def planner(goal,documents,files,history,**kwargs):
+        received.append((goal,kwargs['observations'].copy()))
+        return [op('file_run','app.py')]
+    monkeypatch.setattr(service.model,'plan_application_tools',planner,raising=False)
+    monkeypatch.setattr(service,'execute_coding_file',lambda *args,**kwargs:
+        {'state':'completed','exit_code':0,'stdout':'ready','checks':{'container_executed':True}})
+    goal='Run the application and tell me how to run it'
+    result=ApplicationTools(service,workspace,goal=goal).execute(
+        [op('terminal','','cd: app')],service.tasks.create('test',[]))
+    assert result['state']=='completed'
+    assert [item['tool'] for item in result['operations']]==['terminal','file_run']
+    assert received[0][0]==goal
+    assert received[0][1][0]['command']=='cd: app'
+    assert received[0][1][0]['state']==initial_state
+    assert 'ready' in result['answer']
+
+
+def test_execution_continuation_does_not_repeat_failed_action(service,monkeypatch):
+    workspace=service.coding.create('Bounded recovery')['workspace_id']
+    monkeypatch.setattr(service,'execute_terminal',lambda *args,**kwargs:
+        {'state':'failed','exit_code':127,'stderr':'command not found'})
+    monkeypatch.setattr(service.model,'plan_application_tools',lambda *args,**kwargs:
+        [op('terminal','','bad-command')],raising=False)
+    runner=ApplicationTools(service,workspace,goal='Run the application')
+    result=runner.execute([op('terminal','','bad-command')],service.tasks.create('test',[]))
+    assert result['state']=='failed'
+    assert len(result['operations'])==1
+    assert runner.continuations==1
+
+
+def test_run_recovery_cannot_authorize_unrequested_code_edits(service,monkeypatch):
+    workspace=service.coding.create('Recovery permission')['workspace_id']
+    service.coding.write(workspace,'app.py','print("ready")')
+    monkeypatch.setattr(service,'execute_terminal',lambda *args,**kwargs:
+        {'state':'failed','exit_code':1,'stderr':'wrong entrypoint'})
+    monkeypatch.setattr(service.model,'plan_application_tools',lambda *args,**kwargs:
+        [op('file_edit','app.py','replace everything')],raising=False)
+    with pytest.raises(WorkbenchError,match='does not authorize'):
+        ApplicationTools(service,workspace,goal='Run the application').execute(
+            [op('terminal','','wrong-entrypoint')],service.tasks.create('test',[]))
+    assert service.coding.read(workspace,'app.py')['content']=='print("ready")'
+
+
+@pytest.mark.parametrize('command,typed', [('python app.py',True),('python app.py --debug',False),('python app.py; echo done',False)])
+def test_plain_launch_uses_typed_adapter_without_dropping_shell_semantics(service,monkeypatch,command,typed):
+    workspace=service.coding.create('SelectedRoot')['workspace_id']
+    service.coding.write(workspace,'app.py','print("ready")')
+    calls=[]
+    monkeypatch.setattr(service,'execute_coding_file',lambda identifier,target,**kwargs:
+        calls.append(('typed',target)) or {'state':'completed'})
+    monkeypatch.setattr(service,'execute_terminal',lambda identifier,value,job,**kwargs:
+        calls.append(('shell',value,kwargs['cwd'])) or {'state':'completed'})
+    ApplicationTools(service,workspace,goal='Run the app')._execute('terminal','SelectedRoot',command,'')
+    assert calls==([('typed','app.py')] if typed else [('shell',command,'')])

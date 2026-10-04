@@ -5,7 +5,7 @@ from pathlib import Path
 import sys
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
-from experiments.comparison_report import inspect
+from experiments.comparison_report import inspect, symbols
 
 def main():
     out=ROOT/'benchmarks/model-comparison'
@@ -15,7 +15,9 @@ def main():
             row=json.loads(path.read_text())
             if 'result' not in row:continue
             automatic=inspect(row)
-            if automatic['status']=='PASS':continue
+            replay_path=out/'oracle-v2-replay'/model/path.name
+            replay=json.loads(replay_path.read_text()) if replay_path.exists() else None
+            if automatic['status']=='PASS' and (replay is None or replay['status']=='PASS'):continue
             events=row['result']['events']
             calls=row['calls']
             actions=[e['action'] for e in events if 'action' in e]
@@ -29,6 +31,7 @@ def main():
             record={'model':model,'task_id':row['task_id'],'raw_path':str(path.relative_to(ROOT)),
                 'raw_sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'request':row['request'],
                 'requirements':row['requirements'],'status':automatic['status'],'primary_failure_proposal':primary,
+                'supplemental_replay':replay,
                 'prompt_hashes':hashes,'action_sequence':actions,'tool_errors':errors,
                 'actual_docker_observations':docker,'candidate_diff':row['candidate_diff'],
                 'removed_symbols':automatic['removed_symbols'],'removed_files':row['removed_files'],
@@ -50,6 +53,23 @@ def main():
                     'environment_responsible':'UNKNOWN unless transport/Docker evidence establishes it'},
                 'human_semantic_signoff':False}
             rows.append(record)
+    for path in sorted((out/'old-workflow').glob('*.json')):
+        row=json.loads(path.read_text())
+        if 'status' not in row:continue
+        replay_path=out/'oracle-v2-replay/old-workflow'/path.name
+        replay=json.loads(replay_path.read_text()) if replay_path.exists() else None
+        if row['status']=='PASS' and (replay is None or replay['status']=='PASS'):continue
+        original=row['task']['starting_files'];candidate=row['candidate']
+        rows.append({'model':'old-workflow','task_id':row['task_id'],
+            'raw_path':str(path.relative_to(ROOT)),'raw_sha256':hashlib.sha256(path.read_bytes()).hexdigest(),
+            'request':row['task']['request'],'requirements':row['task']['requirements'],
+            'status':row['status'],'primary_failure_proposal':None,
+            'prompt_hashes':[c['prompt_sha256'] for c in row['calls']],
+            'actual_docker_observations':row['sandbox_executions'],'final_validation':row['validation'],
+            'exact_error':row['error'],'removed_files':sorted(set(original)-set(candidate)),
+            'removed_symbols':sorted(symbols(original)-symbols(candidate)),
+            'supplemental_replay':replay,'human_semantic_signoff':False,
+            'review_questions':'Compare every saved request, actual HTTP response, generated/staged files, Docker errors and final answer. Do not infer success from workflow status.'})
     (out/'failure_analysis_evidence_pack.json').write_text(json.dumps({'full_audit_complete':False,'rows':rows},indent=2))
     print('Evidence packs',len(rows))
 

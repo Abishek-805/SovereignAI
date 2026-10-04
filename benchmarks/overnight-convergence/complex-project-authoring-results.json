@@ -1,0 +1,62 @@
+{
+  "name": "Isolated complex project authoring controls",
+  "status": "AUTHORING_CONTROLS_ONLY",
+  "sandbox_image_id": "sha256:5370db5915e0774ba92a758199430a762f2cbc45515ed2958ca8e9a58faef272",
+  "rows": [
+    {
+      "id": "cp01",
+      "request": "Repair the existing multi-file receipt importer. Preserve parse_receipts(text), invoice_totals(receipts), and main(argv). Parse quoted CSV correctly, use Decimal for money, accept negative refunds, reject missing invoice_id/item/amount or invalid amount with ValueError, and write sorted JSON totals as decimal strings. Keep the existing CLI input/output arguments and all project files.",
+      "requirements": [
+        "three public symbols remain",
+        "quoted CSV round trips",
+        "Decimal totals",
+        "refunds accepted",
+        "malformed rows raise ValueError",
+        "sorted JSON CLI output",
+        "all project files preserved"
+      ],
+      "private_test_sha256": "cdd6c88df2338441980157427f5ba480012ba1698b21365dc4176264d23c04ec",
+      "starting_files": {
+        "executed": true,
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "test_cli_json (test_contract.TestReceiptProject.test_cli_json) ... ERROR\ntest_errors (test_contract.TestReceiptProject.test_errors) ... \n  test_errors (test_contract.TestReceiptProject.test_errors) (csv_text='invoice_id,item,amount\\nA,,1\\n') ... FAIL\n  test_errors (test_contract.TestReceiptProject.test_errors) (csv_text='invoice_id,item,amount\\nA,x,NaN\\n') ... FAIL\ntest_public_symbols_and_exact_money (test_contract.TestReceiptProject.test_public_symbols_and_exact_money) ... ERROR\n\n======================================================================\nERROR: test_cli_json (test_contract.TestReceiptProject.test_cli_json)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 31, in test_cli_json\n    self.assertEqual(main(['--input',str(input_path),'--output',str(output_path)]), 0)\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/output/project/main.py\", line 11, in main\n    totals = invoice_totals(parse_receipts(Path(args.input).read_text()))\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/output/project/billing/parser.py\", line 7, in parse_receipts\n    invoice_id, item, amount = line.split(',')\n    ^^^^^^^^^^^^^^^^^^^^^^^^\nValueError: too many values to unpack (expected 3)\n\n======================================================================\nERROR: test_public_symbols_and_exact_money (test_contract.TestReceiptProject.test_public_symbols_and_exact_money)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 14, in test_public_symbols_and_exact_money\n    rows = parse_receipts(CSV)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/output/project/billing/parser.py\", line 7, in parse_receipts\n    invoice_id, item, amount = line.split(',')\n    ^^^^^^^^^^^^^^^^^^^^^^^^\nValueError: too many values to unpack (expected 3)\n\n======================================================================\nFAIL: test_errors (test_contract.TestReceiptProject.test_errors) (csv_text='invoice_id,item,amount\\nA,,1\\n')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 24, in test_errors\n    with self.subTest(csv_text=csv_text), self.assertRaises(ValueError):\n                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ValueError not raised\n\n======================================================================\nFAIL: test_errors (test_contract.TestReceiptProject.test_errors) (csv_text='invoice_id,item,amount\\nA,x,NaN\\n')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 24, in test_errors\n    with self.subTest(csv_text=csv_text), self.assertRaises(ValueError):\n                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ValueError not raised\n\n----------------------------------------------------------------------\nRan 3 tests in 0.005s\n\nFAILED (failures=2, errors=2)\n",
+        "snapshot_sha256": "8456d67bd2a62039748c0bb05015addc7b70e4787ebde52799afbf1e2e74b130"
+      },
+      "reference_files": {
+        "executed": true,
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "test_cli_json (test_contract.TestReceiptProject.test_cli_json) ... ok\ntest_errors (test_contract.TestReceiptProject.test_errors) ... ok\ntest_public_symbols_and_exact_money (test_contract.TestReceiptProject.test_public_symbols_and_exact_money) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.004s\n\nOK\n",
+        "snapshot_sha256": "934d8d18f834fad65d214a854b87489b78a4edca04d80fee1c71661fbc5c1b1a"
+      }
+    },
+    {
+      "id": "cp02",
+      "request": "Repair the multi-file SQLite task queue. A worker must acknowledge a task only after its handler succeeds; acknowledged tasks must not run again after reopening the same database. Preserve QueueStore.add, QueueStore.next_task, QueueStore.ack and Worker.run_once, FIFO order, and the project files.",
+      "requirements": [
+        "four public methods preserved",
+        "ack persists across restart",
+        "unacknowledged task remains available",
+        "FIFO order",
+        "handler failure does not acknowledge",
+        "no unrelated file removal"
+      ],
+      "private_test_sha256": "6d9d67b58a7f35e5b46072809025d5c2eec9f375c4d278db86889ec3f2aef74a",
+      "starting_files": {
+        "executed": true,
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "test_handler_error_not_acked (test_contract.TestQueueProject.test_handler_error_not_acked) ... ok\ntest_persistent_fifo_ack (test_contract.TestQueueProject.test_persistent_fifo_ack) ... FAIL\n\n======================================================================\nFAIL: test_persistent_fifo_ack (test_contract.TestQueueProject.test_persistent_fifo_ack)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_contract.py\", line 20, in test_persistent_fifo_ack\n    self.assertEqual(seen, ['first','second'])\nAssertionError: Lists differ: ['first', 'first'] != ['first', 'second']\n\nFirst differing element 1:\n'first'\n'second'\n\n- ['first', 'first']\n?            --- ^\n\n+ ['first', 'second']\n?             ^^^^^\n\n\n----------------------------------------------------------------------\nRan 2 tests in 0.003s\n\nFAILED (failures=1)\n",
+        "snapshot_sha256": "ffe38fdd481e20d6f76a7b862254f09d17fcff7d7a7ffd8f27178d89def22c22"
+      },
+      "reference_files": {
+        "executed": true,
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "test_handler_error_not_acked (test_contract.TestQueueProject.test_handler_error_not_acked) ... ok\ntest_persistent_fifo_ack (test_contract.TestQueueProject.test_persistent_fifo_ack) ... ok\n\n----------------------------------------------------------------------\nRan 2 tests in 0.003s\n\nOK\n",
+        "snapshot_sha256": "eac064228a37410b8e900d393ec72485d6a4ec9b17c6e42a29b7aee262bcac57"
+      }
+    }
+  ]
+}

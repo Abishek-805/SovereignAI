@@ -17,6 +17,8 @@ def main():
     for model in MODELS:
         folder=OUT/'old-workflow' if model=='old-workflow' else OUT/'fixed-40'/model
         data[model]={}
+        review_path=OUT/(model+'-answer-bound-review.json')
+        reviewed={r['task_id']:r for r in json.loads(review_path.read_text())['rows']} if review_path.exists() else {}
         for task in tasks:
             path=folder/(task['task_id']+'.json')
             if not path.exists():continue
@@ -31,6 +33,7 @@ def main():
             data[model][task['task_id']]={
                 'task_id':task['task_id'],'category':task['category'],'model':model,
                 'status':status,'supplemental_status':v2['status'] if v2 else None,
+                'answer_bound_status':reviewed.get(task['task_id'],{}).get('answer_bound_status'),
                 'completion_with_supplemental_evidence':status=='PASS' and v2 is not None and v2['status']=='PASS',
                 'latency':raw['elapsed_seconds'] if old else raw['result']['elapsed_seconds'],
                 'model_calls':len(calls) if old else counts['model_calls'],
@@ -43,13 +46,16 @@ def main():
                 'ram_bytes':resources.get('worker_peak_rss_bytes'),
                 'device_vram_mib':resources.get('gpu_peak_used_mib'),
                 'raw_path':str(path.relative_to(ROOT)),
-                'semantic_audit_complete':False}
+                'semantic_audit_complete':task['task_id'] in reviewed}
         rows=list(data[model].values())
         summaries.append({'model':model,'coverage':len(rows),
             **{s:sum(r['status']==s for r in rows) for s in ('PASS','PARTIAL','FAIL','BLOCKED')},
             'validated_completion_rate_percent':sum(r['status']=='PASS' for r in rows)/40*100,
             'supplemental_confirmed_completion':sum(r['completion_with_supplemental_evidence'] for r in rows),
             'supplemental_coverage':sum(r['supplemental_status'] is not None for r in rows),
+            'answer_bound_review_coverage':sum(r['semantic_audit_complete'] for r in rows),
+            'answer_bound_pass':sum(r['answer_bound_status']=='PASS' for r in rows),
+            'answer_bound_partial':sum(r['answer_bound_status']=='PARTIAL' for r in rows),
             'median_latency_seconds':statistics.median(r['latency'] for r in rows) if rows else None,
             'model_calls':sum(r['model_calls'] for r in rows),
             'model_switches':sum(r['model_switches'] for r in rows),

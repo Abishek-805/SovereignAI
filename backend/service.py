@@ -591,6 +591,9 @@ class Workbench:
                             'title_rows':table['rows'][:min(3,table['header_row'])],
                             'columns':table['columns'],'row_count':len(table['records']),'sample':table['records'][:2],
                             'literal_entity_coverage':literal_entity_coverage(table,question),
+                            'history_entity_coverage':literal_entity_coverage(table,'\n'.join(
+                                item.split(':',1)[1] for item in (history or [])
+                                if isinstance(item,str) and item.lower().startswith('user:'))),
                             'categorical_values':{column:sorted({str(r.get(column)) for r in table['records'] if isinstance(r.get(column),str)})
                                 for column in table['columns'] if 0<len({str(r.get(column)) for r in table['records'] if isinstance(r.get(column),str)})<=12}})
                         available[key]=(doc,table)
@@ -1147,7 +1150,14 @@ class Workbench:
             project=inspect_project(self.coding.raw_files(workspace_id))
             command=project['commands'].get('run')
             if not command:raise WorkbenchError('needs_input','No unique documented project run command was found. Select an entrypoint or add a README/package run command.')
-            result=self.execute_terminal(workspace_id,command,job or Job('project_run'),cwd=project.get('cwd',''))
+            import shlex
+            from pathlib import PurePosixPath
+            argv=shlex.split(command)
+            mapped_target=str(PurePosixPath(project.get('cwd',''))/argv[1]) if len(argv)==2 else ''
+            if len(argv)==2 and argv[0] in {'python','python3','node'} and mapped_target in self.coding.raw_files(workspace_id):
+                result=self.execute_coding_file(workspace_id,mapped_target,job)
+            else:
+                result=self.execute_terminal(workspace_id,command,job or Job('project_run'),cwd=project.get('cwd',''))
             result['project_map']=project
             if result.get('exit_code') in {126,127} and re.search(r'(?:command not found|not found|No such file)',result.get('stderr',''),re.I):
                 detail=result['stderr'].strip()

@@ -178,3 +178,28 @@ def test_invalid_table_prose_displays_verified_records(service,tmp_path):
     assert '24ALR001' in result['answer'] and '[S1]' in result['answer']
     assert result['checks']['presentation']=='verified_query_result'
     assert not result['checks'].get('repair',{}).get('attempted',False)
+
+
+def test_inherited_population_flag_and_numeric_count_evidence():
+    from rag.tables import compile_outcome_query,execute_query
+    table={'name':'Scores','columns':['Identity','Metric A'],'records':[{'Identity':'Team-X','Metric A':24},{'Identity':'Team-X','Metric A':25},{'Identity':'Team-X','Metric A':30}]}
+    intent={'operation':'count','outcome':'pass','result_values':[],'entity_values':['Team-X'],'entity_column':'Identity','group_entities':False,'followup':False,'threshold':25,'threshold_operator':'gte','rule_outcome':'pass','score_columns':['Metric A'],'scope':'one','assessments':['Scores']}
+    plan=compile_outcome_query(intent,{'s':({'document_id':'d'},table)},'Metric A',['user: Count passing Team-X records','user: At least 25 passes'])
+    result=execute_query(table,plan)
+    assert result['summaries'][0]['value']==2
+    assert result['summaries'][0]['criterion']=={'column':'Metric A','operator':'gte','value':25}
+    assert intent['followup'] is False
+
+
+def test_followup_catalog_includes_source_matches_from_user_history(service,tmp_path):
+    doc=service.import_file(workbook(tmp_path)); captured=[]
+    def plan(question,tables,history,**kwargs):
+        captured.extend(tables)
+        return {'table':tables[0]['id'],'operation':'select','columns':['Student ID'],
+                'filters':[{'column':'Student ID','operator':'contains','value':'24ALR'}]}
+    service.model.plan_table_query=plan
+    service.ask('What about this assessment?',[doc['document_id']],
+        ['User: Show 24ALR records','Assistant: The unrelated cohort is BAD'],force_documents=True)
+    matches=captured[0]['history_entity_coverage']['matches']
+    assert any(item['literal']=='24ALR' and item['matching_records']==2 for item in matches)
+    assert not any(item['literal']=='BAD' for item in matches)

@@ -36,15 +36,22 @@ class Jobs:
     def start(self,kind,work):
         with self.lock:
             lane = 'import' if kind == 'import' else 'workspace'
-            if any(j.state=='running' and ('import' if j.kind=='import' else 'workspace')==lane for j in self.jobs.values()):
+            predecessors=[j for j in self.jobs.values() if j.state=='running' and ('import' if j.kind=='import' else 'workspace')==lane]
+            if predecessors and kind!='document':
                 raise WorkbenchError('busy','Another document import is running' if lane=='import' else 'Wait for the current workspace job or stop it first')
             self.jobs={k:j for k,j in self.jobs.items() if j.state=='running' or time.time()-j.created<3600}
             if len(self.jobs)>=20:
                 completed=next((k for k,j in self.jobs.items() if j.state!='running'),None)
                 if completed is not None:self.jobs.pop(completed)
             job=Job(kind);self.jobs[job.id]=job
+            if predecessors:job.progress('Waiting for the active task; it will continue unchanged')
         def run():
             try:
+                # Document/chat requests wait behind existing work without leasing
+                # another worker or cancelling the owner of the active task.
+                while any(previous.state=='running' for previous in predecessors):
+                    if job.cancel.wait(.1):return
+                if job.cancel.is_set():return
                 result=work(job)
                 from router.task_completion import observe_completion
                 completion=observe_completion(result,kind)
@@ -61,5 +68,9 @@ class Jobs:
                     job.partial_answer='';job.partial_kind=None
                     job.state='cancelled' if job.cancel.is_set() else 'failed';job.error=str(exc);job.error_code=getattr(exc,'code',None);job.stage='Stopped' if job.state=='cancelled' else 'Could not finish'
                     job.completion={'state':job.state,'achieved':False,'response_delivered':False,'checks':{},'limitations':[str(exc)]}
+            finally:
+                if job.cancel.is_set():
+                    with job.lock:
+                        job.state='cancelled';job.stage='Stopped'
         threading.Thread(target=run,daemon=True).start()
         return job.snapshot()

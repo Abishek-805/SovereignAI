@@ -176,6 +176,16 @@ def compile_outcome_query(intent,available,question,history=None):
             for row in table['records'] for column in table['columns']
             if str(row.get(column)).strip().casefold() in canonical[polarity]})
     entities=list(dict.fromkeys(intent.get('entity_values',[])))
+    user_history='\n'.join(item for item in (history or []) if isinstance(item,str) and item.lower().startswith('user:'))
+    # A selected identity present only in prior user requests is inherently
+    # inherited context; an inconsistent followup flag must not discard it.
+    inherited=bool(entities) and all(str(value).casefold() in user_history.casefold() for value in entities) and not all(str(value).casefold() in question.casefold() for value in entities)
+    if inherited:intent={**intent,'followup':True}
+    explicit_scores=[field for field in intent.get('score_columns',[]) if len(re.sub(r'[^a-z0-9]','',field.casefold()))>=3 and
+        re.search(r'(?<!\w)'+r'[\W_]*'.join(re.findall(r'[a-z]+|\d+',field.casefold()))+r'(?!\w)',question.casefold())]
+    if explicit_scores:
+        intent={**intent,'score_columns':explicit_scores,'scope':'one','assessments':[
+            table['name'] for _,table in available.values() if all(field in table['columns'] for field in explicit_scores)]}
     grouped=bool(intent.get('group_entities'))
     if grouped and len(entities)<2:
         raise WorkbenchError('invalid_query','A cohort comparison requires every requested group, not a single inherited cohort')
@@ -240,6 +250,12 @@ def compile_outcome_query(intent,available,question,history=None):
                 if bound and (polarity in canonical or len(bound)==len(outcomes)):
                     criteria.append({'column':column,'operator':'in','value':bound})
         if not criteria:
+            numeric_fields=[field for field in table['columns'] if field!=intent.get('entity_column') and
+                any(isinstance(row.get(field),(int,float)) and not isinstance(row.get(field),bool) for row in table['records'])]
+            if threshold is not None and intent.get('scope')=='all' and len(numeric_fields)>1:
+                raise WorkbenchError('invalid_query','The supplied numeric rule has incomplete assessment coverage. '
+                    'Bind relevant score_columns from the consolidated source '+table['name']+': '+repr(numeric_fields)+
+                    '. Do not request the threshold again or omit these measurements from an all-assessments report.')
             unavailable.append(table['name']);continue
         filters=[]
         if entities:
@@ -257,7 +273,7 @@ def compile_outcome_query(intent,available,question,history=None):
             candidates=exact or candidates
             if len(candidates)!=1:
                 raise WorkbenchError('needs_input','The cohort does not resolve to one identity column in '+table['name']+
-                    '. Choose entity_column from the source-bound fields and observed matching record counts: '+repr(bindings)+
+                    '. Proposed population values: '+repr(entities)+'. An assessment name is not a population; measurement follow-ups retain the prior requested population. Choose entity_column from the source-bound fields and observed matching record counts: '+repr(bindings)+
                     '. Proposed field: '+repr(intent.get('entity_column')))
             column,is_exact=candidates[0]
             if is_exact: filters=[{'column':column,'operator':'in','value':entities}]
@@ -320,7 +336,7 @@ def execute_query(table,plan):
         if criteria:
             if not isinstance(criteria,list) or len(criteria)>12: raise WorkbenchError('invalid_query','Too many result count criteria')
             result['summaries']=[{'column':criterion.get('column'),'value':execute_query({**table,'records':rows},
-                {'operation':'count','columns':[],'filters':[criterion]})['value'],'total':len(rows)} for criterion in criteria]
+                {'operation':'count','columns':[],'filters':[criterion]})['value'],'total':len(rows),'criterion':criterion} for criterion in criteria]
             if len(criteria)==1: result['value']=result['summaries'][0]['value']
         else: result['value']=len(rows)
     elif operation=='percentage':

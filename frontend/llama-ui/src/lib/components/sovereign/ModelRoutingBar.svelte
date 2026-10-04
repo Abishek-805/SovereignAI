@@ -17,13 +17,14 @@
 	let open = $state(false);
 	let refreshing = $state(false);
 	let lastRoute = $state<Route | null>(null);
+	let activeStage = $state('');
 	let root: HTMLElement;
 
 	const activeModel = $derived(info?.models.find((model) => model.alias === generator?.alias));
 	const runtimeState = $derived(
 		!connected
 			? 'Offline'
-			: generator?.state ? generator.state : !generator?.available
+			: activeStage ? activeStage : generator?.state ? generator.state : !generator?.available
 				? 'Offline'
 				: generator.is_sleeping
 					? 'Idle'
@@ -32,7 +33,7 @@
 	const modelName = $derived(
 		generator?.available
 			? modelDisplayName(activeModel?.model_id || generator?.alias || 'Local model')
-			: 'No model running'
+			: generator?.state === 'Loading' || generator?.state === 'Switching' ? 'Loading local worker' : 'No model running'
 	);
 
 	async function refresh() {
@@ -43,6 +44,7 @@
 			if (!response.ok) throw new Error('Local backend unavailable');
 			const status = await response.json();
 			generator = status.generator;
+			activeStage = status.active_jobs?.find((job: { stage: string }) => !job.stage.startsWith('Waiting for'))?.stage || status.active_jobs?.[0]?.stage || '';
 			connected = true;
 		} catch {
 			connected = false;
@@ -88,7 +90,7 @@
 		window.addEventListener('sovereign-route', routed);
 		const timer = setInterval(() => {
 			if (!document.hidden) void refresh();
-		}, 15000);
+		}, 2000);
 		return () => {
 			clearInterval(timer);
 			window.removeEventListener('sovereign-route', routed);

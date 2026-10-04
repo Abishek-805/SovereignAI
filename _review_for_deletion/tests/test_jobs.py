@@ -83,3 +83,28 @@ def test_job_error_code_distinguishes_engine_startup_from_failed_isolation(error
     assert snapshot['error']==str(error)
     assert snapshot['completion']['achieved'] is False
     assert snapshot['partial_answer']==''
+
+
+def test_document_waits_without_interrupting_active_workspace():
+    jobs=Jobs();release=threading.Event();seen=[]
+    active=jobs.start('run',lambda job:(release.wait(3),seen.append('run'),{'state':'completed'})[-1])
+    queued=jobs.start('document',lambda job:(seen.append('document'),{'state':'completed'})[-1])
+    assert queued['state']=='running' and 'Waiting for' in queued['stage']
+    assert not jobs.get(active['job_id']).cancel.is_set()
+    release.set()
+    for _ in range(100):
+        if jobs.get(queued['job_id']).state!='running':break
+        time.sleep(.01)
+    assert seen==['run','document']
+
+
+def test_cancel_waiting_document_does_not_cancel_active_work():
+    jobs=Jobs();release=threading.Event();seen=[]
+    active=jobs.start('run',lambda job:(release.wait(3),{'state':'completed'})[-1])
+    queued=jobs.start('document',lambda job:seen.append('unexpected'))
+    jobs.get(queued['job_id']).cancel.set()
+    for _ in range(100):
+        if jobs.get(queued['job_id']).state!='running':break
+        time.sleep(.01)
+    assert jobs.get(queued['job_id']).state=='cancelled' and not jobs.get(active['job_id']).cancel.is_set() and not seen
+    release.set()

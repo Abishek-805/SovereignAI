@@ -101,7 +101,7 @@ def _query_presentation(sources):
         if rules:
             comparisons={'gte':'at least','gt':'above','lte':'at most','lt':'below'}
             rule_text='\n\nApplied numeric rule: '+', '.join(comparisons[operator]+' '+cell(value) for operator,value in rules)+'. Non-numeric or absent scores do not satisfy this numeric rule.'
-        return heading+'\n\n'+'\n'.join(lines)+rule_text+ ('\n\nPercentages use all matching cohort records as the denominator.' if query['operation']=='percentage' else '')+ ('\n\nNo explicit pass/fail rule is available for: '+', '.join(cell(name) for name in missing)+'. Supply the pass threshold to calculate those assessments.' if missing else '')
+        return heading+'\n\n'+'\n'.join(lines)+rule_text+ ('\n\nPercentages use all matching cohort records as the denominator.' if query['operation']=='percentage' else '')+ (('\n\nScore fields were not bound in: ' if rules else '\n\nNo explicit pass/fail rule is available for: ')+', '.join(cell(name) for name in missing)+('. The supplied numeric rule could not be bound to score fields in those views.' if rules else '. Supply the pass threshold to calculate those assessments.') if missing else '')
     if query['operation']=='select' and isinstance(query.get('records'),list):
         records=query['records']; columns=query.get('columns') or (list(records[0]) if records else [])
         if not records: return heading+'\n\nNo rows matched the query filters.'

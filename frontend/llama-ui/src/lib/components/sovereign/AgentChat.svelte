@@ -451,8 +451,19 @@
 		} catch (e) { notice = 'Could not accept changes. The draft is still saved: ' + String(e); }
 	}
 	async function poll(index: number, id: string) {
+		let terminalObserved = false;
+		async function readJob() {
+			for (let attempt = 0; ; attempt++) {
+				try { return await json(await fetch('/coding/jobs/' + id)); }
+				catch (error) {
+					if (!(error instanceof TypeError) || attempt >= 29) throw error;
+					notice = 'Reconnecting to the task. Its backend execution continues.';
+					await new Promise((resolve) => setTimeout(resolve, 1000));
+				}
+			}
+		}
 		try {
-			let result = await json(await fetch('/coding/jobs/' + id));
+			let result = await readJob();
 			while (result.state === 'running') {
 				generationPreview = stopRequested ? null : runningJobPreview(result);
 				notice = result.stage;
@@ -460,8 +471,9 @@
 				agentStages = (result.events || []).map((event: { stage: string }) => event.stage);
 				activity(true, result.stage);
 				await new Promise((resolve) => setTimeout(resolve, 650));
-				result = await json(await fetch('/coding/jobs/' + id));
+				result = await readJob();
 			}
+			terminalObserved = true;
 			generationPreview = null;
 			if (result.routing) { turns[index] = {...turns[index], routing: result.routing}; persist(); }
 			if (result.error) throw Error(result.error);
@@ -473,16 +485,16 @@
 			turns[index] = {
 				...turns[index],
 				question: turns[index].question,
-				answer: stopRequested ? 'Task stopped.' : agentProblem(e),
-				status: stopRequested ? 'stopped' : 'failed'
+				answer: stopRequested ? 'Task stopped.' : !terminalObserved && e instanceof TypeError ? 'Connection lost. The backend task was not stopped; reopen Agent to reconnect.' : agentProblem(e),
+				status: stopRequested ? 'stopped' : !terminalObserved && e instanceof TypeError ? 'working' : 'failed'
 			};
 			notice = stopRequested
 				? 'Task stopped.'
-				: 'The task could not finish. Review the details and retry.';
+				: !terminalObserved && e instanceof TypeError ? 'Connection lost; the task continues in the backend.' : 'The task could not finish. Review the details and retry.';
 		} finally {
 			busy = false;
 			agentJob = '';
-			sessionStorage.removeItem('sovereign-agent-job');
+			if (terminalObserved || stopRequested) sessionStorage.removeItem('sovereign-agent-job');
 			persist();
 			activity(false, '');
 		}

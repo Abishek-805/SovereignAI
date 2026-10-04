@@ -257,7 +257,12 @@ def create_app(service=None):
         return service.automations.change(identifier,delete=True)
 
     @app.get('/status')
-    def status(): return service.status()
+    def status():
+        result=service.status()
+        with jobs.lock:
+            active=[job.snapshot() for job in jobs.jobs.values() if job.state=='running']
+        result['active_jobs']=[{key:job[key] for key in ('job_id','kind','stage','elapsed')} for job in active]
+        return result
 
     @app.get('/routing/latest')
     def routing_latest():return service.routing_decision()

@@ -55,8 +55,10 @@ def main():
     if replay_code:
         checkpoint('SUPPLEMENTAL_REPLAY_ENVIRONMENT_BLOCKED',exit_code=replay_code);return
     audit_code=run([old_python,'experiments/trajectory_audit_pack.py'],'trajectory-audit-pack')
+    analysis_code=run([old_python,'experiments/comparison_analysis.py'],'paired-analysis')
     checkpoint('EXECUTIONS_AND_REPLAY_COMPLETE_SEMANTIC_AUDIT_PENDING',
                old_workflow_coverage=finished,audit_pack_exit_code=audit_code,
+               paired_analysis_exit_code=analysis_code,
                independent_semantic_signoff=False)
 
 if __name__=='__main__':main()

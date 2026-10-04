@@ -164,6 +164,12 @@ def main():
         slots=httpx.get('http://127.0.0.1:8087/slots',timeout=5).json()
         if any(s.get('is_processing') for s in slots):raise RuntimeError('Existing runtime busy')
         existing[0].terminate();existing[0].wait(20)
+    runtime_record={'model':'coder','workflow':'existing Workbench.run_auto_agent',
+                    'baseline_system_used_ram_bytes':psutil.virtual_memory().used,
+                    'baseline_gpu_used_mib':None,'model_load_seconds':None,
+                    'model_unload_seconds':None,'previous_server_command':original,
+                    'source_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+                    'gpu_measurement':'Per-task device-wide samples; baseline unavailable'}
     command=[str(ROOT/'runtime/llama-b11132/llama-server.exe'),'-m',str(ROOT/MODEL),'-c','4096','-ngl','999','-np','1','--host','127.0.0.1','--port','8087']
     with (OUT/'runtime.log').open('a') as log:
         process=subprocess.Popen(command,cwd=ROOT,stdout=log,stderr=log,creationflags=subprocess.CREATE_NO_WINDOW)
@@ -176,9 +182,15 @@ def main():
                 except httpx.HTTPError:pass
                 time.sleep(.5)
             else:raise TimeoutError('Coder health deadline')
+            runtime_record.update(model_load_seconds=time.monotonic()-started,server_pid=process.pid,
+                                  server_command=command)
+            (OUT/'runtime-evidence.json').write_text(json.dumps(runtime_record,indent=2))
             run_tasks()
         finally:
-            process.terminate();process.wait(20)
+            unloading=time.monotonic();process.terminate();process.wait(20)
+            runtime_record.update(model_unload_seconds=time.monotonic()-unloading,
+                                  final_worker_running=psutil.pid_exists(process.pid))
+            (OUT/'runtime-evidence.json').write_text(json.dumps(runtime_record,indent=2))
             if original:subprocess.Popen(original,cwd=ROOT,stdout=log,stderr=log,creationflags=subprocess.CREATE_NO_WINDOW)
 
 if __name__=='__main__':main()

@@ -1,0 +1,46 @@
+{
+  "task_id": "T03",
+  "request": "Fix stats.py mean: use the correct denominator and raise ValueError for an empty sequence. Preserve tag().",
+  "files": {
+    "stats.py": "def mean(values):\n    return sum(values)/(len(values)+1)\ndef tag():\n    return \"stable\"\n",
+    "keep.txt": "unrelated valuable data\n",
+    "test_acceptance.py": "import unittest,json,subprocess,sys\nfrom pathlib import Path\nimport stats\nclass Check(unittest.TestCase):\n def test_mean(self):self.assertEqual(stats.mean([2,4,9]),5)\n def test_single(self):self.assertEqual(stats.mean([8]),8)\n def test_empty(self):\n  with self.assertRaises(ValueError):stats.mean([])\n def test_preserved(self):self.assertEqual(stats.tag(),'stable')\n"
+  },
+  "mode": "accept",
+  "workspace_id": "27588521a1120565a950ef7a9f93403d",
+  "initial_revision": "ac15e325336b9812ee01745c8cd6e6f1a44a76132d6ce74c195ff423458923e7",
+  "router_proposal": {
+    "original_request": "Fix stats.py mean: use the correct denominator and raise ValueError for an empty sequence. Preserve tag().",
+    "normalized_request": "Fix stats.py mean: use the correct denominator and raise ValueError for an empty sequence. Preserve tag().",
+    "task_type": "DEBUG",
+    "complexity": "simple",
+    "worker_role": "code",
+    "steps": [
+      "code"
+    ],
+    "features": {
+      "active_file_present": false,
+      "workspace_available": true,
+      "repository_scope": "none",
+      "estimated_context_size": null,
+      "number_of_files_requested": 1,
+      "visual_input_present": false,
+      "modality": "text",
+      "is_follow_up": false,
+      "explicit_error_present": false,
+      "language_hints": [],
+      "execution_requested": false,
+      "validation_required": false,
+      "mechanical_rename": false,
+      "software_generation": false,
+      "requirements_heavy": false
+    },
+    "reason_codes": [
+      "software_task_features"
+    ],
+    "needs_clarification": false,
+    "mutation_authorized": false
+  },
+  "fixed_worker": "qwen35",
+  "source_suite_hash": "bbea8783929a12035dd58569b807a7e96539f5a1b6e2afcf4c9d278e682add72"
+}

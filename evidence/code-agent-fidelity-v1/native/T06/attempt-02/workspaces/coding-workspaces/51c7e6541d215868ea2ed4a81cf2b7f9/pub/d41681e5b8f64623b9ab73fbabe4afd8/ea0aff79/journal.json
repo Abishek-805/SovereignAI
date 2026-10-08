@@ -1,0 +1,26 @@
+{
+  "conflicts": [],
+  "entries": [
+    {
+      "action": "edit",
+      "backup": "backups/0.bin",
+      "before_hash": "a82507b94f48c686eaa06f918811fe26a4179efc673676dd0c85956b900a251b",
+      "path": "events.py",
+      "staged_hash": "78056f798831210f5259188be01e7e46e8e616d6816a72dcacba9bc57520943f"
+    },
+    {
+      "action": "edit",
+      "backup": "backups/1.bin",
+      "before_hash": "2cb0e1eb3bf8da07c143dcd7ea37d6f62309c5a47325ba5d97aa7b581ee81f74",
+      "path": "report.py",
+      "staged_hash": "a4d9f7d9ab8c871df74f6caa1db9500f70f2595108c3a620090e8f39ae46817d"
+    }
+  ],
+  "operation": "accept",
+  "project_id": "51c7e6541d215868ea2ed4a81cf2b7f9",
+  "project_root": "C:\\Users\\ashek\\Desktop\\SovereignAI\\evidence\\code-agent-fidelity-v1\\native\\T06\\attempt-02\\workspaces\\coding-workspaces\\51c7e6541d215868ea2ed4a81cf2b7f9\\files",
+  "sequence": 1791302988736943200,
+  "state": "committed",
+  "task_id": "d41681e5b8f64623b9ab73fbabe4afd8",
+  "version": 1
+}

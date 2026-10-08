@@ -78,8 +78,14 @@ def classify_coding_request(request, context=None):
     mechanical_rename=bool(multi and len(files)>1 and re.search(r'\brename\b',text)
         and not re.search(r'\b(?:refactor|implement|migration|architecture|architectural|redesign|distributed)\b',text))
     features['mechanical_rename']=mechanical_rename
+    software_generation=bool(re.search(r'\b(?:create|generate|build|make)\b[^.!?]*\b(?:application|app|cli|api|project)\b',text)
+        and not re.search(r'\b(?:create|generate|build|make)\s+(?:a\s+)?(?:[\w./-]+\.(?:md|txt|docx)|README|document|report)\b',text))
+    features['software_generation']=software_generation
+    requirements_heavy=bool(software_generation and re.search(r'\b(?:flask|endpoint|persistence|persist\w*|invalid|reject\w*|valueerror|exception|database)\b',text))
+    features['requirements_heavy']=requirements_heavy
+    if software_generation and not visual:task='MULTI_FILE_CHANGE' if multi else 'CODE_GENERATION'
     complex_task=bool((multi and not mechanical_rename) or re.search(r'\b(?:architecture|architectural|migration|redesign|distributed)\b',text)
-        or (context.get('estimated_context_size') or 0)>12000)
+        or requirements_heavy or (context.get('estimated_context_size') or 0)>12000)
     complexity='complex' if complex_task else 'simple'
     if task is None:
         if text.strip() and not followup and not coding and not re.search(r'\b(?:that|this|it|screenshot)\b',text):

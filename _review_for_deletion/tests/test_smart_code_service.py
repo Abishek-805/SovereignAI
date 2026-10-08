@@ -4,6 +4,8 @@ import pytest
 from router.tool_registry import explicit_operation_requested
 
 def test_explanation_prioritizes_current_active_file(service,monkeypatch):
+    # This contract covers the retained opt-in legacy strategy, not the production capability default.
+    service.routing_strategy='universal'
     wid=service.coding.create('Context contract')['workspace_id']
     for i in range(10):service.coding.write(wid,f'a{i}.py','value = 1\n')
     service.coding.write(wid,'z_selected.py','def selected():\n    return 17\n')
@@ -123,6 +125,8 @@ def test_direct_code_panel_skips_intent_inference(service,monkeypatch):
 
 @pytest.mark.parametrize('routed',[False,True])
 def test_complex_strategy_is_persisted_before_coder_handoff(service,monkeypatch,routed):
+    # This contract covers the retained opt-in legacy strategy, not the production capability default.
+    service.routing_strategy='universal'
     monkeypatch.setattr(service.coding,'raw_files',lambda workspace:{})
     from backend.task_supervisor import CURRENT_SUPERVISOR
     order=[]
@@ -155,6 +159,8 @@ def test_mixed_explanation_and_edit_preserves_requested_edit(service,monkeypatch
     assert plan['action']=='edit_code'
 
 def test_multifile_execution_keeps_complex_context_and_strategy(service,monkeypatch):
+    # This contract covers the retained opt-in legacy strategy, not the production capability default.
+    service.routing_strategy='universal'
     monkeypatch.setattr(service.coding,'raw_files',lambda workspace:{})
     from backend.task_supervisor import CURRENT_SUPERVISOR
     order=[]

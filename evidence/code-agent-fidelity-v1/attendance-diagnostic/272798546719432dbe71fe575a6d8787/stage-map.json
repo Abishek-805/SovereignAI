@@ -1,0 +1,9 @@
+{
+  "A_requirement_interpretation": "Original request and generated README; private interpretation/exact prior system context was not logged.",
+  "B_interface_inventory": "AST symbols/routes plus executed request/response probes per candidate.",
+  "C_implementation": "Candidate files and revision hashes reconstructed from successful file actions.",
+  "D_test_execution": "Original exact tool observations; authored tests are supplemental.",
+  "E_repair": "Candidate transitions, property deltas and removed-symbol lists.",
+  "all_original_outcomes_preserved": true,
+  "new_model_calls": 0
+}

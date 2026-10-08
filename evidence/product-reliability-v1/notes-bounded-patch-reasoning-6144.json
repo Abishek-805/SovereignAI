@@ -1,0 +1,16 @@
+{
+  "label": "isolated_bounded_patch_reasoning_raw_6144",
+  "status": "INCOMPLETE",
+  "failure_class": "TIMEOUT",
+  "error": "model_timeout: Local model timed out",
+  "http_read_timeout_seconds": 300,
+  "max_output_tokens": 6144,
+  "enable_thinking": true,
+  "raw_response_preserved": false,
+  "reason": "No HTTP completion response was received before the timeout. Runtime logged request release and all slots idle.",
+  "candidate_generated": false,
+  "docker_validation_executed": false,
+  "production_changed": false,
+  "original_candidate": "notes-repair-with-command.json",
+  "request_script": "experiments/product_reliability_v1/verify_patch_reasoning_raw.py"
+}

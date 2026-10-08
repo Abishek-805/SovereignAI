@@ -1,0 +1,12 @@
+{
+  "reasoning": {
+    "reasoning_format": "none",
+    "reasoning_in_content": false
+  },
+  "props_n_predict": -1,
+  "historical_props_n_predict": -1,
+  "launcher_n_predict": 8192,
+  "replay_request_max_tokens": 4096,
+  "model_sha256": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4",
+  "template_sha256": "7f0e529032c25183bcd66c7f238da2d377f43be754a94e2725a58c4e16d2ed67"
+}

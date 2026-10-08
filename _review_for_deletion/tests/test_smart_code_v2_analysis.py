@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 
-SOURCE = Path(__file__).resolve().parents[1] / "benchmarks" / "analyze-smart-code-router-v2.py"
+SOURCE = Path(__file__).resolve().parents[2] / "benchmarks" / "analyze-smart-code-router-v2.py"
 spec = importlib.util.spec_from_file_location("smart_code_v2_analysis", SOURCE)
 analysis = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(analysis)

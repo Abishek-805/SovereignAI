@@ -1,0 +1,22 @@
+{
+  "task_id": "a934edde403c48188622b00cbccda04e",
+  "kind": "coding_workspace",
+  "state": "failed",
+  "created_at": 1791400499.4857743,
+  "document_ids": [],
+  "steps": [
+    {
+      "name": "plan",
+      "at": 1791400499.4887123,
+      "details": {
+        "paths": [
+          "notes.py",
+          "main.py"
+        ]
+      }
+    }
+  ],
+  "checks": {},
+  "error_code": "validation_failed",
+  "finished_at": 1791400501.4072995
+}

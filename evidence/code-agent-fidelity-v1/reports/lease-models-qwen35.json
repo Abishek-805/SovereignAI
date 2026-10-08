@@ -1,0 +1,203 @@
+{
+  "selection": {
+    "capability": "text",
+    "modality": "text",
+    "required_context": 16384,
+    "selected_model": "Qwen/Qwen3.5-4B",
+    "candidate_models": [
+      {
+        "model_id": "Qwen/Qwen3.5-4B",
+        "registry_key": "text",
+        "display_name": "Qwen3.5 4B",
+        "capabilities": [
+          "text",
+          "calculation"
+        ],
+        "modalities": [
+          "text"
+        ],
+        "context_limit": 16384,
+        "admissible": true,
+        "admission": {
+          "status": "conditional",
+          "reasons": [],
+          "reason_codes": [],
+          "conditions": [
+            "Model peak system-memory requirement is not measured",
+            "Model peak GPU-memory requirement is not measured",
+            "Peak resource measurements do not cover the configured context/KV settings",
+            "Peak resource measurements do not cover the configured KV types"
+          ],
+          "condition_codes": [
+            "peak_ram_unmeasured",
+            "peak_gpu_unmeasured",
+            "context_profile_unmeasured",
+            "kv_profile_unmeasured"
+          ],
+          "observed": {
+            "sampled_at": 1791385796.7588995,
+            "available_memory_mib": 5408.57421875,
+            "gpu_free_mib": 2817.0,
+            "gpu_total_mib": 4094.0,
+            "gpu_device": "0",
+            "source": "psutil+nvidia-smi",
+            "errors": []
+          },
+          "requirements": {
+            "system_memory_mib": null,
+            "gpu_memory_mib": null,
+            "measured_context": null,
+            "configured_context": 16384,
+            "required_context": 16384,
+            "kv_configuration": "q8_0/q8_0",
+            "measured_kv_configuration": null,
+            "memory_reserve_mib": 256,
+            "gpu_reserve_mib": 256
+          }
+        },
+        "quality": null,
+        "latency_seconds": null,
+        "switch_seconds": null,
+        "measured_cost": null,
+        "rejection_codes": [],
+        "runtime_alias": "sovereign-text",
+        "runtime": "llama.cpp",
+        "quantization": "Q4_K_M",
+        "license_id": "Apache-2.0",
+        "license_reviewed": true,
+        "worker_roles": [
+          "reasoning"
+        ],
+        "model_file": "Qwen3.5-4B-Q4_K_M.gguf",
+        "projector_file": null,
+        "revision": "e87f176479d0855a907a41277aca2f8ee7a09523"
+      }
+    ],
+    "candidate_rejection_reasons": {},
+    "route_reason": "Worker role reasoning; hard compatibility passed; resource admission conditional. stable identity; cost unknown",
+    "available_context": 16384,
+    "resource_admission": {
+      "status": "conditional",
+      "reasons": [],
+      "reason_codes": [],
+      "conditions": [
+        "Model peak system-memory requirement is not measured",
+        "Model peak GPU-memory requirement is not measured",
+        "Peak resource measurements do not cover the configured context/KV settings",
+        "Peak resource measurements do not cover the configured KV types"
+      ],
+      "condition_codes": [
+        "peak_ram_unmeasured",
+        "peak_gpu_unmeasured",
+        "context_profile_unmeasured",
+        "kv_profile_unmeasured"
+      ],
+      "observed": {
+        "sampled_at": 1791385796.7588995,
+        "available_memory_mib": 5408.57421875,
+        "gpu_free_mib": 2817.0,
+        "gpu_total_mib": 4094.0,
+        "gpu_device": "0",
+        "source": "psutil+nvidia-smi",
+        "errors": []
+      },
+      "requirements": {
+        "system_memory_mib": null,
+        "gpu_memory_mib": null,
+        "measured_context": null,
+        "configured_context": 16384,
+        "required_context": 16384,
+        "kv_configuration": "q8_0/q8_0",
+        "measured_kv_configuration": null,
+        "memory_reserve_mib": 256,
+        "gpu_reserve_mib": 256
+      }
+    },
+    "current_residency": null,
+    "switch_required": true,
+    "routing_time": 0.16245149999986097,
+    "fallback": null,
+    "candidate_rejection_codes": {},
+    "failure_category": null,
+    "selection_policy": "worker_role_hard_constraints_hysteresis_v2",
+    "selection_evidence": {
+      "status": "incomplete",
+      "comparison": [
+        "stable identity; cost unknown"
+      ],
+      "quality_comparable": false,
+      "quality_threshold": null,
+      "quality_threshold_source": null,
+      "registered_candidates": 1,
+      "admissible_candidates": 1,
+      "task_affinity": null,
+      "unknown_metrics_policy": "not comparable; never fabricated",
+      "worker_role": "reasoning",
+      "task_type": null,
+      "hysteresis": {
+        "previous_model": null,
+        "retained_current": false,
+        "cost_evidence": "incomplete",
+        "net_latency_gain_seconds": null
+      },
+      "validated_history_status": "unavailable"
+    },
+    "worker_role": "reasoning",
+    "is_warm": false
+  },
+  "lease": {
+    "model_load_time": 17.715668000000278,
+    "switch_required": true,
+    "current_residency": null,
+    "selected_model": "sovereign-text",
+    "selected_model_id": "Qwen/Qwen3.5-4B",
+    "model_file": "Qwen3.5-4B-Q4_K_M.gguf",
+    "state": "Ready",
+    "available_context": 16384
+  },
+  "identity": {
+    "pid": 28716,
+    "path": "C:\\Users\\ashek\\Desktop\\SovereignAI\\models\\Qwen3.5-4B-Q4_K_M.gguf",
+    "command": [
+      "C:\\Users\\ashek\\Desktop\\SovereignAI\\runtime\\llama-b11132\\llama-server.exe",
+      "-m",
+      "C:\\Users\\ashek\\Desktop\\SovereignAI\\models\\Qwen3.5-4B-Q4_K_M.gguf",
+      "--jinja",
+      "--alias",
+      "sovereign-text",
+      "-c",
+      "16384",
+      "-np",
+      "1",
+      "--n-predict",
+      "8192",
+      "-b",
+      "256",
+      "-ub",
+      "128",
+      "-t",
+      "6",
+      "-fa",
+      "on",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0",
+      "--fit",
+      "on",
+      "--fit-target",
+      "1024",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8087",
+      "--cors-origins",
+      "localhost",
+      "--offline",
+      "--sleep-idle-seconds",
+      "600",
+      "-lv",
+      "4"
+    ]
+  }
+}

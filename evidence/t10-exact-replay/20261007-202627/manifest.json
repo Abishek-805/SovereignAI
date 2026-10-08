@@ -1,0 +1,9 @@
+{
+  "source": "C:\\Users\\ashek\\Desktop\\SovereignAI\\evidence\\code-agent-fidelity-v1\\native\\T10\\attempt-02\\call-008.json",
+  "source_sha256": "56d8482fd21310db02f0d95b13d856b17ba4a92996c54fbbf4f1526ff3249539",
+  "scope": "diagnostic replay only; no tools executed; no baseline outcomes replaced",
+  "allowed_request_difference": [
+    "stream"
+  ],
+  "production_migrated": false
+}

@@ -1,0 +1,21 @@
+{
+  "event": "tool",
+  "tool": "read_file",
+  "arguments": {
+    "path": "test_acceptance.py"
+  },
+  "before_revision": "03895cc56b274140c8569301668987f1e4adb59d341f3e166d04c3bd32b50932",
+  "before_diff": "",
+  "result": {
+    "path": "test_acceptance.py",
+    "content": "import unittest,json,subprocess,sys\nfrom pathlib import Path\nimport inventory\nclass Check(unittest.TestCase):\n def setUp(self):inventory.items.clear();inventory.items[42]={'quantity':2}\n def test_string_id(self):inventory.set_quantity('42',9);self.assertEqual(inventory.items,{42:{'quantity':9}})\n def test_integer_id(self):inventory.set_quantity(42,7);self.assertEqual(inventory.items[42]['quantity'],7)\n def test_invalid(self):\n  for ident,quantity in ((True,2),(42,-1),(42,False),(42,1.5)):\n   with self.assertRaises(ValueError):inventory.set_quantity(ident,quantity)\n def test_unknown(self):\n  with self.assertRaises(KeyError):inventory.set_quantity('99',2)\n  self.assertNotIn(99,inventory.items)\n def test_preserved(self):self.assertEqual(inventory.label(),'warehouse')\n",
+    "offset": 0,
+    "next_offset": null,
+    "total_characters": 775,
+    "content_complete": true,
+    "sha256": "49d8a96412fb7fb2bf4093f3631b352bb87d38a61b3fddbbb5ea1f219039f6ed"
+  },
+  "latency_seconds": 0.0,
+  "after_revision": "03895cc56b274140c8569301668987f1e4adb59d341f3e166d04c3bd32b50932",
+  "after_diff": ""
+}

@@ -1,0 +1,7 @@
+{
+  "event": "tool",
+  "tool": "finish",
+  "arguments": {},
+  "before_revision": "ba216117995ba2b1f794a2b6319b5debf0407ef7813a02222bdab3f477fb6043",
+  "before_diff": "--- a/errors.py\n+++ b/errors.py\n@@ -1,5 +1,6 @@\n def divide(a,b):\n-    if b==0:return ValueError(\"zero\")\n+    if b==0:\n+        raise ValueError(\"zero\")\n     return a/b\n def identity():\n     return \"keep\"\n"
+}

@@ -8,6 +8,15 @@ from tests.test_service import service
 def op(tool,target='',value='',input=''):
     return {'tool':tool,'target':target,'value':value,'input':input}
 
+
+def test_document_only_plan_cannot_complete_named_software_project(service):
+    workspace=service.coding.create('Software contract')['workspace_id']
+    before=service.coding.raw_files(workspace)
+    with pytest.raises(WorkbenchError,match='only documents'):
+        ApplicationTools(service,workspace,goal='Create a Python CLI project with main.py, age.py and README.md.').execute(
+            [op('document_create','README.md','Describe project')],service.tasks.create('test',[]))
+    assert service.coding.raw_files(workspace)==before
+
 @pytest.mark.parametrize('goal,tool',[
     ('Read notes.txt and explain it without changing files.','document_import'),
     ('Explain the project. Do not delete notes.txt.','file_delete'),
@@ -505,3 +514,34 @@ def test_plain_launch_uses_typed_adapter_without_dropping_shell_semantics(servic
         calls.append(('shell',value,kwargs['cwd'])) or {'state':'completed'})
     ApplicationTools(service,workspace,goal='Run the app')._execute('terminal','SelectedRoot',command,'')
     assert calls==([('typed','app.py')] if typed else [('shell',command,'')])
+@pytest.mark.parametrize('goal', ['Create a Python CLI project with main.py and helpers.py.',
+    'Create a small Node CLI project.', 'Build a Java console project.'])
+def test_project_creation_allows_descriptive_project_names(goal):
+    from router.tool_registry import explicit_operation_requested
+    assert explicit_operation_requested(goal,'project_create')
+    assert not explicit_operation_requested('Explain how to '+goal.lower(),'project_create')
+    assert not explicit_operation_requested('Do not '+goal.lower(),'project_create')
+
+@pytest.mark.parametrize('target', ['feature', 'feature/'])
+def test_folder_run_resolves_unique_entrypoint_with_typed_http_adapter(service, monkeypatch, target):
+    workspace=service.coding.create('Folder run')['workspace_id']
+    service.coding.write(workspace,'feature/server.py',"from flask import Flask\napp=Flask(__name__)\nif __name__ == '__main__':\n    app.run()\n")
+    service.coding.write(workspace,'unrelated.py','print(999)')
+    monkeypatch.setattr(service,'_verified_coding_sandbox',lambda: object())
+    received=[]
+    def preview(*args):
+        received.append(args[-1])
+        return {'status':200,'body':'actual preview','content_type':'text/html'}
+    monkeypatch.setattr('workflows.web_preview.preview_request',preview)
+    result=service.execute_coding_file(workspace,target)
+    assert result['checks']['http_response_success']
+    assert received==['feature/server.py']
+    assert result['project_map']['cwd']=='feature'
+
+
+def test_folder_run_does_not_choose_between_ambiguous_entrypoints(service):
+    workspace=service.coding.create('Ambiguous folder')['workspace_id']
+    for name in ['main.py','app.py']:
+        service.coding.write(workspace,'feature/'+name,'print(42)')
+    with pytest.raises(WorkbenchError,match='unique documented project run command'):
+        service.execute_coding_file(workspace,'feature')

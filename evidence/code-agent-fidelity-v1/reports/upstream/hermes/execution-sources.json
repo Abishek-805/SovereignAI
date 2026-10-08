@@ -1,0 +1,20 @@
+[
+  {
+    "path": "agent/turn_facade.py",
+    "sha256": "5797b456f1ac86fb099c4f20c39a2652b63c72d0c9098c9e72ad66cd47ee63ae",
+    "url": "https://github.com/NousResearch/hermes-agent/blob/17d4518c5043ff3a94e01ea544fac7b6d87b3645/agent/turn_facade.py",
+    "bytes": 11793
+  },
+  {
+    "path": "agent/tool_executor.py",
+    "sha256": "c2c65ba2d5d0847f968321e0438f2dd3c87973cb2680acb5cd52192f48b602ab",
+    "url": "https://github.com/NousResearch/hermes-agent/blob/17d4518c5043ff3a94e01ea544fac7b6d87b3645/agent/tool_executor.py",
+    "bytes": 95832
+  },
+  {
+    "path": "agent/iteration_budget.py",
+    "sha256": "c6ac199bf3d53ae6eb840fa1e72fa191e8c00af535f0621896a98196fe880f72",
+    "url": "https://github.com/NousResearch/hermes-agent/blob/17d4518c5043ff3a94e01ea544fac7b6d87b3645/agent/iteration_budget.py",
+    "bytes": 1807
+  }
+]

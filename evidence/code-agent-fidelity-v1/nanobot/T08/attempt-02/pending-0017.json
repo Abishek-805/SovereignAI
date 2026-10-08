@@ -1,0 +1,7 @@
+{
+  "event": "tool",
+  "tool": "finish",
+  "arguments": {},
+  "before_revision": "f6026a7cb7f0b3dc09c649dc32072182cc15ea36798af121b1c5af796d3ca437",
+  "before_diff": "--- a/inventory.py\n+++ b/inventory.py\n@@ -1,5 +1,32 @@\n-items={42:{\"quantity\":2}}\n-def set_quantity(item_id,quantity):\n-    items[item_id]={\"quantity\":quantity}\n+items = {}\n+\n+def set_quantity(item_id, quantity):\n+    # Reject boolean IDs\n+    if isinstance(item_id, bool):\n+        raise ValueError(\"Boolean IDs are not allowed\")\n+    \n+    # Reject boolean quantities (bool is subclass of int in Python)\n+    if isinstance(quantity, bool):\n+        raise ValueError(\"Boolean quantities are not allowed\")\n+    \n+    # Reject negative or non-integer quantities\n+    if not isinstance(quantity, int) or quantity < 0:\n+        raise ValueError(\"Quantity must be a non-negative integer\")\n+    \n+    # Normalize item_id: convert to int if it's a string representation of an integer\n+    if isinstance(item_id, str):\n+        try:\n+            item_id = int(item_id)\n+        except ValueError:\n+            raise KeyError(f\"Unknown item ID: {item_id}\")\n+    \n+    # Check if item exists with the normalized integer key\n+    if item_id not in items:\n+        raise KeyError(item_id)\n+    \n+    # Update the quantity for the existing item\n+    items[item_id][\"quantity\"] = quantity\n+\n+\n def label():\n     return \"warehouse\"\n"
+}

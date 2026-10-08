@@ -1,0 +1,100 @@
+{
+  "historical_props": {
+    "model_alias": "sovereign-text",
+    "model_ftype": "Q4_K - Medium",
+    "model_path": "C:\\Users\\ashek\\Desktop\\SovereignAI\\models\\Qwen3.5-4B-Q4_K_M.gguf",
+    "modalities": {
+      "vision": false,
+      "video": false,
+      "audio": false
+    },
+    "build_info": "b11132-633733d0a",
+    "total_slots": 1,
+    "is_sleeping": false
+  },
+  "historical_chat_template_caps": {
+    "supports_object_arguments": true,
+    "supports_parallel_tool_calls": true,
+    "supports_preserve_reasoning": false,
+    "supports_reasoning_effort": false,
+    "supports_string_content": true,
+    "supports_system_role": true,
+    "supports_tool_calls": true,
+    "supports_tools": true,
+    "supports_typed_content": true
+  },
+  "historical_reasoning_parameters": {
+    "reasoning_format": "none",
+    "reasoning_in_content": false
+  },
+  "template_sha256": "7f0e529032c25183bcd66c7f238da2d377f43be754a94e2725a58c4e16d2ed67",
+  "template_generation_branch": "{%- if add_generation_prompt %}\n    {{- '<|im_start|>assistant\\n' }}\n    {%- if enable_thinking is defined and enable_thinking is true %}\n        {{- '<think>\\n' }}\n    {%- else %}\n        {{- '<think>\\n\\n</think>\\n\\n' }}\n    {%- endif %}\n{%- endif %}",
+  "saved_launcher_has_explicit_reasoning_flags": false,
+  "registry_launch_source_lines": [
+    177,
+    194
+  ],
+  "reconciliation": {
+    "stream": {
+      "parsed_content_characters": 16486,
+      "raw_content_sha256_matches_parsed": true,
+      "populated_leaf_paths": [
+        "choices[].index",
+        "choices[].delta.role",
+        "created",
+        "id",
+        "model",
+        "system_fingerprint",
+        "object",
+        "choices[].delta.content",
+        "choices[].finish_reason",
+        "usage.completion_tokens",
+        "usage.prompt_tokens",
+        "usage.total_tokens",
+        "usage.prompt_tokens_details.cached_tokens",
+        "timings.cache_n",
+        "timings.prompt_n",
+        "timings.prompt_ms",
+        "timings.prompt_per_token_ms",
+        "timings.prompt_per_second",
+        "timings.predicted_n",
+        "timings.predicted_ms",
+        "timings.predicted_per_token_ms",
+        "timings.predicted_per_second"
+      ],
+      "tool_marker_occurrences_in_content": 0,
+      "reasoning_tokens": "UNKNOWN_NOT_EXPOSED"
+    },
+    "nonstream": {
+      "parsed_content_characters": 16486,
+      "raw_content_sha256_matches_parsed": true,
+      "populated_leaf_paths": [
+        "choices[].finish_reason",
+        "choices[].index",
+        "choices[].message.role",
+        "choices[].message.content",
+        "created",
+        "model",
+        "system_fingerprint",
+        "object",
+        "usage.completion_tokens",
+        "usage.prompt_tokens",
+        "usage.total_tokens",
+        "usage.prompt_tokens_details.cached_tokens",
+        "id",
+        "timings.cache_n",
+        "timings.prompt_n",
+        "timings.prompt_ms",
+        "timings.prompt_per_token_ms",
+        "timings.prompt_per_second",
+        "timings.predicted_n",
+        "timings.predicted_ms",
+        "timings.predicted_per_token_ms",
+        "timings.predicted_per_second"
+      ],
+      "tool_marker_occurrences_in_content": 0,
+      "reasoning_tokens": "UNKNOWN_NOT_EXPOSED"
+    }
+  },
+  "effective_current_runtime": "UNKNOWN_ENDPOINTS_UNAVAILABLE"
+}

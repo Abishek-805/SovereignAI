@@ -1,0 +1,11 @@
+{
+  "event": "tool",
+  "tool": "apply_patch",
+  "arguments": {
+    "path": "unique.py",
+    "old_text": "def stable_unique(values):\n    return sorted(set(v for v in values if v))",
+    "new_text": "def stable_unique(values):\n    seen = set()\n    result = []\n    for v in values:\n        if v not in seen:\n            seen.add(v)\n            result.append(v)\n    return result"
+  },
+  "before_revision": "e60ad5ee904130d1219413205d09f83c22f4df64064e3280fddc32c988c7cd8a",
+  "before_diff": ""
+}

@@ -1,0 +1,28 @@
+{
+  "attempt": 2,
+  "revision": "217ae1f4abc77dfa5f0e6f008a1bccaf9e1d55793ce2e1ed67a9b50798d2d0e8",
+  "failure": {
+    "container_executed": true,
+    "exit_code": 0,
+    "stdout": "INDEPENDENT_ORACLE_TEST_COUNT=4\n",
+    "stderr": "test_count (test_acceptance.Check.test_count) ... ok\ntest_invalid (test_acceptance.Check.test_invalid) ... ok\ntest_preserved (test_acceptance.Check.test_preserved) ... ok\ntest_render (test_acceptance.Check.test_render) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.000s\n\nOK\n",
+    "workspace_changes_persisted": false,
+    "note": "Every command uses a fresh snapshot. Write source through write_file/apply_patch, not shell redirection.",
+    "passed": true,
+    "test_count": 4,
+    "entrypoint": "",
+    "independent": true,
+    "basis": "immutable supplied suite; no semantic coverage inferred beyond supplied assertions"
+  },
+  "properties": {
+    "test_acceptance.Check.test_count.test_count": true,
+    "test_acceptance.Check.test_invalid.test_invalid": true,
+    "test_acceptance.Check.test_preserved.test_preserved": true,
+    "test_acceptance.Check.test_render.test_render": true
+  },
+  "lost_properties": [],
+  "candidate_diff": "--- a/events.py\n+++ b/events.py\n@@ -1,4 +1,11 @@\n def counts(events):\n-    return {}\n+    counts = {}\n+    for event in events:\n+        kind = event.get('kind')\n+        if kind is None or not isinstance(kind, str):\n+            raise ValueError(\"Missing or non-string kind\")\n+        counts[kind] = counts.get(kind, 0) + 1\n+    return counts\n+\n def version():\n     return \"v1\"\n--- a/report.py\n+++ b/report.py\n@@ -1,2 +1,11 @@\n def render(events):\n-    return \"\"\n+    counts = {}\n+    for event in events:\n+        kind = event.get('kind')\n+        if kind is None or not isinstance(kind, str):\n+            raise ValueError(\"Missing or non-string kind\")\n+        counts[kind] = counts.get(kind, 0) + 1\n+    lines = []\n+    for kind in sorted(counts.keys()):\n+        lines.append(f\"{kind}:{counts[kind]}\")\n+    return \"\\n\".join(lines)\n",
+  "previous_revision": "29084e337a0ee7da34050f63653b1014beaa3624cb21c724975284a63e8244ca",
+  "validation_delta": 1,
+  "rolled_back": false
+}

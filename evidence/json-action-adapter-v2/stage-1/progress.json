@@ -1,0 +1,13 @@
+{
+  "status": "INCOMPLETE",
+  "failure_category": "ENVIRONMENT",
+  "checkpoint": "READINESS_DOCKER_LINUX_ENGINE_UNAVAILABLE",
+  "execution_stopped": true,
+  "stage0_unchanged": true,
+  "production_changed": false,
+  "model_calls": 0,
+  "tool_dispatches": 0,
+  "stage2_started": false,
+  "required_environment_action": "Restore Docker Desktop Linux engine before resuming readiness",
+  "report": "STAGE-REPORT.md"
+}

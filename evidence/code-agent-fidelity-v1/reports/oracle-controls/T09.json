@@ -1,0 +1,26 @@
+{
+  "task_id": "T09",
+  "negative": {
+    "exit_code": 1,
+    "container_executed": true,
+    "stdout": "ORACLE_COUNT=3\n",
+    "stderr": "test_exception (test_acceptance.Check.test_exception) ... FAIL\ntest_normal (test_acceptance.Check.test_normal) ... ok\ntest_preserved (test_acceptance.Check.test_preserved) ... ok\n\n======================================================================\nFAIL: test_exception (test_acceptance.Check.test_exception)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 7, in test_exception\n    with self.assertRaises(ValueError):errors.divide(1,0)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ValueError not raised\n\n----------------------------------------------------------------------\nRan 3 tests in 0.001s\n\nFAILED (failures=1)\n",
+    "properties": {
+      "test_acceptance.Check.test_exception.test_exception": false,
+      "test_acceptance.Check.test_normal.test_normal": true,
+      "test_acceptance.Check.test_preserved.test_preserved": true
+    }
+  },
+  "positive": {
+    "exit_code": 0,
+    "container_executed": true,
+    "stdout": "ORACLE_COUNT=3\n",
+    "stderr": "test_exception (test_acceptance.Check.test_exception) ... ok\ntest_normal (test_acceptance.Check.test_normal) ... ok\ntest_preserved (test_acceptance.Check.test_preserved) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nOK\n",
+    "properties": {
+      "test_acceptance.Check.test_exception.test_exception": true,
+      "test_acceptance.Check.test_normal.test_normal": true,
+      "test_acceptance.Check.test_preserved.test_preserved": true
+    }
+  },
+  "control_passed": true
+}

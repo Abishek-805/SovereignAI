@@ -3,7 +3,7 @@ import json
 from collections import Counter
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1] / 'benchmarks' / 'smart-code-router-v2'
+ROOT = Path(__file__).resolve().parents[2] / 'benchmarks' / 'smart-code-router-v2'
 
 def test_frozen_v2_development_coverage_and_assets():
     data = json.loads((ROOT / 'main.json').read_text(encoding='utf-8'))

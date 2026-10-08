@@ -23,4 +23,4 @@ def test_invalid_vectors_rejected(value):
 
 def test_paths_independent_of_cwd(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
-    assert Settings().root == Path(__file__).resolve().parents[1]
+    assert Settings().root == Path(__file__).resolve().parents[2]

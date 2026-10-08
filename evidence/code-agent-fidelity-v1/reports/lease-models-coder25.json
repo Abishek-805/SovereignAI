@@ -1,0 +1,203 @@
+{
+  "selection": {
+    "capability": "text",
+    "modality": "text",
+    "required_context": 16384,
+    "selected_model": "Qwen/Qwen2.5-Coder-3B-Instruct",
+    "candidate_models": [
+      {
+        "model_id": "Qwen/Qwen2.5-Coder-3B-Instruct",
+        "registry_key": "text",
+        "display_name": "Qwen2.5 Coder 3B",
+        "capabilities": [
+          "text",
+          "code"
+        ],
+        "modalities": [
+          "text"
+        ],
+        "context_limit": 16384,
+        "admissible": true,
+        "admission": {
+          "status": "conditional",
+          "reasons": [],
+          "reason_codes": [],
+          "conditions": [
+            "Model peak system-memory requirement is not measured",
+            "Model peak GPU-memory requirement is not measured",
+            "Peak resource measurements do not cover the configured context/KV settings",
+            "Peak resource measurements do not cover the configured KV types"
+          ],
+          "condition_codes": [
+            "peak_ram_unmeasured",
+            "peak_gpu_unmeasured",
+            "context_profile_unmeasured",
+            "kv_profile_unmeasured"
+          ],
+          "observed": {
+            "sampled_at": 1791386909.041056,
+            "available_memory_mib": 7290.94140625,
+            "gpu_free_mib": 2838.0,
+            "gpu_total_mib": 4094.0,
+            "gpu_device": "0",
+            "source": "psutil+nvidia-smi",
+            "errors": []
+          },
+          "requirements": {
+            "system_memory_mib": null,
+            "gpu_memory_mib": null,
+            "measured_context": null,
+            "configured_context": 16384,
+            "required_context": 16384,
+            "kv_configuration": "q8_0/q8_0",
+            "measured_kv_configuration": null,
+            "memory_reserve_mib": 256,
+            "gpu_reserve_mib": 256
+          }
+        },
+        "quality": null,
+        "latency_seconds": null,
+        "switch_seconds": null,
+        "measured_cost": null,
+        "rejection_codes": [],
+        "runtime_alias": "sovereign-text",
+        "runtime": "llama.cpp",
+        "quantization": "Q4_K_M",
+        "license_id": "qwen-research",
+        "license_reviewed": true,
+        "worker_roles": [
+          "reasoning"
+        ],
+        "model_file": "qwen2.5-coder-3b-instruct-q4_k_m.gguf",
+        "projector_file": null,
+        "revision": "f74adce6aa16316c625447af059dbebe4983757c"
+      }
+    ],
+    "candidate_rejection_reasons": {},
+    "route_reason": "Worker role reasoning; hard compatibility passed; resource admission conditional. stable identity; cost unknown",
+    "available_context": 16384,
+    "resource_admission": {
+      "status": "conditional",
+      "reasons": [],
+      "reason_codes": [],
+      "conditions": [
+        "Model peak system-memory requirement is not measured",
+        "Model peak GPU-memory requirement is not measured",
+        "Peak resource measurements do not cover the configured context/KV settings",
+        "Peak resource measurements do not cover the configured KV types"
+      ],
+      "condition_codes": [
+        "peak_ram_unmeasured",
+        "peak_gpu_unmeasured",
+        "context_profile_unmeasured",
+        "kv_profile_unmeasured"
+      ],
+      "observed": {
+        "sampled_at": 1791386909.041056,
+        "available_memory_mib": 7290.94140625,
+        "gpu_free_mib": 2838.0,
+        "gpu_total_mib": 4094.0,
+        "gpu_device": "0",
+        "source": "psutil+nvidia-smi",
+        "errors": []
+      },
+      "requirements": {
+        "system_memory_mib": null,
+        "gpu_memory_mib": null,
+        "measured_context": null,
+        "configured_context": 16384,
+        "required_context": 16384,
+        "kv_configuration": "q8_0/q8_0",
+        "measured_kv_configuration": null,
+        "memory_reserve_mib": 256,
+        "gpu_reserve_mib": 256
+      }
+    },
+    "current_residency": null,
+    "switch_required": true,
+    "routing_time": 0.11427569999978004,
+    "fallback": null,
+    "candidate_rejection_codes": {},
+    "failure_category": null,
+    "selection_policy": "worker_role_hard_constraints_hysteresis_v2",
+    "selection_evidence": {
+      "status": "incomplete",
+      "comparison": [
+        "stable identity; cost unknown"
+      ],
+      "quality_comparable": false,
+      "quality_threshold": null,
+      "quality_threshold_source": null,
+      "registered_candidates": 1,
+      "admissible_candidates": 1,
+      "task_affinity": null,
+      "unknown_metrics_policy": "not comparable; never fabricated",
+      "worker_role": "reasoning",
+      "task_type": null,
+      "hysteresis": {
+        "previous_model": null,
+        "retained_current": false,
+        "cost_evidence": "incomplete",
+        "net_latency_gain_seconds": null
+      },
+      "validated_history_status": "unavailable"
+    },
+    "worker_role": "reasoning",
+    "is_warm": false
+  },
+  "lease": {
+    "model_load_time": 4.347258499999953,
+    "switch_required": true,
+    "current_residency": null,
+    "selected_model": "sovereign-text",
+    "selected_model_id": "Qwen/Qwen2.5-Coder-3B-Instruct",
+    "model_file": "qwen2.5-coder-3b-instruct-q4_k_m.gguf",
+    "state": "Ready",
+    "available_context": 16384
+  },
+  "identity": {
+    "pid": 15088,
+    "path": "C:\\Users\\ashek\\Desktop\\SovereignAI\\models\\qwen2.5-coder-3b-instruct-q4_k_m.gguf",
+    "command": [
+      "C:\\Users\\ashek\\Desktop\\SovereignAI\\runtime\\llama-b11132\\llama-server.exe",
+      "-m",
+      "C:\\Users\\ashek\\Desktop\\SovereignAI\\models\\qwen2.5-coder-3b-instruct-q4_k_m.gguf",
+      "--jinja",
+      "--alias",
+      "sovereign-text",
+      "-c",
+      "16384",
+      "-np",
+      "1",
+      "--n-predict",
+      "8192",
+      "-b",
+      "256",
+      "-ub",
+      "128",
+      "-t",
+      "6",
+      "-fa",
+      "on",
+      "-ctk",
+      "q8_0",
+      "-ctv",
+      "q8_0",
+      "--fit",
+      "on",
+      "--fit-target",
+      "1024",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8087",
+      "--cors-origins",
+      "localhost",
+      "--offline",
+      "--sleep-idle-seconds",
+      "600",
+      "-lv",
+      "4"
+    ]
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "registry_actions": [
+    "list_dir",
+    "read_file",
+    "search_code",
+    "write_file",
+    "apply_patch",
+    "delete_file",
+    "run_command",
+    "run_tests",
+    "inspect_process",
+    "finish"
+  ],
+  "registry_cases_passed": true,
+  "missing_baseline_parameters": [
+    "list_dir.path",
+    "search_code.query",
+    "delete_file.path",
+    "run_command.command"
+  ],
+  "schema_mismatch_count": 0,
+  "generated_actions_executed": 0,
+  "replay_executed": false,
+  "status": "STOP_SCHEMA_FIDELITY_UNESTABLISHED"
+}

@@ -1,0 +1,5 @@
+{
+  "owner": "SovereignAI agent kernel",
+  "kind": "ephemeral cache",
+  "never_contains": "user workspaces, accepted artifacts, models or historical evidence"
+}

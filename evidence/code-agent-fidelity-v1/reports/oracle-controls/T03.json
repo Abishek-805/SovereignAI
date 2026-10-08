@@ -1,0 +1,28 @@
+{
+  "task_id": "T03",
+  "negative": {
+    "exit_code": 1,
+    "container_executed": true,
+    "stdout": "ORACLE_COUNT=4\n",
+    "stderr": "test_empty (test_acceptance.Check.test_empty) ... FAIL\ntest_mean (test_acceptance.Check.test_mean) ... FAIL\ntest_preserved (test_acceptance.Check.test_preserved) ... ok\ntest_single (test_acceptance.Check.test_single) ... FAIL\n\n======================================================================\nFAIL: test_empty (test_acceptance.Check.test_empty)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 8, in test_empty\n    with self.assertRaises(ValueError):stats.mean([])\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ValueError not raised\n\n======================================================================\nFAIL: test_mean (test_acceptance.Check.test_mean)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 5, in test_mean\n    def test_mean(self):self.assertEqual(stats.mean([2,4,9]),5)\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 3.75 != 5\n\n======================================================================\nFAIL: test_single (test_acceptance.Check.test_single)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 6, in test_single\n    def test_single(self):self.assertEqual(stats.mean([8]),8)\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 4.0 != 8\n\n----------------------------------------------------------------------\nRan 4 tests in 0.002s\n\nFAILED (failures=3)\n",
+    "properties": {
+      "test_acceptance.Check.test_empty.test_empty": false,
+      "test_acceptance.Check.test_mean.test_mean": false,
+      "test_acceptance.Check.test_preserved.test_preserved": true,
+      "test_acceptance.Check.test_single.test_single": false
+    }
+  },
+  "positive": {
+    "exit_code": 0,
+    "container_executed": true,
+    "stdout": "ORACLE_COUNT=4\n",
+    "stderr": "test_empty (test_acceptance.Check.test_empty) ... ok\ntest_mean (test_acceptance.Check.test_mean) ... ok\ntest_preserved (test_acceptance.Check.test_preserved) ... ok\ntest_single (test_acceptance.Check.test_single) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.000s\n\nOK\n",
+    "properties": {
+      "test_acceptance.Check.test_empty.test_empty": true,
+      "test_acceptance.Check.test_mean.test_mean": true,
+      "test_acceptance.Check.test_preserved.test_preserved": true,
+      "test_acceptance.Check.test_single.test_single": true
+    }
+  },
+  "control_passed": true
+}

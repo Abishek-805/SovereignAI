@@ -1,0 +1,14 @@
+{
+  "event": "tool",
+  "tool": "write_file",
+  "arguments": {
+    "path": "unique.py",
+    "content": "def stable_unique(values):\n    seen = set()\n    result = []\n    for v in values:\n        if v not in seen:\n            seen.add(v)\n            result.append(v)\n    return result\n\ndef checksum(values):\n    return sum(values)\n"
+  },
+  "before_revision": "e60ad5ee904130d1219413205d09f83c22f4df64064e3280fddc32c988c7cd8a",
+  "before_diff": "",
+  "error": {
+    "code": null,
+    "message": "Repair must inspect the current file and use apply_patch for the observed failure. Full replacement could erase already-correct behavior; new files may still use write_file."
+  }
+}

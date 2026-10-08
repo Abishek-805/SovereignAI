@@ -1,0 +1,32 @@
+{
+  "repository": "NousResearch/hermes-agent",
+  "commit": "17d4518c5043ff3a94e01ea544fac7b6d87b3645",
+  "commit_date": "2026-10-06T07:47:35Z",
+  "sources": [
+    {
+      "path": "run_agent.py",
+      "sha256": "2dda8e9bb530d8da54cfb1625f624a5b9533300f1be828b689cfd5e73bbae373",
+      "url": "https://github.com/NousResearch/hermes-agent/blob/17d4518c5043ff3a94e01ea544fac7b6d87b3645/run_agent.py",
+      "bytes": 88749
+    },
+    {
+      "path": "model_tools.py",
+      "sha256": "ba97dd616fac870af2fb21823fb0e18f71ca4444abffd8361fa9a05f02518b30",
+      "url": "https://github.com/NousResearch/hermes-agent/blob/17d4518c5043ff3a94e01ea544fac7b6d87b3645/model_tools.py",
+      "bytes": 50502
+    },
+    {
+      "path": "tools/registry.py",
+      "sha256": "597777c40320f90f5ca62f10d74a3112061193d2c712b752fd9d7300350f3c4b",
+      "url": "https://github.com/NousResearch/hermes-agent/blob/17d4518c5043ff3a94e01ea544fac7b6d87b3645/tools/registry.py",
+      "bytes": 51608
+    },
+    {
+      "path": "agent/context_compressor.py",
+      "sha256": "33a5166eddbf230443f0d3766c513edd5c882e3ee152ccc5840051e070bd7193",
+      "url": "https://github.com/NousResearch/hermes-agent/blob/17d4518c5043ff3a94e01ea544fac7b6d87b3645/agent/context_compressor.py",
+      "bytes": 341786
+    }
+  ],
+  "purpose": "Inert source research only. Not installed, imported, or forked."
+}

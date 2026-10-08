@@ -1,0 +1,3072 @@
+{
+  "arms": {
+    "A": {
+      "task_endpoints": {
+        "passed": 59,
+        "partial": 1,
+        "failed": 35,
+        "unknown": 5,
+        "cases": 100,
+        "evaluated": 95,
+        "failure_rate_all_cases": 0.35,
+        "failure_rate_evaluated": 0.3684210526315789,
+        "exact_goal_unmet_rate_evaluated": 0.37894736842105264
+      },
+      "trusted_task_endpoints": {
+        "passed": 40,
+        "partial": 0,
+        "failed": 35,
+        "unknown": 0,
+        "cases": 75,
+        "evaluated": 75,
+        "failure_rate_all_cases": 0.4666666666666667,
+        "failure_rate_evaluated": 0.4666666666666667,
+        "exact_goal_unmet_rate_evaluated": 0.4666666666666667
+      },
+      "trusted_task_pass_clustered_uncertainty": {
+        "method": "percentile bootstrap of trusted contract clusters with replacement",
+        "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+        "seed": 1729,
+        "repetitions": 1000,
+        "confidence": 0.95,
+        "clusters": 40,
+        "evaluated_cases": 75,
+        "pass_fraction": 0.5333333333333333,
+        "interval": [
+          0.3787878787878788,
+          0.6666666666666666
+        ],
+        "interval_unknown_reason": null
+      },
+      "executable_cases": 95,
+      "blocked_cases": 0,
+      "unknown_reasons": {
+        "unsupported_or_unverified": 5
+      },
+      "task_failure_rate_executable": 0.3684210526315789,
+      "conditional_artifact_tests": {
+        "passed": 41,
+        "failed": 0,
+        "unknown": 59,
+        "cases": 100,
+        "evaluated": 41,
+        "failure_rate_all_cases": 0.0,
+        "failure_rate_evaluated": 0.0,
+        "exact_goal_unmet_rate_evaluated": 0.0
+      },
+      "semantic_reviews_verified": 21,
+      "semantic_verdicts": {
+        "PASS": 19,
+        "PARTIAL": 1,
+        "FAIL": 0,
+        "UNKNOWN": 0
+      },
+      "measurements": {
+        "model_calls": {
+          "observed": 95,
+          "unknown": 5,
+          "total": 312,
+          "mean": 3.2842105263157895
+        },
+        "model_switches": {
+          "observed": 95,
+          "unknown": 5,
+          "total": 1,
+          "mean": 0.010526315789473684
+        },
+        "tool_calls": {
+          "observed": 95,
+          "unknown": 5,
+          "total": 0,
+          "mean": 0.0
+        },
+        "latency_seconds": {
+          "observed": 95,
+          "unknown": 5,
+          "total": 2166.7097966000047,
+          "mean": 22.807471543157945
+        }
+      },
+      "resource_peaks": {
+        "peak_ram_mib": {
+          "peak": 3620.2890625,
+          "observed": 95,
+          "unknown": 5
+        },
+        "peak_vram_mib": {
+          "peak": 2936.0,
+          "observed": 95,
+          "unknown": 5
+        }
+      },
+      "resource_scopes": [
+        "Python plus all llama-server RSS; total device VRAM"
+      ],
+      "repairs": {
+        "observed": 9,
+        "observation_unknown": 5,
+        "independently_passed": 1,
+        "success_unknown": 0
+      },
+      "categories": {
+        "architecture": {
+          "task_endpoints": {
+            "passed": 0,
+            "partial": 0,
+            "failed": 5,
+            "unknown": 0,
+            "cases": 5,
+            "evaluated": 5,
+            "failure_rate_all_cases": 1.0,
+            "failure_rate_evaluated": 1.0,
+            "exact_goal_unmet_rate_evaluated": 1.0
+          },
+          "trusted_task_endpoints": {
+            "passed": 0,
+            "partial": 0,
+            "failed": 5,
+            "unknown": 0,
+            "cases": 5,
+            "evaluated": 5,
+            "failure_rate_all_cases": 1.0,
+            "failure_rate_evaluated": 1.0,
+            "exact_goal_unmet_rate_evaluated": 1.0
+          },
+          "trusted_task_pass_clustered_uncertainty": {
+            "method": "percentile bootstrap of trusted contract clusters with replacement",
+            "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+            "seed": 1729,
+            "repetitions": 1000,
+            "confidence": 0.95,
+            "clusters": 5,
+            "evaluated_cases": 5,
+            "pass_fraction": 0.0,
+            "interval": [
+              0.0,
+              0.0
+            ],
+            "interval_unknown_reason": null
+          },
+          "executable_cases": 5,
+          "blocked_cases": 0,
+          "unknown_reasons": {},
+          "task_failure_rate_executable": 1.0,
+          "conditional_artifact_tests": {
+            "passed": 1,
+            "failed": 0,
+            "unknown": 4,
+            "cases": 5,
+            "evaluated": 1,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": 0.0,
+            "exact_goal_unmet_rate_evaluated": 0.0
+          },
+          "semantic_reviews_verified": 1,
+          "semantic_verdicts": {
+            "PASS": 0,
+            "PARTIAL": 0,
+            "FAIL": 0,
+            "UNKNOWN": 0
+          },
+          "measurements": {
+            "model_calls": {
+              "observed": 5,
+              "unknown": 0,
+              "total": 19,
+              "mean": 3.8
+            },
+            "model_switches": {
+              "observed": 5,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "tool_calls": {
+              "observed": 5,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "latency_seconds": {
+              "observed": 5,
+              "unknown": 0,
+              "total": 144.2062930000002,
+              "mean": 28.84125860000004
+            }
+          },
+          "resource_peaks": {
+            "peak_ram_mib": {
+              "peak": 3620.2890625,
+              "observed": 5,
+              "unknown": 0
+            },
+            "peak_vram_mib": {
+              "peak": 2688.0,
+              "observed": 5,
+              "unknown": 0
+            }
+          },
+          "resource_scopes": [
+            "Python plus all llama-server RSS; total device VRAM"
+          ],
+          "repairs": {
+            "observed": 0,
+            "observation_unknown": 0,
+            "independently_passed": 0,
+            "success_unknown": 0
+          }
+        },
+        "debug": {
+          "task_endpoints": {
+            "passed": 13,
+            "partial": 0,
+            "failed": 7,
+            "unknown": 0,
+            "cases": 20,
+            "evaluated": 20,
+            "failure_rate_all_cases": 0.35,
+            "failure_rate_evaluated": 0.35,
+            "exact_goal_unmet_rate_evaluated": 0.35
+          },
+          "trusted_task_endpoints": {
+            "passed": 13,
+            "partial": 0,
+            "failed": 7,
+            "unknown": 0,
+            "cases": 20,
+            "evaluated": 20,
+            "failure_rate_all_cases": 0.35,
+            "failure_rate_evaluated": 0.35,
+            "exact_goal_unmet_rate_evaluated": 0.35
+          },
+          "trusted_task_pass_clustered_uncertainty": {
+            "method": "percentile bootstrap of trusted contract clusters with replacement",
+            "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+            "seed": 1729,
+            "repetitions": 1000,
+            "confidence": 0.95,
+            "clusters": 20,
+            "evaluated_cases": 20,
+            "pass_fraction": 0.65,
+            "interval": [
+              0.45,
+              0.85
+            ],
+            "interval_unknown_reason": null
+          },
+          "executable_cases": 20,
+          "blocked_cases": 0,
+          "unknown_reasons": {},
+          "task_failure_rate_executable": 0.35,
+          "conditional_artifact_tests": {
+            "passed": 13,
+            "failed": 0,
+            "unknown": 7,
+            "cases": 20,
+            "evaluated": 13,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": 0.0,
+            "exact_goal_unmet_rate_evaluated": 0.0
+          },
+          "semantic_reviews_verified": 0,
+          "semantic_verdicts": {
+            "PASS": 0,
+            "PARTIAL": 0,
+            "FAIL": 0,
+            "UNKNOWN": 0
+          },
+          "measurements": {
+            "model_calls": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 67,
+              "mean": 3.35
+            },
+            "model_switches": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "tool_calls": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "latency_seconds": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 601.1990437000022,
+              "mean": 30.05995218500011
+            }
+          },
+          "resource_peaks": {
+            "peak_ram_mib": {
+              "peak": 3130.73046875,
+              "observed": 20,
+              "unknown": 0
+            },
+            "peak_vram_mib": {
+              "peak": 2923.0,
+              "observed": 20,
+              "unknown": 0
+            }
+          },
+          "resource_scopes": [
+            "Python plus all llama-server RSS; total device VRAM"
+          ],
+          "repairs": {
+            "observed": 3,
+            "observation_unknown": 0,
+            "independently_passed": 0,
+            "success_unknown": 0
+          }
+        },
+        "edit": {
+          "task_endpoints": {
+            "passed": 16,
+            "partial": 0,
+            "failed": 4,
+            "unknown": 0,
+            "cases": 20,
+            "evaluated": 20,
+            "failure_rate_all_cases": 0.2,
+            "failure_rate_evaluated": 0.2,
+            "exact_goal_unmet_rate_evaluated": 0.2
+          },
+          "trusted_task_endpoints": {
+            "passed": 16,
+            "partial": 0,
+            "failed": 4,
+            "unknown": 0,
+            "cases": 20,
+            "evaluated": 20,
+            "failure_rate_all_cases": 0.2,
+            "failure_rate_evaluated": 0.2,
+            "exact_goal_unmet_rate_evaluated": 0.2
+          },
+          "trusted_task_pass_clustered_uncertainty": {
+            "method": "percentile bootstrap of trusted contract clusters with replacement",
+            "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+            "seed": 1729,
+            "repetitions": 1000,
+            "confidence": 0.95,
+            "clusters": 20,
+            "evaluated_cases": 20,
+            "pass_fraction": 0.8,
+            "interval": [
+              0.6,
+              0.95
+            ],
+            "interval_unknown_reason": null
+          },
+          "executable_cases": 20,
+          "blocked_cases": 0,
+          "unknown_reasons": {},
+          "task_failure_rate_executable": 0.2,
+          "conditional_artifact_tests": {
+            "passed": 16,
+            "failed": 0,
+            "unknown": 4,
+            "cases": 20,
+            "evaluated": 16,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": 0.0,
+            "exact_goal_unmet_rate_evaluated": 0.0
+          },
+          "semantic_reviews_verified": 0,
+          "semantic_verdicts": {
+            "PASS": 0,
+            "PARTIAL": 0,
+            "FAIL": 0,
+            "UNKNOWN": 0
+          },
+          "measurements": {
+            "model_calls": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 87,
+              "mean": 4.35
+            },
+            "model_switches": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "tool_calls": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "latency_seconds": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 613.7093265000003,
+              "mean": 30.685466325000014
+            }
+          },
+          "resource_peaks": {
+            "peak_ram_mib": {
+              "peak": 2994.61328125,
+              "observed": 20,
+              "unknown": 0
+            },
+            "peak_vram_mib": {
+              "peak": 2936.0,
+              "observed": 20,
+              "unknown": 0
+            }
+          },
+          "resource_scopes": [
+            "Python plus all llama-server RSS; total device VRAM"
+          ],
+          "repairs": {
+            "observed": 4,
+            "observation_unknown": 0,
+            "independently_passed": 1,
+            "success_unknown": 0
+          }
+        },
+        "explain": {
+          "task_endpoints": {
+            "passed": 19,
+            "partial": 1,
+            "failed": 0,
+            "unknown": 0,
+            "cases": 20,
+            "evaluated": 20,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": 0.0,
+            "exact_goal_unmet_rate_evaluated": 0.05
+          },
+          "trusted_task_endpoints": {
+            "passed": 0,
+            "partial": 0,
+            "failed": 0,
+            "unknown": 0,
+            "cases": 0,
+            "evaluated": 0,
+            "failure_rate_all_cases": null,
+            "failure_rate_evaluated": null,
+            "exact_goal_unmet_rate_evaluated": null
+          },
+          "trusted_task_pass_clustered_uncertainty": {
+            "method": "percentile bootstrap of trusted contract clusters with replacement",
+            "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+            "seed": 1729,
+            "repetitions": 1000,
+            "confidence": 0.95,
+            "clusters": 0,
+            "evaluated_cases": 0,
+            "pass_fraction": null,
+            "interval": null,
+            "interval_unknown_reason": "fewer than two evaluated clusters"
+          },
+          "executable_cases": 20,
+          "blocked_cases": 0,
+          "unknown_reasons": {},
+          "task_failure_rate_executable": 0.0,
+          "conditional_artifact_tests": {
+            "passed": 0,
+            "failed": 0,
+            "unknown": 20,
+            "cases": 20,
+            "evaluated": 0,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": null,
+            "exact_goal_unmet_rate_evaluated": null
+          },
+          "semantic_reviews_verified": 20,
+          "semantic_verdicts": {
+            "PASS": 19,
+            "PARTIAL": 1,
+            "FAIL": 0,
+            "UNKNOWN": 0
+          },
+          "measurements": {
+            "model_calls": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 20,
+              "mean": 1.0
+            },
+            "model_switches": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 1,
+              "mean": 0.05
+            },
+            "tool_calls": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "latency_seconds": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 132.88318730000265,
+              "mean": 6.6441593650001325
+            }
+          },
+          "resource_peaks": {
+            "peak_ram_mib": {
+              "peak": 2407.69921875,
+              "observed": 20,
+              "unknown": 0
+            },
+            "peak_vram_mib": {
+              "peak": 2748.0,
+              "observed": 20,
+              "unknown": 0
+            }
+          },
+          "resource_scopes": [
+            "Python plus all llama-server RSS; total device VRAM"
+          ],
+          "repairs": {
+            "observed": 0,
+            "observation_unknown": 0,
+            "independently_passed": 0,
+            "success_unknown": 0
+          }
+        },
+        "implement": {
+          "task_endpoints": {
+            "passed": 11,
+            "partial": 0,
+            "failed": 4,
+            "unknown": 0,
+            "cases": 15,
+            "evaluated": 15,
+            "failure_rate_all_cases": 0.26666666666666666,
+            "failure_rate_evaluated": 0.26666666666666666,
+            "exact_goal_unmet_rate_evaluated": 0.26666666666666666
+          },
+          "trusted_task_endpoints": {
+            "passed": 11,
+            "partial": 0,
+            "failed": 4,
+            "unknown": 0,
+            "cases": 15,
+            "evaluated": 15,
+            "failure_rate_all_cases": 0.26666666666666666,
+            "failure_rate_evaluated": 0.26666666666666666,
+            "exact_goal_unmet_rate_evaluated": 0.26666666666666666
+          },
+          "trusted_task_pass_clustered_uncertainty": {
+            "method": "percentile bootstrap of trusted contract clusters with replacement",
+            "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+            "seed": 1729,
+            "repetitions": 1000,
+            "confidence": 0.95,
+            "clusters": 15,
+            "evaluated_cases": 15,
+            "pass_fraction": 0.7333333333333333,
+            "interval": [
+              0.5333333333333333,
+              0.9333333333333333
+            ],
+            "interval_unknown_reason": null
+          },
+          "executable_cases": 15,
+          "blocked_cases": 0,
+          "unknown_reasons": {},
+          "task_failure_rate_executable": 0.26666666666666666,
+          "conditional_artifact_tests": {
+            "passed": 11,
+            "failed": 0,
+            "unknown": 4,
+            "cases": 15,
+            "evaluated": 11,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": 0.0,
+            "exact_goal_unmet_rate_evaluated": 0.0
+          },
+          "semantic_reviews_verified": 0,
+          "semantic_verdicts": {
+            "PASS": 0,
+            "PARTIAL": 0,
+            "FAIL": 0,
+            "UNKNOWN": 0
+          },
+          "measurements": {
+            "model_calls": {
+              "observed": 15,
+              "unknown": 0,
+              "total": 72,
+              "mean": 4.8
+            },
+            "model_switches": {
+              "observed": 15,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "tool_calls": {
+              "observed": 15,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "latency_seconds": {
+              "observed": 15,
+              "unknown": 0,
+              "total": 433.5173353,
+              "mean": 28.901155686666666
+            }
+          },
+          "resource_peaks": {
+            "peak_ram_mib": {
+              "peak": 3438.44921875,
+              "observed": 15,
+              "unknown": 0
+            },
+            "peak_vram_mib": {
+              "peak": 2717.0,
+              "observed": 15,
+              "unknown": 0
+            }
+          },
+          "resource_scopes": [
+            "Python plus all llama-server RSS; total device VRAM"
+          ],
+          "repairs": {
+            "observed": 2,
+            "observation_unknown": 0,
+            "independently_passed": 0,
+            "success_unknown": 0
+          }
+        },
+        "refactor_multifile": {
+          "task_endpoints": {
+            "passed": 0,
+            "partial": 0,
+            "failed": 15,
+            "unknown": 0,
+            "cases": 15,
+            "evaluated": 15,
+            "failure_rate_all_cases": 1.0,
+            "failure_rate_evaluated": 1.0,
+            "exact_goal_unmet_rate_evaluated": 1.0
+          },
+          "trusted_task_endpoints": {
+            "passed": 0,
+            "partial": 0,
+            "failed": 15,
+            "unknown": 0,
+            "cases": 15,
+            "evaluated": 15,
+            "failure_rate_all_cases": 1.0,
+            "failure_rate_evaluated": 1.0,
+            "exact_goal_unmet_rate_evaluated": 1.0
+          },
+          "trusted_task_pass_clustered_uncertainty": {
+            "method": "percentile bootstrap of trusted contract clusters with replacement",
+            "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+            "seed": 1729,
+            "repetitions": 1000,
+            "confidence": 0.95,
+            "clusters": 15,
+            "evaluated_cases": 15,
+            "pass_fraction": 0.0,
+            "interval": [
+              0.0,
+              0.0
+            ],
+            "interval_unknown_reason": null
+          },
+          "executable_cases": 15,
+          "blocked_cases": 0,
+          "unknown_reasons": {},
+          "task_failure_rate_executable": 1.0,
+          "conditional_artifact_tests": {
+            "passed": 0,
+            "failed": 0,
+            "unknown": 15,
+            "cases": 15,
+            "evaluated": 0,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": null,
+            "exact_goal_unmet_rate_evaluated": null
+          },
+          "semantic_reviews_verified": 0,
+          "semantic_verdicts": {
+            "PASS": 0,
+            "PARTIAL": 0,
+            "FAIL": 0,
+            "UNKNOWN": 0
+          },
+          "measurements": {
+            "model_calls": {
+              "observed": 15,
+              "unknown": 0,
+              "total": 47,
+              "mean": 3.1333333333333333
+            },
+            "model_switches": {
+              "observed": 15,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "tool_calls": {
+              "observed": 15,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "latency_seconds": {
+              "observed": 15,
+              "unknown": 0,
+              "total": 241.19461079999928,
+              "mean": 16.07964071999995
+            }
+          },
+          "resource_peaks": {
+            "peak_ram_mib": {
+              "peak": 3563.6796875,
+              "observed": 15,
+              "unknown": 0
+            },
+            "peak_vram_mib": {
+              "peak": 2686.0,
+              "observed": 15,
+              "unknown": 0
+            }
+          },
+          "resource_scopes": [
+            "Python plus all llama-server RSS; total device VRAM"
+          ],
+          "repairs": {
+            "observed": 0,
+            "observation_unknown": 0,
+            "independently_passed": 0,
+            "success_unknown": 0
+          }
+        },
+        "vision": {
+          "task_endpoints": {
+            "passed": 0,
+            "partial": 0,
+            "failed": 0,
+            "unknown": 5,
+            "cases": 5,
+            "evaluated": 0,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": null,
+            "exact_goal_unmet_rate_evaluated": null
+          },
+          "trusted_task_endpoints": {
+            "passed": 0,
+            "partial": 0,
+            "failed": 0,
+            "unknown": 0,
+            "cases": 0,
+            "evaluated": 0,
+            "failure_rate_all_cases": null,
+            "failure_rate_evaluated": null,
+            "exact_goal_unmet_rate_evaluated": null
+          },
+          "trusted_task_pass_clustered_uncertainty": {
+            "method": "percentile bootstrap of trusted contract clusters with replacement",
+            "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+            "seed": 1729,
+            "repetitions": 1000,
+            "confidence": 0.95,
+            "clusters": 0,
+            "evaluated_cases": 0,
+            "pass_fraction": null,
+            "interval": null,
+            "interval_unknown_reason": "fewer than two evaluated clusters"
+          },
+          "executable_cases": 0,
+          "blocked_cases": 0,
+          "unknown_reasons": {
+            "unsupported_or_unverified": 5
+          },
+          "task_failure_rate_executable": null,
+          "conditional_artifact_tests": {
+            "passed": 0,
+            "failed": 0,
+            "unknown": 5,
+            "cases": 5,
+            "evaluated": 0,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": null,
+            "exact_goal_unmet_rate_evaluated": null
+          },
+          "semantic_reviews_verified": 0,
+          "semantic_verdicts": {
+            "PASS": 0,
+            "PARTIAL": 0,
+            "FAIL": 0,
+            "UNKNOWN": 0
+          },
+          "measurements": {
+            "model_calls": {
+              "observed": 0,
+              "unknown": 5,
+              "total": null,
+              "mean": null
+            },
+            "model_switches": {
+              "observed": 0,
+              "unknown": 5,
+              "total": null,
+              "mean": null
+            },
+            "tool_calls": {
+              "observed": 0,
+              "unknown": 5,
+              "total": null,
+              "mean": null
+            },
+            "latency_seconds": {
+              "observed": 0,
+              "unknown": 5,
+              "total": null,
+              "mean": null
+            }
+          },
+          "resource_peaks": {},
+          "resource_scopes": [],
+          "repairs": {
+            "observed": 0,
+            "observation_unknown": 5,
+            "independently_passed": 0,
+            "success_unknown": 0
+          }
+        }
+      }
+    },
+    "B": {
+      "task_endpoints": {
+        "passed": 57,
+        "partial": 5,
+        "failed": 32,
+        "unknown": 6,
+        "cases": 100,
+        "evaluated": 94,
+        "failure_rate_all_cases": 0.32,
+        "failure_rate_evaluated": 0.3404255319148936,
+        "exact_goal_unmet_rate_evaluated": 0.39361702127659576
+      },
+      "trusted_task_endpoints": {
+        "passed": 42,
+        "partial": 0,
+        "failed": 32,
+        "unknown": 1,
+        "cases": 75,
+        "evaluated": 74,
+        "failure_rate_all_cases": 0.4266666666666667,
+        "failure_rate_evaluated": 0.43243243243243246,
+        "exact_goal_unmet_rate_evaluated": 0.43243243243243246
+      },
+      "trusted_task_pass_clustered_uncertainty": {
+        "method": "percentile bootstrap of trusted contract clusters with replacement",
+        "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+        "seed": 1729,
+        "repetitions": 1000,
+        "confidence": 0.95,
+        "clusters": 40,
+        "evaluated_cases": 74,
+        "pass_fraction": 0.5675675675675675,
+        "interval": [
+          0.39649708596406025,
+          0.7142857142857143
+        ],
+        "interval_unknown_reason": null
+      },
+      "executable_cases": 95,
+      "blocked_cases": 0,
+      "unknown_reasons": {
+        "outcome_not_verified": 1,
+        "unsupported_or_unverified": 5
+      },
+      "task_failure_rate_executable": 0.3368421052631579,
+      "conditional_artifact_tests": {
+        "passed": 42,
+        "failed": 0,
+        "unknown": 58,
+        "cases": 100,
+        "evaluated": 42,
+        "failure_rate_all_cases": 0.0,
+        "failure_rate_evaluated": 0.0,
+        "exact_goal_unmet_rate_evaluated": 0.0
+      },
+      "semantic_reviews_verified": 20,
+      "semantic_verdicts": {
+        "PASS": 15,
+        "PARTIAL": 5,
+        "FAIL": 0,
+        "UNKNOWN": 0
+      },
+      "measurements": {
+        "model_calls": {
+          "observed": 95,
+          "unknown": 5,
+          "total": 313,
+          "mean": 3.294736842105263
+        },
+        "model_switches": {
+          "observed": 95,
+          "unknown": 5,
+          "total": 4,
+          "mean": 0.042105263157894736
+        },
+        "tool_calls": {
+          "observed": 95,
+          "unknown": 5,
+          "total": 0,
+          "mean": 0.0
+        },
+        "latency_seconds": {
+          "observed": 95,
+          "unknown": 5,
+          "total": 3357.4306413999984,
+          "mean": 35.341375172631565
+        }
+      },
+      "resource_peaks": {
+        "peak_ram_mib": {
+          "peak": 8343.1796875,
+          "observed": 95,
+          "unknown": 5
+        },
+        "peak_vram_mib": {
+          "peak": 3330.0,
+          "observed": 95,
+          "unknown": 5
+        }
+      },
+      "resource_scopes": [
+        "Python plus all llama-server RSS; total device VRAM"
+      ],
+      "repairs": {
+        "observed": 6,
+        "observation_unknown": 5,
+        "independently_passed": 4,
+        "success_unknown": 0
+      },
+      "categories": {
+        "architecture": {
+          "task_endpoints": {
+            "passed": 0,
+            "partial": 0,
+            "failed": 5,
+            "unknown": 0,
+            "cases": 5,
+            "evaluated": 5,
+            "failure_rate_all_cases": 1.0,
+            "failure_rate_evaluated": 1.0,
+            "exact_goal_unmet_rate_evaluated": 1.0
+          },
+          "trusted_task_endpoints": {
+            "passed": 0,
+            "partial": 0,
+            "failed": 5,
+            "unknown": 0,
+            "cases": 5,
+            "evaluated": 5,
+            "failure_rate_all_cases": 1.0,
+            "failure_rate_evaluated": 1.0,
+            "exact_goal_unmet_rate_evaluated": 1.0
+          },
+          "trusted_task_pass_clustered_uncertainty": {
+            "method": "percentile bootstrap of trusted contract clusters with replacement",
+            "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+            "seed": 1729,
+            "repetitions": 1000,
+            "confidence": 0.95,
+            "clusters": 5,
+            "evaluated_cases": 5,
+            "pass_fraction": 0.0,
+            "interval": [
+              0.0,
+              0.0
+            ],
+            "interval_unknown_reason": null
+          },
+          "executable_cases": 5,
+          "blocked_cases": 0,
+          "unknown_reasons": {},
+          "task_failure_rate_executable": 1.0,
+          "conditional_artifact_tests": {
+            "passed": 0,
+            "failed": 0,
+            "unknown": 5,
+            "cases": 5,
+            "evaluated": 0,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": null,
+            "exact_goal_unmet_rate_evaluated": null
+          },
+          "semantic_reviews_verified": 0,
+          "semantic_verdicts": {
+            "PASS": 0,
+            "PARTIAL": 0,
+            "FAIL": 0,
+            "UNKNOWN": 0
+          },
+          "measurements": {
+            "model_calls": {
+              "observed": 5,
+              "unknown": 0,
+              "total": 5,
+              "mean": 1.0
+            },
+            "model_switches": {
+              "observed": 5,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "tool_calls": {
+              "observed": 5,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "latency_seconds": {
+              "observed": 5,
+              "unknown": 0,
+              "total": 178.37397929999997,
+              "mean": 35.674795859999996
+            }
+          },
+          "resource_peaks": {
+            "peak_ram_mib": {
+              "peak": 8343.1796875,
+              "observed": 5,
+              "unknown": 0
+            },
+            "peak_vram_mib": {
+              "peak": 3107.0,
+              "observed": 5,
+              "unknown": 0
+            }
+          },
+          "resource_scopes": [
+            "Python plus all llama-server RSS; total device VRAM"
+          ],
+          "repairs": {
+            "observed": 0,
+            "observation_unknown": 0,
+            "independently_passed": 0,
+            "success_unknown": 0
+          }
+        },
+        "debug": {
+          "task_endpoints": {
+            "passed": 13,
+            "partial": 0,
+            "failed": 6,
+            "unknown": 1,
+            "cases": 20,
+            "evaluated": 19,
+            "failure_rate_all_cases": 0.3,
+            "failure_rate_evaluated": 0.3157894736842105,
+            "exact_goal_unmet_rate_evaluated": 0.3157894736842105
+          },
+          "trusted_task_endpoints": {
+            "passed": 13,
+            "partial": 0,
+            "failed": 6,
+            "unknown": 1,
+            "cases": 20,
+            "evaluated": 19,
+            "failure_rate_all_cases": 0.3,
+            "failure_rate_evaluated": 0.3157894736842105,
+            "exact_goal_unmet_rate_evaluated": 0.3157894736842105
+          },
+          "trusted_task_pass_clustered_uncertainty": {
+            "method": "percentile bootstrap of trusted contract clusters with replacement",
+            "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+            "seed": 1729,
+            "repetitions": 1000,
+            "confidence": 0.95,
+            "clusters": 19,
+            "evaluated_cases": 19,
+            "pass_fraction": 0.6842105263157895,
+            "interval": [
+              0.47368421052631576,
+              0.8947368421052632
+            ],
+            "interval_unknown_reason": null
+          },
+          "executable_cases": 20,
+          "blocked_cases": 0,
+          "unknown_reasons": {
+            "outcome_not_verified": 1
+          },
+          "task_failure_rate_executable": 0.3,
+          "conditional_artifact_tests": {
+            "passed": 13,
+            "failed": 0,
+            "unknown": 7,
+            "cases": 20,
+            "evaluated": 13,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": 0.0,
+            "exact_goal_unmet_rate_evaluated": 0.0
+          },
+          "semantic_reviews_verified": 0,
+          "semantic_verdicts": {
+            "PASS": 0,
+            "PARTIAL": 0,
+            "FAIL": 0,
+            "UNKNOWN": 0
+          },
+          "measurements": {
+            "model_calls": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 87,
+              "mean": 4.35
+            },
+            "model_switches": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 1,
+              "mean": 0.05
+            },
+            "tool_calls": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "latency_seconds": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 950.427606899997,
+              "mean": 47.521380344999855
+            }
+          },
+          "resource_peaks": {
+            "peak_ram_mib": {
+              "peak": 8075.61328125,
+              "observed": 20,
+              "unknown": 0
+            },
+            "peak_vram_mib": {
+              "peak": 3308.0,
+              "observed": 20,
+              "unknown": 0
+            }
+          },
+          "resource_scopes": [
+            "Python plus all llama-server RSS; total device VRAM"
+          ],
+          "repairs": {
+            "observed": 3,
+            "observation_unknown": 0,
+            "independently_passed": 1,
+            "success_unknown": 0
+          }
+        },
+        "edit": {
+          "task_endpoints": {
+            "passed": 17,
+            "partial": 0,
+            "failed": 3,
+            "unknown": 0,
+            "cases": 20,
+            "evaluated": 20,
+            "failure_rate_all_cases": 0.15,
+            "failure_rate_evaluated": 0.15,
+            "exact_goal_unmet_rate_evaluated": 0.15
+          },
+          "trusted_task_endpoints": {
+            "passed": 17,
+            "partial": 0,
+            "failed": 3,
+            "unknown": 0,
+            "cases": 20,
+            "evaluated": 20,
+            "failure_rate_all_cases": 0.15,
+            "failure_rate_evaluated": 0.15,
+            "exact_goal_unmet_rate_evaluated": 0.15
+          },
+          "trusted_task_pass_clustered_uncertainty": {
+            "method": "percentile bootstrap of trusted contract clusters with replacement",
+            "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+            "seed": 1729,
+            "repetitions": 1000,
+            "confidence": 0.95,
+            "clusters": 20,
+            "evaluated_cases": 20,
+            "pass_fraction": 0.85,
+            "interval": [
+              0.7,
+              1.0
+            ],
+            "interval_unknown_reason": null
+          },
+          "executable_cases": 20,
+          "blocked_cases": 0,
+          "unknown_reasons": {},
+          "task_failure_rate_executable": 0.15,
+          "conditional_artifact_tests": {
+            "passed": 17,
+            "failed": 0,
+            "unknown": 3,
+            "cases": 20,
+            "evaluated": 17,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": 0.0,
+            "exact_goal_unmet_rate_evaluated": 0.0
+          },
+          "semantic_reviews_verified": 0,
+          "semantic_verdicts": {
+            "PASS": 0,
+            "PARTIAL": 0,
+            "FAIL": 0,
+            "UNKNOWN": 0
+          },
+          "measurements": {
+            "model_calls": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 88,
+              "mean": 4.4
+            },
+            "model_switches": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 1,
+              "mean": 0.05
+            },
+            "tool_calls": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "latency_seconds": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 797.7840074000005,
+              "mean": 39.889200370000026
+            }
+          },
+          "resource_peaks": {
+            "peak_ram_mib": {
+              "peak": 7925.9140625,
+              "observed": 20,
+              "unknown": 0
+            },
+            "peak_vram_mib": {
+              "peak": 3330.0,
+              "observed": 20,
+              "unknown": 0
+            }
+          },
+          "resource_scopes": [
+            "Python plus all llama-server RSS; total device VRAM"
+          ],
+          "repairs": {
+            "observed": 2,
+            "observation_unknown": 0,
+            "independently_passed": 2,
+            "success_unknown": 0
+          }
+        },
+        "explain": {
+          "task_endpoints": {
+            "passed": 15,
+            "partial": 5,
+            "failed": 0,
+            "unknown": 0,
+            "cases": 20,
+            "evaluated": 20,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": 0.0,
+            "exact_goal_unmet_rate_evaluated": 0.25
+          },
+          "trusted_task_endpoints": {
+            "passed": 0,
+            "partial": 0,
+            "failed": 0,
+            "unknown": 0,
+            "cases": 0,
+            "evaluated": 0,
+            "failure_rate_all_cases": null,
+            "failure_rate_evaluated": null,
+            "exact_goal_unmet_rate_evaluated": null
+          },
+          "trusted_task_pass_clustered_uncertainty": {
+            "method": "percentile bootstrap of trusted contract clusters with replacement",
+            "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+            "seed": 1729,
+            "repetitions": 1000,
+            "confidence": 0.95,
+            "clusters": 0,
+            "evaluated_cases": 0,
+            "pass_fraction": null,
+            "interval": null,
+            "interval_unknown_reason": "fewer than two evaluated clusters"
+          },
+          "executable_cases": 20,
+          "blocked_cases": 0,
+          "unknown_reasons": {},
+          "task_failure_rate_executable": 0.0,
+          "conditional_artifact_tests": {
+            "passed": 0,
+            "failed": 0,
+            "unknown": 20,
+            "cases": 20,
+            "evaluated": 0,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": null,
+            "exact_goal_unmet_rate_evaluated": null
+          },
+          "semantic_reviews_verified": 20,
+          "semantic_verdicts": {
+            "PASS": 15,
+            "PARTIAL": 5,
+            "FAIL": 0,
+            "UNKNOWN": 0
+          },
+          "measurements": {
+            "model_calls": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 20,
+              "mean": 1.0
+            },
+            "model_switches": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 2,
+              "mean": 0.1
+            },
+            "tool_calls": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "latency_seconds": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 198.27019740000105,
+              "mean": 9.913509870000052
+            }
+          },
+          "resource_peaks": {
+            "peak_ram_mib": {
+              "peak": 5355.98046875,
+              "observed": 20,
+              "unknown": 0
+            },
+            "peak_vram_mib": {
+              "peak": 3281.0,
+              "observed": 20,
+              "unknown": 0
+            }
+          },
+          "resource_scopes": [
+            "Python plus all llama-server RSS; total device VRAM"
+          ],
+          "repairs": {
+            "observed": 0,
+            "observation_unknown": 0,
+            "independently_passed": 0,
+            "success_unknown": 0
+          }
+        },
+        "implement": {
+          "task_endpoints": {
+            "passed": 12,
+            "partial": 0,
+            "failed": 3,
+            "unknown": 0,
+            "cases": 15,
+            "evaluated": 15,
+            "failure_rate_all_cases": 0.2,
+            "failure_rate_evaluated": 0.2,
+            "exact_goal_unmet_rate_evaluated": 0.2
+          },
+          "trusted_task_endpoints": {
+            "passed": 12,
+            "partial": 0,
+            "failed": 3,
+            "unknown": 0,
+            "cases": 15,
+            "evaluated": 15,
+            "failure_rate_all_cases": 0.2,
+            "failure_rate_evaluated": 0.2,
+            "exact_goal_unmet_rate_evaluated": 0.2
+          },
+          "trusted_task_pass_clustered_uncertainty": {
+            "method": "percentile bootstrap of trusted contract clusters with replacement",
+            "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+            "seed": 1729,
+            "repetitions": 1000,
+            "confidence": 0.95,
+            "clusters": 15,
+            "evaluated_cases": 15,
+            "pass_fraction": 0.8,
+            "interval": [
+              0.6,
+              1.0
+            ],
+            "interval_unknown_reason": null
+          },
+          "executable_cases": 15,
+          "blocked_cases": 0,
+          "unknown_reasons": {},
+          "task_failure_rate_executable": 0.2,
+          "conditional_artifact_tests": {
+            "passed": 12,
+            "failed": 0,
+            "unknown": 3,
+            "cases": 15,
+            "evaluated": 12,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": 0.0,
+            "exact_goal_unmet_rate_evaluated": 0.0
+          },
+          "semantic_reviews_verified": 0,
+          "semantic_verdicts": {
+            "PASS": 0,
+            "PARTIAL": 0,
+            "FAIL": 0,
+            "UNKNOWN": 0
+          },
+          "measurements": {
+            "model_calls": {
+              "observed": 15,
+              "unknown": 0,
+              "total": 78,
+              "mean": 5.2
+            },
+            "model_switches": {
+              "observed": 15,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "tool_calls": {
+              "observed": 15,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "latency_seconds": {
+              "observed": 15,
+              "unknown": 0,
+              "total": 621.3337420000003,
+              "mean": 41.422249466666685
+            }
+          },
+          "resource_peaks": {
+            "peak_ram_mib": {
+              "peak": 6429.08984375,
+              "observed": 15,
+              "unknown": 0
+            },
+            "peak_vram_mib": {
+              "peak": 2974.0,
+              "observed": 15,
+              "unknown": 0
+            }
+          },
+          "resource_scopes": [
+            "Python plus all llama-server RSS; total device VRAM"
+          ],
+          "repairs": {
+            "observed": 1,
+            "observation_unknown": 0,
+            "independently_passed": 1,
+            "success_unknown": 0
+          }
+        },
+        "refactor_multifile": {
+          "task_endpoints": {
+            "passed": 0,
+            "partial": 0,
+            "failed": 15,
+            "unknown": 0,
+            "cases": 15,
+            "evaluated": 15,
+            "failure_rate_all_cases": 1.0,
+            "failure_rate_evaluated": 1.0,
+            "exact_goal_unmet_rate_evaluated": 1.0
+          },
+          "trusted_task_endpoints": {
+            "passed": 0,
+            "partial": 0,
+            "failed": 15,
+            "unknown": 0,
+            "cases": 15,
+            "evaluated": 15,
+            "failure_rate_all_cases": 1.0,
+            "failure_rate_evaluated": 1.0,
+            "exact_goal_unmet_rate_evaluated": 1.0
+          },
+          "trusted_task_pass_clustered_uncertainty": {
+            "method": "percentile bootstrap of trusted contract clusters with replacement",
+            "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+            "seed": 1729,
+            "repetitions": 1000,
+            "confidence": 0.95,
+            "clusters": 15,
+            "evaluated_cases": 15,
+            "pass_fraction": 0.0,
+            "interval": [
+              0.0,
+              0.0
+            ],
+            "interval_unknown_reason": null
+          },
+          "executable_cases": 15,
+          "blocked_cases": 0,
+          "unknown_reasons": {},
+          "task_failure_rate_executable": 1.0,
+          "conditional_artifact_tests": {
+            "passed": 0,
+            "failed": 0,
+            "unknown": 15,
+            "cases": 15,
+            "evaluated": 0,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": null,
+            "exact_goal_unmet_rate_evaluated": null
+          },
+          "semantic_reviews_verified": 0,
+          "semantic_verdicts": {
+            "PASS": 0,
+            "PARTIAL": 0,
+            "FAIL": 0,
+            "UNKNOWN": 0
+          },
+          "measurements": {
+            "model_calls": {
+              "observed": 15,
+              "unknown": 0,
+              "total": 35,
+              "mean": 2.3333333333333335
+            },
+            "model_switches": {
+              "observed": 15,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "tool_calls": {
+              "observed": 15,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "latency_seconds": {
+              "observed": 15,
+              "unknown": 0,
+              "total": 611.2411083999998,
+              "mean": 40.749407226666655
+            }
+          },
+          "resource_peaks": {
+            "peak_ram_mib": {
+              "peak": 7866.88671875,
+              "observed": 15,
+              "unknown": 0
+            },
+            "peak_vram_mib": {
+              "peak": 3139.0,
+              "observed": 15,
+              "unknown": 0
+            }
+          },
+          "resource_scopes": [
+            "Python plus all llama-server RSS; total device VRAM"
+          ],
+          "repairs": {
+            "observed": 0,
+            "observation_unknown": 0,
+            "independently_passed": 0,
+            "success_unknown": 0
+          }
+        },
+        "vision": {
+          "task_endpoints": {
+            "passed": 0,
+            "partial": 0,
+            "failed": 0,
+            "unknown": 5,
+            "cases": 5,
+            "evaluated": 0,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": null,
+            "exact_goal_unmet_rate_evaluated": null
+          },
+          "trusted_task_endpoints": {
+            "passed": 0,
+            "partial": 0,
+            "failed": 0,
+            "unknown": 0,
+            "cases": 0,
+            "evaluated": 0,
+            "failure_rate_all_cases": null,
+            "failure_rate_evaluated": null,
+            "exact_goal_unmet_rate_evaluated": null
+          },
+          "trusted_task_pass_clustered_uncertainty": {
+            "method": "percentile bootstrap of trusted contract clusters with replacement",
+            "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+            "seed": 1729,
+            "repetitions": 1000,
+            "confidence": 0.95,
+            "clusters": 0,
+            "evaluated_cases": 0,
+            "pass_fraction": null,
+            "interval": null,
+            "interval_unknown_reason": "fewer than two evaluated clusters"
+          },
+          "executable_cases": 0,
+          "blocked_cases": 0,
+          "unknown_reasons": {
+            "unsupported_or_unverified": 5
+          },
+          "task_failure_rate_executable": null,
+          "conditional_artifact_tests": {
+            "passed": 0,
+            "failed": 0,
+            "unknown": 5,
+            "cases": 5,
+            "evaluated": 0,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": null,
+            "exact_goal_unmet_rate_evaluated": null
+          },
+          "semantic_reviews_verified": 0,
+          "semantic_verdicts": {
+            "PASS": 0,
+            "PARTIAL": 0,
+            "FAIL": 0,
+            "UNKNOWN": 0
+          },
+          "measurements": {
+            "model_calls": {
+              "observed": 0,
+              "unknown": 5,
+              "total": null,
+              "mean": null
+            },
+            "model_switches": {
+              "observed": 0,
+              "unknown": 5,
+              "total": null,
+              "mean": null
+            },
+            "tool_calls": {
+              "observed": 0,
+              "unknown": 5,
+              "total": null,
+              "mean": null
+            },
+            "latency_seconds": {
+              "observed": 0,
+              "unknown": 5,
+              "total": null,
+              "mean": null
+            }
+          },
+          "resource_peaks": {},
+          "resource_scopes": [],
+          "repairs": {
+            "observed": 0,
+            "observation_unknown": 5,
+            "independently_passed": 0,
+            "success_unknown": 0
+          }
+        }
+      }
+    },
+    "C": {
+      "task_endpoints": {
+        "passed": 41,
+        "partial": 16,
+        "failed": 38,
+        "unknown": 5,
+        "cases": 100,
+        "evaluated": 95,
+        "failure_rate_all_cases": 0.38,
+        "failure_rate_evaluated": 0.4,
+        "exact_goal_unmet_rate_evaluated": 0.5684210526315789
+      },
+      "trusted_task_endpoints": {
+        "passed": 38,
+        "partial": 0,
+        "failed": 37,
+        "unknown": 0,
+        "cases": 75,
+        "evaluated": 75,
+        "failure_rate_all_cases": 0.49333333333333335,
+        "failure_rate_evaluated": 0.49333333333333335,
+        "exact_goal_unmet_rate_evaluated": 0.49333333333333335
+      },
+      "trusted_task_pass_clustered_uncertainty": {
+        "method": "percentile bootstrap of trusted contract clusters with replacement",
+        "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+        "seed": 1729,
+        "repetitions": 1000,
+        "confidence": 0.95,
+        "clusters": 40,
+        "evaluated_cases": 75,
+        "pass_fraction": 0.5066666666666667,
+        "interval": [
+          0.3505952380952381,
+          0.6410919540229885
+        ],
+        "interval_unknown_reason": null
+      },
+      "executable_cases": 95,
+      "blocked_cases": 0,
+      "unknown_reasons": {
+        "unsupported_or_unverified": 5
+      },
+      "task_failure_rate_executable": 0.4,
+      "conditional_artifact_tests": {
+        "passed": 38,
+        "failed": 0,
+        "unknown": 62,
+        "cases": 100,
+        "evaluated": 38,
+        "failure_rate_all_cases": 0.0,
+        "failure_rate_evaluated": 0.0,
+        "exact_goal_unmet_rate_evaluated": 0.0
+      },
+      "semantic_reviews_verified": 20,
+      "semantic_verdicts": {
+        "PASS": 3,
+        "PARTIAL": 16,
+        "FAIL": 1,
+        "UNKNOWN": 0
+      },
+      "measurements": {
+        "model_calls": {
+          "observed": 95,
+          "unknown": 5,
+          "total": 265,
+          "mean": 2.789473684210526
+        },
+        "model_switches": {
+          "observed": 95,
+          "unknown": 5,
+          "total": 1,
+          "mean": 0.010526315789473684
+        },
+        "tool_calls": {
+          "observed": 95,
+          "unknown": 5,
+          "total": 0,
+          "mean": 0.0
+        },
+        "latency_seconds": {
+          "observed": 95,
+          "unknown": 5,
+          "total": 1394.8097908999994,
+          "mean": 14.68220832526315
+        }
+      },
+      "resource_peaks": {
+        "peak_ram_mib": {
+          "peak": 8162.7578125,
+          "observed": 95,
+          "unknown": 5
+        },
+        "peak_vram_mib": {
+          "peak": 3327.0,
+          "observed": 95,
+          "unknown": 5
+        }
+      },
+      "resource_scopes": [
+        "Python plus all llama-server RSS; total device VRAM"
+      ],
+      "repairs": {
+        "observed": 11,
+        "observation_unknown": 5,
+        "independently_passed": 0,
+        "success_unknown": 0
+      },
+      "categories": {
+        "architecture": {
+          "task_endpoints": {
+            "passed": 0,
+            "partial": 0,
+            "failed": 5,
+            "unknown": 0,
+            "cases": 5,
+            "evaluated": 5,
+            "failure_rate_all_cases": 1.0,
+            "failure_rate_evaluated": 1.0,
+            "exact_goal_unmet_rate_evaluated": 1.0
+          },
+          "trusted_task_endpoints": {
+            "passed": 0,
+            "partial": 0,
+            "failed": 5,
+            "unknown": 0,
+            "cases": 5,
+            "evaluated": 5,
+            "failure_rate_all_cases": 1.0,
+            "failure_rate_evaluated": 1.0,
+            "exact_goal_unmet_rate_evaluated": 1.0
+          },
+          "trusted_task_pass_clustered_uncertainty": {
+            "method": "percentile bootstrap of trusted contract clusters with replacement",
+            "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+            "seed": 1729,
+            "repetitions": 1000,
+            "confidence": 0.95,
+            "clusters": 5,
+            "evaluated_cases": 5,
+            "pass_fraction": 0.0,
+            "interval": [
+              0.0,
+              0.0
+            ],
+            "interval_unknown_reason": null
+          },
+          "executable_cases": 5,
+          "blocked_cases": 0,
+          "unknown_reasons": {},
+          "task_failure_rate_executable": 1.0,
+          "conditional_artifact_tests": {
+            "passed": 0,
+            "failed": 0,
+            "unknown": 5,
+            "cases": 5,
+            "evaluated": 0,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": null,
+            "exact_goal_unmet_rate_evaluated": null
+          },
+          "semantic_reviews_verified": 0,
+          "semantic_verdicts": {
+            "PASS": 0,
+            "PARTIAL": 0,
+            "FAIL": 0,
+            "UNKNOWN": 0
+          },
+          "measurements": {
+            "model_calls": {
+              "observed": 5,
+              "unknown": 0,
+              "total": 5,
+              "mean": 1.0
+            },
+            "model_switches": {
+              "observed": 5,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "tool_calls": {
+              "observed": 5,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "latency_seconds": {
+              "observed": 5,
+              "unknown": 0,
+              "total": 63.24864929999967,
+              "mean": 12.649729859999933
+            }
+          },
+          "resource_peaks": {
+            "peak_ram_mib": {
+              "peak": 3175.9921875,
+              "observed": 5,
+              "unknown": 0
+            },
+            "peak_vram_mib": {
+              "peak": 3280.0,
+              "observed": 5,
+              "unknown": 0
+            }
+          },
+          "resource_scopes": [
+            "Python plus all llama-server RSS; total device VRAM"
+          ],
+          "repairs": {
+            "observed": 0,
+            "observation_unknown": 0,
+            "independently_passed": 0,
+            "success_unknown": 0
+          }
+        },
+        "debug": {
+          "task_endpoints": {
+            "passed": 12,
+            "partial": 0,
+            "failed": 8,
+            "unknown": 0,
+            "cases": 20,
+            "evaluated": 20,
+            "failure_rate_all_cases": 0.4,
+            "failure_rate_evaluated": 0.4,
+            "exact_goal_unmet_rate_evaluated": 0.4
+          },
+          "trusted_task_endpoints": {
+            "passed": 12,
+            "partial": 0,
+            "failed": 8,
+            "unknown": 0,
+            "cases": 20,
+            "evaluated": 20,
+            "failure_rate_all_cases": 0.4,
+            "failure_rate_evaluated": 0.4,
+            "exact_goal_unmet_rate_evaluated": 0.4
+          },
+          "trusted_task_pass_clustered_uncertainty": {
+            "method": "percentile bootstrap of trusted contract clusters with replacement",
+            "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+            "seed": 1729,
+            "repetitions": 1000,
+            "confidence": 0.95,
+            "clusters": 20,
+            "evaluated_cases": 20,
+            "pass_fraction": 0.6,
+            "interval": [
+              0.4,
+              0.8
+            ],
+            "interval_unknown_reason": null
+          },
+          "executable_cases": 20,
+          "blocked_cases": 0,
+          "unknown_reasons": {},
+          "task_failure_rate_executable": 0.4,
+          "conditional_artifact_tests": {
+            "passed": 12,
+            "failed": 0,
+            "unknown": 8,
+            "cases": 20,
+            "evaluated": 12,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": 0.0,
+            "exact_goal_unmet_rate_evaluated": 0.0
+          },
+          "semantic_reviews_verified": 0,
+          "semantic_verdicts": {
+            "PASS": 0,
+            "PARTIAL": 0,
+            "FAIL": 0,
+            "UNKNOWN": 0
+          },
+          "measurements": {
+            "model_calls": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 81,
+              "mean": 4.05
+            },
+            "model_switches": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "tool_calls": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "latency_seconds": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 387.04644400000006,
+              "mean": 19.352322200000003
+            }
+          },
+          "resource_peaks": {
+            "peak_ram_mib": {
+              "peak": 2946.84375,
+              "observed": 20,
+              "unknown": 0
+            },
+            "peak_vram_mib": {
+              "peak": 3327.0,
+              "observed": 20,
+              "unknown": 0
+            }
+          },
+          "resource_scopes": [
+            "Python plus all llama-server RSS; total device VRAM"
+          ],
+          "repairs": {
+            "observed": 4,
+            "observation_unknown": 0,
+            "independently_passed": 0,
+            "success_unknown": 0
+          }
+        },
+        "edit": {
+          "task_endpoints": {
+            "passed": 16,
+            "partial": 0,
+            "failed": 4,
+            "unknown": 0,
+            "cases": 20,
+            "evaluated": 20,
+            "failure_rate_all_cases": 0.2,
+            "failure_rate_evaluated": 0.2,
+            "exact_goal_unmet_rate_evaluated": 0.2
+          },
+          "trusted_task_endpoints": {
+            "passed": 16,
+            "partial": 0,
+            "failed": 4,
+            "unknown": 0,
+            "cases": 20,
+            "evaluated": 20,
+            "failure_rate_all_cases": 0.2,
+            "failure_rate_evaluated": 0.2,
+            "exact_goal_unmet_rate_evaluated": 0.2
+          },
+          "trusted_task_pass_clustered_uncertainty": {
+            "method": "percentile bootstrap of trusted contract clusters with replacement",
+            "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+            "seed": 1729,
+            "repetitions": 1000,
+            "confidence": 0.95,
+            "clusters": 20,
+            "evaluated_cases": 20,
+            "pass_fraction": 0.8,
+            "interval": [
+              0.6,
+              0.95
+            ],
+            "interval_unknown_reason": null
+          },
+          "executable_cases": 20,
+          "blocked_cases": 0,
+          "unknown_reasons": {},
+          "task_failure_rate_executable": 0.2,
+          "conditional_artifact_tests": {
+            "passed": 16,
+            "failed": 0,
+            "unknown": 4,
+            "cases": 20,
+            "evaluated": 16,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": 0.0,
+            "exact_goal_unmet_rate_evaluated": 0.0
+          },
+          "semantic_reviews_verified": 0,
+          "semantic_verdicts": {
+            "PASS": 0,
+            "PARTIAL": 0,
+            "FAIL": 0,
+            "UNKNOWN": 0
+          },
+          "measurements": {
+            "model_calls": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 86,
+              "mean": 4.3
+            },
+            "model_switches": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "tool_calls": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "latency_seconds": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 456.46117320000076,
+              "mean": 22.823058660000036
+            }
+          },
+          "resource_peaks": {
+            "peak_ram_mib": {
+              "peak": 2760.16796875,
+              "observed": 20,
+              "unknown": 0
+            },
+            "peak_vram_mib": {
+              "peak": 3263.0,
+              "observed": 20,
+              "unknown": 0
+            }
+          },
+          "resource_scopes": [
+            "Python plus all llama-server RSS; total device VRAM"
+          ],
+          "repairs": {
+            "observed": 3,
+            "observation_unknown": 0,
+            "independently_passed": 0,
+            "success_unknown": 0
+          }
+        },
+        "explain": {
+          "task_endpoints": {
+            "passed": 3,
+            "partial": 16,
+            "failed": 1,
+            "unknown": 0,
+            "cases": 20,
+            "evaluated": 20,
+            "failure_rate_all_cases": 0.05,
+            "failure_rate_evaluated": 0.05,
+            "exact_goal_unmet_rate_evaluated": 0.85
+          },
+          "trusted_task_endpoints": {
+            "passed": 0,
+            "partial": 0,
+            "failed": 0,
+            "unknown": 0,
+            "cases": 0,
+            "evaluated": 0,
+            "failure_rate_all_cases": null,
+            "failure_rate_evaluated": null,
+            "exact_goal_unmet_rate_evaluated": null
+          },
+          "trusted_task_pass_clustered_uncertainty": {
+            "method": "percentile bootstrap of trusted contract clusters with replacement",
+            "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+            "seed": 1729,
+            "repetitions": 1000,
+            "confidence": 0.95,
+            "clusters": 0,
+            "evaluated_cases": 0,
+            "pass_fraction": null,
+            "interval": null,
+            "interval_unknown_reason": "fewer than two evaluated clusters"
+          },
+          "executable_cases": 20,
+          "blocked_cases": 0,
+          "unknown_reasons": {},
+          "task_failure_rate_executable": 0.05,
+          "conditional_artifact_tests": {
+            "passed": 0,
+            "failed": 0,
+            "unknown": 20,
+            "cases": 20,
+            "evaluated": 0,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": null,
+            "exact_goal_unmet_rate_evaluated": null
+          },
+          "semantic_reviews_verified": 20,
+          "semantic_verdicts": {
+            "PASS": 3,
+            "PARTIAL": 16,
+            "FAIL": 1,
+            "UNKNOWN": 0
+          },
+          "measurements": {
+            "model_calls": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 20,
+              "mean": 1.0
+            },
+            "model_switches": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 1,
+              "mean": 0.05
+            },
+            "tool_calls": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "latency_seconds": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 116.45027209999989,
+              "mean": 5.822513604999995
+            }
+          },
+          "resource_peaks": {
+            "peak_ram_mib": {
+              "peak": 8162.7578125,
+              "observed": 20,
+              "unknown": 0
+            },
+            "peak_vram_mib": {
+              "peak": 3189.0,
+              "observed": 20,
+              "unknown": 0
+            }
+          },
+          "resource_scopes": [
+            "Python plus all llama-server RSS; total device VRAM"
+          ],
+          "repairs": {
+            "observed": 0,
+            "observation_unknown": 0,
+            "independently_passed": 0,
+            "success_unknown": 0
+          }
+        },
+        "implement": {
+          "task_endpoints": {
+            "passed": 10,
+            "partial": 0,
+            "failed": 5,
+            "unknown": 0,
+            "cases": 15,
+            "evaluated": 15,
+            "failure_rate_all_cases": 0.3333333333333333,
+            "failure_rate_evaluated": 0.3333333333333333,
+            "exact_goal_unmet_rate_evaluated": 0.3333333333333333
+          },
+          "trusted_task_endpoints": {
+            "passed": 10,
+            "partial": 0,
+            "failed": 5,
+            "unknown": 0,
+            "cases": 15,
+            "evaluated": 15,
+            "failure_rate_all_cases": 0.3333333333333333,
+            "failure_rate_evaluated": 0.3333333333333333,
+            "exact_goal_unmet_rate_evaluated": 0.3333333333333333
+          },
+          "trusted_task_pass_clustered_uncertainty": {
+            "method": "percentile bootstrap of trusted contract clusters with replacement",
+            "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+            "seed": 1729,
+            "repetitions": 1000,
+            "confidence": 0.95,
+            "clusters": 15,
+            "evaluated_cases": 15,
+            "pass_fraction": 0.6666666666666666,
+            "interval": [
+              0.4,
+              0.8666666666666667
+            ],
+            "interval_unknown_reason": null
+          },
+          "executable_cases": 15,
+          "blocked_cases": 0,
+          "unknown_reasons": {},
+          "task_failure_rate_executable": 0.3333333333333333,
+          "conditional_artifact_tests": {
+            "passed": 10,
+            "failed": 0,
+            "unknown": 5,
+            "cases": 15,
+            "evaluated": 10,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": 0.0,
+            "exact_goal_unmet_rate_evaluated": 0.0
+          },
+          "semantic_reviews_verified": 0,
+          "semantic_verdicts": {
+            "PASS": 0,
+            "PARTIAL": 0,
+            "FAIL": 0,
+            "UNKNOWN": 0
+          },
+          "measurements": {
+            "model_calls": {
+              "observed": 15,
+              "unknown": 0,
+              "total": 60,
+              "mean": 4.0
+            },
+            "model_switches": {
+              "observed": 15,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "tool_calls": {
+              "observed": 15,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "latency_seconds": {
+              "observed": 15,
+              "unknown": 0,
+              "total": 206.68471669999917,
+              "mean": 13.778981113333279
+            }
+          },
+          "resource_peaks": {
+            "peak_ram_mib": {
+              "peak": 2963.40625,
+              "observed": 15,
+              "unknown": 0
+            },
+            "peak_vram_mib": {
+              "peak": 3280.0,
+              "observed": 15,
+              "unknown": 0
+            }
+          },
+          "resource_scopes": [
+            "Python plus all llama-server RSS; total device VRAM"
+          ],
+          "repairs": {
+            "observed": 4,
+            "observation_unknown": 0,
+            "independently_passed": 0,
+            "success_unknown": 0
+          }
+        },
+        "refactor_multifile": {
+          "task_endpoints": {
+            "passed": 0,
+            "partial": 0,
+            "failed": 15,
+            "unknown": 0,
+            "cases": 15,
+            "evaluated": 15,
+            "failure_rate_all_cases": 1.0,
+            "failure_rate_evaluated": 1.0,
+            "exact_goal_unmet_rate_evaluated": 1.0
+          },
+          "trusted_task_endpoints": {
+            "passed": 0,
+            "partial": 0,
+            "failed": 15,
+            "unknown": 0,
+            "cases": 15,
+            "evaluated": 15,
+            "failure_rate_all_cases": 1.0,
+            "failure_rate_evaluated": 1.0,
+            "exact_goal_unmet_rate_evaluated": 1.0
+          },
+          "trusted_task_pass_clustered_uncertainty": {
+            "method": "percentile bootstrap of trusted contract clusters with replacement",
+            "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+            "seed": 1729,
+            "repetitions": 1000,
+            "confidence": 0.95,
+            "clusters": 15,
+            "evaluated_cases": 15,
+            "pass_fraction": 0.0,
+            "interval": [
+              0.0,
+              0.0
+            ],
+            "interval_unknown_reason": null
+          },
+          "executable_cases": 15,
+          "blocked_cases": 0,
+          "unknown_reasons": {},
+          "task_failure_rate_executable": 1.0,
+          "conditional_artifact_tests": {
+            "passed": 0,
+            "failed": 0,
+            "unknown": 15,
+            "cases": 15,
+            "evaluated": 0,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": null,
+            "exact_goal_unmet_rate_evaluated": null
+          },
+          "semantic_reviews_verified": 0,
+          "semantic_verdicts": {
+            "PASS": 0,
+            "PARTIAL": 0,
+            "FAIL": 0,
+            "UNKNOWN": 0
+          },
+          "measurements": {
+            "model_calls": {
+              "observed": 15,
+              "unknown": 0,
+              "total": 13,
+              "mean": 0.8666666666666667
+            },
+            "model_switches": {
+              "observed": 15,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "tool_calls": {
+              "observed": 15,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "latency_seconds": {
+              "observed": 15,
+              "unknown": 0,
+              "total": 164.9185355999998,
+              "mean": 10.994569039999988
+            }
+          },
+          "resource_peaks": {
+            "peak_ram_mib": {
+              "peak": 3109.87109375,
+              "observed": 15,
+              "unknown": 0
+            },
+            "peak_vram_mib": {
+              "peak": 3280.0,
+              "observed": 15,
+              "unknown": 0
+            }
+          },
+          "resource_scopes": [
+            "Python plus all llama-server RSS; total device VRAM"
+          ],
+          "repairs": {
+            "observed": 0,
+            "observation_unknown": 0,
+            "independently_passed": 0,
+            "success_unknown": 0
+          }
+        },
+        "vision": {
+          "task_endpoints": {
+            "passed": 0,
+            "partial": 0,
+            "failed": 0,
+            "unknown": 5,
+            "cases": 5,
+            "evaluated": 0,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": null,
+            "exact_goal_unmet_rate_evaluated": null
+          },
+          "trusted_task_endpoints": {
+            "passed": 0,
+            "partial": 0,
+            "failed": 0,
+            "unknown": 0,
+            "cases": 0,
+            "evaluated": 0,
+            "failure_rate_all_cases": null,
+            "failure_rate_evaluated": null,
+            "exact_goal_unmet_rate_evaluated": null
+          },
+          "trusted_task_pass_clustered_uncertainty": {
+            "method": "percentile bootstrap of trusted contract clusters with replacement",
+            "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+            "seed": 1729,
+            "repetitions": 1000,
+            "confidence": 0.95,
+            "clusters": 0,
+            "evaluated_cases": 0,
+            "pass_fraction": null,
+            "interval": null,
+            "interval_unknown_reason": "fewer than two evaluated clusters"
+          },
+          "executable_cases": 0,
+          "blocked_cases": 0,
+          "unknown_reasons": {
+            "unsupported_or_unverified": 5
+          },
+          "task_failure_rate_executable": null,
+          "conditional_artifact_tests": {
+            "passed": 0,
+            "failed": 0,
+            "unknown": 5,
+            "cases": 5,
+            "evaluated": 0,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": null,
+            "exact_goal_unmet_rate_evaluated": null
+          },
+          "semantic_reviews_verified": 0,
+          "semantic_verdicts": {
+            "PASS": 0,
+            "PARTIAL": 0,
+            "FAIL": 0,
+            "UNKNOWN": 0
+          },
+          "measurements": {
+            "model_calls": {
+              "observed": 0,
+              "unknown": 5,
+              "total": null,
+              "mean": null
+            },
+            "model_switches": {
+              "observed": 0,
+              "unknown": 5,
+              "total": null,
+              "mean": null
+            },
+            "tool_calls": {
+              "observed": 0,
+              "unknown": 5,
+              "total": null,
+              "mean": null
+            },
+            "latency_seconds": {
+              "observed": 0,
+              "unknown": 5,
+              "total": null,
+              "mean": null
+            }
+          },
+          "resource_peaks": {},
+          "resource_scopes": [],
+          "repairs": {
+            "observed": 0,
+            "observation_unknown": 5,
+            "independently_passed": 0,
+            "success_unknown": 0
+          }
+        }
+      }
+    },
+    "D": {
+      "task_endpoints": {
+        "passed": 35,
+        "partial": 3,
+        "failed": 23,
+        "unknown": 0,
+        "cases": 61,
+        "evaluated": 61,
+        "failure_rate_all_cases": 0.3770491803278688,
+        "failure_rate_evaluated": 0.3770491803278688,
+        "exact_goal_unmet_rate_evaluated": 0.4262295081967213
+      },
+      "trusted_task_endpoints": {
+        "passed": 28,
+        "partial": 0,
+        "failed": 13,
+        "unknown": 0,
+        "cases": 41,
+        "evaluated": 41,
+        "failure_rate_all_cases": 0.3170731707317073,
+        "failure_rate_evaluated": 0.3170731707317073,
+        "exact_goal_unmet_rate_evaluated": 0.3170731707317073
+      },
+      "trusted_task_pass_clustered_uncertainty": {
+        "method": "percentile bootstrap of trusted contract clusters with replacement",
+        "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+        "seed": 1729,
+        "repetitions": 1000,
+        "confidence": 0.95,
+        "clusters": 20,
+        "evaluated_cases": 41,
+        "pass_fraction": 0.6829268292682927,
+        "interval": [
+          0.5235191637630663,
+          0.85
+        ],
+        "interval_unknown_reason": null
+      },
+      "executable_cases": 61,
+      "blocked_cases": 0,
+      "unknown_reasons": {},
+      "task_failure_rate_executable": 0.3770491803278688,
+      "conditional_artifact_tests": {
+        "passed": 28,
+        "failed": 0,
+        "unknown": 33,
+        "cases": 61,
+        "evaluated": 28,
+        "failure_rate_all_cases": 0.0,
+        "failure_rate_evaluated": 0.0,
+        "exact_goal_unmet_rate_evaluated": 0.0
+      },
+      "semantic_reviews_verified": 20,
+      "semantic_verdicts": {
+        "PASS": 7,
+        "PARTIAL": 3,
+        "FAIL": 10,
+        "UNKNOWN": 0
+      },
+      "measurements": {
+        "model_calls": {
+          "observed": 61,
+          "unknown": 0,
+          "total": 316,
+          "mean": 5.180327868852459
+        },
+        "model_switches": {
+          "observed": 61,
+          "unknown": 0,
+          "total": 0,
+          "mean": 0.0
+        },
+        "tool_calls": {
+          "observed": 61,
+          "unknown": 0,
+          "total": 0,
+          "mean": 0.0
+        },
+        "latency_seconds": {
+          "observed": 61,
+          "unknown": 0,
+          "total": 1071.3290055000025,
+          "mean": 17.562770581967253
+        }
+      },
+      "resource_peaks": {
+        "peak_ram_mib": {
+          "peak": 3271.1796875,
+          "observed": 61,
+          "unknown": 0
+        },
+        "peak_vram_mib": {
+          "peak": 3371.0,
+          "observed": 61,
+          "unknown": 0
+        }
+      },
+      "resource_scopes": [
+        "Python plus all llama-server RSS; total device VRAM"
+      ],
+      "repairs": {
+        "observed": 7,
+        "observation_unknown": 0,
+        "independently_passed": 0,
+        "success_unknown": 0
+      },
+      "categories": {
+        "debug": {
+          "task_endpoints": {
+            "passed": 12,
+            "partial": 0,
+            "failed": 8,
+            "unknown": 0,
+            "cases": 20,
+            "evaluated": 20,
+            "failure_rate_all_cases": 0.4,
+            "failure_rate_evaluated": 0.4,
+            "exact_goal_unmet_rate_evaluated": 0.4
+          },
+          "trusted_task_endpoints": {
+            "passed": 12,
+            "partial": 0,
+            "failed": 8,
+            "unknown": 0,
+            "cases": 20,
+            "evaluated": 20,
+            "failure_rate_all_cases": 0.4,
+            "failure_rate_evaluated": 0.4,
+            "exact_goal_unmet_rate_evaluated": 0.4
+          },
+          "trusted_task_pass_clustered_uncertainty": {
+            "method": "percentile bootstrap of trusted contract clusters with replacement",
+            "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+            "seed": 1729,
+            "repetitions": 1000,
+            "confidence": 0.95,
+            "clusters": 20,
+            "evaluated_cases": 20,
+            "pass_fraction": 0.6,
+            "interval": [
+              0.3987500000000001,
+              0.8
+            ],
+            "interval_unknown_reason": null
+          },
+          "executable_cases": 20,
+          "blocked_cases": 0,
+          "unknown_reasons": {},
+          "task_failure_rate_executable": 0.4,
+          "conditional_artifact_tests": {
+            "passed": 12,
+            "failed": 0,
+            "unknown": 8,
+            "cases": 20,
+            "evaluated": 12,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": 0.0,
+            "exact_goal_unmet_rate_evaluated": 0.0
+          },
+          "semantic_reviews_verified": 0,
+          "semantic_verdicts": {
+            "PASS": 0,
+            "PARTIAL": 0,
+            "FAIL": 0,
+            "UNKNOWN": 0
+          },
+          "measurements": {
+            "model_calls": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 113,
+              "mean": 5.65
+            },
+            "model_switches": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "tool_calls": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "latency_seconds": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 396.526083300002,
+              "mean": 19.826304165000103
+            }
+          },
+          "resource_peaks": {
+            "peak_ram_mib": {
+              "peak": 3191.79296875,
+              "observed": 20,
+              "unknown": 0
+            },
+            "peak_vram_mib": {
+              "peak": 3317.0,
+              "observed": 20,
+              "unknown": 0
+            }
+          },
+          "resource_scopes": [
+            "Python plus all llama-server RSS; total device VRAM"
+          ],
+          "repairs": {
+            "observed": 3,
+            "observation_unknown": 0,
+            "independently_passed": 0,
+            "success_unknown": 0
+          }
+        },
+        "edit": {
+          "task_endpoints": {
+            "passed": 16,
+            "partial": 0,
+            "failed": 4,
+            "unknown": 0,
+            "cases": 20,
+            "evaluated": 20,
+            "failure_rate_all_cases": 0.2,
+            "failure_rate_evaluated": 0.2,
+            "exact_goal_unmet_rate_evaluated": 0.2
+          },
+          "trusted_task_endpoints": {
+            "passed": 16,
+            "partial": 0,
+            "failed": 4,
+            "unknown": 0,
+            "cases": 20,
+            "evaluated": 20,
+            "failure_rate_all_cases": 0.2,
+            "failure_rate_evaluated": 0.2,
+            "exact_goal_unmet_rate_evaluated": 0.2
+          },
+          "trusted_task_pass_clustered_uncertainty": {
+            "method": "percentile bootstrap of trusted contract clusters with replacement",
+            "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+            "seed": 1729,
+            "repetitions": 1000,
+            "confidence": 0.95,
+            "clusters": 20,
+            "evaluated_cases": 20,
+            "pass_fraction": 0.8,
+            "interval": [
+              0.6,
+              0.95
+            ],
+            "interval_unknown_reason": null
+          },
+          "executable_cases": 20,
+          "blocked_cases": 0,
+          "unknown_reasons": {},
+          "task_failure_rate_executable": 0.2,
+          "conditional_artifact_tests": {
+            "passed": 16,
+            "failed": 0,
+            "unknown": 4,
+            "cases": 20,
+            "evaluated": 16,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": 0.0,
+            "exact_goal_unmet_rate_evaluated": 0.0
+          },
+          "semantic_reviews_verified": 0,
+          "semantic_verdicts": {
+            "PASS": 0,
+            "PARTIAL": 0,
+            "FAIL": 0,
+            "UNKNOWN": 0
+          },
+          "measurements": {
+            "model_calls": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 121,
+              "mean": 6.05
+            },
+            "model_switches": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "tool_calls": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "latency_seconds": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 493.591818400002,
+              "mean": 24.679590920000102
+            }
+          },
+          "resource_peaks": {
+            "peak_ram_mib": {
+              "peak": 3271.1796875,
+              "observed": 20,
+              "unknown": 0
+            },
+            "peak_vram_mib": {
+              "peak": 3371.0,
+              "observed": 20,
+              "unknown": 0
+            }
+          },
+          "resource_scopes": [
+            "Python plus all llama-server RSS; total device VRAM"
+          ],
+          "repairs": {
+            "observed": 4,
+            "observation_unknown": 0,
+            "independently_passed": 0,
+            "success_unknown": 0
+          }
+        },
+        "explain": {
+          "task_endpoints": {
+            "passed": 7,
+            "partial": 3,
+            "failed": 10,
+            "unknown": 0,
+            "cases": 20,
+            "evaluated": 20,
+            "failure_rate_all_cases": 0.5,
+            "failure_rate_evaluated": 0.5,
+            "exact_goal_unmet_rate_evaluated": 0.65
+          },
+          "trusted_task_endpoints": {
+            "passed": 0,
+            "partial": 0,
+            "failed": 0,
+            "unknown": 0,
+            "cases": 0,
+            "evaluated": 0,
+            "failure_rate_all_cases": null,
+            "failure_rate_evaluated": null,
+            "exact_goal_unmet_rate_evaluated": null
+          },
+          "trusted_task_pass_clustered_uncertainty": {
+            "method": "percentile bootstrap of trusted contract clusters with replacement",
+            "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+            "seed": 1729,
+            "repetitions": 1000,
+            "confidence": 0.95,
+            "clusters": 0,
+            "evaluated_cases": 0,
+            "pass_fraction": null,
+            "interval": null,
+            "interval_unknown_reason": "fewer than two evaluated clusters"
+          },
+          "executable_cases": 20,
+          "blocked_cases": 0,
+          "unknown_reasons": {},
+          "task_failure_rate_executable": 0.5,
+          "conditional_artifact_tests": {
+            "passed": 0,
+            "failed": 0,
+            "unknown": 20,
+            "cases": 20,
+            "evaluated": 0,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": null,
+            "exact_goal_unmet_rate_evaluated": null
+          },
+          "semantic_reviews_verified": 20,
+          "semantic_verdicts": {
+            "PASS": 7,
+            "PARTIAL": 3,
+            "FAIL": 10,
+            "UNKNOWN": 0
+          },
+          "measurements": {
+            "model_calls": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 82,
+              "mean": 4.1
+            },
+            "model_switches": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "tool_calls": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "latency_seconds": {
+              "observed": 20,
+              "unknown": 0,
+              "total": 179.75771789999817,
+              "mean": 8.98788589499991
+            }
+          },
+          "resource_peaks": {
+            "peak_ram_mib": {
+              "peak": 3216.94921875,
+              "observed": 20,
+              "unknown": 0
+            },
+            "peak_vram_mib": {
+              "peak": 3279.0,
+              "observed": 20,
+              "unknown": 0
+            }
+          },
+          "resource_scopes": [
+            "Python plus all llama-server RSS; total device VRAM"
+          ],
+          "repairs": {
+            "observed": 0,
+            "observation_unknown": 0,
+            "independently_passed": 0,
+            "success_unknown": 0
+          }
+        },
+        "implement": {
+          "task_endpoints": {
+            "passed": 0,
+            "partial": 0,
+            "failed": 1,
+            "unknown": 0,
+            "cases": 1,
+            "evaluated": 1,
+            "failure_rate_all_cases": 1.0,
+            "failure_rate_evaluated": 1.0,
+            "exact_goal_unmet_rate_evaluated": 1.0
+          },
+          "trusted_task_endpoints": {
+            "passed": 0,
+            "partial": 0,
+            "failed": 1,
+            "unknown": 0,
+            "cases": 1,
+            "evaluated": 1,
+            "failure_rate_all_cases": 1.0,
+            "failure_rate_evaluated": 1.0,
+            "exact_goal_unmet_rate_evaluated": 1.0
+          },
+          "trusted_task_pass_clustered_uncertainty": {
+            "method": "percentile bootstrap of trusted contract clusters with replacement",
+            "cluster_key": "SHA256 canonical JSON of trusted_files and command",
+            "seed": 1729,
+            "repetitions": 1000,
+            "confidence": 0.95,
+            "clusters": 1,
+            "evaluated_cases": 1,
+            "pass_fraction": 0.0,
+            "interval": null,
+            "interval_unknown_reason": "fewer than two evaluated clusters"
+          },
+          "executable_cases": 1,
+          "blocked_cases": 0,
+          "unknown_reasons": {},
+          "task_failure_rate_executable": 1.0,
+          "conditional_artifact_tests": {
+            "passed": 0,
+            "failed": 0,
+            "unknown": 1,
+            "cases": 1,
+            "evaluated": 0,
+            "failure_rate_all_cases": 0.0,
+            "failure_rate_evaluated": null,
+            "exact_goal_unmet_rate_evaluated": null
+          },
+          "semantic_reviews_verified": 0,
+          "semantic_verdicts": {
+            "PASS": 0,
+            "PARTIAL": 0,
+            "FAIL": 0,
+            "UNKNOWN": 0
+          },
+          "measurements": {
+            "model_calls": {
+              "observed": 1,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "model_switches": {
+              "observed": 1,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "tool_calls": {
+              "observed": 1,
+              "unknown": 0,
+              "total": 0,
+              "mean": 0.0
+            },
+            "latency_seconds": {
+              "observed": 1,
+              "unknown": 0,
+              "total": 1.453385900000285,
+              "mean": 1.453385900000285
+            }
+          },
+          "resource_peaks": {
+            "peak_ram_mib": {
+              "peak": 3039.34375,
+              "observed": 1,
+              "unknown": 0
+            },
+            "peak_vram_mib": {
+              "peak": 3316.0,
+              "observed": 1,
+              "unknown": 0
+            }
+          },
+          "resource_scopes": [
+            "Python plus all llama-server RSS; total device VRAM"
+          ],
+          "repairs": {
+            "observed": 0,
+            "observation_unknown": 0,
+            "independently_passed": 0,
+            "success_unknown": 0
+          }
+        }
+      }
+    }
+  },
+  "limitations": [
+    "Task pass means trusted artifact validation unless separately bound semantic review is supplied.",
+    "Unknown endpoints remain in all-case denominators; evaluated failure rates are conditional.",
+    "Resource peaks retain recorded scope and do not imply exclusive device ownership."
+  ]
+}

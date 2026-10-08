@@ -905,6 +905,8 @@ def create_app(service=None):
                 template_kwargs=dict(template_kwargs) if isinstance(template_kwargs,dict) else {}
                 if not isinstance(template_kwargs.get('enable_thinking'),bool):template_kwargs['enable_thinking']=False
                 payload['chat_template_kwargs']=template_kwargs
+                from backend.structured_output import apply_explicit_json_contract
+                payload=apply_explicit_json_contract(payload)
             classifier=getattr(service,'classifier',None)
             if classifier is not None:
                 if isinstance(latest,str):
@@ -1160,6 +1162,12 @@ def create_app(service=None):
             elif upstream.status_code==503 and path in model_metadata_cache:
                 content,media_type=model_metadata_cache[path]
                 return Response(content,media_type=media_type)
+        if path=='v1/chat/completions' and upstream.status_code==200 and isinstance(payload,dict) and not streaming:
+            from backend.structured_output import normalize_completion
+            try:
+                response_content=json.dumps(normalize_completion(json.loads(response_content),payload),ensure_ascii=False).encode('utf-8')
+            except WorkbenchError as exc:
+                return JSONResponse({'code':exc.code,'message':str(exc)},status_code=422)
         response=model_error_response(response_content,upstream.status_code,
                                     upstream.headers.get('content-type','application/json'))
         if trace:response.headers['x-sovereign-request-id']=trace.request_id

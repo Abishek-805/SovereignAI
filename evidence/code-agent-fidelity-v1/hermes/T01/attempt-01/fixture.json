@@ -1,0 +1,46 @@
+{
+  "task_id": "T01",
+  "request": "Rename greet to welcome in names.py. Preserve its output and all unrelated files.",
+  "files": {
+    "names.py": "def greet(name):\n    return \"Hello \" + name\n",
+    "keep.txt": "unrelated valuable data\n",
+    "test_acceptance.py": "import unittest,json,subprocess,sys\nfrom pathlib import Path\nimport names\nclass Check(unittest.TestCase):\n def test_new_symbol(self):self.assertEqual(names.welcome('Ada'),'Hello Ada')\n def test_old_symbol_removed(self):self.assertFalse(hasattr(names,'greet'))\n def test_other_input(self):self.assertEqual(names.welcome('Lin'),'Hello Lin')\n"
+  },
+  "mode": "accept",
+  "workspace_id": "1b98de9a9a99960d3a9f99df4727d0a3",
+  "initial_revision": "8e2eb8dea77bd00e7242921db6cdd09eda56165344b4efbdf230130bfff14b5a",
+  "router_proposal": {
+    "original_request": "Rename greet to welcome in names.py. Preserve its output and all unrelated files.",
+    "normalized_request": "Rename greet to welcome in names.py. Preserve its output and all unrelated files.",
+    "task_type": "EDIT",
+    "complexity": "simple",
+    "worker_role": "code",
+    "steps": [
+      "code"
+    ],
+    "features": {
+      "active_file_present": false,
+      "workspace_available": true,
+      "repository_scope": "none",
+      "estimated_context_size": null,
+      "number_of_files_requested": 1,
+      "visual_input_present": false,
+      "modality": "text",
+      "is_follow_up": false,
+      "explicit_error_present": false,
+      "language_hints": [],
+      "execution_requested": false,
+      "validation_required": false,
+      "mechanical_rename": false,
+      "software_generation": false,
+      "requirements_heavy": false
+    },
+    "reason_codes": [
+      "software_task_features"
+    ],
+    "needs_clarification": false,
+    "mutation_authorized": false
+  },
+  "fixed_worker": "qwen35",
+  "source_suite_hash": "bbea8783929a12035dd58569b807a7e96539f5a1b6e2afcf4c9d278e682add72"
+}

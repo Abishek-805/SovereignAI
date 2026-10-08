@@ -9,6 +9,7 @@ import re
 from backend.contracts import WorkbenchError
 from backend.jobs import Job
 from router.tool_registry import ToolRegistry, ToolContract
+import os
 
 OPERATIONS = {
     'project_create': 'Create a new managed coding project; target is its name. Subsequent file edits in this plan use the new project.',
@@ -46,15 +47,18 @@ class ApplicationTools:
         self.goal = goal
         self.history = history
         self.created_project_id = None
+        self.staged_task_id = None
         self.observations = []
         self.continuations = 0
         self.attempted_operations = set()
         self.registry = ToolRegistry()
         for name in OPERATIONS:
+            native=(name=='file_edit' and getattr(service,'routing_strategy','universal')!='universal' and os.environ.get('SOVEREIGN_AGENT_KERNEL','0')=='1' and callable(getattr(service.model,'agent_tool_turn',None)))
+            timeout=getattr(getattr(service,'supervisor_limits',None),'seconds',900) if native else 300
             self.registry.register(name, lambda target, value='', input='', operation=name:
                                    self._execute(operation, target, value, input),
                                    ToolContract(('target', 'value', 'input'), ('target',),
-                                                timeout_seconds=300, max_input_bytes=16000))
+                                                timeout_seconds=timeout, max_input_bytes=16000))
 
     def _workspace(self):
         if not self.workspace_id:
@@ -103,8 +107,13 @@ class ApplicationTools:
                 if Path(target).name!=target or '/' in target or '\\' in target:
                     raise WorkbenchError('invalid_file','Use a simple document filename')
                 import json
-                from workflows.generated_documents import generate, specification_schema
+                from workflows.generated_documents import generate, specification_schema, validate_source_contract
                 kind=Path(target).suffix.lower()
+                evidence=[]
+                if self.document_ids and re.search(r'\b(?:search|analy[sz]e|selected|source|uploaded|attached|provided)\b',self.goal or '',re.I):
+                    grounded=self.service.ask(self.goal,self.document_ids,history=self.history,job=self.job,force_documents=True)
+                    evidence=grounded.get('sources',[])
+                    self.observations.append({'source_answer':grounded.get('answer'),'sources':evidence})
                 shape=({'title':'Title','sections':[{'heading':'Section','paragraphs':['Content'],'tables':[[['Column 1','Column 2'],['Value 1','Value 2']]]}]} if kind=='.docx' else {'sheets':[{'name':'Sheet1','rows':[['Column'],['Value']]}]})
                 if not self.service.ask_lock.acquire(blocking=False):raise WorkbenchError('busy','Another model task is running')
                 try:
@@ -122,6 +131,7 @@ class ApplicationTools:
                 path=self.service.sources_dir/target
                 try:
                     checks=generate(path,specification)
+                    checks.update(validate_source_contract(path,evidence))
                 except WorkbenchError as error:
                     if error.code!='generation_format':raise
                     # One bounded repair using the exact rejected specification/error.
@@ -130,12 +140,13 @@ class ApplicationTools:
                         self.service._lease('text')
                         response=self.service.model._public_completion({'model':'sovereign-text','messages':[
                             {'role':'system','content':'Repair the document specification itself, not an action or wrapper. Match this exact shape: '+json.dumps(shape)+'. Satisfy the original request and actual validation error. Preserve correct content. Return JSON only.'},
-                            {'role':'user','content':json.dumps({'original_request':self.goal,'specification':specification,'validation_error':str(error)})}],
+                            {'role':'user','content':json.dumps({'original_request':self.goal,'specification':specification,'validation_error':str(error),'source_evidence':evidence,'prior_execution_results':self.observations})}],
                             'temperature':0,'max_tokens':4096,'response_format':{'type':'json_schema','json_schema':{'name':'generated_document','strict':True,'schema':specification_schema(kind)}},'chat_template_kwargs':{'enable_thinking':False}},'source_candidate')
                         if response['choices'][0]['finish_reason']!='stop':raise WorkbenchError('generation_format','Document repair was incomplete')
                         specification=json.loads(response['choices'][0]['message']['content'])
                     finally:self.service.ask_lock.release()
                     checks=generate(path,specification)
+                    checks.update(validate_source_contract(path,evidence))
                     checks['repair_attempts']=1
                 result=self.service.import_file(path)
                 result['generation_checks']=checks
@@ -153,7 +164,7 @@ class ApplicationTools:
                     path=self.service.sources_dir/candidate
                     if candidate.casefold() not in names and not path.exists() and not path.is_symlink():break
                 else:raise WorkbenchError('workspace_conflict','No available Knowledge document name; choose a different name')
-            if re.search(r'\b(?:explain|explaining|describe|describing|about)\b',self.goal or '',re.I) and not re.search(r'\b(?:exactly|verbatim|containing|with the text)\b',self.goal or '',re.I):
+            if (value==self.goal or re.search(r'\b(?:explain|explaining|describe|describing|about)\b',self.goal or '',re.I)) and not re.search(r'\b(?:exactly|verbatim|containing|with the text)\b',self.goal or '',re.I):
                 generator=getattr(self.service.model,'document_text',None)
                 if callable(generator):
                     if not self.service.ask_lock.acquire(blocking=False):raise WorkbenchError('busy','Another model task is running')
@@ -235,8 +246,10 @@ class ApplicationTools:
             # choose relative paths from the full request instead of treating
             # a tool-planned prefix as a directory inside that project.
             if workspace==self.created_project_id:target=''
-            return self.service.run_coding_project_task(workspace, target, self.goal, job=self.job, routed=True,
+            result=self.service.run_coding_project_task(workspace, target, self.goal, job=self.job, routed=True,
                 **({'history':self.history} if self.history else {}))
+            if result.get('publication_state')=='staged':self.staged_task_id=result['task_id']
+            return result
         if operation in {'file_delete', 'file_delete_scope', 'file_move', 'file_copy', 'folder_create'}:
             raise WorkbenchError('tool_input', 'File organization is staged as one reviewed plan, not executed one operation at a time')
         if len(input.encode('utf-8')) > 8000:
@@ -244,10 +257,14 @@ class ApplicationTools:
         if input:
             self.job.input.put_nowait(input if input.endswith('\n') else input + '\n')
         if operation == 'file_run':
-            return self.service.execute_coding_file(workspace, target, job=self.job)
+            route=re.search(r'\bGET\s+(/[^\s,;]*)',self.goal or '',re.I)
+            return self.service.execute_coding_file(workspace, target, job=self.job, **({'draft_task_id':self.staged_task_id} if self.staged_task_id else {}), **({'request_path':route[1]} if route else {}))
         if not value.strip() or len(value) > 2000:
             raise WorkbenchError('tool_input', 'Provide a terminal command under 2,000 characters')
         snapshot=self.service.coding.get(workspace)
+        if self.staged_task_id:
+            draft=self.service.coding.staged_files(workspace,self.staged_task_id)
+            snapshot={**snapshot,'files':[{'name':name} for name in draft],'folders':sorted({str(PurePosixPath(name).parent) for name in draft if str(PurePosixPath(name).parent)!='.'})}
         # The selected project is already the execution root. Its display name
         # is not an additional directory inside that root.
         if target == snapshot.get('name') and target not in snapshot.get('folders',[]):
@@ -262,8 +279,8 @@ class ApplicationTools:
             entry=str(PurePosixPath(target)/argv[1]) if target else argv[1]
             supported_suffixes={ 'python':{'.py'}, 'python3':{'.py'}, 'node':{'.js','.mjs','.cjs'} }
             if PurePosixPath(entry).suffix in supported_suffixes[argv[0]] and entry in {file['name'] for file in snapshot['files']}:
-                return self.service.execute_coding_file(workspace,entry,job=self.job)
-        return self.service.execute_terminal(workspace, value, self.job, cwd=target)
+                return self.service.execute_coding_file(workspace,entry,job=self.job,**({'draft_task_id':self.staged_task_id} if self.staged_task_id else {}))
+        return self.service.execute_terminal(workspace, value, self.job, cwd=target,**({'draft_task_id':self.staged_task_id} if self.staged_task_id else {}))
 
     def _continue(self, results, task):
         """Resume the same bounded tool plan using actual results, not a new agent."""
@@ -305,6 +322,21 @@ class ApplicationTools:
                     operation['tool'] not in OPERATIONS or any(not isinstance(value, str) for value in operation.values()):
                 raise WorkbenchError('tool_input', 'Invalid application operation')
         from router.tool_registry import explicit_operation_requested, new_workspace_requested
+        # A document-only plan cannot complete an explicitly requested software
+        # deliverable containing named source files. Reject before any writes;
+        # the worker still owns the plan and implementation.
+        software_creation=re.search(r'\b(?:create|generate|build|make)\b[^.!?]*\b(?:CLI|application|project)\s+(?:with|using|containing)\b',self.goal or '',re.I)
+        document_only_request=re.search(r'\b(?:create|generate|build|make)\s+(?:a\s+)?(?:[\w./-]+\.(?:md|txt|docx)|README)\b',self.goal or '',re.I)
+        named_sources=re.findall(r'(?<![\w/])([\w./-]+\.(?:py|js|mjs|cjs|java))\b',self.goal or '')
+        if software_creation and not document_only_request and named_sources and all(op['tool']=='document_create' for op in operations):
+            raise WorkbenchError('acceptance_unresolved','The plan creates only documents but the request requires source files and runnable behavior. No project completion was accepted.')
+        # Creating software without an existing project needs a managed root,
+        # even when the worker omitted the prerequisite project_create action.
+        # This grants no extra filesystem scope or execution permission.
+        if not self.workspace_id and explicit_operation_requested(self.goal,'project_create') and any(
+                operation['tool'] in {'file_edit','file_run'} for operation in operations) and not any(
+                operation['tool']=='project_create' for operation in operations):
+            operations=[{'tool':'project_create','target':self.goal[:70],'value':'','input':''},*operations]
         if self.workspace_id and not new_workspace_requested(self.goal):
             # A generated project_create cannot override the selected workspace.
             # Remove it before authorization as it is not a requested operation.
@@ -373,6 +405,8 @@ class ApplicationTools:
             trace.tool_candidates=[{'name':operation['tool'],'status':'eligible','reason':'Current operation wording checked; target and scope validated by tool'} for operation in operations]
         results = []
         for index,operation in enumerate(operations):
+            if trace and index>=len(trace.tool_candidates):
+                trace.tool_candidates.append({'name':operation['tool'],'status':'eligible','reason':'Execution explicitly requested; checked draft now available'})
             self.job.progress('Using ' + operation['tool'].replace('_', ' '))
             self.attempted_operations.add(tuple(operation[key] for key in ('tool','target','value','input')))
             try:
@@ -387,6 +421,11 @@ class ApplicationTools:
                 trace.event('TOOL_COMPLETED' if trace.tool_candidates[index]['status']=='executed' else 'TOOL_FAILED')
             self.service.tasks.step(task, operation['tool'], {'target':operation['target']})
             results.append({'tool':operation['tool'], 'target':operation['target'], 'result':result})
+            if operation['tool']=='file_edit' and result.get('publication_state')=='staged' and result.get('state')=='completed' and explicit_operation_requested(self.goal,'file_run') and not any(item['tool'] in {'file_run','terminal'} for item in operations):
+                if len(operations)>=8:raise WorkbenchError('tool_input','The requested execution exceeds the eight-operation budget')
+                target=result.get('target','')
+                if Path(target).suffix.lower() not in {'.py','.js','.mjs','.cjs','.java','.c','.cpp','.go','.rs','.sh'}:target=''
+                operations.append({'tool':'file_run','target':target,'value':'','input':''})
             self.observations.append({'tool':operation['tool'],'target':operation['target'],'state':result.get('state',result.get('status')),'exit_code':result.get('exit_code'),'stdout':str(result.get('stdout',''))[-4000:],'stderr':str(result.get('stderr',''))[-4000:],'checks':result.get('checks',{}),'command':operation['value'][:2000],'error':str(result.get('error',''))[-4000:]})
             if result.get('state',result.get('status'))=='blocked':
                 return {'state':'blocked','answer':result.get('blocker','Required dependency is unavailable'),'operations':results}
@@ -419,6 +458,8 @@ class ApplicationTools:
                     label='project files '+', '.join(paths)
                     if not result['result'].get('checks',{}).get('container_executed'):
                         label+=' (staged; Docker validation not run)'
+                    if result['result'].get('limitations'):
+                        label+=' ('+'; '.join(result['result']['limitations'])+')'
             if result['tool'] in {'file_run','terminal'}:
                 label+='; exit '+str(result['result'].get('exit_code'))+'\n'+result['result'].get('stdout','')[-4000:]
             return label

@@ -1,0 +1,26 @@
+{
+  "task_id": "T02",
+  "negative": {
+    "exit_code": 1,
+    "container_executed": true,
+    "stdout": "ORACLE_COUNT=3\n",
+    "stderr": "test_caller (test_acceptance.Check.test_caller) ... ok\ntest_new_symbol (test_acceptance.Check.test_new_symbol) ... ERROR\ntest_old_removed (test_acceptance.Check.test_old_removed) ... FAIL\n\n======================================================================\nERROR: test_new_symbol (test_acceptance.Check.test_new_symbol)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 5, in test_new_symbol\n    def test_new_symbol(self):self.assertEqual(numbers_io.load_number(),23)\n                                               ^^^^^^^^^^^^^^^^^^^^^^\nAttributeError: module 'numbers_io' has no attribute 'load_number'. Did you mean: 'read_number'?\n\n======================================================================\nFAIL: test_old_removed (test_acceptance.Check.test_old_removed)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 6, in test_old_removed\n    def test_old_removed(self):self.assertFalse(hasattr(numbers_io,'read_number'))\n                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: True is not false\n\n----------------------------------------------------------------------\nRan 3 tests in 0.021s\n\nFAILED (failures=1, errors=1)\n",
+    "properties": {
+      "test_acceptance.Check.test_caller.test_caller": true,
+      "test_acceptance.Check.test_new_symbol.test_new_symbol": false,
+      "test_acceptance.Check.test_old_removed.test_old_removed": false
+    }
+  },
+  "positive": {
+    "exit_code": 0,
+    "container_executed": true,
+    "stdout": "ORACLE_COUNT=3\n",
+    "stderr": "test_caller (test_acceptance.Check.test_caller) ... ok\ntest_new_symbol (test_acceptance.Check.test_new_symbol) ... ok\ntest_old_removed (test_acceptance.Check.test_old_removed) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.020s\n\nOK\n",
+    "properties": {
+      "test_acceptance.Check.test_caller.test_caller": true,
+      "test_acceptance.Check.test_new_symbol.test_new_symbol": true,
+      "test_acceptance.Check.test_old_removed.test_old_removed": true
+    }
+  },
+  "control_passed": true
+}

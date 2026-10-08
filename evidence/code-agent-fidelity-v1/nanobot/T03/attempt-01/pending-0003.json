@@ -1,0 +1,11 @@
+{
+  "event": "tool",
+  "tool": "apply_patch",
+  "arguments": {
+    "path": "stats.py",
+    "old_text": "def mean(values):\n    return sum(values)/(len(values)+1)",
+    "new_text": "def mean(values):\n    if not values:\n        raise ValueError(\"mean() of empty sequence\")\n    return sum(values)/len(values)"
+  },
+  "before_revision": "ac15e325336b9812ee01745c8cd6e6f1a44a76132d6ce74c195ff423458923e7",
+  "before_diff": ""
+}

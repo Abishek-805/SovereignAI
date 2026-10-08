@@ -25,6 +25,8 @@ def run(command,name):
         return child.wait()
 
 def main():
+    from evidence_io import install
+    install(ROOT)
     active=json.loads((OUT/'active-run.json').read_text())
     pid=active.get('pid')
     checkpoint('WAITING_FOR_EXISTING_MODEL_COMPARISON',existing_pid=pid)

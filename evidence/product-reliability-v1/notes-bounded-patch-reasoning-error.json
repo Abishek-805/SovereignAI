@@ -1,0 +1,8 @@
+{
+  "status": "INCOMPLETE",
+  "error": "generation_format: Incomplete structured JSON",
+  "raw_response_preserved": false,
+  "limitation": "Previous diagnostic saved evidence after normalization, which raised before persistence. No exact finish reason or token usage established.",
+  "max_output_tokens": 1536,
+  "production_changed": false
+}

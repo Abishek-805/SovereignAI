@@ -1,0 +1,26 @@
+{
+  "attempt": 1,
+  "revision": "260d062f3637b70934a3a41e142c0aef7a4d487e9f4fd9ff6731984bdab36e23",
+  "failure": {
+    "container_executed": true,
+    "exit_code": 0,
+    "stdout": "INDEPENDENT_ORACLE_TEST_COUNT=2\n",
+    "stderr": "test_integer (test_acceptance.Check.test_integer) ... ok\ntest_value (test_acceptance.Check.test_value) ... ok\n\n----------------------------------------------------------------------\nRan 2 tests in 0.001s\n\nOK\n",
+    "workspace_changes_persisted": false,
+    "note": "Every command uses a fresh snapshot. Write source through write_file/apply_patch, not shell redirection.",
+    "passed": true,
+    "test_count": 2,
+    "entrypoint": "",
+    "independent": true,
+    "basis": "immutable supplied suite; no semantic coverage inferred beyond supplied assertions"
+  },
+  "properties": {
+    "test_acceptance.Check.test_integer.test_integer": true,
+    "test_acceptance.Check.test_value.test_value": true
+  },
+  "lost_properties": [],
+  "candidate_diff": "--- a/lifecycle.py\n+++ b/lifecycle.py\n@@ -1,2 +1,2 @@\n def value():\n-    return 4\n+    return 31\n",
+  "previous_revision": null,
+  "validation_delta": 1,
+  "rolled_back": false
+}

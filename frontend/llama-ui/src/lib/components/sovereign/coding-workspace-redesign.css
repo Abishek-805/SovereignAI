@@ -242,3 +242,13 @@
 .ide.ide .terminal-location{font:10px Consolas,monospace;color:var(--ide-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px}.ide.ide .console-tabs .reveal-project{padding:3px}.ide.ide .terminal-input>span{max-width:55%;overflow:hidden;text-overflow:ellipsis}
 
 .ide.ide .asset-preview{height:100%;overflow:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;color:var(--ide-muted)}.ide.ide .asset-preview img{max-width:100%;max-height:70%;object-fit:contain}.ide.ide .asset-preview a{color:var(--wb-focus);text-decoration:underline}
+
+/* Narrow workspaces keep auxiliary panes in flow, never over the editor. */
+@container(max-width:1000px) {
+ .ide.ide .ide-body,.ide.ide .ide-body.hide-explorer,.ide.ide .ide-body.hide-assistant,.ide.ide .ide-body.hide-explorer.hide-assistant { display:flex;flex-direction:column;overflow:auto; }
+ .ide.ide .editor-column { order:0;width:100%;min-width:0;min-height:480px;flex-shrink:0; }
+ .ide.ide .explorer,.ide.ide .ai-panel { position:static;top:auto;bottom:auto;left:auto;right:auto;z-index:auto;width:100%;height:auto;min-height:0;max-height:260px;flex-shrink:0;overflow:auto; }
+ .ide.ide .explorer { order:1; }
+ .ide.ide .ai-panel { order:2; }
+ .ide.ide .side-resizer { display:none; }
+}

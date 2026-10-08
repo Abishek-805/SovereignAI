@@ -1,0 +1,18 @@
+{
+  "stage": 0,
+  "status": "COMPLETE",
+  "execution_stopped": true,
+  "next_stage_authorized": false,
+  "model_calls": 0,
+  "tool_dispatches": 0,
+  "docker_executions": 0,
+  "frozen_files_unchanged": 3362,
+  "prose_field": "content",
+  "content_characters_per_response": 16486,
+  "reasoning_content_populated": false,
+  "alternate_actions": false,
+  "hidden_reasoning_tokens": "UNKNOWN",
+  "current_model_endpoints": "UNAVAILABLE",
+  "current_docker_engine": "UNAVAILABLE",
+  "stage_report": "stage-0/STAGE-REPORT.md"
+}

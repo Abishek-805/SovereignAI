@@ -25,6 +25,8 @@ def test_normalization_preserves_quotes_paths_ids_and_negation(user_text,expecte
 
 
 def test_simple_greeting_uses_one_inference_and_observed_completion(service,monkeypatch):
+    # This contract covers the retained opt-in legacy strategy, not the production capability default.
+    service.routing_strategy='universal'
     leases=[];inferences=[]
     def lease(capability,required_context=None,worker_role=None):
         leases.append((capability,worker_role));return 'text'
@@ -127,6 +129,8 @@ def test_closed_readonly_faq_shapes_use_lightweight_worker(user_text):
 
 
 def test_synthetic_selected_document_metadata_does_not_disable_faq_fast_path(service,monkeypatch):
+    # This contract covers the retained opt-in legacy strategy, not the production capability default.
+    service.routing_strategy='universal'
     leases=[];calls=[]
     monkeypatch.setattr(service,'_lease',lambda capability,required_context=None,worker_role=None:leases.append(worker_role) or 'text')
     monkeypatch.setattr(service.model,'simple_answer',lambda text,history:calls.append(text) or 'A compiler translates programs.',raising=False)

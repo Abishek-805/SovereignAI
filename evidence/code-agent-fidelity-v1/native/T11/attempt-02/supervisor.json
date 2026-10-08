@@ -1,0 +1,250 @@
+{
+  "supervisor_id": "759c6d8c15ed4ec490a8cafddf56f5cc",
+  "goal": "Repair unique.py stable_unique: keep the first occurrence in original order, including 0, False and empty string according to normal Python equality. Do not sort. Preserve checksum(values). Validate and repair using exact failures.",
+  "context": {
+    "workspace_id": "691802e8547e838d715e468c774c0dce",
+    "document_ids": []
+  },
+  "created_at": 1791305312.7389069,
+  "elapsed_seconds": 61.656,
+  "limits": {
+    "model_calls": 32,
+    "tool_calls": 64,
+    "model_switches": 1,
+    "seconds": 660
+  },
+  "counts": {
+    "model_calls": 7,
+    "tool_calls": 7,
+    "model_switches": 0
+  },
+  "task_state": {
+    "task_id": "759c6d8c15ed4ec490a8cafddf56f5cc",
+    "original_request": "Repair unique.py stable_unique: keep the first occurrence in original order, including 0, False and empty string according to normal Python equality. Do not sort. Preserve checksum(values). Validate and repair using exact failures.",
+    "normalized_request": "Repair unique.py stable_unique: keep the first occurrence in original order, including 0, False and empty string according to normal Python equality. Do not sort. Preserve checksum(values). Validate and repair using exact failures.",
+    "conversation_context": [],
+    "follow_up_context": null,
+    "intent": null,
+    "workflow": null,
+    "modality": null,
+    "workspace": "691802e8547e838d715e468c774c0dce",
+    "knowledge_scope": [],
+    "requested_deliverables": [],
+    "success_conditions": [],
+    "current_stage": "OBSERVING",
+    "current_action": null,
+    "active_worker": null,
+    "plan": null,
+    "observations": [],
+    "tool_results": [],
+    "evidence": [],
+    "repair_count": 0,
+    "replan_count": 0,
+    "completion_status": "running",
+    "blockers": [],
+    "cancellation_state": false,
+    "timestamps": {
+      "received": 1791305312.7389069,
+      "updated": 1791305371.696491
+    },
+    "worker_role": null,
+    "model_switch_count": 0,
+    "tool_call_count": 7,
+    "inference_call_count": 7,
+    "event_count": 14
+  },
+  "events": [
+    {
+      "operation": "model_calls",
+      "count": 1,
+      "elapsed_seconds": 0.109
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791305312.8385046,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791305315.4215186,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 1,
+      "elapsed_seconds": 2.687
+    },
+    {
+      "operation": "model_calls",
+      "count": 2,
+      "elapsed_seconds": 2.734
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791305315.4748268,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791305317.6050084,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 2,
+      "elapsed_seconds": 4.875
+    },
+    {
+      "operation": "model_calls",
+      "count": 3,
+      "elapsed_seconds": 4.937
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791305317.6665232,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791305319.0678394,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 3,
+      "elapsed_seconds": 6.328
+    },
+    {
+      "operation": "model_calls",
+      "count": 4,
+      "elapsed_seconds": 14.578
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791305327.31646,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791305346.3322368,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 4,
+      "elapsed_seconds": 33.594
+    },
+    {
+      "operation": "model_calls",
+      "count": 5,
+      "elapsed_seconds": 33.687
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791305346.415371,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791305354.194734,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 5,
+      "elapsed_seconds": 41.469
+    },
+    {
+      "operation": "model_calls",
+      "count": 6,
+      "elapsed_seconds": 41.531
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791305354.2694871,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791305355.65023,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 6,
+      "elapsed_seconds": 42.922
+    },
+    {
+      "operation": "model_calls",
+      "count": 7,
+      "elapsed_seconds": 45.578
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791305358.3051038,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791305371.696491,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 7,
+      "elapsed_seconds": 58.969
+    }
+  ],
+  "completion": null,
+  "outcome": "running",
+  "code_task_view": {
+    "task_id": "759c6d8c15ed4ec490a8cafddf56f5cc",
+    "context": {
+      "original_request": "Repair unique.py stable_unique: keep the first occurrence in original order, including 0, False and empty string according to normal Python equality. Do not sort. Preserve checksum(values). Validate and repair using exact failures.",
+      "resolved_request": "Repair unique.py stable_unique: keep the first occurrence in original order, including 0, False and empty string according to normal Python equality. Do not sort. Preserve checksum(values). Validate and repair using exact failures.",
+      "workspace": "691802e8547e838d715e468c774c0dce",
+      "target": null,
+      "active_file": null,
+      "relevant_symbols": [],
+      "related_files": [],
+      "diagnostics": [],
+      "current_changes": [],
+      "previous_tool_result": null,
+      "current_model": null,
+      "task_stage": "OBSERVING",
+      "context_scope": []
+    },
+    "task_type": null,
+    "complexity": null,
+    "current_stage": "OBSERVING",
+    "active_worker": null,
+    "plan": null,
+    "observations": [],
+    "tool_results": [],
+    "current_candidate": null,
+    "candidate_hash": null,
+    "repair_count": 0,
+    "model_switch_count": 0,
+    "completion_status": "running",
+    "cancellation": false,
+    "blocker": [],
+    "timestamps": {
+      "received": 1791305312.7389069,
+      "updated": 1791305371.696491
+    }
+  }
+}

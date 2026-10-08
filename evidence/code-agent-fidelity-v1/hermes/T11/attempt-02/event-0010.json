@@ -1,0 +1,19 @@
+{
+  "event": "tool",
+  "tool": "apply_patch",
+  "arguments": {
+    "path": "unique.py",
+    "old_text": "def stable_unique(values):\n    return sorted(set(v for v in values if v))",
+    "new_text": "def stable_unique(values):\n    seen = set()\n    result = []\n    for v in values:\n        if v not in seen:\n            seen.add(v)\n            result.append(v)\n    return result"
+  },
+  "before_revision": "e60ad5ee904130d1219413205d09f83c22f4df64064e3280fddc32c988c7cd8a",
+  "before_diff": "",
+  "result": {
+    "path": "unique.py",
+    "sha256": "b769e28e1a36383369a040d5a5cdd841cee787bfc3184974ca4c09676555d3b3",
+    "bytes": 223
+  },
+  "latency_seconds": 0.0,
+  "after_revision": "16b7633e0ecf67b58cc50d8bada5251157097dd8478ebf555babc36c3feb67c0",
+  "after_diff": "--- a/unique.py\n+++ b/unique.py\n@@ -1,4 +1,10 @@\n def stable_unique(values):\n-    return sorted(set(v for v in values if v))\n+    seen = set()\n+    result = []\n+    for v in values:\n+        if v not in seen:\n+            seen.add(v)\n+            result.append(v)\n+    return result\n def checksum(values):\n     return sum(values)\n"
+}

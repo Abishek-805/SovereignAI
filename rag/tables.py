@@ -14,6 +14,14 @@ from backend.contracts import WorkbenchError
 
 TABULAR={'.xlsx','.csv','.tsv','.json','.jsonl'}
 
+def numeric_value(value):
+    """Finite numeric measurement; source cells remain untouched."""
+    if isinstance(value,bool):return None
+    try:number=float(value)
+    except (TypeError,ValueError,OverflowError):return None
+    if not math.isfinite(number):return None
+    return number
+
 def scalar(value):
     if isinstance(value,float) and not math.isfinite(value): return None
     return value.isoformat() if hasattr(value,'isoformat') else value
@@ -161,12 +169,56 @@ def population_binding_catalog(available,entities):
     return candidates
 
 
+def compile_aggregate_request(available, question):
+    """Bind explicit compound aggregates to actual fields before generation.
+
+    This handles mathematical wording only; ambiguous field roles continue
+    through the existing semantic contract. No source values are invented.
+    """
+    candidates=[]
+    for identifier,(_,table) in available.items():
+        metrics=[];groups=[]
+        if re.search(r'\b(?:number|count)\s+of\s+(?:records|rows)|\brecord\s+counts?\b',question,re.I):
+            metrics.append({'operation':'count','column':None})
+        for column in table['columns']:
+            name=re.escape(column)
+            if re.search(r'\b(?:per|by)\s+'+name+r'\b|(?<!\w)'+name+r'\s+counts?\b',question,re.I):groups.append(column)
+            if re.search(r'\bcohort\s+counts?\b',question,re.I) and re.fullmatch(r'group|cohort|team|category|department',column,re.I):groups.append(column)
+            for op,words in [('sum','sum|total|totals'),('average','average|mean'),('min','minimum|min'),('max','maximum|max')]:
+                if re.search(r'\b(?:'+words+r')\s+(?:of\s+)?(?:numeric\s+)?'+name+r'\b|(?<!\w)'+name+r'\s+(?:'+words+r')\b',question,re.I):
+                    metrics.append({'operation':op,'column':column})
+        groups=list(dict.fromkeys(groups))
+        if groups and not any(m['operation']=='count' for m in metrics):metrics.insert(0,{'operation':'count','column':None})
+        if groups or len(metrics)>1:
+            filters=[]
+            for column in groups:
+                named=[value for value in {str(row.get(column)) for row in table['records']} if re.search(r'(?<!\w)'+re.escape(value)+r'(?!\w)',question,re.I)]
+                if named:filters.append({'column':column,'operator':'in','value':named})
+            candidates.append({'table':identifier,'operation':'aggregate','columns':[],'filters':filters,'metrics':metrics,'group_by':groups})
+    return candidates[0] if len(candidates)==1 else None
+
+
 def compile_outcome_query(intent,available,question,history=None):
     """Bind a semantic cohort/outcome measure to complete source records.
 
     Exact identities and prefixes are resolved from actual records, and every
     compatible assessment is included without model-authored arithmetic.
     """
+    literal_criteria={}
+    for identifier,(_,table) in available.items():
+        predicates=[]
+        for field in table['columns']:
+            # Only source-bound, explicitly named field comparisons qualify.
+            pattern=r'(?<!\w)'+re.escape(field)+r'\s*(?:is\s+)?(at least|at most|above|below|>=|<=|>|<|equals?|=)\s*(-?\d+(?:\.\d+)?)'
+            match=re.search(pattern,question,re.I)
+            if match:
+                operator={'at least':'gte','at most':'lte','above':'gt','below':'lt','>=':'gte','<=':'lte','>':'gt','<':'lt','equal':'eq','equals':'eq','=':'eq'}[match[1].lower()]
+                predicates.append({'column':field,'operator':operator,'value':float(match[2])})
+            label=re.search(r'(?<!\w)'+re.escape(field)+r'\s*(?:is|=|equals?|of)?\s*(PASS|FAIL|PASSED|FAILED)(?!\w)',question,re.I)
+            if label:
+                values={str(row.get(field)).strip() for row in table['records'] if str(row.get(field)).strip().casefold()==label[1].casefold()}
+                if values:predicates.append({'column':field,'operator':'in','value':sorted(values)})
+        if predicates:literal_criteria[identifier]=predicates
     outcomes=list(dict.fromkeys(intent.get('result_values',[])))
     polarity=intent.get('outcome')
     canonical={'pass':{'pass','passed'},'fail':{'fail','failed'}}
@@ -216,7 +268,7 @@ def compile_outcome_query(intent,available,question,history=None):
     if threshold is not None:
         if not isinstance(threshold,(int,float)) or not math.isfinite(threshold) or intent.get('threshold_operator') not in {'gte','gt','lt','lte'}:
             raise WorkbenchError('invalid_query','Invalid numeric outcome rule')
-        supplied=[float(v) for v in re.findall(r'(?<![\w.])-?\d+(?:\.\d+)?(?![\w.])',user_context)]
+        supplied=[float(v) for v in re.findall(r'(?<![\w.])-?\d+(?:\.\d+)?(?!\w|\.\d)',user_context)]
         if threshold not in supplied:
             # A proposed numeric rule is not evidence. Explicit source outcomes
             # can answer the measure without that rule; retain the population
@@ -243,15 +295,17 @@ def compile_outcome_query(intent,available,question,history=None):
         for column in table['columns']:
             values={str(row.get(column)).strip().casefold() for row in table['records']}
             if threshold is not None and column in intent['score_columns']:
-                if any(isinstance(row.get(column),(int,float)) and not isinstance(row.get(column),bool) for row in table['records']):
+                if any(numeric_value(row.get(column)) is not None for row in table['records']):
                     criteria.append({'column':column,'operator':applied_operator,'value':threshold})
             elif threshold is None and outcomes:
                 bound=[value for value in outcomes if str(value).casefold() in values]
                 if bound and (polarity in canonical or len(bound)==len(outcomes)):
                     criteria.append({'column':column,'operator':'in','value':bound})
+        if identifier in literal_criteria:
+            criteria=literal_criteria[identifier]
         if not criteria:
             numeric_fields=[field for field in table['columns'] if field!=intent.get('entity_column') and
-                any(isinstance(row.get(field),(int,float)) and not isinstance(row.get(field),bool) for row in table['records'])]
+                any(numeric_value(row.get(field)) is not None for row in table['records'])]
             if threshold is not None and intent.get('scope')=='all' and len(numeric_fields)>1:
                 raise WorkbenchError('invalid_query','The supplied numeric rule has incomplete assessment coverage. '
                     'Bind relevant score_columns from the consolidated source '+table['name']+': '+repr(numeric_fields)+
@@ -284,6 +338,7 @@ def compile_outcome_query(intent,available,question,history=None):
             population_filters=([{'column':column,'operator':'eq' if is_exact else 'contains','value':population}]
                                 if population is not None else filters)
             queries.append({'table':identifier,'columns':[],'filters':population_filters,'criteria':criteria,'requested_outcome':polarity,
+                            **({'criteria_mode':'all'} if identifier in literal_criteria else {}),
                             **({'cohort':population} if population is not None else {})})
         documents.add(doc['document_id'])
     if len(documents)>1: raise WorkbenchError('needs_input','Connect one results document for this multi-assessment percentage')
@@ -298,9 +353,50 @@ def compile_outcome_query(intent,available,question,history=None):
     return {**first,'operation':operation,'additional_queries':rest,'unavailable_assessments':unavailable}
 
 
+def bind_selection_request(plan,table,question):
+    """Retain literal identities, including missing siblings of source IDs."""
+    if plan.get('operation')!='select':return plan
+    filters=plan.get('filters',[])
+    identity=next((f['column'] for f in filters if f.get('operator') in {'eq','in'}),None)
+    # A business filter can precede the identity filter. Bind literal source
+    # IDs to their unique filtered column rather than depending on list order.
+    id_tokens=[token.casefold() for token in re.findall(r'\b[\w-]+\b',question)
+        if any(c.isalpha() for c in token) and re.search(r'\d$',token)]
+    candidates=[]
+    for column in dict.fromkeys(f['column'] for f in filters if f.get('operator') in {'eq','in'}):
+        values={str(r.get(column,'')).strip().casefold() for r in table['records']}
+        families={re.sub(r'\d+$','',v) for v in values if re.fullmatch(r'[\w-]*[A-Za-z][\w-]*\d+',v)}
+        if any(token in values or re.sub(r'\d+$','',token) in families for token in id_tokens):
+            candidates.append(column)
+    if len(candidates)==1:identity=candidates[0]
+    if identity not in table['columns']:return plan
+    values={str(r.get(identity,'')).strip().casefold() for r in table['records']}
+    families={re.sub(r'\d+$','',v) for v in values if re.fullmatch(r'[\w-]*[A-Za-z][\w-]*\d+',v)}
+    tokens=list(dict.fromkeys(re.findall(r'\b[\w-]+\b',question)))
+    entities=[token for token in tokens if token.casefold() in values or (re.sub(r'\d+$','',token.casefold()) in families and re.search(r'\d$',token))]
+    for item in filters:
+        if item.get('column')!=identity:continue
+        raw=item.get('value',[])
+        for value in raw if isinstance(raw,list) else [raw]:
+            if isinstance(value,str) and value.casefold() in question.casefold() and value.casefold() not in {v.casefold() for v in entities}:entities.append(value)
+    bindings={}
+    for token in entities:
+        if token.casefold() in values:continue
+        match=re.fullmatch(r'(.*?)(\d+)',token.casefold())
+        candidates=[str(r[identity]).strip() for r in table['records'] if re.fullmatch(re.escape(match[1])+r'0*'+str(int(match[2])),str(r.get(identity,'')).strip(),re.I)] if match else []
+        candidates=list(dict.fromkeys(candidates))
+        if len(candidates)==1:bindings[token]=candidates[0]
+    entities=[bindings.get(token,token) for token in entities]
+    if entities:
+        filters=[f for f in filters if f.get('column')!=identity]+[{'column':identity,'operator':'in','value':entities}]
+    rule=re.search(r'\b(\d+(?:\.\d+)?)\s+is\s+(?:the\s+)?pass(?:ing)?\s+(?:mark|score|threshold)\b|\bpass(?:ing)?\s+(?:mark|score|threshold)\s*(?:is|=|:)\s*(\d+(?:\.\d+)?)',question,re.I)
+    return {**plan,'filters':filters,'requested_entities':entities,'identity_column':identity,'entity_bindings':bindings,
+            **({'pass_threshold':float(rule[1] or rule[2])} if rule else {}),
+            'comparison_requested':bool(re.search(r'\b(?:compare|comparison|better|best|highest|lowest|rank)\b',question,re.I))}
+
 def execute_query(table,plan):
     operation=plan.get('operation'); columns=plan.get('columns',[]); filters=plan.get('filters',[])
-    if operation not in {'select','count','sum','average','min','max','percentage'} or not isinstance(columns,list) or not isinstance(filters,list) or len(columns)>12 or len(filters)>8:
+    if operation not in {'select','count','sum','average','min','max','percentage','aggregate'} or not isinstance(columns,list) or not isinstance(filters,list) or len(columns)>12 or len(filters)>8:
         raise WorkbenchError('invalid_query','Unsupported table query')
     if any(c not in table['columns'] for c in columns): raise WorkbenchError('invalid_query','Query refers to an unknown column')
     for f in filters:
@@ -321,16 +417,70 @@ def execute_query(table,plan):
         a=row.get(f['column']); b=f['value']; op=f['operator']
         if op=='in': return str(a).strip().casefold() in {str(v).strip().casefold() for v in b}
         if op in {'eq','ne','contains'}:
+            if op in {'eq','ne'} and isinstance(b,(int,float)) and not isinstance(b,bool):
+                left=numeric_value(a);right=numeric_value(b)
+                if left is None or right is None:return False
+                return left==right if op=='eq' else left!=right
             a=str(a).strip().casefold(); b=str(b).strip().casefold()
             return a==b if op=='eq' else a!=b if op=='ne' else b in a
-        try: a=float(a); b=float(b)
-        except (ValueError,TypeError): return False
+        a=numeric_value(a);b=numeric_value(b)
+        if a is None or b is None:return False
         return {'gt':a>b,'gte':a>=b,'lt':a<b,'lte':a<=b}[op]
     rows=[r for r in table['records'] if all(match(r,f) for f in filters)]
     result={'table':table['name'],'operation':operation,'scanned_rows':len(table['records']),'matched_rows':len(rows),'columns':columns,'filters':filters}
     if plan.get('requested_outcome') in {'pass','fail'}:
         result['requested_outcome']=plan['requested_outcome']
-    if operation=='select': result.update(records=[{c:r.get(c) for c in columns or table['columns']} for r in rows[:40]],truncated=len(rows)>40)
+    if operation=='aggregate':
+        metrics=plan.get('metrics',[]);groups=plan.get('group_by',[])
+        if not isinstance(metrics,list) or not 1<=len(metrics)<=12 or not isinstance(groups,list) or len(groups)>3 or any(c not in table['columns'] for c in groups):
+            raise WorkbenchError('invalid_query','Invalid aggregate contract')
+        def calculate(records):
+            values=[]
+            for metric in metrics:
+                op=metric.get('operation');column=metric.get('column')
+                if op not in {'count','sum','average','min','max'} or (column not in table['columns'] and not (op=='count' and column is None)):
+                    raise WorkbenchError('invalid_query','Unknown aggregate metric/field')
+                measured=execute_query({**table,'records':records},{'operation':op,'columns':[column] if column else [],'filters':[]})
+                values.append({'operation':op,'column':column, 'value':measured.get('value'),'numeric_rows':measured.get('numeric_rows')})
+            return values
+        result['metrics']=calculate(rows);result['group_by']=groups;result['groups']=[]
+        grouped={}
+        for row in rows:
+            key=tuple(row.get(c) for c in groups)
+            grouped.setdefault(key,[]).append(row)
+        if groups:
+            if len(grouped)>200:raise WorkbenchError('resource_limit','Too many aggregate groups')
+            result['groups']=[{'keys':dict(zip(groups,key)),'metrics':calculate(records)} for key,records in grouped.items()]
+    elif operation=='select':
+        result.update(records=[{c:r.get(c) for c in columns or table['columns']} for r in rows[:40]],truncated=len(rows)>40)
+        identity=plan.get('identity_column')
+        if identity:
+            present={str(r.get(identity,'')).strip().casefold() for r in rows}
+            result['missing_entities']=[v for v in plan.get('requested_entities',[]) if v.casefold() not in present]
+            result['entity_bindings']=plan.get('entity_bindings',{})
+        if plan.get('comparison_requested') and not result['truncated'] and identity:
+            fields=[c for c in columns or table['columns'] if c!=identity and any(numeric_value(r.get(c)) is not None for r in rows)]
+            winners=[];minima=[]
+            for field in fields:
+                numeric=[r for r in rows if numeric_value(r.get(field)) is not None]
+                if numeric:
+                    maximum=max(numeric_value(r[field]) for r in numeric)
+                    winners.append({'column':field,'maximum':int(maximum) if maximum.is_integer() else maximum,'identities':[str(r.get(identity)) for r in numeric if numeric_value(r[field])==maximum]})
+                    minimum=min(numeric_value(r[field]) for r in numeric)
+                    minima.append({'column':field,'minimum':int(minimum) if minimum.is_integer() else minimum,'identities':[str(r.get(identity)) for r in numeric if numeric_value(r[field])==minimum]})
+            result['comparison']={'identity_column':identity,'field_maxima':winners,'field_minima':minima}
+            if 'pass_threshold' in plan:
+                threshold=plan['pass_threshold']
+                result['comparison']['pass_threshold']=threshold
+                result['comparison']['pass_counts']=[{'identity':str(r.get(identity)),
+                    'passed':sum(numeric_value(r.get(c)) is not None and numeric_value(r[c])>=threshold for c in fields),
+                    'assessments':len(fields)} for r in rows]
+    elif operation in {'count','percentage'} and plan.get('criteria_mode')=='all':
+        criteria=plan.get('criteria',[])
+        numerator=execute_query({**table,'records':rows},{'operation':'count','columns':[],'filters':criteria})['value']
+        result.update(value=numerator,total=len(rows),criteria=criteria,criteria_mode='all')
+        result['summaries']=[{'column':' AND '.join(c['column'] for c in criteria),'value':numerator,'passed':numerator,'total':len(rows),
+                              **({'percentage':round(100*numerator/len(rows),2) if rows else 0} if operation=='percentage' else {})}]
     elif operation=='count':
         criteria=plan.get('criteria',[])
         if criteria:

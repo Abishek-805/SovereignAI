@@ -1,0 +1,7 @@
+{
+  "event": "tool",
+  "tool": "run_tests",
+  "arguments": {},
+  "before_revision": "7528dbbb0866c4985aeca427087496408b5c4c85876d4560921e8584a5111321",
+  "before_diff": "--- a/math_ops.py\n+++ b/math_ops.py\n@@ -1,2 +1,13 @@\n-def multiply(a,b):\n-    return a*b\n+def multiply(a, b):\n+    return a * b\n+\n+\n+def clamp(value, low, high):\n+    if low > high:\n+        raise ValueError(\"low must be less than or equal to high\")\n+    if value < low:\n+        return low\n+    elif value > high:\n+        return high\n+    else:\n+        return value\n"
+}

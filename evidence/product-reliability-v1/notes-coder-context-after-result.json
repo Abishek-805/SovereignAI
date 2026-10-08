@@ -1,0 +1,576 @@
+{
+  "label": "coder_retained_candidate",
+  "original_failed_evidence": "live-model/persistent_notes.json",
+  "latency": 18.89099999999962,
+  "lease": {
+    "model_load_time": null,
+    "switch_required": false,
+    "current_residency": "sovereign-code",
+    "selected_model": "sovereign-code",
+    "selected_model_id": "Qwen/Qwen2.5-Coder-3B-Instruct",
+    "model_file": "qwen2.5-coder-3b-instruct-q4_k_m.gguf",
+    "state": "Ready",
+    "available_context": 16384
+  },
+  "result": {
+    "task_id": "a934edde403c48188622b00cbccda04e",
+    "workspace_id": "b89309c40c044385ab3aca271576b6ef",
+    "target": "notes.py",
+    "state": "failed",
+    "instruction": "Create a runnable Python notes CLI application using only main.py and notes.py and the standard library. notes.py exports list_notes(path), returning [] for an absent file, and add_note(path, text), appending a nonblank note to a UTF-8 JSON array without losing earlier notes and returning the updated list. Blank or whitespace-only notes raise ValueError. main.py imports these functions, accepts add FILE TEXT or list FILE, prints the resulting list as JSON and exits nonzero for invalid requests or malformed stored JSON. Read test_acceptance.py as supplied independent acceptance evidence. Preserve it and all other existing files. Create only the two implementation files.",
+    "operation_plan": {
+      "version": 1,
+      "workspace_id": "b89309c40c044385ab3aca271576b6ef",
+      "target": "",
+      "request_sha256": "da451922e0624b4231c047c1d4d768d7b69d4abff454381e4846284faddeb839",
+      "revision_sha256": "7873c1e7f21bc824f668426759f4d17ab1dbb4827e8347c5aac5ec1f033fe69d",
+      "scope": "new_files",
+      "operations": [
+        {
+          "action": "create",
+          "path": "notes.py",
+          "reason": "Create notes.py with list_notes and add_note functions per requirements."
+        },
+        {
+          "action": "create",
+          "path": "main.py",
+          "reason": "Create main.py CLI entrypoint handling add and list commands."
+        }
+      ],
+      "contract": {
+        "deliverable": "application",
+        "requirements": [
+          "notes.py exports list_notes(path) returning [] for absent file, and add_note(path, text) appending nonblank notes to UTF-8 JSON array, raising ValueError for blank/whitespace-only text.",
+          "main.py imports notes functions, accepts 'add FILE TEXT' or 'list FILE' arguments, prints list as JSON, exits nonzero for invalid requests or malformed JSON.",
+          "Preserve test_acceptance.py and unrelated.py. Create only main.py and notes.py."
+        ],
+        "entrypoint": "main.py"
+      },
+      "plan_sha256": "f9a6821ede01697f805955fb39d606a825d5587c5e225932ebefed86b1bdaa83"
+    },
+    "build_contract": {
+      "version": 2,
+      "original_request": "Create a runnable Python notes CLI application using only main.py and notes.py and the standard library. notes.py exports list_notes(path), returning [] for an absent file, and add_note(path, text), appending a nonblank note to a UTF-8 JSON array without losing earlier notes and returning the updated list. Blank or whitespace-only notes raise ValueError. main.py imports these functions, accepts add FILE TEXT or list FILE, prints the resulting list as JSON and exits nonzero for invalid requests or malformed stored JSON. Read test_acceptance.py as supplied independent acceptance evidence. Preserve it and all other existing files. Create only the two implementation files.",
+      "request_sha256": "6b2e83f23b7a9ebb71bbcfc17fcb144710a3f779ab1df88b6c19ad215f55a42c",
+      "requirement_classes": {
+        "FILE": [
+          "main.py",
+          "notes.py",
+          "test_acceptance.py"
+        ],
+        "INTERFACE": [],
+        "NORMAL": [
+          "Create a runnable Python notes CLI application using only main.py and notes.py and the standard library.",
+          "Read test_acceptance.py as supplied independent acceptance evidence.",
+          "Preserve it and all other existing files.",
+          "Create only the two implementation files."
+        ],
+        "INVALID_INPUT": [
+          "Blank or whitespace-only notes raise ValueError.",
+          "main.py imports these functions, accepts add FILE TEXT or list FILE, prints the resulting list as JSON and exits nonzero for invalid requests or malformed stored JSON."
+        ],
+        "ERROR": [
+          "Blank or whitespace-only notes raise ValueError.",
+          "main.py imports these functions, accepts add FILE TEXT or list FILE, prints the resulting list as JSON and exits nonzero for invalid requests or malformed stored JSON."
+        ],
+        "OUTPUT": [
+          "notes.py exports list_notes(path), returning [] for an absent file, and add_note(path, text), appending a nonblank note to a UTF-8 JSON array without losing earlier notes and returning the updated list.",
+          "main.py imports these functions, accepts add FILE TEXT or list FILE, prints the resulting list as JSON and exits nonzero for invalid requests or malformed stored JSON."
+        ],
+        "PERSISTENCE": [
+          "notes.py exports list_notes(path), returning [] for an absent file, and add_note(path, text), appending a nonblank note to a UTF-8 JSON array without losing earlier notes and returning the updated list.",
+          "main.py imports these functions, accepts add FILE TEXT or list FILE, prints the resulting list as JSON and exits nonzero for invalid requests or malformed stored JSON."
+        ],
+        "PRESERVATION": [],
+        "ENTRYPOINT": [
+          "main.py"
+        ],
+        "ACCEPTANCE": [
+          {
+            "kind": "file",
+            "file": "main.py",
+            "evidence": "main.py"
+          },
+          {
+            "kind": "file",
+            "file": "notes.py",
+            "evidence": "notes.py"
+          }
+        ]
+      },
+      "file_obligations": {
+        "notes.py": [
+          {
+            "kind": "file",
+            "file": "notes.py",
+            "evidence": "notes.py"
+          }
+        ],
+        "main.py": [
+          {
+            "kind": "file",
+            "file": "main.py",
+            "evidence": "main.py"
+          }
+        ]
+      },
+      "deliverable": "application",
+      "required_files": [
+        "main.py",
+        "notes.py",
+        "test_acceptance.py"
+      ],
+      "language_framework": "Python",
+      "entrypoint": "main.py",
+      "arguments": [],
+      "outputs": [],
+      "error_behavior": [
+        "Blank or whitespace-only notes raise ValueError.",
+        "main.py imports these functions, accepts add FILE TEXT or list FILE, prints the resulting list as JSON and exits nonzero for invalid requests or malformed stored JSON."
+      ],
+      "interfaces": [],
+      "persistence_requirements": [
+        "notes.py exports list_notes(path), returning [] for an absent file, and add_note(path, text), appending a nonblank note to a UTF-8 JSON array without losing earlier notes and returning the updated list.",
+        "main.py imports these functions, accepts add FILE TEXT or list FILE, prints the resulting list as JSON and exits nonzero for invalid requests or malformed stored JSON."
+      ],
+      "preservation_rules": {},
+      "acceptance_checks": [
+        {
+          "kind": "file",
+          "file": "main.py",
+          "evidence": "main.py"
+        },
+        {
+          "kind": "file",
+          "file": "notes.py",
+          "evidence": "notes.py"
+        }
+      ],
+      "planned_files": [
+        "notes.py",
+        "main.py"
+      ],
+      "restrict_files": false,
+      "coverage": "literal obligations only; other behavior requires independent acceptance tests"
+    },
+    "generation_contexts": [
+      {
+        "file": "notes.py",
+        "repair": true,
+        "descriptor": {
+          "action": "create",
+          "path": "notes.py",
+          "language": "Python",
+          "reason": "Create notes.py with list_notes and add_note functions per requirements.",
+          "project_files": [
+            "main.py",
+            "notes.py",
+            "test_acceptance.py",
+            "unrelated.py"
+          ],
+          "project_folders": [],
+          "planned_operations": [
+            {
+              "action": "create",
+              "path": "notes.py"
+            },
+            {
+              "action": "create",
+              "path": "main.py"
+            }
+          ],
+          "file_contents": {
+            "notes.py": "import json\nfrom pathlib import Path\n\ndef list_notes(path):\n    \"\"\"Return the list of notes stored at path, or [] if the file is absent or invalid.\"\"\"\n    p = Path(path)\n    if not p.exists():\n        return []\n    try:\n        with open(p, 'r', encoding='utf-8') as f:\n            data = json.load(f)\n        if not isinstance(data, list):\n            return []\n        return data\n    except (json.JSONDecodeError, ValueError):\n        return []\n\ndef add_note(path, text):\n    \"\"\"Append a non-blank note to the JSON list at path. Raises ValueError if text is blank.\"\"\"\n    if not text or text.isspace():\n        raise ValueError(\"Blank or whitespace-only notes are not allowed.\")\n    \n    p = Path(path)\n    current = list_notes(path)\n    current.append(text)\n    \n    with open(p, 'w', encoding='utf-8') as f:\n        json.dump(current, f, ensure_ascii=False)\n    \n    return current\n",
+            "test_acceptance.py": "import unittest,tempfile,json,subprocess,sys\nfrom pathlib import Path\nfrom notes import list_notes,add_note\nclass Acceptance(unittest.TestCase):\n def test_persistence(self):\n  with tempfile.TemporaryDirectory() as d:\n   p=Path(d)/'notes.json'\n   self.assertEqual(list_notes(p),[])\n   self.assertEqual(add_note(p,'first'),['first'])\n   self.assertEqual(add_note(p,'caf\u00e9'),['first','caf\u00e9'])\n   self.assertEqual(list_notes(p),['first','caf\u00e9'])\n   with self.assertRaises(ValueError):add_note(p,'  ')\n   r=subprocess.run([sys.executable,'main.py','list',str(p)],capture_output=True,text=True,timeout=5)\n   self.assertEqual(r.returncode,0,r.stderr)\n   self.assertEqual(json.loads(r.stdout),['first','caf\u00e9'])\n   p.write_text('not JSON')\n   r=subprocess.run([sys.executable,'main.py','list',str(p)],capture_output=True,text=True,timeout=5)\n   self.assertNotEqual(r.returncode,0)\n",
+            "main.py": "import sys\nimport json\nfrom pathlib import Path\nfrom notes import list_notes, add_note\n\ndef main():\n    if len(sys.argv) < 2:\n        print(\"Usage: python main.py <command> <file> [text]\", file=sys.stderr)\n        sys.exit(1)\n\n    command = sys.argv[1]\n    file_path = sys.argv[2]\n\n    if command == \"add\":\n        if len(sys.argv) < 4:\n            print(\"Error: add command requires a text argument.\", file=sys.stderr)\n            sys.exit(1)\n        text = sys.argv[3]\n        try:\n            result = add_note(file_path, text)\n            print(json.dumps(result))\n        except ValueError as e:\n            print(f\"Error: {e}\", file=sys.stderr)\n            sys.exit(1)\n        except Exception as e:\n            print(f\"Error: {e}\", file=sys.stderr)\n            sys.exit(1)\n\n    elif command == \"list\":\n        try:\n            notes = list_notes(file_path)\n            print(json.dumps(notes))\n        except Exception as e:\n            print(f\"Error: {e}\", file=sys.stderr)\n            sys.exit(1)\n\n    else:\n        print(f\"Error: Unknown command '{command}'.\", file=sys.stderr)\n        sys.exit(1)\n\nif __name__ == \"__main__\":\n    main()"
+          },
+          "file_role": "support",
+          "request_contract": {
+            "deliverable": "application",
+            "requirements": [
+              "notes.py exports list_notes(path) returning [] for absent file, and add_note(path, text) appending nonblank notes to UTF-8 JSON array, raising ValueError for blank/whitespace-only text.",
+              "main.py imports notes functions, accepts 'add FILE TEXT' or 'list FILE' arguments, prints list as JSON, exits nonzero for invalid requests or malformed JSON.",
+              "Preserve test_acceptance.py and unrelated.py. Create only main.py and notes.py."
+            ],
+            "entrypoint": "main.py"
+          },
+          "build_contract": {
+            "entrypoint": "main.py",
+            "role": "support",
+            "requirements": {
+              "NORMAL": [
+                "Create a runnable Python notes CLI application using only main.py and notes.py and the standard library.",
+                "Read test_acceptance.py as supplied independent acceptance evidence.",
+                "Preserve it and all other existing files.",
+                "Create only the two implementation files."
+              ],
+              "INVALID_INPUT": [
+                "Blank or whitespace-only notes raise ValueError.",
+                "main.py imports these functions, accepts add FILE TEXT or list FILE, prints the resulting list as JSON and exits nonzero for invalid requests or malformed stored JSON."
+              ],
+              "ERROR": [
+                "Blank or whitespace-only notes raise ValueError.",
+                "main.py imports these functions, accepts add FILE TEXT or list FILE, prints the resulting list as JSON and exits nonzero for invalid requests or malformed stored JSON."
+              ],
+              "OUTPUT": [
+                "notes.py exports list_notes(path), returning [] for an absent file, and add_note(path, text), appending a nonblank note to a UTF-8 JSON array without losing earlier notes and returning the updated list.",
+                "main.py imports these functions, accepts add FILE TEXT or list FILE, prints the resulting list as JSON and exits nonzero for invalid requests or malformed stored JSON."
+              ],
+              "PERSISTENCE": [
+                "notes.py exports list_notes(path), returning [] for an absent file, and add_note(path, text), appending a nonblank note to a UTF-8 JSON array without losing earlier notes and returning the updated list.",
+                "main.py imports these functions, accepts add FILE TEXT or list FILE, prints the resulting list as JSON and exits nonzero for invalid requests or malformed stored JSON."
+              ],
+              "PRESERVATION": [],
+              "ENTRYPOINT": [
+                "main.py"
+              ],
+              "FILE": [
+                "notes.py"
+              ],
+              "INTERFACE": [],
+              "ACCEPTANCE": [
+                {
+                  "kind": "file",
+                  "file": "notes.py",
+                  "evidence": "notes.py"
+                }
+              ]
+            },
+            "acceptance_checks": [
+              {
+                "kind": "file",
+                "file": "notes.py",
+                "evidence": "notes.py"
+              }
+            ],
+            "neighbor_interfaces": [],
+            "error_behavior": [
+              "Blank or whitespace-only notes raise ValueError.",
+              "main.py imports these functions, accepts add FILE TEXT or list FILE, prints the resulting list as JSON and exits nonzero for invalid requests or malformed stored JSON."
+            ],
+            "preservation_rules": {}
+          },
+          "repair_validation": {
+            "stdout": "",
+            "stderr": "test_persistence (test_acceptance.Acceptance.test_persistence) ... FAIL\nINDEPENDENT_TEST_FAILURE={\"kind\": \"independent_test\", \"test\": \"test_acceptance.Acceptance.test_persistence\", \"passed\": false, \"frames\": [{\"file\": \"test_acceptance.py\", \"line\": 18, \"observed_inputs\": {\"d\": \"/output/tmp_s4l9p3b\", \"r\": {\"args\": [\"/usr/local/bin/python\", \"main.py\", \"list\", \"/output/tmp_s4l9p3b/notes.json\"], \"returncode\": 0, \"stdout\": \"[]\\n\", \"stderr\": \"\"}}, \"assertion_context\": \"   self.assertEqual(json.loads(r.stdout),['first','caf\\u00e9'])\\n   p.write_text('not JSON')\\n   r=subprocess.run([sys.executable,'main.py','list',str(p)],capture_output=True,text=True,timeout=5)\\n   self.assertNotEqual(r.returncode,0)\"}], \"affected_files\": [\"main.py\", \"notes.py\"], \"error\": \"0 == 0\"}\n\n======================================================================\nFAIL: test_persistence (test_acceptance.Acceptance.test_persistence)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 18, in test_persistence\n    self.assertNotEqual(r.returncode,0)\nAssertionError: 0 == 0\n\n----------------------------------------------------------------------\nRan 1 test in 0.081s\n\nFAILED (failures=1)\n",
+            "checks": {
+              "container_executed": true,
+              "tests_passed": false,
+              "target_committed": false
+            },
+            "exit_code": 1,
+            "diff": "--- a/notes.py\n+++ b/notes.py\n@@ -0,0 +1,30 @@\n+import json\n+from pathlib import Path\n+\n+def list_notes(path):\n+    \"\"\"Return the list of notes stored at path, or [] if the file is absent or invalid.\"\"\"\n+    p = Path(path)\n+    if not p.exists():\n+        return []\n+    try:\n+        with open(p, 'r', encoding='utf-8') as f:\n+            data = json.load(f)\n+        if not isinstance(data, list):\n+            return []\n+        return data\n+    except (json.JSONDecodeError, ValueError):\n+        return []\n+\n+def add_note(path, text):\n+    \"\"\"Append a non-blank note to the JSON list at path. Raises ValueError if text is blank.\"\"\"\n+    if not text or text.isspace():\n+        raise ValueError(\"Blank or whitespace-only notes are not allowed.\")\n+    \n+    p = Path(path)\n+    current = list_notes(path)\n+    current.append(text)\n+    \n+    with open(p, 'w', encoding='utf-8') as f:\n+        json.dump(current, f, ensure_ascii=False)\n+    \n+    return current\n--- a/main.py\n+++ b/main.py\n@@ -0,0 +1,42 @@\n+import sys\n+import json\n+from pathlib import Path\n+from notes import list_notes, add_note\n+\n+def main():\n+    if len(sys.argv) < 2:\n+        print(\"Usage: python main.py <command> <file> [text]\", file=sys.stderr)\n+        sys.exit(1)\n+\n+    command = sys.argv[1]\n+    file_path = sys.argv[2]\n+\n+    if command == \"add\":\n+        if len(sys.argv) < 4:\n+            print(\"Error: add command requires a text argument.\", file=sys.stderr)\n+            sys.exit(1)\n+        text = sys.argv[3]\n+        try:\n+            result = add_note(file_path, text)\n+            print(json.dumps(result))\n+        except ValueError as e:\n+            print(f\"Error: {e}\", file=sys.stderr)\n+            sys.exit(1)\n+        except Exception as e:\n+            print(f\"Error: {e}\", file=sys.stderr)\n+            sys.exit(1)\n+\n+    elif command == \"list\":\n+        try:\n+            notes = list_notes(file_path)\n+            print(json.dumps(notes))\n+        except Exception as e:\n+            print(f\"Error: {e}\", file=sys.stderr)\n+            sys.exit(1)\n+\n+    else:\n+        print(f\"Error: Unknown command '{command}'.\", file=sys.stderr)\n+        sys.exit(1)\n+\n+if __name__ == \"__main__\":\n+    main()\n\\ No newline at end of file\n",
+            "previous_repair_attempt": true,
+            "failed_checks": [
+              {
+                "kind": "file",
+                "file": "main.py",
+                "evidence": "main.py",
+                "passed": true
+              },
+              {
+                "kind": "file",
+                "file": "notes.py",
+                "evidence": "notes.py",
+                "passed": true
+              },
+              {
+                "kind": "independent_test",
+                "test": "test_acceptance.Acceptance.test_persistence",
+                "passed": false,
+                "frames": [
+                  {
+                    "file": "test_acceptance.py",
+                    "line": 18,
+                    "observed_inputs": {
+                      "d": "/output/tmp_s4l9p3b",
+                      "r": {
+                        "args": [
+                          "/usr/local/bin/python",
+                          "main.py",
+                          "list",
+                          "/output/tmp_s4l9p3b/notes.json"
+                        ],
+                        "returncode": 0,
+                        "stdout": "[]\n",
+                        "stderr": ""
+                      }
+                    },
+                    "assertion_context": "   self.assertEqual(json.loads(r.stdout),['first','caf\u00e9'])\n   p.write_text('not JSON')\n   r=subprocess.run([sys.executable,'main.py','list',str(p)],capture_output=True,text=True,timeout=5)\n   self.assertNotEqual(r.returncode,0)"
+                  }
+                ],
+                "affected_files": [
+                  "main.py",
+                  "notes.py"
+                ],
+                "error": "0 == 0"
+              }
+            ]
+          },
+          "task": "Create a runnable Python notes CLI application using only main.py and notes.py and the standard library. notes.py exports list_notes(path), returning [] for an absent file, and add_note(path, text), appending a nonblank note to a UTF-8 JSON array without losing earlier notes and returning the updated list. Blank or whitespace-only notes raise ValueError. main.py imports these functions, accepts add FILE TEXT or list FILE, prints the resulting list as JSON and exits nonzero for invalid requests or malformed stored JSON. Read test_acceptance.py as supplied independent acceptance evidence. Preserve it and all other existing files. Create only the two implementation files.",
+          "current_request": "Create a runnable Python notes CLI application using only main.py and notes.py and the standard library. notes.py exports list_notes(path), returning [] for an absent file, and add_note(path, text), appending a nonblank note to a UTF-8 JSON array without losing earlier notes and returning the updated list. Blank or whitespace-only notes raise ValueError. main.py imports these functions, accepts add FILE TEXT or list FILE, prints the resulting list as JSON and exits nonzero for invalid requests or malformed stored JSON. Read test_acceptance.py as supplied independent acceptance evidence. Preserve it and all other existing files. Create only the two implementation files."
+        }
+      },
+      {
+        "file": "main.py",
+        "repair": true,
+        "descriptor": {
+          "action": "create",
+          "path": "main.py",
+          "language": "Python",
+          "reason": "Create main.py CLI entrypoint handling add and list commands.",
+          "project_files": [
+            "main.py",
+            "notes.py",
+            "test_acceptance.py",
+            "unrelated.py"
+          ],
+          "project_folders": [],
+          "planned_operations": [
+            {
+              "action": "create",
+              "path": "notes.py"
+            },
+            {
+              "action": "create",
+              "path": "main.py"
+            }
+          ],
+          "file_contents": {
+            "main.py": "import sys\nimport json\nfrom pathlib import Path\nfrom notes import list_notes, add_note\n\ndef main():\n    if len(sys.argv) < 2:\n        print(\"Usage: python main.py <command> <file> [text]\", file=sys.stderr)\n        sys.exit(1)\n\n    command = sys.argv[1]\n    file_path = sys.argv[2]\n\n    if command == \"add\":\n        if len(sys.argv) < 4:\n            print(\"Error: add command requires a text argument.\", file=sys.stderr)\n            sys.exit(1)\n        text = sys.argv[3]\n        try:\n            result = add_note(file_path, text)\n            print(json.dumps(result))\n        except ValueError as e:\n            print(f\"Error: {e}\", file=sys.stderr)\n            sys.exit(1)\n        except Exception as e:\n            print(f\"Error: {e}\", file=sys.stderr)\n            sys.exit(1)\n\n    elif command == \"list\":\n        try:\n            notes = list_notes(file_path)\n            print(json.dumps(notes))\n        except Exception as e:\n            print(f\"Error: {e}\", file=sys.stderr)\n            sys.exit(1)\n\n    else:\n        print(f\"Error: Unknown command '{command}'.\", file=sys.stderr)\n        sys.exit(1)\n\nif __name__ == \"__main__\":\n    main()",
+            "test_acceptance.py": "import unittest,tempfile,json,subprocess,sys\nfrom pathlib import Path\nfrom notes import list_notes,add_note\nclass Acceptance(unittest.TestCase):\n def test_persistence(self):\n  with tempfile.TemporaryDirectory() as d:\n   p=Path(d)/'notes.json'\n   self.assertEqual(list_notes(p),[])\n   self.assertEqual(add_note(p,'first'),['first'])\n   self.assertEqual(add_note(p,'caf\u00e9'),['first','caf\u00e9'])\n   self.assertEqual(list_notes(p),['first','caf\u00e9'])\n   with self.assertRaises(ValueError):add_note(p,'  ')\n   r=subprocess.run([sys.executable,'main.py','list',str(p)],capture_output=True,text=True,timeout=5)\n   self.assertEqual(r.returncode,0,r.stderr)\n   self.assertEqual(json.loads(r.stdout),['first','caf\u00e9'])\n   p.write_text('not JSON')\n   r=subprocess.run([sys.executable,'main.py','list',str(p)],capture_output=True,text=True,timeout=5)\n   self.assertNotEqual(r.returncode,0)\n",
+            "notes.py": "import json\nfrom pathlib import Path\n\ndef list_notes(path):\n    \"\"\"Return the list of notes stored at path, or [] if the file is absent or invalid.\"\"\"\n    p = Path(path)\n    if not p.exists():\n        return []\n    try:\n        with open(p, 'r', encoding='utf-8') as f:\n            data = json.load(f)\n        if not isinstance(data, list):\n            return []\n        return data\n    except (json.JSONDecodeError, ValueError):\n        return []\n\ndef add_note(path, text):\n    \"\"\"Append a non-blank note to the JSON list at path. Raises ValueError if text is blank.\"\"\"\n    if not text or text.isspace():\n        raise ValueError(\"Blank or whitespace-only notes are not allowed.\")\n    \n    p = Path(path)\n    current = list_notes(path)\n    current.append(text)\n    \n    with open(p, 'w', encoding='utf-8') as f:\n        json.dump(current, f, ensure_ascii=False)\n    \n    return current\n"
+          },
+          "file_role": "entrypoint",
+          "request_contract": {
+            "deliverable": "application",
+            "requirements": [
+              "notes.py exports list_notes(path) returning [] for absent file, and add_note(path, text) appending nonblank notes to UTF-8 JSON array, raising ValueError for blank/whitespace-only text.",
+              "main.py imports notes functions, accepts 'add FILE TEXT' or 'list FILE' arguments, prints list as JSON, exits nonzero for invalid requests or malformed JSON.",
+              "Preserve test_acceptance.py and unrelated.py. Create only main.py and notes.py."
+            ],
+            "entrypoint": "main.py"
+          },
+          "build_contract": {
+            "entrypoint": "main.py",
+            "role": "entrypoint",
+            "requirements": {
+              "NORMAL": [
+                "Create a runnable Python notes CLI application using only main.py and notes.py and the standard library.",
+                "Read test_acceptance.py as supplied independent acceptance evidence.",
+                "Preserve it and all other existing files.",
+                "Create only the two implementation files."
+              ],
+              "INVALID_INPUT": [
+                "Blank or whitespace-only notes raise ValueError.",
+                "main.py imports these functions, accepts add FILE TEXT or list FILE, prints the resulting list as JSON and exits nonzero for invalid requests or malformed stored JSON."
+              ],
+              "ERROR": [
+                "Blank or whitespace-only notes raise ValueError.",
+                "main.py imports these functions, accepts add FILE TEXT or list FILE, prints the resulting list as JSON and exits nonzero for invalid requests or malformed stored JSON."
+              ],
+              "OUTPUT": [
+                "notes.py exports list_notes(path), returning [] for an absent file, and add_note(path, text), appending a nonblank note to a UTF-8 JSON array without losing earlier notes and returning the updated list.",
+                "main.py imports these functions, accepts add FILE TEXT or list FILE, prints the resulting list as JSON and exits nonzero for invalid requests or malformed stored JSON."
+              ],
+              "PERSISTENCE": [
+                "notes.py exports list_notes(path), returning [] for an absent file, and add_note(path, text), appending a nonblank note to a UTF-8 JSON array without losing earlier notes and returning the updated list.",
+                "main.py imports these functions, accepts add FILE TEXT or list FILE, prints the resulting list as JSON and exits nonzero for invalid requests or malformed stored JSON."
+              ],
+              "PRESERVATION": [],
+              "ENTRYPOINT": [
+                "main.py"
+              ],
+              "FILE": [
+                "main.py"
+              ],
+              "INTERFACE": [],
+              "ACCEPTANCE": [
+                {
+                  "kind": "file",
+                  "file": "main.py",
+                  "evidence": "main.py"
+                }
+              ]
+            },
+            "acceptance_checks": [
+              {
+                "kind": "file",
+                "file": "main.py",
+                "evidence": "main.py"
+              }
+            ],
+            "neighbor_interfaces": [],
+            "error_behavior": [
+              "Blank or whitespace-only notes raise ValueError.",
+              "main.py imports these functions, accepts add FILE TEXT or list FILE, prints the resulting list as JSON and exits nonzero for invalid requests or malformed stored JSON."
+            ],
+            "preservation_rules": {}
+          },
+          "repair_validation": {
+            "stdout": "",
+            "stderr": "test_persistence (test_acceptance.Acceptance.test_persistence) ... FAIL\nINDEPENDENT_TEST_FAILURE={\"kind\": \"independent_test\", \"test\": \"test_acceptance.Acceptance.test_persistence\", \"passed\": false, \"frames\": [{\"file\": \"test_acceptance.py\", \"line\": 18, \"observed_inputs\": {\"d\": \"/output/tmp_s4l9p3b\", \"r\": {\"args\": [\"/usr/local/bin/python\", \"main.py\", \"list\", \"/output/tmp_s4l9p3b/notes.json\"], \"returncode\": 0, \"stdout\": \"[]\\n\", \"stderr\": \"\"}}, \"assertion_context\": \"   self.assertEqual(json.loads(r.stdout),['first','caf\\u00e9'])\\n   p.write_text('not JSON')\\n   r=subprocess.run([sys.executable,'main.py','list',str(p)],capture_output=True,text=True,timeout=5)\\n   self.assertNotEqual(r.returncode,0)\"}], \"affected_files\": [\"main.py\", \"notes.py\"], \"error\": \"0 == 0\"}\n\n======================================================================\nFAIL: test_persistence (test_acceptance.Acceptance.test_persistence)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 18, in test_persistence\n    self.assertNotEqual(r.returncode,0)\nAssertionError: 0 == 0\n\n----------------------------------------------------------------------\nRan 1 test in 0.081s\n\nFAILED (failures=1)\n",
+            "checks": {
+              "container_executed": true,
+              "tests_passed": false,
+              "target_committed": false
+            },
+            "exit_code": 1,
+            "diff": "--- a/notes.py\n+++ b/notes.py\n@@ -0,0 +1,30 @@\n+import json\n+from pathlib import Path\n+\n+def list_notes(path):\n+    \"\"\"Return the list of notes stored at path, or [] if the file is absent or invalid.\"\"\"\n+    p = Path(path)\n+    if not p.exists():\n+        return []\n+    try:\n+        with open(p, 'r', encoding='utf-8') as f:\n+            data = json.load(f)\n+        if not isinstance(data, list):\n+            return []\n+        return data\n+    except (json.JSONDecodeError, ValueError):\n+        return []\n+\n+def add_note(path, text):\n+    \"\"\"Append a non-blank note to the JSON list at path. Raises ValueError if text is blank.\"\"\"\n+    if not text or text.isspace():\n+        raise ValueError(\"Blank or whitespace-only notes are not allowed.\")\n+    \n+    p = Path(path)\n+    current = list_notes(path)\n+    current.append(text)\n+    \n+    with open(p, 'w', encoding='utf-8') as f:\n+        json.dump(current, f, ensure_ascii=False)\n+    \n+    return current\n--- a/main.py\n+++ b/main.py\n@@ -0,0 +1,42 @@\n+import sys\n+import json\n+from pathlib import Path\n+from notes import list_notes, add_note\n+\n+def main():\n+    if len(sys.argv) < 2:\n+        print(\"Usage: python main.py <command> <file> [text]\", file=sys.stderr)\n+        sys.exit(1)\n+\n+    command = sys.argv[1]\n+    file_path = sys.argv[2]\n+\n+    if command == \"add\":\n+        if len(sys.argv) < 4:\n+            print(\"Error: add command requires a text argument.\", file=sys.stderr)\n+            sys.exit(1)\n+        text = sys.argv[3]\n+        try:\n+            result = add_note(file_path, text)\n+            print(json.dumps(result))\n+        except ValueError as e:\n+            print(f\"Error: {e}\", file=sys.stderr)\n+            sys.exit(1)\n+        except Exception as e:\n+            print(f\"Error: {e}\", file=sys.stderr)\n+            sys.exit(1)\n+\n+    elif command == \"list\":\n+        try:\n+            notes = list_notes(file_path)\n+            print(json.dumps(notes))\n+        except Exception as e:\n+            print(f\"Error: {e}\", file=sys.stderr)\n+            sys.exit(1)\n+\n+    else:\n+        print(f\"Error: Unknown command '{command}'.\", file=sys.stderr)\n+        sys.exit(1)\n+\n+if __name__ == \"__main__\":\n+    main()\n\\ No newline at end of file\n",
+            "previous_repair_attempt": true,
+            "failed_checks": [
+              {
+                "kind": "file",
+                "file": "main.py",
+                "evidence": "main.py",
+                "passed": true
+              },
+              {
+                "kind": "file",
+                "file": "notes.py",
+                "evidence": "notes.py",
+                "passed": true
+              },
+              {
+                "kind": "independent_test",
+                "test": "test_acceptance.Acceptance.test_persistence",
+                "passed": false,
+                "frames": [
+                  {
+                    "file": "test_acceptance.py",
+                    "line": 18,
+                    "observed_inputs": {
+                      "d": "/output/tmp_s4l9p3b",
+                      "r": {
+                        "args": [
+                          "/usr/local/bin/python",
+                          "main.py",
+                          "list",
+                          "/output/tmp_s4l9p3b/notes.json"
+                        ],
+                        "returncode": 0,
+                        "stdout": "[]\n",
+                        "stderr": ""
+                      }
+                    },
+                    "assertion_context": "   self.assertEqual(json.loads(r.stdout),['first','caf\u00e9'])\n   p.write_text('not JSON')\n   r=subprocess.run([sys.executable,'main.py','list',str(p)],capture_output=True,text=True,timeout=5)\n   self.assertNotEqual(r.returncode,0)"
+                  }
+                ],
+                "affected_files": [
+                  "main.py",
+                  "notes.py"
+                ],
+                "error": "0 == 0"
+              }
+            ]
+          },
+          "task": "Create a runnable Python notes CLI application using only main.py and notes.py and the standard library. notes.py exports list_notes(path), returning [] for an absent file, and add_note(path, text), appending a nonblank note to a UTF-8 JSON array without losing earlier notes and returning the updated list. Blank or whitespace-only notes raise ValueError. main.py imports these functions, accepts add FILE TEXT or list FILE, prints the resulting list as JSON and exits nonzero for invalid requests or malformed stored JSON. Read test_acceptance.py as supplied independent acceptance evidence. Preserve it and all other existing files. Create only the two implementation files.",
+          "current_request": "Create a runnable Python notes CLI application using only main.py and notes.py and the standard library. notes.py exports list_notes(path), returning [] for an absent file, and add_note(path, text), appending a nonblank note to a UTF-8 JSON array without losing earlier notes and returning the updated list. Blank or whitespace-only notes raise ValueError. main.py imports these functions, accepts add FILE TEXT or list FILE, prints the resulting list as JSON and exits nonzero for invalid requests or malformed stored JSON. Read test_acceptance.py as supplied independent acceptance evidence. Preserve it and all other existing files. Create only the two implementation files."
+        }
+      }
+    ],
+    "changes": [
+      {
+        "action": "create",
+        "path": "notes.py",
+        "before": null,
+        "after": "import json\nfrom pathlib import Path\n\ndef list_notes(path):\n    \"\"\"Return the list of notes stored at path, or [] if the file is absent or invalid.\"\"\"\n    p = Path(path)\n    if not p.exists():\n        return []\n    try:\n        with open(p, 'r', encoding='utf-8') as f:\n            data = json.load(f)\n        if not isinstance(data, list):\n            return []\n        return data\n    except (json.JSONDecodeError, ValueError):\n        return []\n\ndef add_note(path, text):\n    \"\"\"Append a non-blank note to the JSON list at path. Raises ValueError if text is blank.\"\"\"\n    if not text or text.isspace():\n        raise ValueError(\"Blank or whitespace-only notes are not allowed.\")\n    \n    p = Path(path)\n    current = list_notes(path)\n    current.append(text)\n    \n    with open(p, 'w', encoding='utf-8') as f:\n        json.dump(current, f, ensure_ascii=False)\n    \n    return current\n"
+      },
+      {
+        "action": "create",
+        "path": "main.py",
+        "before": null,
+        "after": "import sys\nimport json\nfrom pathlib import Path\nfrom notes import list_notes, add_note\n\ndef main():\n    if len(sys.argv) < 2:\n        print(\"Usage: python main.py <command> <file> [text]\", file=sys.stderr)\n        sys.exit(1)\n\n    command = sys.argv[1]\n    file_path = sys.argv[2]\n\n    if command == \"add\":\n        if len(sys.argv) < 4:\n            print(\"Error: add command requires a text argument.\", file=sys.stderr)\n            sys.exit(1)\n        text = sys.argv[3]\n        try:\n            result = add_note(file_path, text)\n            print(json.dumps(result))\n        except ValueError as e:\n            print(f\"Error: {e}\", file=sys.stderr)\n            sys.exit(1)\n        except Exception as e:\n            print(f\"Error: {e}\", file=sys.stderr)\n            sys.exit(1)\n\n    elif command == \"list\":\n        try:\n            notes = list_notes(file_path)\n            print(json.dumps(notes))\n        except Exception as e:\n            print(f\"Error: {e}\", file=sys.stderr)\n            sys.exit(1)\n\n    else:\n        print(f\"Error: Unknown command '{command}'.\", file=sys.stderr)\n        sys.exit(1)\n\nif __name__ == \"__main__\":\n    main()"
+      }
+    ],
+    "original_content": "",
+    "diff": "--- a/notes.py\n+++ b/notes.py\n@@ -0,0 +1,30 @@\n+import json\n+from pathlib import Path\n+\n+def list_notes(path):\n+    \"\"\"Return the list of notes stored at path, or [] if the file is absent or invalid.\"\"\"\n+    p = Path(path)\n+    if not p.exists():\n+        return []\n+    try:\n+        with open(p, 'r', encoding='utf-8') as f:\n+            data = json.load(f)\n+        if not isinstance(data, list):\n+            return []\n+        return data\n+    except (json.JSONDecodeError, ValueError):\n+        return []\n+\n+def add_note(path, text):\n+    \"\"\"Append a non-blank note to the JSON list at path. Raises ValueError if text is blank.\"\"\"\n+    if not text or text.isspace():\n+        raise ValueError(\"Blank or whitespace-only notes are not allowed.\")\n+    \n+    p = Path(path)\n+    current = list_notes(path)\n+    current.append(text)\n+    \n+    with open(p, 'w', encoding='utf-8') as f:\n+        json.dump(current, f, ensure_ascii=False)\n+    \n+    return current\n--- a/main.py\n+++ b/main.py\n@@ -0,0 +1,42 @@\n+import sys\n+import json\n+from pathlib import Path\n+from notes import list_notes, add_note\n+\n+def main():\n+    if len(sys.argv) < 2:\n+        print(\"Usage: python main.py <command> <file> [text]\", file=sys.stderr)\n+        sys.exit(1)\n+\n+    command = sys.argv[1]\n+    file_path = sys.argv[2]\n+\n+    if command == \"add\":\n+        if len(sys.argv) < 4:\n+            print(\"Error: add command requires a text argument.\", file=sys.stderr)\n+            sys.exit(1)\n+        text = sys.argv[3]\n+        try:\n+            result = add_note(file_path, text)\n+            print(json.dumps(result))\n+        except ValueError as e:\n+            print(f\"Error: {e}\", file=sys.stderr)\n+            sys.exit(1)\n+        except Exception as e:\n+            print(f\"Error: {e}\", file=sys.stderr)\n+            sys.exit(1)\n+\n+    elif command == \"list\":\n+        try:\n+            notes = list_notes(file_path)\n+            print(json.dumps(notes))\n+        except Exception as e:\n+            print(f\"Error: {e}\", file=sys.stderr)\n+            sys.exit(1)\n+\n+    else:\n+        print(f\"Error: Unknown command '{command}'.\", file=sys.stderr)\n+        sys.exit(1)\n+\n+if __name__ == \"__main__\":\n+    main()\n\\ No newline at end of file\n",
+    "checks": {
+      "container_executed": true,
+      "tests_passed": false,
+      "target_committed": false
+    },
+    "events": [
+      {
+        "event": "PLAN_REUSED",
+        "plan_sha256": "f9a6821ede01697f805955fb39d606a825d5587c5e225932ebefed86b1bdaa83"
+      },
+      {
+        "event": "planning",
+        "files": [
+          "test_acceptance.py",
+          "unrelated.py"
+        ]
+      },
+      {
+        "event": "planned_changes",
+        "files": [
+          "notes.py",
+          "main.py"
+        ]
+      }
+    ],
+    "attempts": 1,
+    "stdout": "",
+    "stderr": "test_persistence (test_acceptance.Acceptance.test_persistence) ... FAIL\nINDEPENDENT_TEST_FAILURE={\"kind\": \"independent_test\", \"test\": \"test_acceptance.Acceptance.test_persistence\", \"passed\": false, \"frames\": [{\"file\": \"test_acceptance.py\", \"line\": 18, \"observed_inputs\": {\"d\": \"/output/tmpvcl8ry08\", \"r\": {\"args\": [\"/usr/local/bin/python\", \"main.py\", \"list\", \"/output/tmpvcl8ry08/notes.json\"], \"returncode\": 0, \"stdout\": \"[]\\n\", \"stderr\": \"\"}}, \"assertion_context\": \"   self.assertEqual(json.loads(r.stdout),['first','caf\\u00e9'])\\n   p.write_text('not JSON')\\n   r=subprocess.run([sys.executable,'main.py','list',str(p)],capture_output=True,text=True,timeout=5)\\n   self.assertNotEqual(r.returncode,0)\"}], \"affected_files\": [\"main.py\", \"notes.py\"], \"error\": \"0 == 0\"}\n\n======================================================================\nFAIL: test_persistence (test_acceptance.Acceptance.test_persistence)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 18, in test_persistence\n    self.assertNotEqual(r.returncode,0)\nAssertionError: 0 == 0\n\n----------------------------------------------------------------------\nRan 1 test in 0.071s\n\nFAILED (failures=1)\n",
+    "output_files": [],
+    "routing": {
+      "capability": "code",
+      "model": "sovereign-text",
+      "reason": "Project-wide local coding task"
+    },
+    "sandbox": {
+      "backend": "docker",
+      "image_id": "sha256:6f6ac11cda347a185454338dee35d77003e066579a3261b52b7c6ff1048c8573"
+    },
+    "contract_results": [
+      {
+        "kind": "file",
+        "file": "main.py",
+        "evidence": "main.py",
+        "passed": true
+      },
+      {
+        "kind": "file",
+        "file": "notes.py",
+        "evidence": "notes.py",
+        "passed": true
+      },
+      {
+        "kind": "independent_test",
+        "test": "test_acceptance.Acceptance.test_persistence",
+        "passed": false,
+        "frames": [
+          {
+            "file": "test_acceptance.py",
+            "line": 18,
+            "observed_inputs": {
+              "d": "/output/tmpvcl8ry08",
+              "r": {
+                "args": [
+                  "/usr/local/bin/python",
+                  "main.py",
+                  "list",
+                  "/output/tmpvcl8ry08/notes.json"
+                ],
+                "returncode": 0,
+                "stdout": "[]\n",
+                "stderr": ""
+              }
+            },
+            "assertion_context": "   self.assertEqual(json.loads(r.stdout),['first','caf\u00e9'])\n   p.write_text('not JSON')\n   r=subprocess.run([sys.executable,'main.py','list',str(p)],capture_output=True,text=True,timeout=5)\n   self.assertNotEqual(r.returncode,0)"
+          }
+        ],
+        "affected_files": [
+          "main.py",
+          "notes.py"
+        ],
+        "error": "0 == 0"
+      }
+    ],
+    "goal_checks_independent": true,
+    "validation_kind": "tests",
+    "acceptance_coverage": "literal obligations only; other behavior requires independent acceptance tests",
+    "validation_exit_code": 1
+  }
+}

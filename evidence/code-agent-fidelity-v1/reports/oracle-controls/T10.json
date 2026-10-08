@@ -1,0 +1,30 @@
+{
+  "task_id": "T10",
+  "negative": {
+    "exit_code": 1,
+    "container_executed": true,
+    "stdout": "ORACLE_COUNT=5\n",
+    "stderr": "test_cancel (test_acceptance.Check.test_cancel) ... FAIL\ntest_invalid_atomic (test_acceptance.Check.test_invalid_atomic) ... FAIL\ntest_overflow_atomic (test_acceptance.Check.test_overflow_atomic) ... FAIL\ntest_reset_preserved (test_acceptance.Check.test_reset_preserved) ... ok\ntest_shared_state (test_acceptance.Check.test_shared_state) ... FAIL\n\n======================================================================\nFAIL: test_cancel (test_acceptance.Check.test_cancel)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 17, in test_cancel\n    token=service.reserve('Ada',2,5);service.cancel(token);self.assertEqual(summary.summary(),{'count':0,'seats':0})\n                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: {} != {'count': 0, 'seats': 0}\n- {}\n+ {'count': 0, 'seats': 0}\n\n======================================================================\nFAIL: test_invalid_atomic (test_acceptance.Check.test_invalid_atomic)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 14, in test_invalid_atomic\n    with self.assertRaises(ValueError):service.reserve(name,seats,5)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ValueError not raised\n\n======================================================================\nFAIL: test_overflow_atomic (test_acceptance.Check.test_overflow_atomic)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 10, in test_overflow_atomic\n    with self.assertRaises(ValueError):service.reserve('Lin',2,5)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ValueError not raised\n\n======================================================================\nFAIL: test_shared_state (test_acceptance.Check.test_shared_state)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 7, in test_shared_state\n    a=service.reserve('Ada',2,6);b=service.reserve('Lin',3,6);self.assertIsInstance(a,int);self.assertNotEqual(a,b);self.assertEqual(summary.summary(),{'count':2,'seats':5});self.assertIn(a,store.reservations)\n                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: {} is not an instance of <class 'int'>\n\n----------------------------------------------------------------------\nRan 5 tests in 0.002s\n\nFAILED (failures=4)\n",
+    "properties": {
+      "test_acceptance.Check.test_cancel.test_cancel": false,
+      "test_acceptance.Check.test_invalid_atomic.test_invalid_atomic": false,
+      "test_acceptance.Check.test_overflow_atomic.test_overflow_atomic": false,
+      "test_acceptance.Check.test_reset_preserved.test_reset_preserved": true,
+      "test_acceptance.Check.test_shared_state.test_shared_state": false
+    }
+  },
+  "positive": {
+    "exit_code": 0,
+    "container_executed": true,
+    "stdout": "ORACLE_COUNT=5\n",
+    "stderr": "test_cancel (test_acceptance.Check.test_cancel) ... ok\ntest_invalid_atomic (test_acceptance.Check.test_invalid_atomic) ... ok\ntest_overflow_atomic (test_acceptance.Check.test_overflow_atomic) ... ok\ntest_reset_preserved (test_acceptance.Check.test_reset_preserved) ... ok\ntest_shared_state (test_acceptance.Check.test_shared_state) ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 0.001s\n\nOK\n",
+    "properties": {
+      "test_acceptance.Check.test_cancel.test_cancel": true,
+      "test_acceptance.Check.test_invalid_atomic.test_invalid_atomic": true,
+      "test_acceptance.Check.test_overflow_atomic.test_overflow_atomic": true,
+      "test_acceptance.Check.test_reset_preserved.test_reset_preserved": true,
+      "test_acceptance.Check.test_shared_state.test_shared_state": true
+    }
+  },
+  "control_passed": true
+}

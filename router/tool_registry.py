@@ -29,14 +29,14 @@ def explicit_operation_requested(goal, operation):
     text=re.sub(r"\b(?:do\s+not|don't|don’t|without|never|no)\b[^.;,\n]*",'',text,flags=re.I)
     verbs={
         'project_create':r'create|make|build|start', 'project_delete':r'delete|remove',
-        'file_edit':r'create|write|generate|modify|edit|change|fix|repair|solve|update|replace|implement|add|make|rename|refactor|debug|restore',
+        'file_edit':r'create|build|write|generate|modify|edit|change|fix|repair|solve|update|replace|implement|add|make|rename|refactor|debug|restore',
         'document_create':r'create|crate|write|add|make', 'document_update':r'update|modify|edit|change|rewrite|expand|details?|add|make', 'document_import':r'import|upload|add',
         'document_rename':r'rename', 'document_move':r'move', 'document_copy':r'copy|duplicate',
         'document_delete':r'delete|remove', 'file_delete':r'delete|remove',
         'file_delete_scope':r'delete|remove',
         'document_duplicates':r'find|list|show|check|identify', 'document_deduplicate':r'delete|remove|deduplicate',
         'file_move':r'move|put|place', 'file_copy':r'copy|duplicate', 'folder_create':r'create|add|make|generate|put|move|place',
-        'file_run':r'run|execute|test', 'terminal':r'run|execute',
+        'file_run':r'run|execute|test|(?:start|launch)\s+(?:(?:the|my|this|selected|current|a|an)\s+)?(?:it|app(?:lication)?|project|program|service|server|[\w.-]+\.(?:py|js|java))', 'terminal':r'run|execute',
         'automation_create':r'automate|schedule|repeat|every', 'automation_pause':r'pause|resume|stop',
         'automation_delete':r'delete|remove', 'automation_list':r'list|show|view|what',
     }
@@ -46,8 +46,11 @@ def explicit_operation_requested(goal, operation):
         return False
     if operation in {'project_create','project_delete'}:
         verb = r'(?:create|make|build|start)' if operation == 'project_create' else r'(?:delete|remove)'
-        project_action = re.search(r'\b' + verb + r'\b\s+(?:(?:the|my|a|an|this|selected|named)\s+){0,3}(?:[\w-]+\s+)?\b(?:project|workspace)\b', text, re.I)
-        if not project_action or re.search(r'\b(?:files?|folders?)\b', project_action.group(), re.I):
+        project_action = re.search(r'\b' + verb + r'\b\s+(?:(?:the|my|a|an|this|selected|named)\s+){0,3}(?:[\w-]+\s+){0,4}\b(?:project|workspace)\b', text, re.I)
+        software_action = operation == 'project_create' and re.search(
+            r'\b(?:create|make|build)\b.{0,80}\b(?:application|app|program|service|api|website|cli)\b', text, re.I) and re.search(
+            r'\b(?:python|node|javascript|typescript|java|flask|django|fastapi|express|react|rust|go|http|web|cli)\b', text, re.I)
+        if (not project_action and not software_action) or (project_action and re.search(r'\b(?:files?|folders?)\b', project_action.group(), re.I)):
             return False
     if operation=='file_delete_scope' and not (re.search(r'\b(?:all|every)\b',text,re.I) and re.search(r'\b(?:files?|folders?|project|workspace)\b',text,re.I)):
         return False

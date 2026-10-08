@@ -1,0 +1,46 @@
+{
+  "task_id": "T15",
+  "request": "Edit lifecycle.py value() to return integer 31. Preserve unrelated files. Validate the supplied tests.",
+  "files": {
+    "lifecycle.py": "def value():\n    return 4\n",
+    "keep.txt": "unrelated valuable data\n",
+    "test_acceptance.py": "import unittest,json,subprocess,sys\nfrom pathlib import Path\nimport lifecycle\nclass Check(unittest.TestCase):\n def test_value(self):self.assertEqual(lifecycle.value(),31)\n def test_integer(self):self.assertIsInstance(lifecycle.value(),int)\n"
+  },
+  "mode": "reject",
+  "workspace_id": "984a7f441ec319ccd49d06b4fc8267e0",
+  "initial_revision": "3ce9492e6cdcea2065a3102212c972c1f5c76d2b00f880e2f97bb59c3453a474",
+  "router_proposal": {
+    "original_request": "Edit lifecycle.py value() to return integer 31. Preserve unrelated files. Validate the supplied tests.",
+    "normalized_request": "Edit lifecycle.py value() to return integer 31. Preserve unrelated files. Validate the supplied tests.",
+    "task_type": "EDIT",
+    "complexity": "simple",
+    "worker_role": "code",
+    "steps": [
+      "code"
+    ],
+    "features": {
+      "active_file_present": false,
+      "workspace_available": true,
+      "repository_scope": "none",
+      "estimated_context_size": null,
+      "number_of_files_requested": 1,
+      "visual_input_present": false,
+      "modality": "text",
+      "is_follow_up": false,
+      "explicit_error_present": false,
+      "language_hints": [],
+      "execution_requested": false,
+      "validation_required": true,
+      "mechanical_rename": false,
+      "software_generation": false,
+      "requirements_heavy": false
+    },
+    "reason_codes": [
+      "software_task_features"
+    ],
+    "needs_clarification": false,
+    "mutation_authorized": false
+  },
+  "fixed_worker": "qwen35",
+  "source_suite_hash": "bbea8783929a12035dd58569b807a7e96539f5a1b6e2afcf4c9d278e682add72"
+}

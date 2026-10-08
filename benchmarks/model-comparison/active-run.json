@@ -1,5 +1,5 @@
 {
-  "pid": 28784,
+  "pid": 37572,
   "command": "python experiments/model_compatibility.py --tasks",
   "tranche_tasks": 40,
   "models": 4,
@@ -8,5 +8,6 @@
   "raw_directory": "benchmarks/model-comparison/fixed-40",
   "constraint": "one heavy model; Docker generated-code execution",
   "evidence_repairs_only": true,
-  "python_executable": "C:\\Python314\\python.exe"
+  "python_executable": "C:\\Python314\\python.exe",
+  "evidence_io_version": "evidence-io-v1"
 }

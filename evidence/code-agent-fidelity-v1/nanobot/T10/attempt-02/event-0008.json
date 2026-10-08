@@ -1,0 +1,21 @@
+{
+  "event": "tool",
+  "tool": "read_file",
+  "arguments": {
+    "path": "test_acceptance.py"
+  },
+  "before_revision": "4bac3228bf2fbb10a9594f6c1103ac28e175947f63a6894f64432bc392224d12",
+  "before_diff": "",
+  "result": {
+    "path": "test_acceptance.py",
+    "content": "import unittest,json,subprocess,sys\nfrom pathlib import Path\nimport store,service,summary\nclass Check(unittest.TestCase):\n def setUp(self):store.reset()\n def test_shared_state(self):\n  a=service.reserve('Ada',2,6);b=service.reserve('Lin',3,6);self.assertIsInstance(a,int);self.assertNotEqual(a,b);self.assertEqual(summary.summary(),{'count':2,'seats':5});self.assertIn(a,store.reservations)\n def test_overflow_atomic(self):\n  service.reserve('Ada',4,5);before=dict(store.reservations)\n  with self.assertRaises(ValueError):service.reserve('Lin',2,5)\n  self.assertEqual(store.reservations,before)\n def test_invalid_atomic(self):\n  for name,seats in (('',1),('A',0),('A',-1),('A',True),('A',1.5)):\n   with self.assertRaises(ValueError):service.reserve(name,seats,5)\n  self.assertEqual(store.reservations,{})\n def test_cancel(self):\n  token=service.reserve('Ada',2,5);service.cancel(token);self.assertEqual(summary.summary(),{'count':0,'seats':0})\n  with self.assertRaises(KeyError):service.cancel(token)\n def test_reset_preserved(self):store.reservations[9]={'seats':1};store.reset();self.assertEqual(store.reservations,{})\n",
+    "offset": 0,
+    "next_offset": null,
+    "total_characters": 1121,
+    "content_complete": true,
+    "sha256": "b68b0fd5b417c737c45f2e778815c64beabb43f6e16b9fd720238e06394ee07d"
+  },
+  "latency_seconds": 0.0,
+  "after_revision": "4bac3228bf2fbb10a9594f6c1103ac28e175947f63a6894f64432bc392224d12",
+  "after_diff": ""
+}

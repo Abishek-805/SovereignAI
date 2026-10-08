@@ -50,6 +50,7 @@ def test_alias_only_warm_reuse_requires_verified_profile(registry):
 def test_mismatch_relaunches_only_owned_process(registry):
     with patch.object(registry,'_get_current_alias',return_value='owned'),patch.object(registry,'_owns_server',return_value=True),patch.object(registry,'_runtime_profile_matches',side_effect=[False,True]),patch.object(registry,'kill_server') as kill,patch('router.model_registry.subprocess.Popen') as launch:
         launch.return_value.pid=456
+        launch.return_value.poll.return_value=None
         lease=registry.acquire_lease('text')
         assert lease['switch_required'] is True and lease['model_load_time']>=0
         kill.assert_called_once();launch.assert_called_once()

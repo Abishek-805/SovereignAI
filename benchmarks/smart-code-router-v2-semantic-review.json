@@ -1,0 +1,153 @@
+{
+  "reviewer": "independent semantic review agent",
+  "scope": "V2 development only; original source/request/rubric. No heldout read. Answered/model agreement is not validation.",
+  "reviews": [
+    {
+      "arm": "A",
+      "case_id": "v2-main-001",
+      "status": "PARTIAL",
+      "answer_sha256": "011188ad67318990ae22e6db6fd3d443a862a6082373a444725dddb5cf70b927",
+      "reason": "Correct deltas and example; omits required fewer-than-two returns []. Overclaims arbitrary iterables although slicing is required."
+    },
+    {
+      "arm": "A",
+      "case_id": "v2-main-002",
+      "status": "PASS",
+      "answer_sha256": "38a0509e75a2141a14be2d0f94c6cac5e56af6120a54c0765f3fec846f08e207",
+      "reason": "Correct negative/zero/positive lists and order-preserving example."
+    },
+    {
+      "arm": "A",
+      "case_id": "v2-main-003",
+      "status": "PARTIAL",
+      "answer_sha256": "657241a4ae5e0dc7d562bc8ddefc948e8f616158cf6d1adf72d66b42dd7fadf4",
+      "reason": "Correct last zero-based overwrite example; omits required hashable input constraint."
+    },
+    {
+      "arm": "A",
+      "case_id": "v2-main-004",
+      "status": "PASS",
+      "answer_sha256": "0c7801cd7b86bb6e89244b09eed17dee24a5c7f97824ad53357e25cb77451a4a",
+      "reason": "Correct consecutive-only grouping behavior and example."
+    },
+    {
+      "arm": "A",
+      "case_id": "v2-main-005",
+      "status": "PASS",
+      "answer_sha256": "aa4eb64aec00ce33be6911b1fdd5b9c66ce336205c8a165c58c1d96179223051",
+      "reason": "Correct weighted calculation, both ValueError guards, and example."
+    },
+    {
+      "arm": "A",
+      "case_id": "v2-main-006",
+      "status": "PARTIAL",
+      "answer_sha256": "b37ba7ea24f88e9e9763ed448b99663d91b5b154d04c807d5e81b9e8ccf3d426",
+      "reason": "Correct left-outermost Cartesian example; overclaims all iterables: one-shot right iterator is exhausted after first left."
+    },
+    {
+      "arm": "A",
+      "case_id": "v2-main-007",
+      "status": "PASS",
+      "answer_sha256": "4bf8086b46c02ede9cd207d4f5d3edf9e74064c4952462f2dea7a264d9b2d14e",
+      "reason": "Correct new list, right padding and no truncation behavior."
+    },
+    {
+      "arm": "A",
+      "case_id": "v2-main-008",
+      "status": "FAIL",
+      "answer_sha256": "7b40723389c6a5e61a8012c5132a0d1b89cacfa6d6a0468d1bb2d6e9b05c2d8d",
+      "reason": "Reverses the predicate: source keeps nonmultiples and drops each nth item, but answer claims it keeps multiples and returns [30,60] instead of [10,20,40,50]."
+    },
+    {
+      "arm": "A",
+      "case_id": "v2-main-009",
+      "status": "PARTIAL",
+      "answer_sha256": "f57548c6581fe534049fe4ae20569c141c9edc15835ef03d96db481cac6b7b12",
+      "reason": "Correct whitespace and empty-input behavior; omits first-word tie rule. Example incorrectly says relatively has length9 (actual10), though selected word remains correct."
+    },
+    {
+      "arm": "A",
+      "case_id": "v2-main-010",
+      "status": "PASS",
+      "answer_sha256": "ede5113d06bebad6d123f69b9107f4ed1e53b26e5840c443d2d51235f6a41871",
+      "reason": "Correct one prefix-length slice if present, unchanged text otherwise, with both examples."
+    },
+    {
+      "arm": "A",
+      "case_id": "v2-main-011",
+      "status": "FAIL",
+      "answer_sha256": "de6849be35dd9ce10cb7b05ab959aa1664280b1bee3c2e99ddc2845af8798860",
+      "reason": "Invents dot separator absent from source empty-string join; example first.Name.Last.Name is wrong (actual firstNameLastName)."
+    },
+    {
+      "arm": "A",
+      "case_id": "v2-main-012",
+      "status": "PASS",
+      "answer_sha256": "94d164b671a7ae57c485fab5a0f0625a17d50fc1c8ae5a04df041c80fce20ee7",
+      "reason": "Correct masked prefix/kept tail, nonpositive clamp and zero-keep example."
+    },
+    {
+      "arm": "A",
+      "case_id": "v2-main-013",
+      "status": "PASS",
+      "answer_sha256": "16253658c9cf8c7623fcec080426c73e91300cfaba1969984f2e2084e738de03",
+      "reason": "Correct uppercase whitespace word initials and JDS example."
+    },
+    {
+      "arm": "A",
+      "case_id": "v2-main-014",
+      "status": "PASS",
+      "answer_sha256": "3ac4c9627fec13724d4ced7868565ec917ddef77889375f175a27128b43670a4",
+      "reason": "Correct splitlines, one-based colon-space strings and example."
+    },
+    {
+      "arm": "A",
+      "case_id": "v2-main-015",
+      "status": "FAIL",
+      "answer_sha256": "dbdd2dd08669e8c9a1f519ddc5abac8cd9f6d85fffb2f84ce923e3a0fe45bdb6",
+      "reason": "Example hello world contains l at indices2,3,9, but answer returns [2,3], contradicting every matching position requirement."
+    },
+    {
+      "arm": "A",
+      "case_id": "v2-main-016",
+      "status": "PASS",
+      "answer_sha256": "68d39df22b6dcbfd088c16392c88954b1401e35d920a759360326ae562517c58",
+      "reason": "Correct four ordered replacements and HTML example."
+    },
+    {
+      "arm": "A",
+      "case_id": "v2-main-017",
+      "status": "PASS",
+      "answer_sha256": "b4a7652d696937a11116a9bfbbbafd54172562e634b8a97e7066c80208da9546",
+      "reason": "Correct ASCII0-through9 filtering and order-preserving example."
+    },
+    {
+      "arm": "A",
+      "case_id": "v2-main-018",
+      "status": "PARTIAL",
+      "answer_sha256": "304dfb32152128d67155dc1a7629667a424287a387b671d58e8bf05c30864933",
+      "reason": "Correct longest-common-prefix/empty handling and final fl example, but introduces contradictory speculation that actual min might be flow; it is flight."
+    },
+    {
+      "arm": "A",
+      "case_id": "v2-main-019",
+      "status": "PASS",
+      "answer_sha256": "82283444aa5df98a84570ff27f5e308730785994951bd3e5bf609847bce9f7bc",
+      "reason": "Correct whitespace-word reversal and single-space join example."
+    },
+    {
+      "arm": "A",
+      "case_id": "v2-main-020",
+      "status": "PASS",
+      "answer_sha256": "006c5ec933581f4b7e8b636d717444e80e1142995d4141391d4ae8392eaa3a48",
+      "reason": "Correct seen/result logic, unique duplicate keys and first-duplicate ordering example."
+    },
+    {
+      "arm": "A",
+      "case_id": "v2-main-039",
+      "status": "FAIL",
+      "answer_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "reason": "No answer was emitted (hash is empty text). The ambiguous request asked only to make behavior better; the model attempted a guessed function edit and the verifier rejected it as semantic_uncertainty. It did not ask what behavior the user wanted, so the required NEEDS_INPUT outcome was missed."
+    }
+  ]
+}

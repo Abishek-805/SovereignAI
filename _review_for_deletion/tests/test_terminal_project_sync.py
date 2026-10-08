@@ -57,7 +57,7 @@ def test_terminal_applies_only_successful_manifest(service, monkeypatch, exit_co
     def execute(script, **kwargs):
         compile(script, '<terminal-wrapper>', 'exec')
         assert "Path(directory)==source" in script
-        return SimpleNamespace(exit_code=exit_code, stdout='output', stderr='',
+        return SimpleNamespace(executed=True, exit_code=exit_code, stdout='output', stderr='',
             output_files={'project-sync.json': json.dumps({'changed': {'new.py': encoded(b'print(2)')}, 'deleted': ['old.py']}).encode()})
     monkeypatch.setattr(service, '_verified_coding_sandbox', lambda: SimpleNamespace(execute=execute))
     result = service.execute_terminal(workspace, 'python task.py', Job('terminal'))

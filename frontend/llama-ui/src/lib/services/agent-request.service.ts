@@ -3,13 +3,13 @@ export function agentConversationHistory(
 	turns: ReadonlyArray<{ instruction: string; answer?: string; state: string }>
 ): string[] {
 	return turns
-		.filter((turn) => ['answered', 'completed', 'failed'].includes(turn.state))
+		.filter((turn) => ['answered', 'completed', 'succeeded', 'failed', 'blocked'].includes(turn.state))
 		.slice(-8)
 		.flatMap((turn) => [
 			`User: ${turn.instruction.slice(0, 2000)}`,
 			// Keep conversational context without replaying a whole evidence report
 			// or artifact body as the instruction for the next task.
-			...(turn.state === 'failed' ? ['Assistant: Task failed.'] : turn.answer ? [`Assistant: ${turn.answer.slice(0, 500)}`] : [])
+			...(turn.state === 'failed' ? ['Assistant: Task failed.'] : turn.state === 'blocked' ? ['Assistant: Task blocked.'] : turn.answer ? [`Assistant: ${turn.answer.slice(0, 500)}`] : [])
 		]);
 }
 

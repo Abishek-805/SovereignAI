@@ -1,0 +1,29 @@
+{
+  "attempt": 1,
+  "revision": "7528dbbb0866c4985aeca427087496408b5c4c85876d4560921e8584a5111321",
+  "failure": {
+    "container_executed": true,
+    "exit_code": 0,
+    "stdout": "INDEPENDENT_ORACLE_TEST_COUNT=5\n",
+    "stderr": "test_high (test_acceptance.Check.test_high) ... ok\ntest_inside (test_acceptance.Check.test_inside) ... ok\ntest_invalid (test_acceptance.Check.test_invalid) ... ok\ntest_low (test_acceptance.Check.test_low) ... ok\ntest_preserved (test_acceptance.Check.test_preserved) ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 0.000s\n\nOK\n",
+    "workspace_changes_persisted": false,
+    "note": "Every command uses a fresh snapshot. Write source through write_file/apply_patch, not shell redirection.",
+    "passed": true,
+    "test_count": 5,
+    "entrypoint": "",
+    "independent": true,
+    "basis": "immutable supplied suite; no semantic coverage inferred beyond supplied assertions"
+  },
+  "properties": {
+    "test_acceptance.Check.test_high.test_high": true,
+    "test_acceptance.Check.test_inside.test_inside": true,
+    "test_acceptance.Check.test_invalid.test_invalid": true,
+    "test_acceptance.Check.test_low.test_low": true,
+    "test_acceptance.Check.test_preserved.test_preserved": true
+  },
+  "lost_properties": [],
+  "candidate_diff": "--- a/math_ops.py\n+++ b/math_ops.py\n@@ -1,2 +1,13 @@\n-def multiply(a,b):\n-    return a*b\n+def multiply(a, b):\n+    return a * b\n+\n+\n+def clamp(value, low, high):\n+    if low > high:\n+        raise ValueError(\"low must be less than or equal to high\")\n+    if value < low:\n+        return low\n+    elif value > high:\n+        return high\n+    else:\n+        return value\n",
+  "previous_revision": null,
+  "validation_delta": 4,
+  "rolled_back": false
+}

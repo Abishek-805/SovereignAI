@@ -1,0 +1,7 @@
+{
+  "event": "tool",
+  "tool": "run_tests",
+  "arguments": {},
+  "before_revision": "f6b04432bf71f0945431a41702e91686136da921ae6e18071882802772dcb5b4",
+  "before_diff": "--- a/stats.py\n+++ b/stats.py\n@@ -1,4 +1,6 @@\n def mean(values):\n-    return sum(values)/(len(values)+1)\n+    if not values:\n+        raise ValueError(\"mean() of empty sequence\")\n+    return sum(values)/len(values)\n def tag():\n     return \"stable\"\n"
+}

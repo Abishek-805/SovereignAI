@@ -1,0 +1,9 @@
+{
+  "status": "INCOMPLETE",
+  "stopped": true,
+  "reason": "Missing independently successful baseline values for four registered string parameters",
+  "stage": 1,
+  "t10_replay": false,
+  "stage2": false,
+  "production_changes": []
+}

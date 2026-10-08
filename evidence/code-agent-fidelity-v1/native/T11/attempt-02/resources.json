@@ -1,0 +1,194 @@
+{
+  "samples": [
+    {
+      "unix_time": 1791305312.7710826,
+      "system_used_ram_bytes": 9339478016,
+      "worker_rss_bytes": 1528881152,
+      "gpu_used_mib": 3270
+    },
+    {
+      "unix_time": 1791305314.8738556,
+      "system_used_ram_bytes": 9846919168,
+      "worker_rss_bytes": 1988775936,
+      "gpu_used_mib": 3270
+    },
+    {
+      "unix_time": 1791305316.980954,
+      "system_used_ram_bytes": 9936424960,
+      "worker_rss_bytes": 2095357952,
+      "gpu_used_mib": 3270
+    },
+    {
+      "unix_time": 1791305319.0718396,
+      "system_used_ram_bytes": 10037354496,
+      "worker_rss_bytes": 2201092096,
+      "gpu_used_mib": 3270
+    },
+    {
+      "unix_time": 1791305321.168907,
+      "system_used_ram_bytes": 10447675392,
+      "worker_rss_bytes": 2201092096,
+      "gpu_used_mib": 3270
+    },
+    {
+      "unix_time": 1791305323.278432,
+      "system_used_ram_bytes": 11230461952,
+      "worker_rss_bytes": 2201092096,
+      "gpu_used_mib": 3277
+    },
+    {
+      "unix_time": 1791305325.3795154,
+      "system_used_ram_bytes": 12330237952,
+      "worker_rss_bytes": 2201092096,
+      "gpu_used_mib": 3284
+    },
+    {
+      "unix_time": 1791305327.5356922,
+      "system_used_ram_bytes": 12509761536,
+      "worker_rss_bytes": 2198302720,
+      "gpu_used_mib": 3284
+    },
+    {
+      "unix_time": 1791305329.6600764,
+      "system_used_ram_bytes": 12648890368,
+      "worker_rss_bytes": 2316607488,
+      "gpu_used_mib": 3284
+    },
+    {
+      "unix_time": 1791305331.7555816,
+      "system_used_ram_bytes": 12721414144,
+      "worker_rss_bytes": 2316652544,
+      "gpu_used_mib": 3284
+    },
+    {
+      "unix_time": 1791305333.8750122,
+      "system_used_ram_bytes": 12717776896,
+      "worker_rss_bytes": 2316668928,
+      "gpu_used_mib": 3284
+    },
+    {
+      "unix_time": 1791305335.9769676,
+      "system_used_ram_bytes": 12716580864,
+      "worker_rss_bytes": 2316718080,
+      "gpu_used_mib": 3284
+    },
+    {
+      "unix_time": 1791305338.0863078,
+      "system_used_ram_bytes": 12745895936,
+      "worker_rss_bytes": 2316734464,
+      "gpu_used_mib": 3284
+    },
+    {
+      "unix_time": 1791305340.1905968,
+      "system_used_ram_bytes": 12759326720,
+      "worker_rss_bytes": 2316791808,
+      "gpu_used_mib": 3284
+    },
+    {
+      "unix_time": 1791305342.3083959,
+      "system_used_ram_bytes": 12747685888,
+      "worker_rss_bytes": 2316795904,
+      "gpu_used_mib": 3284
+    },
+    {
+      "unix_time": 1791305344.4276006,
+      "system_used_ram_bytes": 12737695744,
+      "worker_rss_bytes": 2315517952,
+      "gpu_used_mib": 3284
+    },
+    {
+      "unix_time": 1791305346.5435274,
+      "system_used_ram_bytes": 12779601920,
+      "worker_rss_bytes": 2365689856,
+      "gpu_used_mib": 3284
+    },
+    {
+      "unix_time": 1791305348.670668,
+      "system_used_ram_bytes": 12856995840,
+      "worker_rss_bytes": 2422689792,
+      "gpu_used_mib": 3284
+    },
+    {
+      "unix_time": 1791305350.7950833,
+      "system_used_ram_bytes": 12802957312,
+      "worker_rss_bytes": 2422693888,
+      "gpu_used_mib": 3284
+    },
+    {
+      "unix_time": 1791305352.9396107,
+      "system_used_ram_bytes": 12754964480,
+      "worker_rss_bytes": 2422693888,
+      "gpu_used_mib": 3284
+    },
+    {
+      "unix_time": 1791305355.049151,
+      "system_used_ram_bytes": 12768735232,
+      "worker_rss_bytes": 2528186368,
+      "gpu_used_mib": 3284
+    },
+    {
+      "unix_time": 1791305357.1574755,
+      "system_used_ram_bytes": 12821311488,
+      "worker_rss_bytes": 2528161792,
+      "gpu_used_mib": 3284
+    },
+    {
+      "unix_time": 1791305359.3156877,
+      "system_used_ram_bytes": 12939296768,
+      "worker_rss_bytes": 2633678848,
+      "gpu_used_mib": 3284
+    },
+    {
+      "unix_time": 1791305361.414821,
+      "system_used_ram_bytes": 12946317312,
+      "worker_rss_bytes": 2633695232,
+      "gpu_used_mib": 3284
+    },
+    {
+      "unix_time": 1791305363.511513,
+      "system_used_ram_bytes": 12963389440,
+      "worker_rss_bytes": 2633715712,
+      "gpu_used_mib": 3284
+    },
+    {
+      "unix_time": 1791305365.6109328,
+      "system_used_ram_bytes": 12955938816,
+      "worker_rss_bytes": 2633719808,
+      "gpu_used_mib": 3284
+    },
+    {
+      "unix_time": 1791305367.723251,
+      "system_used_ram_bytes": 12956446720,
+      "worker_rss_bytes": 2633740288,
+      "gpu_used_mib": 3284
+    },
+    {
+      "unix_time": 1791305369.8465023,
+      "system_used_ram_bytes": 12945965056,
+      "worker_rss_bytes": 2633768960,
+      "gpu_used_mib": 3284
+    },
+    {
+      "unix_time": 1791305371.9822364,
+      "system_used_ram_bytes": 13069578240,
+      "worker_rss_bytes": 2635026432,
+      "gpu_used_mib": 3284
+    },
+    {
+      "unix_time": 1791305374.1548946,
+      "system_used_ram_bytes": 12986703872,
+      "worker_rss_bytes": 2634022912,
+      "gpu_used_mib": 3284
+    },
+    {
+      "unix_time": 1791305374.2760599,
+      "system_used_ram_bytes": 12984586240,
+      "worker_rss_bytes": 2634022912,
+      "gpu_used_mib": 3284
+    }
+  ],
+  "sampling_interval_seconds": 2,
+  "worker_peak_rss_bytes": 2635026432,
+  "gpu_peak_used_mib": 3284,
+  "gpu_is_device_total_not_process_allocation": true
+}

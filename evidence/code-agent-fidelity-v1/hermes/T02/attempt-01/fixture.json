@@ -1,0 +1,47 @@
+{
+  "task_id": "T02",
+  "request": "Rename read_number to load_number across numbers_io.py and caller.py. Update imports/calls, preserve behavior and unrelated files.",
+  "files": {
+    "numbers_io.py": "def read_number():\n    return 23\n",
+    "caller.py": "from numbers_io import read_number\nprint(read_number())\n",
+    "keep.txt": "unrelated valuable data\n",
+    "test_acceptance.py": "import unittest,json,subprocess,sys\nfrom pathlib import Path\nimport numbers_io\nclass Check(unittest.TestCase):\n def test_new_symbol(self):self.assertEqual(numbers_io.load_number(),23)\n def test_old_removed(self):self.assertFalse(hasattr(numbers_io,'read_number'))\n def test_caller(self):self.assertEqual(subprocess.check_output([sys.executable,'caller.py'],text=True).strip(),'23')\n"
+  },
+  "mode": "accept",
+  "workspace_id": "24d9b674fe53ddd089e979643786e6ac",
+  "initial_revision": "ee90388801ed635678b558ee5346e9cb1908c21004946525a0e6f975ef7b6c7a",
+  "router_proposal": {
+    "original_request": "Rename read_number to load_number across numbers_io.py and caller.py. Update imports/calls, preserve behavior and unrelated files.",
+    "normalized_request": "Rename read_number to load_number across numbers_io.py and caller.py. Update imports/calls, preserve behavior and unrelated files.",
+    "task_type": "MULTI_FILE_CHANGE",
+    "complexity": "simple",
+    "worker_role": "code",
+    "steps": [
+      "code"
+    ],
+    "features": {
+      "active_file_present": false,
+      "workspace_available": true,
+      "repository_scope": "none",
+      "estimated_context_size": null,
+      "number_of_files_requested": 2,
+      "visual_input_present": false,
+      "modality": "text",
+      "is_follow_up": false,
+      "explicit_error_present": false,
+      "language_hints": [],
+      "execution_requested": false,
+      "validation_required": false,
+      "mechanical_rename": true,
+      "software_generation": false,
+      "requirements_heavy": false
+    },
+    "reason_codes": [
+      "software_task_features"
+    ],
+    "needs_clarification": false,
+    "mutation_authorized": false
+  },
+  "fixed_worker": "qwen35",
+  "source_suite_hash": "bbea8783929a12035dd58569b807a7e96539f5a1b6e2afcf4c9d278e682add72"
+}

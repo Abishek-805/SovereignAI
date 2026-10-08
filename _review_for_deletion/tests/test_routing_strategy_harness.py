@@ -7,7 +7,7 @@ import pytest
 
 
 def harness():
-    path=Path(__file__).resolve().parents[1]/'benchmarks/routing-strategy-comparison.py'
+    path=Path(__file__).resolve().parents[2]/'benchmarks/routing-strategy-comparison.py'
     spec=importlib.util.spec_from_file_location('strategy_harness',path)
     module=importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)

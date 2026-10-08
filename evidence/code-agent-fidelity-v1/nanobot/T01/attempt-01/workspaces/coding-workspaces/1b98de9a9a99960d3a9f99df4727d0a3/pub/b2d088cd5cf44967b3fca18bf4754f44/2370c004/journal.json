@@ -1,0 +1,19 @@
+{
+  "conflicts": [],
+  "entries": [
+    {
+      "action": "edit",
+      "backup": "backups/0.bin",
+      "before_hash": "75ae30a71d3d58bd5c4aeea242157fe538093dc61107ed9ab0fd9691c7bb95bf",
+      "path": "names.py",
+      "staged_hash": "2ab80e037f249e07db172b99815028dac5e9dd50f207b1450c43f46f59f1fceb"
+    }
+  ],
+  "operation": "accept",
+  "project_id": "1b98de9a9a99960d3a9f99df4727d0a3",
+  "project_root": "C:\\Users\\ashek\\Desktop\\SovereignAI\\evidence\\code-agent-fidelity-v1\\nanobot\\T01\\attempt-01\\workspaces\\coding-workspaces\\1b98de9a9a99960d3a9f99df4727d0a3\\files",
+  "sequence": 1791283120838531000,
+  "state": "committed",
+  "task_id": "b2d088cd5cf44967b3fca18bf4754f44",
+  "version": 1
+}

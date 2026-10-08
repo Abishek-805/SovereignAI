@@ -1,0 +1,80 @@
+{
+  "samples": [
+    {
+      "unix_time": 1791283099.42007,
+      "system_used_ram_bytes": 14916882432,
+      "worker_rss_bytes": 3896799232,
+      "gpu_used_mib": 2849
+    },
+    {
+      "unix_time": 1791283101.541764,
+      "system_used_ram_bytes": 14566211584,
+      "worker_rss_bytes": 3569520640,
+      "gpu_used_mib": 2831
+    },
+    {
+      "unix_time": 1791283103.6335423,
+      "system_used_ram_bytes": 14717235200,
+      "worker_rss_bytes": 3676942336,
+      "gpu_used_mib": 2848
+    },
+    {
+      "unix_time": 1791283105.7466693,
+      "system_used_ram_bytes": 14653571072,
+      "worker_rss_bytes": 3676942336,
+      "gpu_used_mib": 2841
+    },
+    {
+      "unix_time": 1791283107.8405318,
+      "system_used_ram_bytes": 14752546816,
+      "worker_rss_bytes": 3782463488,
+      "gpu_used_mib": 2845
+    },
+    {
+      "unix_time": 1791283109.9444535,
+      "system_used_ram_bytes": 14810501120,
+      "worker_rss_bytes": 3782221824,
+      "gpu_used_mib": 2830
+    },
+    {
+      "unix_time": 1791283112.051113,
+      "system_used_ram_bytes": 14859452416,
+      "worker_rss_bytes": 3887845376,
+      "gpu_used_mib": 2844
+    },
+    {
+      "unix_time": 1791283114.1679263,
+      "system_used_ram_bytes": 14835916800,
+      "worker_rss_bytes": 3887771648,
+      "gpu_used_mib": 2840
+    },
+    {
+      "unix_time": 1791283116.2776065,
+      "system_used_ram_bytes": 14826504192,
+      "worker_rss_bytes": 3887771648,
+      "gpu_used_mib": 2845
+    },
+    {
+      "unix_time": 1791283118.374727,
+      "system_used_ram_bytes": 14869385216,
+      "worker_rss_bytes": 3898388480,
+      "gpu_used_mib": 2836
+    },
+    {
+      "unix_time": 1791283120.471293,
+      "system_used_ram_bytes": 14943178752,
+      "worker_rss_bytes": 3898388480,
+      "gpu_used_mib": 2844
+    },
+    {
+      "unix_time": 1791283120.5960824,
+      "system_used_ram_bytes": 14953545728,
+      "worker_rss_bytes": 3898388480,
+      "gpu_used_mib": 2844
+    }
+  ],
+  "sampling_interval_seconds": 2,
+  "worker_peak_rss_bytes": 3898388480,
+  "gpu_peak_used_mib": 2849,
+  "gpu_is_device_total_not_process_allocation": true
+}

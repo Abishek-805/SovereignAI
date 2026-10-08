@@ -174,7 +174,7 @@ class ModelRegistry:
         paths=self._model_paths(spec)
         if not all(path.is_file() for path in paths):
             raise WorkbenchError('model_unavailable',f'{capability.capitalize()} model files missing')
-        args=[str(RUNTIME),'-m',str(paths[0])]
+        args=[str(RUNTIME),'-m',str(paths[0]),'--jinja']
         if len(paths)>1: args.extend(['--mmproj',str(paths[1])])
         args.extend(['--alias',spec.alias,'-c',str(spec.context),'-np','1','--n-predict','8192','-b','256','-ub','128','-t','6'])
         if spec.projector_file is None and 'text' in spec.modalities:
@@ -237,6 +237,9 @@ class ModelRegistry:
             values={};index=1
             while index<len(command):
                 argument=command[index];flag,separator,inline=argument.partition('=')
+                if flag in {'--jinja','--no-jinja'}:
+                    if 'jinja' in values:return None
+                    values['jinja']=flag=='--jinja'
                 name=names.get(flag)
                 if name:
                     if name in values:return None # Repeated aliases/options are ambiguous.
@@ -358,7 +361,9 @@ class ModelRegistry:
             # Wait for readiness
             started = time.time()
             ready = False
-            while time.time() - started < 30:
+            while time.time() - started < 120:
+                if p.poll() is not None:
+                    break
                 if self._get_current_alias()==target_alias and self._owns_server() and self._runtime_profile_matches(args):
                     ready = True
                     break
@@ -367,7 +372,7 @@ class ModelRegistry:
             if not ready:
                 self.runtime_state = 'Error'
                 self.kill_server()
-                raise WorkbenchError("model_unavailable", f"Server failed to start in 30 seconds")
+                raise WorkbenchError("model_unavailable", "Server did not become ready within 120 seconds or exited during startup")
                 
             self.current_alias = target_alias
             self.runtime_state = 'Ready'

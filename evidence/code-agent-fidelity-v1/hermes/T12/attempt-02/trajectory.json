@@ -1,0 +1,13 @@
+[
+  {
+    "event": "context_fit",
+    "before_hash": "9771e3dddb5e28b74469330ece8462fcc86fb18a63837133f9e3b0dbbd012767",
+    "after_hash": "9771e3dddb5e28b74469330ece8462fcc86fb18a63837133f9e3b0dbbd012767",
+    "compacted": false,
+    "original_request_retained": true
+  },
+  {
+    "event": "controlled_cancellation",
+    "boundary": "after first real model response; before tool execution"
+  }
+]

@@ -1,0 +1,67 @@
+{
+  "phase": "runners",
+  "task_id": "T02",
+  "category": "multi_file_rename",
+  "control": false,
+  "runner": "hermes_minimal",
+  "model": "qwen35",
+  "accepted": true,
+  "validated": true,
+  "status": "PASS",
+  "repair_count": 0,
+  "rollback_count": 0,
+  "tool_calls": 6,
+  "model_calls": 6,
+  "model_switches": 0,
+  "latency_seconds": 29.34400000000096,
+  "peak_vram_mb": 2846,
+  "vram_scope": "whole GPU including display; process allocation unavailable",
+  "peak_ram_mb": 3919.671875,
+  "generation_tokens": 303,
+  "token_usage_complete": true,
+  "properties": {
+    "test_acceptance.Check.test_caller.test_caller": true,
+    "test_acceptance.Check.test_new_symbol.test_new_symbol": true,
+    "test_acceptance.Check.test_old_removed.test_old_removed": true
+  },
+  "failure_category": null,
+  "failure_detail": "",
+  "router_proposal": {
+    "original_request": "Rename read_number to load_number across numbers_io.py and caller.py. Update imports/calls, preserve behavior and unrelated files.",
+    "normalized_request": "Rename read_number to load_number across numbers_io.py and caller.py. Update imports/calls, preserve behavior and unrelated files.",
+    "task_type": "MULTI_FILE_CHANGE",
+    "complexity": "simple",
+    "worker_role": "code",
+    "steps": [
+      "code"
+    ],
+    "features": {
+      "active_file_present": false,
+      "workspace_available": true,
+      "repository_scope": "none",
+      "estimated_context_size": null,
+      "number_of_files_requested": 2,
+      "visual_input_present": false,
+      "modality": "text",
+      "is_follow_up": false,
+      "explicit_error_present": false,
+      "language_hints": [],
+      "execution_requested": false,
+      "validation_required": false,
+      "mechanical_rename": true,
+      "software_generation": false,
+      "requirements_heavy": false
+    },
+    "reason_codes": [
+      "software_task_features"
+    ],
+    "needs_clarification": false,
+    "mutation_authorized": false
+  },
+  "execution_result": 0,
+  "validation_result": true,
+  "evidence": "evidence\\code-agent-fidelity-v1\\hermes\\T02\\attempt-01",
+  "initial_request_hash": "812bd22c99c77ab9c7e5ee9d1582e926554858ff860bb5b8cbe53986cf5a1bc3",
+  "canonical_unchanged_before_accept": true,
+  "sandbox_image_id": "sha256:6f6ac11cda347a185454338dee35d77003e066579a3261b52b7c6ff1048c8573"
+}

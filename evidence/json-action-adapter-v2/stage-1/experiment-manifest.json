@@ -1,0 +1,9 @@
+{
+  "preregistration_sha256": "dd83da8d3e6d6a5c998a0266d02f4a1ebf56f070c731fd30f3cc46e5cc35995a",
+  "execution_directory": "C:\\Users\\ashek\\Desktop\\SovereignAI\\evidence\\json-action-adapter-v2\\stage-1\\execution-20261008-045947",
+  "only_stage": 1,
+  "allowed_model_calls": 2,
+  "replay_calls_conditional": 2,
+  "frozen_manifest": "../manifest.json",
+  "production_modified": false
+}

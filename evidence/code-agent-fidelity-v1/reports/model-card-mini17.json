@@ -1,0 +1,73 @@
+{
+  "_id": "68e202d3a08c6cc3b9a2c7b1",
+  "id": "sizzlebop/mini-coder-1.7b-IQ4_NL-GGUF",
+  "private": false,
+  "library_name": "transformers",
+  "tags": [
+    "transformers",
+    "gguf",
+    "agent",
+    "code",
+    "llama-cpp",
+    "gguf-my-repo",
+    "dataset:ricdomolm/mini-coder-trajs-400k",
+    "base_model:ricdomolm/mini-coder-1.7b",
+    "base_model:quantized:ricdomolm/mini-coder-1.7b",
+    "license:mit",
+    "endpoints_compatible",
+    "region:us",
+    "imatrix"
+  ],
+  "downloads": 67,
+  "likes": 0,
+  "modelId": "sizzlebop/mini-coder-1.7b-IQ4_NL-GGUF",
+  "author": "sizzlebop",
+  "sha": "59e704821fce313e7576ec8131d73106d5dbcb8a",
+  "lastModified": "2025-10-05T05:32:13.000Z",
+  "gated": false,
+  "disabled": false,
+  "model-index": null,
+  "config": {},
+  "cardData": {
+    "library_name": "transformers",
+    "tags": [
+      "agent",
+      "code",
+      "llama-cpp",
+      "gguf-my-repo"
+    ],
+    "license": "mit",
+    "datasets": [
+      "ricdomolm/mini-coder-trajs-400k"
+    ],
+    "base_model": "ricdomolm/mini-coder-1.7b"
+  },
+  "transformersInfo": {
+    "auto_model": "AutoModel"
+  },
+  "gguf": {
+    "total": 1720574976,
+    "architecture": "qwen3",
+    "context_length": 40960,
+    "quantize_imatrix_file": "outputs/tmpcyykctki/imatrix.dat",
+    "eos_token": "<|im_end|>",
+    "totalFileSize": 1054419264
+  },
+  "siblings": [
+    {
+      "rfilename": ".gitattributes"
+    },
+    {
+      "rfilename": "README.md"
+    },
+    {
+      "rfilename": "imatrix.dat"
+    },
+    {
+      "rfilename": "mini-coder-1.7b-iq4_nl-imat.gguf"
+    }
+  ],
+  "spaces": [],
+  "createdAt": "2025-10-05T05:32:03.000Z",
+  "usedStorage": 1056513824
+}

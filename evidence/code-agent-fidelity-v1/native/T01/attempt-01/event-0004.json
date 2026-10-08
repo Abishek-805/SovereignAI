@@ -1,0 +1,19 @@
+{
+  "event": "tool",
+  "tool": "apply_patch",
+  "arguments": {
+    "path": "names.py",
+    "old_text": "def greet(name):\n    return \"Hello \" + name",
+    "new_text": "def welcome(name):\n    return \"Hello \" + name"
+  },
+  "before_revision": "8e2eb8dea77bd00e7242921db6cdd09eda56165344b4efbdf230130bfff14b5a",
+  "before_diff": "",
+  "result": {
+    "path": "names.py",
+    "sha256": "2ab80e037f249e07db172b99815028dac5e9dd50f207b1450c43f46f59f1fceb",
+    "bytes": 46
+  },
+  "latency_seconds": 0.0,
+  "after_revision": "b71189a59d0a50f3fa54b36c796aa5a97f8be9e5c087bbf6027e3ee3bd24b742",
+  "after_diff": "--- a/names.py\n+++ b/names.py\n@@ -1,2 +1,2 @@\n-def greet(name):\n+def welcome(name):\n     return \"Hello \" + name\n"
+}

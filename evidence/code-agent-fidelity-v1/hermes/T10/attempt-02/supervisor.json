@@ -1,0 +1,300 @@
+{
+  "supervisor_id": "c8fde113462c4f1f94af63ca685b8f86",
+  "goal": "Implement reservation feature across store.py, service.py, summary.py. reserve(name,seats,capacity) stores a reservation and returns an integer token. Reject blank names, boolean/non-integer/nonpositive seats and capacity overflow with ValueError and no state mutation. cancel(token) removes it; unknown token raises KeyError. summary() returns count and seats from shared store. Preserve reset().",
+  "context": {
+    "workspace_id": "f7ef0de37031bc151f0008066f39fedf",
+    "document_ids": []
+  },
+  "created_at": 1791304632.047755,
+  "elapsed_seconds": 679.469,
+  "limits": {
+    "model_calls": 32,
+    "tool_calls": 64,
+    "model_switches": 1,
+    "seconds": 660
+  },
+  "counts": {
+    "model_calls": 10,
+    "tool_calls": 8,
+    "model_switches": 0
+  },
+  "task_state": {
+    "task_id": "c8fde113462c4f1f94af63ca685b8f86",
+    "original_request": "Implement reservation feature across store.py, service.py, summary.py. reserve(name,seats,capacity) stores a reservation and returns an integer token. Reject blank names, boolean/non-integer/nonpositive seats and capacity overflow with ValueError and no state mutation. cancel(token) removes it; unknown token raises KeyError. summary() returns count and seats from shared store. Preserve reset().",
+    "normalized_request": "Implement reservation feature across store.py, service.py, summary.py. reserve(name,seats,capacity) stores a reservation and returns an integer token. Reject blank names, boolean/non-integer/nonpositive seats and capacity overflow with ValueError and no state mutation. cancel(token) removes it; unknown token raises KeyError. summary() returns count and seats from shared store. Preserve reset().",
+    "conversation_context": [],
+    "follow_up_context": null,
+    "intent": null,
+    "workflow": null,
+    "modality": null,
+    "workspace": "f7ef0de37031bc151f0008066f39fedf",
+    "knowledge_scope": [],
+    "requested_deliverables": [],
+    "success_conditions": [],
+    "current_stage": "EXECUTING",
+    "current_action": null,
+    "active_worker": null,
+    "plan": null,
+    "observations": [],
+    "tool_results": [],
+    "evidence": [],
+    "repair_count": 0,
+    "replan_count": 0,
+    "completion_status": "running",
+    "blockers": [],
+    "cancellation_state": false,
+    "timestamps": {
+      "received": 1791304632.047755,
+      "updated": 1791305015.9904015
+    },
+    "worker_role": null,
+    "model_switch_count": 0,
+    "tool_call_count": 8,
+    "inference_call_count": 10,
+    "event_count": 19
+  },
+  "events": [
+    {
+      "operation": "model_calls",
+      "count": 1,
+      "elapsed_seconds": 0.36
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791304632.4140255,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791304634.5881836,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 1,
+      "elapsed_seconds": 2.547
+    },
+    {
+      "operation": "model_calls",
+      "count": 2,
+      "elapsed_seconds": 2.672
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791304634.7225597,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791304637.4673812,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 2,
+      "elapsed_seconds": 5.422
+    },
+    {
+      "operation": "model_calls",
+      "count": 3,
+      "elapsed_seconds": 5.563
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791304637.6068935,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791304640.3149664,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 3,
+      "elapsed_seconds": 8.266
+    },
+    {
+      "operation": "model_calls",
+      "count": 4,
+      "elapsed_seconds": 8.422
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791304640.4772067,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791304642.967656,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 4,
+      "elapsed_seconds": 10.922
+    },
+    {
+      "operation": "model_calls",
+      "count": 5,
+      "elapsed_seconds": 11.063
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791304643.1048217,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791304669.8929117,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 5,
+      "elapsed_seconds": 37.844
+    },
+    {
+      "operation": "model_calls",
+      "count": 6,
+      "elapsed_seconds": 38.016
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791304670.0647128,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791304676.2224298,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 6,
+      "elapsed_seconds": 44.172
+    },
+    {
+      "operation": "model_calls",
+      "count": 7,
+      "elapsed_seconds": 44.375
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791304676.4255075,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791304678.6662767,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 7,
+      "elapsed_seconds": 46.625
+    },
+    {
+      "operation": "model_calls",
+      "count": 8,
+      "elapsed_seconds": 55.516
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791304687.5649781,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791305010.0388508,
+      "details": {}
+    },
+    {
+      "operation": "model_calls",
+      "count": 9,
+      "elapsed_seconds": 378.078
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791305010.1254826,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791305015.907638,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 8,
+      "elapsed_seconds": 383.86
+    },
+    {
+      "operation": "model_calls",
+      "count": 10,
+      "elapsed_seconds": 383.938
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791305015.9904015,
+      "details": {}
+    }
+  ],
+  "completion": null,
+  "outcome": "running",
+  "code_task_view": {
+    "task_id": "c8fde113462c4f1f94af63ca685b8f86",
+    "context": {
+      "original_request": "Implement reservation feature across store.py, service.py, summary.py. reserve(name,seats,capacity) stores a reservation and returns an integer token. Reject blank names, boolean/non-integer/nonpositive seats and capacity overflow with ValueError and no state mutation. cancel(token) removes it; unknown token raises KeyError. summary() returns count and seats from shared store. Preserve reset().",
+      "resolved_request": "Implement reservation feature across store.py, service.py, summary.py. reserve(name,seats,capacity) stores a reservation and returns an integer token. Reject blank names, boolean/non-integer/nonpositive seats and capacity overflow with ValueError and no state mutation. cancel(token) removes it; unknown token raises KeyError. summary() returns count and seats from shared store. Preserve reset().",
+      "workspace": "f7ef0de37031bc151f0008066f39fedf",
+      "target": null,
+      "active_file": null,
+      "relevant_symbols": [],
+      "related_files": [],
+      "diagnostics": [],
+      "current_changes": [],
+      "previous_tool_result": null,
+      "current_model": null,
+      "task_stage": "EXECUTING",
+      "context_scope": []
+    },
+    "task_type": null,
+    "complexity": null,
+    "current_stage": "EXECUTING",
+    "active_worker": null,
+    "plan": null,
+    "observations": [],
+    "tool_results": [],
+    "current_candidate": null,
+    "candidate_hash": null,
+    "repair_count": 0,
+    "model_switch_count": 0,
+    "completion_status": "running",
+    "cancellation": false,
+    "blocker": [],
+    "timestamps": {
+      "received": 1791304632.047755,
+      "updated": 1791305015.9904015
+    }
+  }
+}

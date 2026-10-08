@@ -1,0 +1,21 @@
+{
+  "event": "tool",
+  "tool": "read_file",
+  "arguments": {
+    "path": "errors.py"
+  },
+  "before_revision": "d8d1abd7a4d0a82d067a3aaeba1c7c49e9995ab4daf067c0c6ee4ee718ac042d",
+  "before_diff": "",
+  "result": {
+    "path": "errors.py",
+    "content": "def divide(a,b):\n    if b==0:return ValueError(\"zero\")\n    return a/b\ndef identity():\n    return \"keep\"\n",
+    "offset": 0,
+    "next_offset": null,
+    "total_characters": 104,
+    "content_complete": true,
+    "sha256": "4ff7c7b9597402d510ad0b23dc66a1f1fa10ccfeafa0bd90d95ca5aee22eb3fd"
+  },
+  "latency_seconds": 0.0,
+  "after_revision": "d8d1abd7a4d0a82d067a3aaeba1c7c49e9995ab4daf067c0c6ee4ee718ac042d",
+  "after_diff": ""
+}

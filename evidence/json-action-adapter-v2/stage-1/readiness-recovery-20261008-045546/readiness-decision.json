@@ -1,0 +1,20 @@
+{
+  "decision": "READY_FOR_STAGE_1",
+  "docker_engine": "linux",
+  "docker_context": "desktop-linux",
+  "docker_checks_passed": 18,
+  "pinned_image": "sha256:6f6ac11cda347a185454338dee35d77003e066579a3261b52b7c6ff1048c8573",
+  "worker_pid": 30072,
+  "runtime_build": "b11132-633733d0a",
+  "model_identity": "Qwen/Qwen3.5-4B",
+  "model_sha256": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4",
+  "context": 16384,
+  "kv": "q8_0/q8_0",
+  "slots": 1,
+  "stage1_tests_started": false,
+  "completion_calls": 0,
+  "tool_dispatches": 0,
+  "generated_code_executions": 0,
+  "frozen_hashes_unchanged": 3362,
+  "stop_after_recovery": true
+}

@@ -1,0 +1,70 @@
+{
+  "phase": "runners",
+  "task_id": "T10",
+  "category": "complex_dependent_edits",
+  "control": false,
+  "runner": "hermes_minimal",
+  "model": "qwen35",
+  "accepted": false,
+  "validated": false,
+  "status": "FAIL",
+  "repair_count": 0,
+  "rollback_count": 0,
+  "tool_calls": 8,
+  "model_calls": 10,
+  "model_switches": 0,
+  "latency_seconds": 679.344,
+  "peak_vram_mb": 3566,
+  "vram_scope": "whole GPU including display; process allocation unavailable",
+  "peak_ram_mb": 2153.91796875,
+  "generation_tokens": 8794,
+  "token_usage_complete": true,
+  "properties": {
+    "test_acceptance.Check.test_cancel.test_cancel": true,
+    "test_acceptance.Check.test_invalid_atomic.test_invalid_atomic": true,
+    "test_acceptance.Check.test_overflow_atomic.test_overflow_atomic": false,
+    "test_acceptance.Check.test_reset_preserved.test_reset_preserved": true,
+    "test_acceptance.Check.test_shared_state.test_shared_state": true
+  },
+  "failure_category": "BUDGET",
+  "failure_detail": "Task supervisor time budget exhausted",
+  "router_proposal": {
+    "original_request": "Implement reservation feature across store.py, service.py, summary.py. reserve(name,seats,capacity) stores a reservation and returns an integer token. Reject blank names, boolean/non-integer/nonpositive seats and capacity overflow with ValueError and no state mutation. cancel(token) removes it; unknown token raises KeyError. summary() returns count and seats from shared store. Preserve reset().",
+    "normalized_request": "Implement reservation feature across store.py, service.py, summary.py. reserve(name,seats,capacity) stores a reservation and returns an integer token. Reject blank names, boolean/non-integer/nonpositive seats and capacity overflow with ValueError and no state mutation. cancel(token) removes it; unknown token raises KeyError. summary() returns count and seats from shared store. Preserve reset().",
+    "task_type": "MULTI_FILE_CHANGE",
+    "complexity": "complex",
+    "worker_role": "reasoning",
+    "steps": [
+      "reasoning",
+      "code"
+    ],
+    "features": {
+      "active_file_present": false,
+      "workspace_available": true,
+      "repository_scope": "none",
+      "estimated_context_size": null,
+      "number_of_files_requested": 3,
+      "visual_input_present": false,
+      "modality": "text",
+      "is_follow_up": false,
+      "explicit_error_present": false,
+      "language_hints": [],
+      "execution_requested": false,
+      "validation_required": false,
+      "mechanical_rename": false,
+      "software_generation": false,
+      "requirements_heavy": false
+    },
+    "reason_codes": [
+      "software_task_features"
+    ],
+    "needs_clarification": false,
+    "mutation_authorized": false
+  },
+  "execution_result": null,
+  "validation_result": false,
+  "evidence": "evidence\\code-agent-fidelity-v1\\hermes\\T10\\attempt-02",
+  "initial_request_hash": "d8793292a9973e767ae326441151e1220f3230c4d706935caa538f9699419343",
+  "canonical_unchanged_before_accept": true,
+  "sandbox_image_id": "sha256:6f6ac11cda347a185454338dee35d77003e066579a3261b52b7c6ff1048c8573"
+}

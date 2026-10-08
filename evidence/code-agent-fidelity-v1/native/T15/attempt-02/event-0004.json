@@ -1,0 +1,21 @@
+{
+  "event": "tool",
+  "tool": "read_file",
+  "arguments": {
+    "path": "test_acceptance.py"
+  },
+  "before_revision": "3ce9492e6cdcea2065a3102212c972c1f5c76d2b00f880e2f97bb59c3453a474",
+  "before_diff": "",
+  "result": {
+    "path": "test_acceptance.py",
+    "content": "import unittest,json,subprocess,sys\nfrom pathlib import Path\nimport lifecycle\nclass Check(unittest.TestCase):\n def test_value(self):self.assertEqual(lifecycle.value(),31)\n def test_integer(self):self.assertIsInstance(lifecycle.value(),int)\n",
+    "offset": 0,
+    "next_offset": null,
+    "total_characters": 240,
+    "content_complete": true,
+    "sha256": "e08882e54ea4a81de7d7a9fa93c088f47b03f223770a9d570a357994ca267720"
+  },
+  "latency_seconds": 0.0,
+  "after_revision": "3ce9492e6cdcea2065a3102212c972c1f5c76d2b00f880e2f97bb59c3453a474",
+  "after_diff": ""
+}

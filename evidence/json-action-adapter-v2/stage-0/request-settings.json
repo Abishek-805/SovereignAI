@@ -1,0 +1,26 @@
+{
+  "stream": {
+    "model": "sovereign-text",
+    "stream": true,
+    "temperature": 0,
+    "seed": "NOT SUPPLIED",
+    "max_tokens": 4096,
+    "tool_choice": "required",
+    "response_format": "NOT SUPPLIED",
+    "chat_template_kwargs": {
+      "enable_thinking": false
+    }
+  },
+  "nonstream": {
+    "model": "sovereign-text",
+    "stream": false,
+    "temperature": 0,
+    "seed": "NOT SUPPLIED",
+    "max_tokens": 4096,
+    "tool_choice": "required",
+    "response_format": "NOT SUPPLIED",
+    "chat_template_kwargs": {
+      "enable_thinking": false
+    }
+  }
+}

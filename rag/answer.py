@@ -85,6 +85,14 @@ def _query_presentation(sources):
     source=sources[0]; query=source.get('query_result') or {}
     if not {'table','operation','scanned_rows','matched_rows'}<=query.keys(): return None
     heading=f"Calculated results from {cell(query['table'])}. [{source['label']}]"
+    if query['operation']=='aggregate':
+        lines=[heading,'','Overall metrics:']
+        for metric in query['metrics']:
+            lines.append(f"{cell(metric['operation'])} {cell(metric.get('column') or 'records')}: {cell(metric['value'])}")
+        for group in query.get('groups',[]):
+            keys=', '.join(f"{cell(k)}={cell(v)}" for k,v in group['keys'].items())
+            lines.append(keys+': '+', '.join(f"{cell(m['operation'])} {cell(m.get('column') or 'records')}={cell(m['value'])}" for m in group['metrics']))
+        return '\n'.join(lines)
     if isinstance(query.get('summaries'),list):
         summaries=query['summaries']
         columns=['column','passed','total','percentage'] if query['operation']=='percentage' else ['column','value','numeric_rows']
@@ -108,6 +116,23 @@ def _query_presentation(sources):
         if not columns: return None
         lines=[' | '.join(cell(column) for column in columns), ' | '.join('---' for _ in columns)]
         lines.extend(' | '.join(cell(row.get(column)) for column in columns) for row in records)
+        missing=query.get('missing_entities',[])
+        if missing:lines.extend(['','No matching source record was found for: '+', '.join(cell(v) for v in missing)+'. These identities are excluded from the comparison.'])
+        if query.get('entity_bindings'):lines.extend(['','Resolved source identities: '+', '.join(cell(k)+' → '+cell(v) for k,v in query['entity_bindings'].items())+'.'])
+        comparison=query.get('comparison')
+        if comparison and comparison.get('field_maxima'):
+            lines.extend(['','Highest recorded value in each numeric field:'])
+            for field in comparison['field_maxima']:
+                lines.append(cell(field['column'])+': '+', '.join(cell(v) for v in field['identities'])+' ('+cell(field['maximum'])+').')
+            if comparison.get('field_minima'):
+                lines.extend(['','Lowest recorded value in each numeric field:'])
+                for field in comparison['field_minima']:
+                    lines.append(cell(field['column'])+': '+', '.join(cell(v) for v in field['identities'])+' ('+cell(field['minimum'])+').')
+            lines.extend(['','These are field-by-field values. An overall ranking depends on which fields should be higher or lower and their scales or weights.'])
+            if 'pass_counts' in comparison:
+                lines.extend(['','Applied pass rule: at least '+cell(comparison['pass_threshold'])+'. Missing/non-numeric marks do not count as passes.'])
+                for row in comparison['pass_counts']:
+                    lines.append(cell(row['identity'])+': '+cell(row['passed'])+' of '+cell(row['assessments'])+' assessments passed.')
         return heading+'\n\n'+'\n'.join(lines)+('\n\nAdditional matching rows were omitted from this view.' if query.get('truncated') else '')
     if query['operation'] in {'count','sum','average','min','max'} and 'value' in query:
         return heading+f"\n\n{cell(query['operation'].capitalize())}: {cell(query['value'])}. Matched rows: {query['matched_rows']}."

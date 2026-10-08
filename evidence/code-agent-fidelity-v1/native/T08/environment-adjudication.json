@@ -1,0 +1,11 @@
+{
+  "original_status": "FAIL",
+  "corrected_status": "BLOCKED",
+  "primary_category": "SANDBOX",
+  "environment_cause": "Docker Linux daemon stopped after external turn interruption; verified via docker info",
+  "model_failure": false,
+  "model_or_tool_calls": 0,
+  "original_row_sha256": "624ada1c574f7778f957b5ba0a52e7cc61f5b391f6453dbd148309b7f785c51e",
+  "rerun_authorized": true,
+  "reason": "Harness environment unavailable before first model call; frozen inputs unchanged; previous raw evidence preserved"
+}

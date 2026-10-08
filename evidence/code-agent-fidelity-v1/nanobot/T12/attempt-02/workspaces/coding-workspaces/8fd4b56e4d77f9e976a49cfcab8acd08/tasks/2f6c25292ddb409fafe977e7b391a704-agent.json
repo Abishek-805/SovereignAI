@@ -1,0 +1,21 @@
+{
+  "session": {
+    "task_id": "2f6c25292ddb409fafe977e7b391a704",
+    "request": "Edit lifecycle.py value() to return integer 31. Preserve unrelated files. Validate the supplied tests.",
+    "workspace_id": "8fd4b56e4d77f9e976a49cfcab8acd08",
+    "model": "sovereign-text",
+    "state": "CANCELLED",
+    "model_calls": 1,
+    "tool_calls": 0,
+    "sandbox_runs": 0,
+    "repairs": 0,
+    "validation_failures": 0,
+    "model_switches": 0
+  },
+  "base_revision": "3ce9492e6cdcea2065a3102212c972c1f5c76d2b00f880e2f97bb59c3453a474",
+  "changes": [],
+  "diff": "",
+  "observations": [],
+  "ephemeral_tool_log": "C:\\Users\\ashek\\Desktop\\SovereignAI\\evidence\\code-agent-fidelity-v1\\nanobot\\T12\\attempt-02\\workspaces\\agent-ephemeral\\cache-2f6c25292ddb409fafe977e7b391a704.json",
+  "checkpoint_kind": "revision metadata plus changed-file patch; no complete project copy"
+}

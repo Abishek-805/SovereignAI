@@ -1,0 +1,95 @@
+{
+  "supervisor_id": "e345befa20ee4fadb2853cbf8d06df42",
+  "goal": "Edit lifecycle.py value() to return integer 31. Preserve unrelated files. Validate the supplied tests.",
+  "context": {
+    "workspace_id": "984a7f441ec319ccd49d06b4fc8267e0",
+    "document_ids": []
+  },
+  "created_at": 1791302125.5319216,
+  "elapsed_seconds": 0.812,
+  "limits": {
+    "model_calls": 32,
+    "tool_calls": 64,
+    "model_switches": 1,
+    "seconds": 660
+  },
+  "counts": {
+    "model_calls": 0,
+    "tool_calls": 0,
+    "model_switches": 0
+  },
+  "task_state": {
+    "task_id": "e345befa20ee4fadb2853cbf8d06df42",
+    "original_request": "Edit lifecycle.py value() to return integer 31. Preserve unrelated files. Validate the supplied tests.",
+    "normalized_request": "Edit lifecycle.py value() to return integer 31. Preserve unrelated files. Validate the supplied tests.",
+    "conversation_context": [],
+    "follow_up_context": null,
+    "intent": null,
+    "workflow": null,
+    "modality": null,
+    "workspace": "984a7f441ec319ccd49d06b4fc8267e0",
+    "knowledge_scope": [],
+    "requested_deliverables": [],
+    "success_conditions": [],
+    "current_stage": "RECEIVED",
+    "current_action": null,
+    "active_worker": null,
+    "plan": null,
+    "observations": [],
+    "tool_results": [],
+    "evidence": [],
+    "repair_count": 0,
+    "replan_count": 0,
+    "completion_status": "running",
+    "blockers": [],
+    "cancellation_state": false,
+    "timestamps": {
+      "received": 1791302125.5319216,
+      "updated": 1791302125.5319216
+    },
+    "worker_role": null,
+    "model_switch_count": 0,
+    "tool_call_count": 0,
+    "inference_call_count": 0,
+    "event_count": 0
+  },
+  "events": [],
+  "completion": null,
+  "outcome": "running",
+  "code_task_view": {
+    "task_id": "e345befa20ee4fadb2853cbf8d06df42",
+    "context": {
+      "original_request": "Edit lifecycle.py value() to return integer 31. Preserve unrelated files. Validate the supplied tests.",
+      "resolved_request": "Edit lifecycle.py value() to return integer 31. Preserve unrelated files. Validate the supplied tests.",
+      "workspace": "984a7f441ec319ccd49d06b4fc8267e0",
+      "target": null,
+      "active_file": null,
+      "relevant_symbols": [],
+      "related_files": [],
+      "diagnostics": [],
+      "current_changes": [],
+      "previous_tool_result": null,
+      "current_model": null,
+      "task_stage": "RECEIVED",
+      "context_scope": []
+    },
+    "task_type": null,
+    "complexity": null,
+    "current_stage": "RECEIVED",
+    "active_worker": null,
+    "plan": null,
+    "observations": [],
+    "tool_results": [],
+    "current_candidate": null,
+    "candidate_hash": null,
+    "repair_count": 0,
+    "model_switch_count": 0,
+    "completion_status": "running",
+    "cancellation": false,
+    "blocker": [],
+    "timestamps": {
+      "received": 1791302125.5319216,
+      "updated": 1791302125.5319216
+    }
+  }
+}

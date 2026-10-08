@@ -1,0 +1,21 @@
+{
+  "event": "tool",
+  "tool": "read_file",
+  "arguments": {
+    "path": "test_acceptance.py"
+  },
+  "before_revision": "c6642f9348b0d0d019bd0bb7ff4c8114d60ceab18d3f81213a47aee81680e378",
+  "before_diff": "",
+  "result": {
+    "path": "test_acceptance.py",
+    "content": "import unittest,json,subprocess,sys\nfrom pathlib import Path\nfrom app import app\nclass Check(unittest.TestCase):\n def test_wire(self):\n  payload=json.loads(subprocess.check_output(['node','-e',\"console.log(JSON.stringify(require('./ui.js').buildPayload('  Ada  ')))\"],text=True))\n  self.assertEqual(payload,{'display_name':'Ada'});self.assertEqual(app.test_client().post('/profile',json=payload).get_json(),payload)\n def test_form(self):self.assertIn('name=\"display_name\"',Path('form.html').read_text())\n def test_invalid(self):\n  r=app.test_client().post('/profile',json={'display_name':' '});self.assertEqual(r.status_code,422);self.assertTrue(r.is_json)\n def test_preserved(self):self.assertEqual(app.test_client().get('/health').get_json(),{'ok':True})\n",
+    "offset": 0,
+    "next_offset": null,
+    "total_characters": 757,
+    "content_complete": true,
+    "sha256": "f9aad40a988158cf380ee5a2b3c989ad14e976d716cd0db8527e623cc0036936"
+  },
+  "latency_seconds": 0.0,
+  "after_revision": "c6642f9348b0d0d019bd0bb7ff4c8114d60ceab18d3f81213a47aee81680e378",
+  "after_diff": ""
+}

@@ -1,0 +1,5152 @@
+{
+  "trajectories": 3,
+  "candidate_stages": 24,
+  "rows": [
+    {
+      "task_id": "272798546719432dbe71fe575a6d8787",
+      "stage": 1,
+      "event_index": 0,
+      "operation": "write_file",
+      "path": "app.py",
+      "candidate_revision": "b4a0e807ca5ad2396cd8bfb6477a434430fa55f402bba2d38d1d460cdd5d8fbf",
+      "inventory": {
+        "app.py": {
+          "functions": [
+            {
+              "name": "get_students",
+              "args": []
+            },
+            {
+              "name": "get_student",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student",
+              "args": []
+            },
+            {
+              "name": "mark_attendance",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_attendance",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_all_attendance",
+              "args": []
+            }
+          ],
+          "routes": [
+            {
+              "path": "/api/students",
+              "method_decorator": "route",
+              "function": "get_students"
+            },
+            {
+              "path": "/api/students/<student_id>",
+              "method_decorator": "route",
+              "function": "get_student"
+            },
+            {
+              "path": "/api/students",
+              "method_decorator": "route",
+              "function": "add_student"
+            },
+            {
+              "path": "/api/attendance/<student_id>",
+              "method_decorator": "route",
+              "function": "mark_attendance"
+            },
+            {
+              "path": "/api/attendance/<student_id>",
+              "method_decorator": "route",
+              "function": "get_attendance"
+            },
+            {
+              "path": "/api/attendance",
+              "method_decorator": "route",
+              "function": "get_all_attendance"
+            }
+          ],
+          "sha256": "af2e49e669fd961b11487430c5b8d3330eb1d26f7cf579ca518f17a8792cd4e1"
+        }
+      },
+      "checks": [
+        {
+          "property": "runnable_flask",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "student_creation_json",
+          "passed": true,
+          "detail": "(201, {'email': '', 'id': 734, 'name': 'Independent diagnostic student'})"
+        },
+        {
+          "property": "student_stored",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "valid_attendance_json",
+          "passed": false,
+          "detail": "('/api/attendance/734', 404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "missing_fields",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "invalid_status",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "invalid_date",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "malformed_json_rejected_as_json",
+          "passed": false,
+          "detail": "(400, '<!doctype html>\\n<html lang=en>\\n<title>400 Bad Request</title>\\n<h1>Bad Request</h1>\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\n')"
+        },
+        {
+          "property": "unknown_student_rejected",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "readme_present",
+          "passed": false,
+          "detail": ""
+        },
+        {
+          "property": "requested_test_present",
+          "passed": false,
+          "detail": ""
+        }
+      ],
+      "passed_properties": [
+        "invalid_date",
+        "invalid_status",
+        "missing_fields",
+        "runnable_flask",
+        "student_creation_json",
+        "student_stored",
+        "unknown_student_rejected"
+      ],
+      "lost_previously_passing_properties": [],
+      "removed_symbols": {},
+      "container_executed": true,
+      "exit_code": 0,
+      "stdout": "ATTENDANCE_DIAGNOSTIC=[{\"property\": \"runnable_flask\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"student_creation_json\", \"passed\": true, \"detail\": \"(201, {'email': '', 'id': 734, 'name': 'Independent diagnostic student'})\"}, {\"property\": \"student_stored\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"valid_attendance_json\", \"passed\": false, \"detail\": \"('/api/attendance/734', 404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"missing_fields\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"invalid_status\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"invalid_date\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"malformed_json_rejected_as_json\", \"passed\": false, \"detail\": \"(400, '<!doctype html>\\\\n<html lang=en>\\\\n<title>400 Bad Request</title>\\\\n<h1>Bad Request</h1>\\\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\\\n')\"}, {\"property\": \"unknown_student_rejected\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"readme_present\", \"passed\": false, \"detail\": \"\"}, {\"property\": \"requested_test_present\", \"passed\": false, \"detail\": \"\"}]\n",
+      "stderr": "",
+      "failure_category": "GENERATION",
+      "classification_basis": "Independently executed observable properties; no router or handoff blame inferred."
+    },
+    {
+      "task_id": "272798546719432dbe71fe575a6d8787",
+      "stage": 2,
+      "event_index": 1,
+      "operation": "write_file",
+      "path": "app.py",
+      "candidate_revision": "03bce1233ab16323a325966fca7ef61b84382b2d2b526bedb5ffe41e51e12127",
+      "inventory": {
+        "app.py": {
+          "functions": [
+            {
+              "name": "get_students",
+              "args": []
+            },
+            {
+              "name": "get_student",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student",
+              "args": []
+            },
+            {
+              "name": "mark_attendance",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_attendance",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_all_attendance",
+              "args": []
+            }
+          ],
+          "routes": [
+            {
+              "path": "/api/students",
+              "method_decorator": "route",
+              "function": "get_students"
+            },
+            {
+              "path": "/api/students/<student_id>",
+              "method_decorator": "route",
+              "function": "get_student"
+            },
+            {
+              "path": "/api/students",
+              "method_decorator": "route",
+              "function": "add_student"
+            },
+            {
+              "path": "/api/attendance/<student_id>",
+              "method_decorator": "route",
+              "function": "mark_attendance"
+            },
+            {
+              "path": "/api/attendance/<student_id>",
+              "method_decorator": "route",
+              "function": "get_attendance"
+            },
+            {
+              "path": "/api/attendance",
+              "method_decorator": "route",
+              "function": "get_all_attendance"
+            }
+          ],
+          "sha256": "f87fc458152410b0ca8002c7ed63b02e1630a5c1bd93585943e17448b3078bd2"
+        }
+      },
+      "checks": [
+        {
+          "property": "runnable_flask",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "student_creation_json",
+          "passed": true,
+          "detail": "(201, {'email': '', 'id': 734, 'name': 'Independent diagnostic student'})"
+        },
+        {
+          "property": "student_stored",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "valid_attendance_json",
+          "passed": false,
+          "detail": "('/api/attendance/734', 404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "missing_fields",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "invalid_status",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "invalid_date",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "malformed_json_rejected_as_json",
+          "passed": false,
+          "detail": "(400, '<!doctype html>\\n<html lang=en>\\n<title>400 Bad Request</title>\\n<h1>Bad Request</h1>\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\n')"
+        },
+        {
+          "property": "unknown_student_rejected",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "readme_present",
+          "passed": false,
+          "detail": ""
+        },
+        {
+          "property": "requested_test_present",
+          "passed": false,
+          "detail": ""
+        }
+      ],
+      "passed_properties": [
+        "invalid_date",
+        "invalid_status",
+        "missing_fields",
+        "runnable_flask",
+        "student_creation_json",
+        "student_stored",
+        "unknown_student_rejected"
+      ],
+      "lost_previously_passing_properties": [],
+      "removed_symbols": {},
+      "container_executed": true,
+      "exit_code": 0,
+      "stdout": "ATTENDANCE_DIAGNOSTIC=[{\"property\": \"runnable_flask\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"student_creation_json\", \"passed\": true, \"detail\": \"(201, {'email': '', 'id': 734, 'name': 'Independent diagnostic student'})\"}, {\"property\": \"student_stored\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"valid_attendance_json\", \"passed\": false, \"detail\": \"('/api/attendance/734', 404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"missing_fields\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"invalid_status\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"invalid_date\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"malformed_json_rejected_as_json\", \"passed\": false, \"detail\": \"(400, '<!doctype html>\\\\n<html lang=en>\\\\n<title>400 Bad Request</title>\\\\n<h1>Bad Request</h1>\\\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\\\n')\"}, {\"property\": \"unknown_student_rejected\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"readme_present\", \"passed\": false, \"detail\": \"\"}, {\"property\": \"requested_test_present\", \"passed\": false, \"detail\": \"\"}]\n",
+      "stderr": "",
+      "failure_category": "GENERATION",
+      "classification_basis": "Independently executed observable properties; no router or handoff blame inferred."
+    },
+    {
+      "task_id": "272798546719432dbe71fe575a6d8787",
+      "stage": 3,
+      "event_index": 3,
+      "operation": "write_file",
+      "path": "test_app.py",
+      "candidate_revision": "ae491061ea1ffae86935a2598b319c68c7a40352d459eb8fdc7d6b763097bd90",
+      "inventory": {
+        "app.py": {
+          "functions": [
+            {
+              "name": "get_students",
+              "args": []
+            },
+            {
+              "name": "get_student",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student",
+              "args": []
+            },
+            {
+              "name": "mark_attendance",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_attendance",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_all_attendance",
+              "args": []
+            }
+          ],
+          "routes": [
+            {
+              "path": "/api/students",
+              "method_decorator": "route",
+              "function": "get_students"
+            },
+            {
+              "path": "/api/students/<student_id>",
+              "method_decorator": "route",
+              "function": "get_student"
+            },
+            {
+              "path": "/api/students",
+              "method_decorator": "route",
+              "function": "add_student"
+            },
+            {
+              "path": "/api/attendance/<student_id>",
+              "method_decorator": "route",
+              "function": "mark_attendance"
+            },
+            {
+              "path": "/api/attendance/<student_id>",
+              "method_decorator": "route",
+              "function": "get_attendance"
+            },
+            {
+              "path": "/api/attendance",
+              "method_decorator": "route",
+              "function": "get_all_attendance"
+            }
+          ],
+          "sha256": "f87fc458152410b0ca8002c7ed63b02e1630a5c1bd93585943e17448b3078bd2"
+        },
+        "test_app.py": {
+          "functions": [
+            {
+              "name": "setUp",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_students_empty",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_student_missing_name",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_duplicate_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_student_not_found",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_valid",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_invalid_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_missing_date",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_invalid_date_format",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_duplicate_attendance",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_attendance",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_all_attendance",
+              "args": [
+                "self"
+              ]
+            }
+          ],
+          "routes": [],
+          "sha256": "dc6368fb07db2ac76c1db98dd1e480d23cc5451ff746c5231410e799daa919ca"
+        }
+      },
+      "checks": [
+        {
+          "property": "runnable_flask",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "student_creation_json",
+          "passed": true,
+          "detail": "(201, {'email': '', 'id': 734, 'name': 'Independent diagnostic student'})"
+        },
+        {
+          "property": "student_stored",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "valid_attendance_json",
+          "passed": false,
+          "detail": "('/api/attendance/734', 404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "missing_fields",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "invalid_status",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "invalid_date",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "malformed_json_rejected_as_json",
+          "passed": false,
+          "detail": "(400, '<!doctype html>\\n<html lang=en>\\n<title>400 Bad Request</title>\\n<h1>Bad Request</h1>\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\n')"
+        },
+        {
+          "property": "unknown_student_rejected",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "readme_present",
+          "passed": false,
+          "detail": ""
+        },
+        {
+          "property": "requested_test_present",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "passed_properties": [
+        "invalid_date",
+        "invalid_status",
+        "missing_fields",
+        "requested_test_present",
+        "runnable_flask",
+        "student_creation_json",
+        "student_stored",
+        "unknown_student_rejected"
+      ],
+      "lost_previously_passing_properties": [],
+      "removed_symbols": {},
+      "container_executed": true,
+      "exit_code": 0,
+      "stdout": "ATTENDANCE_DIAGNOSTIC=[{\"property\": \"runnable_flask\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"student_creation_json\", \"passed\": true, \"detail\": \"(201, {'email': '', 'id': 734, 'name': 'Independent diagnostic student'})\"}, {\"property\": \"student_stored\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"valid_attendance_json\", \"passed\": false, \"detail\": \"('/api/attendance/734', 404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"missing_fields\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"invalid_status\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"invalid_date\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"malformed_json_rejected_as_json\", \"passed\": false, \"detail\": \"(400, '<!doctype html>\\\\n<html lang=en>\\\\n<title>400 Bad Request</title>\\\\n<h1>Bad Request</h1>\\\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\\\n')\"}, {\"property\": \"unknown_student_rejected\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"readme_present\", \"passed\": false, \"detail\": \"\"}, {\"property\": \"requested_test_present\", \"passed\": true, \"detail\": \"\"}]\n",
+      "stderr": "",
+      "failure_category": "GENERATION",
+      "classification_basis": "Independently executed observable properties; no router or handoff blame inferred."
+    },
+    {
+      "task_id": "272798546719432dbe71fe575a6d8787",
+      "stage": 4,
+      "event_index": 4,
+      "operation": "write_file",
+      "path": "test_app.py",
+      "candidate_revision": "cb5d9340f863a9c83403bb69e8d272f9c1b981ea98c448b2b62d6d4f2081dc35",
+      "inventory": {
+        "app.py": {
+          "functions": [
+            {
+              "name": "get_students",
+              "args": []
+            },
+            {
+              "name": "get_student",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student",
+              "args": []
+            },
+            {
+              "name": "mark_attendance",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_attendance",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_all_attendance",
+              "args": []
+            }
+          ],
+          "routes": [
+            {
+              "path": "/api/students",
+              "method_decorator": "route",
+              "function": "get_students"
+            },
+            {
+              "path": "/api/students/<student_id>",
+              "method_decorator": "route",
+              "function": "get_student"
+            },
+            {
+              "path": "/api/students",
+              "method_decorator": "route",
+              "function": "add_student"
+            },
+            {
+              "path": "/api/attendance/<student_id>",
+              "method_decorator": "route",
+              "function": "mark_attendance"
+            },
+            {
+              "path": "/api/attendance/<student_id>",
+              "method_decorator": "route",
+              "function": "get_attendance"
+            },
+            {
+              "path": "/api/attendance",
+              "method_decorator": "route",
+              "function": "get_all_attendance"
+            }
+          ],
+          "sha256": "f87fc458152410b0ca8002c7ed63b02e1630a5c1bd93585943e17448b3078bd2"
+        },
+        "test_app.py": {
+          "functions": [
+            {
+              "name": "setUp",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_students_empty",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_student_missing_name",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_duplicate_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_student_not_found",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_valid",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_invalid_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_missing_date",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_invalid_date_format",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_duplicate_attendance",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_attendance",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_all_attendance",
+              "args": [
+                "self"
+              ]
+            }
+          ],
+          "routes": [],
+          "sha256": "1b6a59fe491c5b69dffe5ea200bacbdc61c51849257813f9f7b7eb44950fed0e"
+        }
+      },
+      "checks": [
+        {
+          "property": "runnable_flask",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "student_creation_json",
+          "passed": true,
+          "detail": "(201, {'email': '', 'id': 734, 'name': 'Independent diagnostic student'})"
+        },
+        {
+          "property": "student_stored",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "valid_attendance_json",
+          "passed": false,
+          "detail": "('/api/attendance/734', 404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "missing_fields",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "invalid_status",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "invalid_date",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "malformed_json_rejected_as_json",
+          "passed": false,
+          "detail": "(400, '<!doctype html>\\n<html lang=en>\\n<title>400 Bad Request</title>\\n<h1>Bad Request</h1>\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\n')"
+        },
+        {
+          "property": "unknown_student_rejected",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "readme_present",
+          "passed": false,
+          "detail": ""
+        },
+        {
+          "property": "requested_test_present",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "passed_properties": [
+        "invalid_date",
+        "invalid_status",
+        "missing_fields",
+        "requested_test_present",
+        "runnable_flask",
+        "student_creation_json",
+        "student_stored",
+        "unknown_student_rejected"
+      ],
+      "lost_previously_passing_properties": [],
+      "removed_symbols": {},
+      "container_executed": true,
+      "exit_code": 0,
+      "stdout": "ATTENDANCE_DIAGNOSTIC=[{\"property\": \"runnable_flask\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"student_creation_json\", \"passed\": true, \"detail\": \"(201, {'email': '', 'id': 734, 'name': 'Independent diagnostic student'})\"}, {\"property\": \"student_stored\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"valid_attendance_json\", \"passed\": false, \"detail\": \"('/api/attendance/734', 404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"missing_fields\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"invalid_status\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"invalid_date\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"malformed_json_rejected_as_json\", \"passed\": false, \"detail\": \"(400, '<!doctype html>\\\\n<html lang=en>\\\\n<title>400 Bad Request</title>\\\\n<h1>Bad Request</h1>\\\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\\\n')\"}, {\"property\": \"unknown_student_rejected\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"readme_present\", \"passed\": false, \"detail\": \"\"}, {\"property\": \"requested_test_present\", \"passed\": true, \"detail\": \"\"}]\n",
+      "stderr": "",
+      "failure_category": "GENERATION",
+      "classification_basis": "Independently executed observable properties; no router or handoff blame inferred."
+    },
+    {
+      "task_id": "272798546719432dbe71fe575a6d8787",
+      "stage": 5,
+      "event_index": 5,
+      "operation": "write_file",
+      "path": "test_app.py",
+      "candidate_revision": "53bdea704ab04c005dbba34caf00cdc415bc33e0b6ab050f5712e4dbbe704627",
+      "inventory": {
+        "app.py": {
+          "functions": [
+            {
+              "name": "get_students",
+              "args": []
+            },
+            {
+              "name": "get_student",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student",
+              "args": []
+            },
+            {
+              "name": "mark_attendance",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_attendance",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_all_attendance",
+              "args": []
+            }
+          ],
+          "routes": [
+            {
+              "path": "/api/students",
+              "method_decorator": "route",
+              "function": "get_students"
+            },
+            {
+              "path": "/api/students/<student_id>",
+              "method_decorator": "route",
+              "function": "get_student"
+            },
+            {
+              "path": "/api/students",
+              "method_decorator": "route",
+              "function": "add_student"
+            },
+            {
+              "path": "/api/attendance/<student_id>",
+              "method_decorator": "route",
+              "function": "mark_attendance"
+            },
+            {
+              "path": "/api/attendance/<student_id>",
+              "method_decorator": "route",
+              "function": "get_attendance"
+            },
+            {
+              "path": "/api/attendance",
+              "method_decorator": "route",
+              "function": "get_all_attendance"
+            }
+          ],
+          "sha256": "f87fc458152410b0ca8002c7ed63b02e1630a5c1bd93585943e17448b3078bd2"
+        },
+        "test_app.py": {
+          "functions": [
+            {
+              "name": "setUp",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_students_empty",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_student_missing_name",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_duplicate_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_student_not_found",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_valid",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_invalid_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_missing_date",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_invalid_date_format",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_duplicate_attendance",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_attendance",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_all_attendance",
+              "args": [
+                "self"
+              ]
+            }
+          ],
+          "routes": [],
+          "sha256": "8e787956a1774504363efea824e44de4c0537d78c1a85829047f810b56f3403c"
+        }
+      },
+      "checks": [
+        {
+          "property": "runnable_flask",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "student_creation_json",
+          "passed": true,
+          "detail": "(201, {'email': '', 'id': 734, 'name': 'Independent diagnostic student'})"
+        },
+        {
+          "property": "student_stored",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "valid_attendance_json",
+          "passed": false,
+          "detail": "('/api/attendance/734', 404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "missing_fields",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "invalid_status",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "invalid_date",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "malformed_json_rejected_as_json",
+          "passed": false,
+          "detail": "(400, '<!doctype html>\\n<html lang=en>\\n<title>400 Bad Request</title>\\n<h1>Bad Request</h1>\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\n')"
+        },
+        {
+          "property": "unknown_student_rejected",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "readme_present",
+          "passed": false,
+          "detail": ""
+        },
+        {
+          "property": "requested_test_present",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "passed_properties": [
+        "invalid_date",
+        "invalid_status",
+        "missing_fields",
+        "requested_test_present",
+        "runnable_flask",
+        "student_creation_json",
+        "student_stored",
+        "unknown_student_rejected"
+      ],
+      "lost_previously_passing_properties": [],
+      "removed_symbols": {},
+      "container_executed": true,
+      "exit_code": 0,
+      "stdout": "ATTENDANCE_DIAGNOSTIC=[{\"property\": \"runnable_flask\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"student_creation_json\", \"passed\": true, \"detail\": \"(201, {'email': '', 'id': 734, 'name': 'Independent diagnostic student'})\"}, {\"property\": \"student_stored\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"valid_attendance_json\", \"passed\": false, \"detail\": \"('/api/attendance/734', 404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"missing_fields\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"invalid_status\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"invalid_date\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"malformed_json_rejected_as_json\", \"passed\": false, \"detail\": \"(400, '<!doctype html>\\\\n<html lang=en>\\\\n<title>400 Bad Request</title>\\\\n<h1>Bad Request</h1>\\\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\\\n')\"}, {\"property\": \"unknown_student_rejected\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"readme_present\", \"passed\": false, \"detail\": \"\"}, {\"property\": \"requested_test_present\", \"passed\": true, \"detail\": \"\"}]\n",
+      "stderr": "",
+      "failure_category": "GENERATION",
+      "classification_basis": "Independently executed observable properties; no router or handoff blame inferred."
+    },
+    {
+      "task_id": "272798546719432dbe71fe575a6d8787",
+      "stage": 6,
+      "event_index": 7,
+      "operation": "write_file",
+      "path": "test_app.py",
+      "candidate_revision": "f08c798ca312edcc8d15da2258de3f8745e7e664ecd4b8e33dbb2116502e422d",
+      "inventory": {
+        "app.py": {
+          "functions": [
+            {
+              "name": "get_students",
+              "args": []
+            },
+            {
+              "name": "get_student",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student",
+              "args": []
+            },
+            {
+              "name": "mark_attendance",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_attendance",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_all_attendance",
+              "args": []
+            }
+          ],
+          "routes": [
+            {
+              "path": "/api/students",
+              "method_decorator": "route",
+              "function": "get_students"
+            },
+            {
+              "path": "/api/students/<student_id>",
+              "method_decorator": "route",
+              "function": "get_student"
+            },
+            {
+              "path": "/api/students",
+              "method_decorator": "route",
+              "function": "add_student"
+            },
+            {
+              "path": "/api/attendance/<student_id>",
+              "method_decorator": "route",
+              "function": "mark_attendance"
+            },
+            {
+              "path": "/api/attendance/<student_id>",
+              "method_decorator": "route",
+              "function": "get_attendance"
+            },
+            {
+              "path": "/api/attendance",
+              "method_decorator": "route",
+              "function": "get_all_attendance"
+            }
+          ],
+          "sha256": "f87fc458152410b0ca8002c7ed63b02e1630a5c1bd93585943e17448b3078bd2"
+        },
+        "test_app.py": {
+          "functions": [
+            {
+              "name": "setUp",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_students_empty",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_student_missing_name",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_duplicate_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_student_not_found",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_valid",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_invalid_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_missing_date",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_invalid_date_format",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_duplicate_attendance",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_attendance",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_all_attendance",
+              "args": [
+                "self"
+              ]
+            }
+          ],
+          "routes": [],
+          "sha256": "1fc5d7ae9105847c7a7e1b97e2c57ea22b318443bee184974957942a4dc1fbd8"
+        }
+      },
+      "checks": [
+        {
+          "property": "runnable_flask",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "student_creation_json",
+          "passed": true,
+          "detail": "(201, {'email': '', 'id': 734, 'name': 'Independent diagnostic student'})"
+        },
+        {
+          "property": "student_stored",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "valid_attendance_json",
+          "passed": false,
+          "detail": "('/api/attendance/734', 404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "missing_fields",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "invalid_status",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "invalid_date",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "malformed_json_rejected_as_json",
+          "passed": false,
+          "detail": "(400, '<!doctype html>\\n<html lang=en>\\n<title>400 Bad Request</title>\\n<h1>Bad Request</h1>\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\n')"
+        },
+        {
+          "property": "unknown_student_rejected",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "readme_present",
+          "passed": false,
+          "detail": ""
+        },
+        {
+          "property": "requested_test_present",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "passed_properties": [
+        "invalid_date",
+        "invalid_status",
+        "missing_fields",
+        "requested_test_present",
+        "runnable_flask",
+        "student_creation_json",
+        "student_stored",
+        "unknown_student_rejected"
+      ],
+      "lost_previously_passing_properties": [],
+      "removed_symbols": {},
+      "container_executed": true,
+      "exit_code": 0,
+      "stdout": "ATTENDANCE_DIAGNOSTIC=[{\"property\": \"runnable_flask\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"student_creation_json\", \"passed\": true, \"detail\": \"(201, {'email': '', 'id': 734, 'name': 'Independent diagnostic student'})\"}, {\"property\": \"student_stored\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"valid_attendance_json\", \"passed\": false, \"detail\": \"('/api/attendance/734', 404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"missing_fields\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"invalid_status\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"invalid_date\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"malformed_json_rejected_as_json\", \"passed\": false, \"detail\": \"(400, '<!doctype html>\\\\n<html lang=en>\\\\n<title>400 Bad Request</title>\\\\n<h1>Bad Request</h1>\\\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\\\n')\"}, {\"property\": \"unknown_student_rejected\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"readme_present\", \"passed\": false, \"detail\": \"\"}, {\"property\": \"requested_test_present\", \"passed\": true, \"detail\": \"\"}]\n",
+      "stderr": "",
+      "failure_category": "GENERATION",
+      "classification_basis": "Independently executed observable properties; no router or handoff blame inferred."
+    },
+    {
+      "task_id": "272798546719432dbe71fe575a6d8787",
+      "stage": 7,
+      "event_index": 8,
+      "operation": "write_file",
+      "path": "README.md",
+      "candidate_revision": "572e3807ca4ab25807d0c574d6ba676a653adf7d882154d44f60bb4f69a7acdd",
+      "inventory": {
+        "app.py": {
+          "functions": [
+            {
+              "name": "get_students",
+              "args": []
+            },
+            {
+              "name": "get_student",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student",
+              "args": []
+            },
+            {
+              "name": "mark_attendance",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_attendance",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_all_attendance",
+              "args": []
+            }
+          ],
+          "routes": [
+            {
+              "path": "/api/students",
+              "method_decorator": "route",
+              "function": "get_students"
+            },
+            {
+              "path": "/api/students/<student_id>",
+              "method_decorator": "route",
+              "function": "get_student"
+            },
+            {
+              "path": "/api/students",
+              "method_decorator": "route",
+              "function": "add_student"
+            },
+            {
+              "path": "/api/attendance/<student_id>",
+              "method_decorator": "route",
+              "function": "mark_attendance"
+            },
+            {
+              "path": "/api/attendance/<student_id>",
+              "method_decorator": "route",
+              "function": "get_attendance"
+            },
+            {
+              "path": "/api/attendance",
+              "method_decorator": "route",
+              "function": "get_all_attendance"
+            }
+          ],
+          "sha256": "f87fc458152410b0ca8002c7ed63b02e1630a5c1bd93585943e17448b3078bd2"
+        },
+        "test_app.py": {
+          "functions": [
+            {
+              "name": "setUp",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_students_empty",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_student_missing_name",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_duplicate_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_student_not_found",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_valid",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_invalid_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_missing_date",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_invalid_date_format",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_duplicate_attendance",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_attendance",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_all_attendance",
+              "args": [
+                "self"
+              ]
+            }
+          ],
+          "routes": [],
+          "sha256": "1fc5d7ae9105847c7a7e1b97e2c57ea22b318443bee184974957942a4dc1fbd8"
+        }
+      },
+      "checks": [
+        {
+          "property": "runnable_flask",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "student_creation_json",
+          "passed": true,
+          "detail": "(201, {'email': '', 'id': 734, 'name': 'Independent diagnostic student'})"
+        },
+        {
+          "property": "student_stored",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "valid_attendance_json",
+          "passed": false,
+          "detail": "('/api/attendance/734', 404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "missing_fields",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "invalid_status",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "invalid_date",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "malformed_json_rejected_as_json",
+          "passed": false,
+          "detail": "(400, '<!doctype html>\\n<html lang=en>\\n<title>400 Bad Request</title>\\n<h1>Bad Request</h1>\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\n')"
+        },
+        {
+          "property": "unknown_student_rejected",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "readme_present",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "requested_test_present",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "passed_properties": [
+        "invalid_date",
+        "invalid_status",
+        "missing_fields",
+        "readme_present",
+        "requested_test_present",
+        "runnable_flask",
+        "student_creation_json",
+        "student_stored",
+        "unknown_student_rejected"
+      ],
+      "lost_previously_passing_properties": [],
+      "removed_symbols": {},
+      "container_executed": true,
+      "exit_code": 0,
+      "stdout": "ATTENDANCE_DIAGNOSTIC=[{\"property\": \"runnable_flask\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"student_creation_json\", \"passed\": true, \"detail\": \"(201, {'email': '', 'id': 734, 'name': 'Independent diagnostic student'})\"}, {\"property\": \"student_stored\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"valid_attendance_json\", \"passed\": false, \"detail\": \"('/api/attendance/734', 404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"missing_fields\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"invalid_status\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"invalid_date\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"malformed_json_rejected_as_json\", \"passed\": false, \"detail\": \"(400, '<!doctype html>\\\\n<html lang=en>\\\\n<title>400 Bad Request</title>\\\\n<h1>Bad Request</h1>\\\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\\\n')\"}, {\"property\": \"unknown_student_rejected\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"readme_present\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"requested_test_present\", \"passed\": true, \"detail\": \"\"}]\n",
+      "stderr": "",
+      "failure_category": "GENERATION",
+      "classification_basis": "Independently executed observable properties; no router or handoff blame inferred."
+    },
+    {
+      "task_id": "a2fb805769d343f9a0ae1b5979cefe16",
+      "stage": 1,
+      "event_index": 1,
+      "operation": "write_file",
+      "path": "app.py",
+      "candidate_revision": "ce2927d795dedb2630d9f795691985af8fd4cc2da8970ab423463eebb7682277",
+      "inventory": {
+        "app.py": {
+          "functions": [
+            {
+              "name": "get_student_by_id",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student",
+              "args": [
+                "student_data"
+              ]
+            },
+            {
+              "name": "add_attendance",
+              "args": [
+                "student_id",
+                "date",
+                "status"
+              ]
+            },
+            {
+              "name": "get_students",
+              "args": []
+            },
+            {
+              "name": "get_student",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student_endpoint",
+              "args": []
+            },
+            {
+              "name": "add_attendance_endpoint",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_attendance",
+              "args": [
+                "student_id"
+              ]
+            }
+          ],
+          "routes": [
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "get_students"
+            },
+            {
+              "path": "/students/<int:student_id>",
+              "method_decorator": "route",
+              "function": "get_student"
+            },
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "add_student_endpoint"
+            },
+            {
+              "path": "/attendance/<int:student_id>",
+              "method_decorator": "route",
+              "function": "add_attendance_endpoint"
+            },
+            {
+              "path": "/attendance/<int:student_id>",
+              "method_decorator": "route",
+              "function": "get_attendance"
+            }
+          ],
+          "sha256": "dc4d943c6a1d6abe08a9319ce8c98dc558fcf8fe2ad592ae94b74681d0fda187"
+        }
+      },
+      "checks": [
+        {
+          "property": "runnable_flask",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "student_creation_json",
+          "passed": true,
+          "detail": "(200, {'message': 'Student added successfully', 'student': {'id': 734, 'name': 'Independent diagnostic student'}})"
+        },
+        {
+          "property": "student_stored",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "valid_attendance_json",
+          "passed": true,
+          "detail": "('/attendance/734', 200, '{\"message\":\"Attendance recorded successfully\",\"record\":{\"date\":\"2026-10-06\",\"status\":\"present\",\"student_id\":734}}\\n')"
+        },
+        {
+          "property": "missing_fields",
+          "passed": true,
+          "detail": "(400, '{\"error\":\"No JSON data provided\"}\\n')"
+        },
+        {
+          "property": "invalid_status",
+          "passed": false,
+          "detail": "(200, '{\"error\":\"Invalid status. Must be one of: present, absent, late\"}\\n')"
+        },
+        {
+          "property": "invalid_date",
+          "passed": false,
+          "detail": "(200, '{\"message\":\"Attendance recorded successfully\",\"record\":{\"date\":\"not-a-date\",\"status\":\"present\",\"student_id\":734}}\\n')"
+        },
+        {
+          "property": "malformed_json_rejected_as_json",
+          "passed": false,
+          "detail": "(400, '<!doctype html>\\n<html lang=en>\\n<title>400 Bad Request</title>\\n<h1>Bad Request</h1>\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\n')"
+        },
+        {
+          "property": "unknown_student_rejected",
+          "passed": false,
+          "detail": "(200, '{\"error\":\"Student with ID 999999 not found\"}\\n')"
+        },
+        {
+          "property": "readme_present",
+          "passed": false,
+          "detail": ""
+        },
+        {
+          "property": "requested_test_present",
+          "passed": false,
+          "detail": ""
+        }
+      ],
+      "passed_properties": [
+        "missing_fields",
+        "runnable_flask",
+        "student_creation_json",
+        "student_stored",
+        "valid_attendance_json"
+      ],
+      "lost_previously_passing_properties": [],
+      "removed_symbols": {},
+      "container_executed": true,
+      "exit_code": 0,
+      "stdout": "ATTENDANCE_DIAGNOSTIC=[{\"property\": \"runnable_flask\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"student_creation_json\", \"passed\": true, \"detail\": \"(200, {'message': 'Student added successfully', 'student': {'id': 734, 'name': 'Independent diagnostic student'}})\"}, {\"property\": \"student_stored\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"valid_attendance_json\", \"passed\": true, \"detail\": \"('/attendance/734', 200, '{\\\"message\\\":\\\"Attendance recorded successfully\\\",\\\"record\\\":{\\\"date\\\":\\\"2026-10-06\\\",\\\"status\\\":\\\"present\\\",\\\"student_id\\\":734}}\\\\n')\"}, {\"property\": \"missing_fields\", \"passed\": true, \"detail\": \"(400, '{\\\"error\\\":\\\"No JSON data provided\\\"}\\\\n')\"}, {\"property\": \"invalid_status\", \"passed\": false, \"detail\": \"(200, '{\\\"error\\\":\\\"Invalid status. Must be one of: present, absent, late\\\"}\\\\n')\"}, {\"property\": \"invalid_date\", \"passed\": false, \"detail\": \"(200, '{\\\"message\\\":\\\"Attendance recorded successfully\\\",\\\"record\\\":{\\\"date\\\":\\\"not-a-date\\\",\\\"status\\\":\\\"present\\\",\\\"student_id\\\":734}}\\\\n')\"}, {\"property\": \"malformed_json_rejected_as_json\", \"passed\": false, \"detail\": \"(400, '<!doctype html>\\\\n<html lang=en>\\\\n<title>400 Bad Request</title>\\\\n<h1>Bad Request</h1>\\\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\\\n')\"}, {\"property\": \"unknown_student_rejected\", \"passed\": false, \"detail\": \"(200, '{\\\"error\\\":\\\"Student with ID 999999 not found\\\"}\\\\n')\"}, {\"property\": \"readme_present\", \"passed\": false, \"detail\": \"\"}, {\"property\": \"requested_test_present\", \"passed\": false, \"detail\": \"\"}]\n",
+      "stderr": "",
+      "failure_category": "GENERATION",
+      "classification_basis": "Independently executed observable properties; no router or handoff blame inferred."
+    },
+    {
+      "task_id": "a2fb805769d343f9a0ae1b5979cefe16",
+      "stage": 2,
+      "event_index": 2,
+      "operation": "write_file",
+      "path": "requirements.txt",
+      "candidate_revision": "ebb1fa1f9abd4888cc291a646ea6632645e0cebac7afda5616ab5b4a44945c1e",
+      "inventory": {
+        "app.py": {
+          "functions": [
+            {
+              "name": "get_student_by_id",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student",
+              "args": [
+                "student_data"
+              ]
+            },
+            {
+              "name": "add_attendance",
+              "args": [
+                "student_id",
+                "date",
+                "status"
+              ]
+            },
+            {
+              "name": "get_students",
+              "args": []
+            },
+            {
+              "name": "get_student",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student_endpoint",
+              "args": []
+            },
+            {
+              "name": "add_attendance_endpoint",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_attendance",
+              "args": [
+                "student_id"
+              ]
+            }
+          ],
+          "routes": [
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "get_students"
+            },
+            {
+              "path": "/students/<int:student_id>",
+              "method_decorator": "route",
+              "function": "get_student"
+            },
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "add_student_endpoint"
+            },
+            {
+              "path": "/attendance/<int:student_id>",
+              "method_decorator": "route",
+              "function": "add_attendance_endpoint"
+            },
+            {
+              "path": "/attendance/<int:student_id>",
+              "method_decorator": "route",
+              "function": "get_attendance"
+            }
+          ],
+          "sha256": "dc4d943c6a1d6abe08a9319ce8c98dc558fcf8fe2ad592ae94b74681d0fda187"
+        }
+      },
+      "checks": [
+        {
+          "property": "runnable_flask",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "student_creation_json",
+          "passed": true,
+          "detail": "(200, {'message': 'Student added successfully', 'student': {'id': 734, 'name': 'Independent diagnostic student'}})"
+        },
+        {
+          "property": "student_stored",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "valid_attendance_json",
+          "passed": true,
+          "detail": "('/attendance/734', 200, '{\"message\":\"Attendance recorded successfully\",\"record\":{\"date\":\"2026-10-06\",\"status\":\"present\",\"student_id\":734}}\\n')"
+        },
+        {
+          "property": "missing_fields",
+          "passed": true,
+          "detail": "(400, '{\"error\":\"No JSON data provided\"}\\n')"
+        },
+        {
+          "property": "invalid_status",
+          "passed": false,
+          "detail": "(200, '{\"error\":\"Invalid status. Must be one of: present, absent, late\"}\\n')"
+        },
+        {
+          "property": "invalid_date",
+          "passed": false,
+          "detail": "(200, '{\"message\":\"Attendance recorded successfully\",\"record\":{\"date\":\"not-a-date\",\"status\":\"present\",\"student_id\":734}}\\n')"
+        },
+        {
+          "property": "malformed_json_rejected_as_json",
+          "passed": false,
+          "detail": "(400, '<!doctype html>\\n<html lang=en>\\n<title>400 Bad Request</title>\\n<h1>Bad Request</h1>\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\n')"
+        },
+        {
+          "property": "unknown_student_rejected",
+          "passed": false,
+          "detail": "(200, '{\"error\":\"Student with ID 999999 not found\"}\\n')"
+        },
+        {
+          "property": "readme_present",
+          "passed": false,
+          "detail": ""
+        },
+        {
+          "property": "requested_test_present",
+          "passed": false,
+          "detail": ""
+        }
+      ],
+      "passed_properties": [
+        "missing_fields",
+        "runnable_flask",
+        "student_creation_json",
+        "student_stored",
+        "valid_attendance_json"
+      ],
+      "lost_previously_passing_properties": [],
+      "removed_symbols": {},
+      "container_executed": true,
+      "exit_code": 0,
+      "stdout": "ATTENDANCE_DIAGNOSTIC=[{\"property\": \"runnable_flask\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"student_creation_json\", \"passed\": true, \"detail\": \"(200, {'message': 'Student added successfully', 'student': {'id': 734, 'name': 'Independent diagnostic student'}})\"}, {\"property\": \"student_stored\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"valid_attendance_json\", \"passed\": true, \"detail\": \"('/attendance/734', 200, '{\\\"message\\\":\\\"Attendance recorded successfully\\\",\\\"record\\\":{\\\"date\\\":\\\"2026-10-06\\\",\\\"status\\\":\\\"present\\\",\\\"student_id\\\":734}}\\\\n')\"}, {\"property\": \"missing_fields\", \"passed\": true, \"detail\": \"(400, '{\\\"error\\\":\\\"No JSON data provided\\\"}\\\\n')\"}, {\"property\": \"invalid_status\", \"passed\": false, \"detail\": \"(200, '{\\\"error\\\":\\\"Invalid status. Must be one of: present, absent, late\\\"}\\\\n')\"}, {\"property\": \"invalid_date\", \"passed\": false, \"detail\": \"(200, '{\\\"message\\\":\\\"Attendance recorded successfully\\\",\\\"record\\\":{\\\"date\\\":\\\"not-a-date\\\",\\\"status\\\":\\\"present\\\",\\\"student_id\\\":734}}\\\\n')\"}, {\"property\": \"malformed_json_rejected_as_json\", \"passed\": false, \"detail\": \"(400, '<!doctype html>\\\\n<html lang=en>\\\\n<title>400 Bad Request</title>\\\\n<h1>Bad Request</h1>\\\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\\\n')\"}, {\"property\": \"unknown_student_rejected\", \"passed\": false, \"detail\": \"(200, '{\\\"error\\\":\\\"Student with ID 999999 not found\\\"}\\\\n')\"}, {\"property\": \"readme_present\", \"passed\": false, \"detail\": \"\"}, {\"property\": \"requested_test_present\", \"passed\": false, \"detail\": \"\"}]\n",
+      "stderr": "",
+      "failure_category": "GENERATION",
+      "classification_basis": "Independently executed observable properties; no router or handoff blame inferred."
+    },
+    {
+      "task_id": "a2fb805769d343f9a0ae1b5979cefe16",
+      "stage": 3,
+      "event_index": 3,
+      "operation": "write_file",
+      "path": "README.md",
+      "candidate_revision": "292caf2d6cadacefb0f4a14cf1b96910d520dd0638082d401c9fee9541d1adab",
+      "inventory": {
+        "app.py": {
+          "functions": [
+            {
+              "name": "get_student_by_id",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student",
+              "args": [
+                "student_data"
+              ]
+            },
+            {
+              "name": "add_attendance",
+              "args": [
+                "student_id",
+                "date",
+                "status"
+              ]
+            },
+            {
+              "name": "get_students",
+              "args": []
+            },
+            {
+              "name": "get_student",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student_endpoint",
+              "args": []
+            },
+            {
+              "name": "add_attendance_endpoint",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_attendance",
+              "args": [
+                "student_id"
+              ]
+            }
+          ],
+          "routes": [
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "get_students"
+            },
+            {
+              "path": "/students/<int:student_id>",
+              "method_decorator": "route",
+              "function": "get_student"
+            },
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "add_student_endpoint"
+            },
+            {
+              "path": "/attendance/<int:student_id>",
+              "method_decorator": "route",
+              "function": "add_attendance_endpoint"
+            },
+            {
+              "path": "/attendance/<int:student_id>",
+              "method_decorator": "route",
+              "function": "get_attendance"
+            }
+          ],
+          "sha256": "dc4d943c6a1d6abe08a9319ce8c98dc558fcf8fe2ad592ae94b74681d0fda187"
+        }
+      },
+      "checks": [
+        {
+          "property": "runnable_flask",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "student_creation_json",
+          "passed": true,
+          "detail": "(200, {'message': 'Student added successfully', 'student': {'id': 734, 'name': 'Independent diagnostic student'}})"
+        },
+        {
+          "property": "student_stored",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "valid_attendance_json",
+          "passed": true,
+          "detail": "('/attendance/734', 200, '{\"message\":\"Attendance recorded successfully\",\"record\":{\"date\":\"2026-10-06\",\"status\":\"present\",\"student_id\":734}}\\n')"
+        },
+        {
+          "property": "missing_fields",
+          "passed": true,
+          "detail": "(400, '{\"error\":\"No JSON data provided\"}\\n')"
+        },
+        {
+          "property": "invalid_status",
+          "passed": false,
+          "detail": "(200, '{\"error\":\"Invalid status. Must be one of: present, absent, late\"}\\n')"
+        },
+        {
+          "property": "invalid_date",
+          "passed": false,
+          "detail": "(200, '{\"message\":\"Attendance recorded successfully\",\"record\":{\"date\":\"not-a-date\",\"status\":\"present\",\"student_id\":734}}\\n')"
+        },
+        {
+          "property": "malformed_json_rejected_as_json",
+          "passed": false,
+          "detail": "(400, '<!doctype html>\\n<html lang=en>\\n<title>400 Bad Request</title>\\n<h1>Bad Request</h1>\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\n')"
+        },
+        {
+          "property": "unknown_student_rejected",
+          "passed": false,
+          "detail": "(200, '{\"error\":\"Student with ID 999999 not found\"}\\n')"
+        },
+        {
+          "property": "readme_present",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "requested_test_present",
+          "passed": false,
+          "detail": ""
+        }
+      ],
+      "passed_properties": [
+        "missing_fields",
+        "readme_present",
+        "runnable_flask",
+        "student_creation_json",
+        "student_stored",
+        "valid_attendance_json"
+      ],
+      "lost_previously_passing_properties": [],
+      "removed_symbols": {},
+      "container_executed": true,
+      "exit_code": 0,
+      "stdout": "ATTENDANCE_DIAGNOSTIC=[{\"property\": \"runnable_flask\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"student_creation_json\", \"passed\": true, \"detail\": \"(200, {'message': 'Student added successfully', 'student': {'id': 734, 'name': 'Independent diagnostic student'}})\"}, {\"property\": \"student_stored\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"valid_attendance_json\", \"passed\": true, \"detail\": \"('/attendance/734', 200, '{\\\"message\\\":\\\"Attendance recorded successfully\\\",\\\"record\\\":{\\\"date\\\":\\\"2026-10-06\\\",\\\"status\\\":\\\"present\\\",\\\"student_id\\\":734}}\\\\n')\"}, {\"property\": \"missing_fields\", \"passed\": true, \"detail\": \"(400, '{\\\"error\\\":\\\"No JSON data provided\\\"}\\\\n')\"}, {\"property\": \"invalid_status\", \"passed\": false, \"detail\": \"(200, '{\\\"error\\\":\\\"Invalid status. Must be one of: present, absent, late\\\"}\\\\n')\"}, {\"property\": \"invalid_date\", \"passed\": false, \"detail\": \"(200, '{\\\"message\\\":\\\"Attendance recorded successfully\\\",\\\"record\\\":{\\\"date\\\":\\\"not-a-date\\\",\\\"status\\\":\\\"present\\\",\\\"student_id\\\":734}}\\\\n')\"}, {\"property\": \"malformed_json_rejected_as_json\", \"passed\": false, \"detail\": \"(400, '<!doctype html>\\\\n<html lang=en>\\\\n<title>400 Bad Request</title>\\\\n<h1>Bad Request</h1>\\\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\\\n')\"}, {\"property\": \"unknown_student_rejected\", \"passed\": false, \"detail\": \"(200, '{\\\"error\\\":\\\"Student with ID 999999 not found\\\"}\\\\n')\"}, {\"property\": \"readme_present\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"requested_test_present\", \"passed\": false, \"detail\": \"\"}]\n",
+      "stderr": "",
+      "failure_category": "GENERATION",
+      "classification_basis": "Independently executed observable properties; no router or handoff blame inferred."
+    },
+    {
+      "task_id": "a2fb805769d343f9a0ae1b5979cefe16",
+      "stage": 4,
+      "event_index": 4,
+      "operation": "write_file",
+      "path": "test_app.py",
+      "candidate_revision": "f589f12d898b124da0ac7c048f990bc8cbc6212fce460f3df41dc557011d514a",
+      "inventory": {
+        "app.py": {
+          "functions": [
+            {
+              "name": "get_student_by_id",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student",
+              "args": [
+                "student_data"
+              ]
+            },
+            {
+              "name": "add_attendance",
+              "args": [
+                "student_id",
+                "date",
+                "status"
+              ]
+            },
+            {
+              "name": "get_students",
+              "args": []
+            },
+            {
+              "name": "get_student",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student_endpoint",
+              "args": []
+            },
+            {
+              "name": "add_attendance_endpoint",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_attendance",
+              "args": [
+                "student_id"
+              ]
+            }
+          ],
+          "routes": [
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "get_students"
+            },
+            {
+              "path": "/students/<int:student_id>",
+              "method_decorator": "route",
+              "function": "get_student"
+            },
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "add_student_endpoint"
+            },
+            {
+              "path": "/attendance/<int:student_id>",
+              "method_decorator": "route",
+              "function": "add_attendance_endpoint"
+            },
+            {
+              "path": "/attendance/<int:student_id>",
+              "method_decorator": "route",
+              "function": "get_attendance"
+            }
+          ],
+          "sha256": "dc4d943c6a1d6abe08a9319ce8c98dc558fcf8fe2ad592ae94b74681d0fda187"
+        },
+        "test_app.py": {
+          "functions": [
+            {
+              "name": "setUp",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_students_empty",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_duplicate_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_nonexistent_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_valid",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_invalid_status",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_missing_date",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_missing_status",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_nonexistent_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_invalid_date_format",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_attendance_records",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_all_valid_statuses",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_no_json_data",
+              "args": [
+                "self"
+              ]
+            }
+          ],
+          "routes": [],
+          "sha256": "c19a758ef6bb02fba17255dca7091c47389b2d098dcd809aa0af0d7ef77741d1"
+        }
+      },
+      "checks": [
+        {
+          "property": "runnable_flask",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "student_creation_json",
+          "passed": true,
+          "detail": "(200, {'message': 'Student added successfully', 'student': {'id': 734, 'name': 'Independent diagnostic student'}})"
+        },
+        {
+          "property": "student_stored",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "valid_attendance_json",
+          "passed": true,
+          "detail": "('/attendance/734', 200, '{\"message\":\"Attendance recorded successfully\",\"record\":{\"date\":\"2026-10-06\",\"status\":\"present\",\"student_id\":734}}\\n')"
+        },
+        {
+          "property": "missing_fields",
+          "passed": true,
+          "detail": "(400, '{\"error\":\"No JSON data provided\"}\\n')"
+        },
+        {
+          "property": "invalid_status",
+          "passed": false,
+          "detail": "(200, '{\"error\":\"Invalid status. Must be one of: present, absent, late\"}\\n')"
+        },
+        {
+          "property": "invalid_date",
+          "passed": false,
+          "detail": "(200, '{\"message\":\"Attendance recorded successfully\",\"record\":{\"date\":\"not-a-date\",\"status\":\"present\",\"student_id\":734}}\\n')"
+        },
+        {
+          "property": "malformed_json_rejected_as_json",
+          "passed": false,
+          "detail": "(400, '<!doctype html>\\n<html lang=en>\\n<title>400 Bad Request</title>\\n<h1>Bad Request</h1>\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\n')"
+        },
+        {
+          "property": "unknown_student_rejected",
+          "passed": false,
+          "detail": "(200, '{\"error\":\"Student with ID 999999 not found\"}\\n')"
+        },
+        {
+          "property": "readme_present",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "requested_test_present",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "passed_properties": [
+        "missing_fields",
+        "readme_present",
+        "requested_test_present",
+        "runnable_flask",
+        "student_creation_json",
+        "student_stored",
+        "valid_attendance_json"
+      ],
+      "lost_previously_passing_properties": [],
+      "removed_symbols": {},
+      "container_executed": true,
+      "exit_code": 0,
+      "stdout": "ATTENDANCE_DIAGNOSTIC=[{\"property\": \"runnable_flask\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"student_creation_json\", \"passed\": true, \"detail\": \"(200, {'message': 'Student added successfully', 'student': {'id': 734, 'name': 'Independent diagnostic student'}})\"}, {\"property\": \"student_stored\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"valid_attendance_json\", \"passed\": true, \"detail\": \"('/attendance/734', 200, '{\\\"message\\\":\\\"Attendance recorded successfully\\\",\\\"record\\\":{\\\"date\\\":\\\"2026-10-06\\\",\\\"status\\\":\\\"present\\\",\\\"student_id\\\":734}}\\\\n')\"}, {\"property\": \"missing_fields\", \"passed\": true, \"detail\": \"(400, '{\\\"error\\\":\\\"No JSON data provided\\\"}\\\\n')\"}, {\"property\": \"invalid_status\", \"passed\": false, \"detail\": \"(200, '{\\\"error\\\":\\\"Invalid status. Must be one of: present, absent, late\\\"}\\\\n')\"}, {\"property\": \"invalid_date\", \"passed\": false, \"detail\": \"(200, '{\\\"message\\\":\\\"Attendance recorded successfully\\\",\\\"record\\\":{\\\"date\\\":\\\"not-a-date\\\",\\\"status\\\":\\\"present\\\",\\\"student_id\\\":734}}\\\\n')\"}, {\"property\": \"malformed_json_rejected_as_json\", \"passed\": false, \"detail\": \"(400, '<!doctype html>\\\\n<html lang=en>\\\\n<title>400 Bad Request</title>\\\\n<h1>Bad Request</h1>\\\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\\\n')\"}, {\"property\": \"unknown_student_rejected\", \"passed\": false, \"detail\": \"(200, '{\\\"error\\\":\\\"Student with ID 999999 not found\\\"}\\\\n')\"}, {\"property\": \"readme_present\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"requested_test_present\", \"passed\": true, \"detail\": \"\"}]\n",
+      "stderr": "",
+      "failure_category": "GENERATION",
+      "classification_basis": "Independently executed observable properties; no router or handoff blame inferred."
+    },
+    {
+      "task_id": "a2fb805769d343f9a0ae1b5979cefe16",
+      "stage": 5,
+      "event_index": 8,
+      "operation": "apply_patch",
+      "path": "app.py",
+      "candidate_revision": "7b24d930e035070efe927461eda7da77bb556cf3ca057d10bcf741e5e735aa0f",
+      "inventory": {
+        "app.py": {
+          "functions": [
+            {
+              "name": "get_student_by_id",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student",
+              "args": [
+                "student_data"
+              ]
+            },
+            {
+              "name": "add_attendance",
+              "args": [
+                "student_id",
+                "date",
+                "status"
+              ]
+            },
+            {
+              "name": "get_students",
+              "args": []
+            },
+            {
+              "name": "get_student",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student_endpoint",
+              "args": []
+            },
+            {
+              "name": "add_attendance_endpoint",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_attendance",
+              "args": [
+                "student_id"
+              ]
+            }
+          ],
+          "routes": [
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "get_students"
+            },
+            {
+              "path": "/students/<int:student_id>",
+              "method_decorator": "route",
+              "function": "get_student"
+            },
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "add_student_endpoint"
+            },
+            {
+              "path": "/attendance/<int:student_id>",
+              "method_decorator": "route",
+              "function": "add_attendance_endpoint"
+            },
+            {
+              "path": "/attendance/<int:student_id>",
+              "method_decorator": "route",
+              "function": "get_attendance"
+            }
+          ],
+          "sha256": "973891c0a45ffa67d245746b5301a115aaefbab251ba1761d1e2cee7c74b8c03"
+        },
+        "test_app.py": {
+          "functions": [
+            {
+              "name": "setUp",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_students_empty",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_duplicate_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_nonexistent_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_valid",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_invalid_status",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_missing_date",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_missing_status",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_nonexistent_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_invalid_date_format",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_attendance_records",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_all_valid_statuses",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_no_json_data",
+              "args": [
+                "self"
+              ]
+            }
+          ],
+          "routes": [],
+          "sha256": "c19a758ef6bb02fba17255dca7091c47389b2d098dcd809aa0af0d7ef77741d1"
+        }
+      },
+      "checks": [
+        {
+          "property": "runnable_flask",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "student_creation_json",
+          "passed": true,
+          "detail": "(201, {'message': 'Student added successfully', 'student': {'id': 734, 'name': 'Independent diagnostic student'}})"
+        },
+        {
+          "property": "student_stored",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "valid_attendance_json",
+          "passed": true,
+          "detail": "('/attendance/734', 200, '{\"message\":\"Attendance recorded successfully\",\"record\":{\"date\":\"2026-10-06\",\"status\":\"present\",\"student_id\":734}}\\n')"
+        },
+        {
+          "property": "missing_fields",
+          "passed": true,
+          "detail": "(400, '{\"error\":\"No JSON data provided\"}\\n')"
+        },
+        {
+          "property": "invalid_status",
+          "passed": false,
+          "detail": "(200, '{\"error\":\"Invalid status. Must be one of: present, absent, late\"}\\n')"
+        },
+        {
+          "property": "invalid_date",
+          "passed": false,
+          "detail": "(200, '{\"message\":\"Attendance recorded successfully\",\"record\":{\"date\":\"not-a-date\",\"status\":\"present\",\"student_id\":734}}\\n')"
+        },
+        {
+          "property": "malformed_json_rejected_as_json",
+          "passed": false,
+          "detail": "(400, '<!doctype html>\\n<html lang=en>\\n<title>400 Bad Request</title>\\n<h1>Bad Request</h1>\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\n')"
+        },
+        {
+          "property": "unknown_student_rejected",
+          "passed": false,
+          "detail": "(200, '{\"error\":\"Student with ID 999999 not found\"}\\n')"
+        },
+        {
+          "property": "readme_present",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "requested_test_present",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "passed_properties": [
+        "missing_fields",
+        "readme_present",
+        "requested_test_present",
+        "runnable_flask",
+        "student_creation_json",
+        "student_stored",
+        "valid_attendance_json"
+      ],
+      "lost_previously_passing_properties": [],
+      "removed_symbols": {},
+      "container_executed": true,
+      "exit_code": 0,
+      "stdout": "ATTENDANCE_DIAGNOSTIC=[{\"property\": \"runnable_flask\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"student_creation_json\", \"passed\": true, \"detail\": \"(201, {'message': 'Student added successfully', 'student': {'id': 734, 'name': 'Independent diagnostic student'}})\"}, {\"property\": \"student_stored\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"valid_attendance_json\", \"passed\": true, \"detail\": \"('/attendance/734', 200, '{\\\"message\\\":\\\"Attendance recorded successfully\\\",\\\"record\\\":{\\\"date\\\":\\\"2026-10-06\\\",\\\"status\\\":\\\"present\\\",\\\"student_id\\\":734}}\\\\n')\"}, {\"property\": \"missing_fields\", \"passed\": true, \"detail\": \"(400, '{\\\"error\\\":\\\"No JSON data provided\\\"}\\\\n')\"}, {\"property\": \"invalid_status\", \"passed\": false, \"detail\": \"(200, '{\\\"error\\\":\\\"Invalid status. Must be one of: present, absent, late\\\"}\\\\n')\"}, {\"property\": \"invalid_date\", \"passed\": false, \"detail\": \"(200, '{\\\"message\\\":\\\"Attendance recorded successfully\\\",\\\"record\\\":{\\\"date\\\":\\\"not-a-date\\\",\\\"status\\\":\\\"present\\\",\\\"student_id\\\":734}}\\\\n')\"}, {\"property\": \"malformed_json_rejected_as_json\", \"passed\": false, \"detail\": \"(400, '<!doctype html>\\\\n<html lang=en>\\\\n<title>400 Bad Request</title>\\\\n<h1>Bad Request</h1>\\\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\\\n')\"}, {\"property\": \"unknown_student_rejected\", \"passed\": false, \"detail\": \"(200, '{\\\"error\\\":\\\"Student with ID 999999 not found\\\"}\\\\n')\"}, {\"property\": \"readme_present\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"requested_test_present\", \"passed\": true, \"detail\": \"\"}]\n",
+      "stderr": "",
+      "failure_category": "GENERATION",
+      "classification_basis": "Independently executed observable properties; no router or handoff blame inferred."
+    },
+    {
+      "task_id": "a2fb805769d343f9a0ae1b5979cefe16",
+      "stage": 6,
+      "event_index": 9,
+      "operation": "apply_patch",
+      "path": "app.py",
+      "candidate_revision": "2661c15719daa9fa5e57f309d4ce81d4d1d37186e48976917f4b1b40680d082b",
+      "inventory": {
+        "app.py": {
+          "functions": [
+            {
+              "name": "get_student_by_id",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student",
+              "args": [
+                "student_data"
+              ]
+            },
+            {
+              "name": "add_attendance",
+              "args": [
+                "student_id",
+                "date",
+                "status"
+              ]
+            },
+            {
+              "name": "get_students",
+              "args": []
+            },
+            {
+              "name": "get_student",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student_endpoint",
+              "args": []
+            },
+            {
+              "name": "add_attendance_endpoint",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_attendance",
+              "args": [
+                "student_id"
+              ]
+            }
+          ],
+          "routes": [
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "get_students"
+            },
+            {
+              "path": "/students/<int:student_id>",
+              "method_decorator": "route",
+              "function": "get_student"
+            },
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "add_student_endpoint"
+            },
+            {
+              "path": "/attendance/<int:student_id>",
+              "method_decorator": "route",
+              "function": "add_attendance_endpoint"
+            },
+            {
+              "path": "/attendance/<int:student_id>",
+              "method_decorator": "route",
+              "function": "get_attendance"
+            }
+          ],
+          "sha256": "428bf7cd8b1483638af5f8d8d5e92d46de57601b321c77120e9b9f4eeeeae2f0"
+        },
+        "test_app.py": {
+          "functions": [
+            {
+              "name": "setUp",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_students_empty",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_duplicate_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_nonexistent_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_valid",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_invalid_status",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_missing_date",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_missing_status",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_nonexistent_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_invalid_date_format",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_attendance_records",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_all_valid_statuses",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_no_json_data",
+              "args": [
+                "self"
+              ]
+            }
+          ],
+          "routes": [],
+          "sha256": "c19a758ef6bb02fba17255dca7091c47389b2d098dcd809aa0af0d7ef77741d1"
+        }
+      },
+      "checks": [
+        {
+          "property": "runnable_flask",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "student_creation_json",
+          "passed": true,
+          "detail": "(201, {'message': 'Student added successfully', 'student': {'id': 734, 'name': 'Independent diagnostic student'}})"
+        },
+        {
+          "property": "student_stored",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "valid_attendance_json",
+          "passed": true,
+          "detail": "('/attendance/734', 201, '{\"message\":\"Attendance recorded successfully\",\"record\":{\"date\":\"2026-10-06\",\"status\":\"present\",\"student_id\":734}}\\n')"
+        },
+        {
+          "property": "missing_fields",
+          "passed": true,
+          "detail": "(400, '{\"error\":\"No JSON data provided\"}\\n')"
+        },
+        {
+          "property": "invalid_status",
+          "passed": true,
+          "detail": "(400, '{\"error\":\"Invalid status. Must be one of: present, absent, late\"}\\n')"
+        },
+        {
+          "property": "invalid_date",
+          "passed": false,
+          "detail": "(201, '{\"message\":\"Attendance recorded successfully\",\"record\":{\"date\":\"not-a-date\",\"status\":\"present\",\"student_id\":734}}\\n')"
+        },
+        {
+          "property": "malformed_json_rejected_as_json",
+          "passed": false,
+          "detail": "(400, '<!doctype html>\\n<html lang=en>\\n<title>400 Bad Request</title>\\n<h1>Bad Request</h1>\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\n')"
+        },
+        {
+          "property": "unknown_student_rejected",
+          "passed": true,
+          "detail": "(400, '{\"error\":\"Student with ID 999999 not found\"}\\n')"
+        },
+        {
+          "property": "readme_present",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "requested_test_present",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "passed_properties": [
+        "invalid_status",
+        "missing_fields",
+        "readme_present",
+        "requested_test_present",
+        "runnable_flask",
+        "student_creation_json",
+        "student_stored",
+        "unknown_student_rejected",
+        "valid_attendance_json"
+      ],
+      "lost_previously_passing_properties": [],
+      "removed_symbols": {},
+      "container_executed": true,
+      "exit_code": 0,
+      "stdout": "ATTENDANCE_DIAGNOSTIC=[{\"property\": \"runnable_flask\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"student_creation_json\", \"passed\": true, \"detail\": \"(201, {'message': 'Student added successfully', 'student': {'id': 734, 'name': 'Independent diagnostic student'}})\"}, {\"property\": \"student_stored\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"valid_attendance_json\", \"passed\": true, \"detail\": \"('/attendance/734', 201, '{\\\"message\\\":\\\"Attendance recorded successfully\\\",\\\"record\\\":{\\\"date\\\":\\\"2026-10-06\\\",\\\"status\\\":\\\"present\\\",\\\"student_id\\\":734}}\\\\n')\"}, {\"property\": \"missing_fields\", \"passed\": true, \"detail\": \"(400, '{\\\"error\\\":\\\"No JSON data provided\\\"}\\\\n')\"}, {\"property\": \"invalid_status\", \"passed\": true, \"detail\": \"(400, '{\\\"error\\\":\\\"Invalid status. Must be one of: present, absent, late\\\"}\\\\n')\"}, {\"property\": \"invalid_date\", \"passed\": false, \"detail\": \"(201, '{\\\"message\\\":\\\"Attendance recorded successfully\\\",\\\"record\\\":{\\\"date\\\":\\\"not-a-date\\\",\\\"status\\\":\\\"present\\\",\\\"student_id\\\":734}}\\\\n')\"}, {\"property\": \"malformed_json_rejected_as_json\", \"passed\": false, \"detail\": \"(400, '<!doctype html>\\\\n<html lang=en>\\\\n<title>400 Bad Request</title>\\\\n<h1>Bad Request</h1>\\\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\\\n')\"}, {\"property\": \"unknown_student_rejected\", \"passed\": true, \"detail\": \"(400, '{\\\"error\\\":\\\"Student with ID 999999 not found\\\"}\\\\n')\"}, {\"property\": \"readme_present\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"requested_test_present\", \"passed\": true, \"detail\": \"\"}]\n",
+      "stderr": "",
+      "failure_category": "GENERATION",
+      "classification_basis": "Independently executed observable properties; no router or handoff blame inferred."
+    },
+    {
+      "task_id": "a2fb805769d343f9a0ae1b5979cefe16",
+      "stage": 7,
+      "event_index": 11,
+      "operation": "apply_patch",
+      "path": "app.py",
+      "candidate_revision": "75d2522fcd4a50e00c18c6f3f5123271fb41e29f160df5070ce6fe510466a4d4",
+      "inventory": {
+        "app.py": {
+          "functions": [
+            {
+              "name": "get_student_by_id",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student",
+              "args": [
+                "student_data"
+              ]
+            },
+            {
+              "name": "add_attendance",
+              "args": [
+                "student_id",
+                "date",
+                "status"
+              ]
+            },
+            {
+              "name": "get_students",
+              "args": []
+            },
+            {
+              "name": "get_student",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student_endpoint",
+              "args": []
+            },
+            {
+              "name": "add_attendance_endpoint",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_attendance",
+              "args": [
+                "student_id"
+              ]
+            }
+          ],
+          "routes": [
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "get_students"
+            },
+            {
+              "path": "/students/<int:student_id>",
+              "method_decorator": "route",
+              "function": "get_student"
+            },
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "add_student_endpoint"
+            },
+            {
+              "path": "/attendance/<int:student_id>",
+              "method_decorator": "route",
+              "function": "add_attendance_endpoint"
+            },
+            {
+              "path": "/attendance/<int:student_id>",
+              "method_decorator": "route",
+              "function": "get_attendance"
+            }
+          ],
+          "sha256": "35a7631402ad6b7a06808b2729e46be8c83784cbd6fad64191c4a8daecf703d0"
+        },
+        "test_app.py": {
+          "functions": [
+            {
+              "name": "setUp",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_students_empty",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_duplicate_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_nonexistent_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_valid",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_invalid_status",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_missing_date",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_missing_status",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_nonexistent_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_invalid_date_format",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_attendance_records",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_all_valid_statuses",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_no_json_data",
+              "args": [
+                "self"
+              ]
+            }
+          ],
+          "routes": [],
+          "sha256": "c19a758ef6bb02fba17255dca7091c47389b2d098dcd809aa0af0d7ef77741d1"
+        }
+      },
+      "checks": [
+        {
+          "property": "runnable_flask",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "student_creation_json",
+          "passed": true,
+          "detail": "(201, {'message': 'Student added successfully', 'student': {'id': 734, 'name': 'Independent diagnostic student'}})"
+        },
+        {
+          "property": "student_stored",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "valid_attendance_json",
+          "passed": true,
+          "detail": "('/attendance/734', 201, '{\"message\":\"Attendance recorded successfully\",\"record\":{\"date\":\"2026-10-06\",\"status\":\"present\",\"student_id\":734}}\\n')"
+        },
+        {
+          "property": "missing_fields",
+          "passed": true,
+          "detail": "(400, '{\"error\":\"No JSON data provided\"}\\n')"
+        },
+        {
+          "property": "invalid_status",
+          "passed": true,
+          "detail": "(400, '{\"error\":\"Invalid status. Must be one of: present, absent, late\"}\\n')"
+        },
+        {
+          "property": "invalid_date",
+          "passed": true,
+          "detail": "(400, '{\"error\":\"Invalid date format. Expected YYYY-MM-DD\"}\\n')"
+        },
+        {
+          "property": "malformed_json_rejected_as_json",
+          "passed": false,
+          "detail": "(400, '<!doctype html>\\n<html lang=en>\\n<title>400 Bad Request</title>\\n<h1>Bad Request</h1>\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\n')"
+        },
+        {
+          "property": "unknown_student_rejected",
+          "passed": false,
+          "detail": "(201, '[{\"error\":\"Student with ID 999999 not found\"},404]\\n')"
+        },
+        {
+          "property": "readme_present",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "requested_test_present",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "passed_properties": [
+        "invalid_date",
+        "invalid_status",
+        "missing_fields",
+        "readme_present",
+        "requested_test_present",
+        "runnable_flask",
+        "student_creation_json",
+        "student_stored",
+        "valid_attendance_json"
+      ],
+      "lost_previously_passing_properties": [
+        "unknown_student_rejected"
+      ],
+      "removed_symbols": {},
+      "container_executed": true,
+      "exit_code": 0,
+      "stdout": "ATTENDANCE_DIAGNOSTIC=[{\"property\": \"runnable_flask\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"student_creation_json\", \"passed\": true, \"detail\": \"(201, {'message': 'Student added successfully', 'student': {'id': 734, 'name': 'Independent diagnostic student'}})\"}, {\"property\": \"student_stored\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"valid_attendance_json\", \"passed\": true, \"detail\": \"('/attendance/734', 201, '{\\\"message\\\":\\\"Attendance recorded successfully\\\",\\\"record\\\":{\\\"date\\\":\\\"2026-10-06\\\",\\\"status\\\":\\\"present\\\",\\\"student_id\\\":734}}\\\\n')\"}, {\"property\": \"missing_fields\", \"passed\": true, \"detail\": \"(400, '{\\\"error\\\":\\\"No JSON data provided\\\"}\\\\n')\"}, {\"property\": \"invalid_status\", \"passed\": true, \"detail\": \"(400, '{\\\"error\\\":\\\"Invalid status. Must be one of: present, absent, late\\\"}\\\\n')\"}, {\"property\": \"invalid_date\", \"passed\": true, \"detail\": \"(400, '{\\\"error\\\":\\\"Invalid date format. Expected YYYY-MM-DD\\\"}\\\\n')\"}, {\"property\": \"malformed_json_rejected_as_json\", \"passed\": false, \"detail\": \"(400, '<!doctype html>\\\\n<html lang=en>\\\\n<title>400 Bad Request</title>\\\\n<h1>Bad Request</h1>\\\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\\\n')\"}, {\"property\": \"unknown_student_rejected\", \"passed\": false, \"detail\": \"(201, '[{\\\"error\\\":\\\"Student with ID 999999 not found\\\"},404]\\\\n')\"}, {\"property\": \"readme_present\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"requested_test_present\", \"passed\": true, \"detail\": \"\"}]\n",
+      "stderr": "",
+      "failure_category": "REPAIR",
+      "classification_basis": "Independently executed observable properties; no router or handoff blame inferred."
+    },
+    {
+      "task_id": "a2fb805769d343f9a0ae1b5979cefe16",
+      "stage": 8,
+      "event_index": 12,
+      "operation": "apply_patch",
+      "path": "app.py",
+      "candidate_revision": "b20f40be55f3205f01aef72638e7a1f4f12315e0882eeac738950f6f0198325d",
+      "inventory": {
+        "app.py": {
+          "functions": [
+            {
+              "name": "get_student_by_id",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student",
+              "args": [
+                "student_data"
+              ]
+            },
+            {
+              "name": "add_attendance",
+              "args": [
+                "student_id",
+                "date",
+                "status"
+              ]
+            },
+            {
+              "name": "get_students",
+              "args": []
+            },
+            {
+              "name": "get_student",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student_endpoint",
+              "args": []
+            },
+            {
+              "name": "add_attendance_endpoint",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_attendance",
+              "args": [
+                "student_id"
+              ]
+            }
+          ],
+          "routes": [
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "get_students"
+            },
+            {
+              "path": "/students/<int:student_id>",
+              "method_decorator": "route",
+              "function": "get_student"
+            },
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "add_student_endpoint"
+            },
+            {
+              "path": "/attendance/<int:student_id>",
+              "method_decorator": "route",
+              "function": "add_attendance_endpoint"
+            },
+            {
+              "path": "/attendance/<int:student_id>",
+              "method_decorator": "route",
+              "function": "get_attendance"
+            }
+          ],
+          "sha256": "d98aa518381fc97e09e29a8a40cf0d753c782ad966bb6be05c465907c54f290d"
+        },
+        "test_app.py": {
+          "functions": [
+            {
+              "name": "setUp",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_students_empty",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_duplicate_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_nonexistent_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_valid",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_invalid_status",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_missing_date",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_missing_status",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_nonexistent_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_invalid_date_format",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_attendance_records",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_all_valid_statuses",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_no_json_data",
+              "args": [
+                "self"
+              ]
+            }
+          ],
+          "routes": [],
+          "sha256": "c19a758ef6bb02fba17255dca7091c47389b2d098dcd809aa0af0d7ef77741d1"
+        }
+      },
+      "checks": [
+        {
+          "property": "runnable_flask",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "student_creation_json",
+          "passed": true,
+          "detail": "(201, {'message': 'Student added successfully', 'student': {'id': 734, 'name': 'Independent diagnostic student'}})"
+        },
+        {
+          "property": "student_stored",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "valid_attendance_json",
+          "passed": true,
+          "detail": "('/attendance/734', 201, '{\"message\":\"Attendance recorded successfully\",\"record\":{\"date\":\"2026-10-06\",\"status\":\"present\",\"student_id\":734}}\\n')"
+        },
+        {
+          "property": "missing_fields",
+          "passed": true,
+          "detail": "(400, '{\"error\":\"No JSON data provided\"}\\n')"
+        },
+        {
+          "property": "invalid_status",
+          "passed": true,
+          "detail": "(400, '{\"error\":\"Invalid status. Must be one of: present, absent, late\"}\\n')"
+        },
+        {
+          "property": "invalid_date",
+          "passed": true,
+          "detail": "(400, '{\"error\":\"Invalid date format. Expected YYYY-MM-DD\"}\\n')"
+        },
+        {
+          "property": "malformed_json_rejected_as_json",
+          "passed": false,
+          "detail": "(400, '<!doctype html>\\n<html lang=en>\\n<title>400 Bad Request</title>\\n<h1>Bad Request</h1>\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\n')"
+        },
+        {
+          "property": "unknown_student_rejected",
+          "passed": false,
+          "detail": "(201, '[{\"error\":\"Student with ID 999999 not found\"},404]\\n')"
+        },
+        {
+          "property": "readme_present",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "requested_test_present",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "passed_properties": [
+        "invalid_date",
+        "invalid_status",
+        "missing_fields",
+        "readme_present",
+        "requested_test_present",
+        "runnable_flask",
+        "student_creation_json",
+        "student_stored",
+        "valid_attendance_json"
+      ],
+      "lost_previously_passing_properties": [],
+      "removed_symbols": {},
+      "container_executed": true,
+      "exit_code": 0,
+      "stdout": "ATTENDANCE_DIAGNOSTIC=[{\"property\": \"runnable_flask\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"student_creation_json\", \"passed\": true, \"detail\": \"(201, {'message': 'Student added successfully', 'student': {'id': 734, 'name': 'Independent diagnostic student'}})\"}, {\"property\": \"student_stored\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"valid_attendance_json\", \"passed\": true, \"detail\": \"('/attendance/734', 201, '{\\\"message\\\":\\\"Attendance recorded successfully\\\",\\\"record\\\":{\\\"date\\\":\\\"2026-10-06\\\",\\\"status\\\":\\\"present\\\",\\\"student_id\\\":734}}\\\\n')\"}, {\"property\": \"missing_fields\", \"passed\": true, \"detail\": \"(400, '{\\\"error\\\":\\\"No JSON data provided\\\"}\\\\n')\"}, {\"property\": \"invalid_status\", \"passed\": true, \"detail\": \"(400, '{\\\"error\\\":\\\"Invalid status. Must be one of: present, absent, late\\\"}\\\\n')\"}, {\"property\": \"invalid_date\", \"passed\": true, \"detail\": \"(400, '{\\\"error\\\":\\\"Invalid date format. Expected YYYY-MM-DD\\\"}\\\\n')\"}, {\"property\": \"malformed_json_rejected_as_json\", \"passed\": false, \"detail\": \"(400, '<!doctype html>\\\\n<html lang=en>\\\\n<title>400 Bad Request</title>\\\\n<h1>Bad Request</h1>\\\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\\\n')\"}, {\"property\": \"unknown_student_rejected\", \"passed\": false, \"detail\": \"(201, '[{\\\"error\\\":\\\"Student with ID 999999 not found\\\"},404]\\\\n')\"}, {\"property\": \"readme_present\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"requested_test_present\", \"passed\": true, \"detail\": \"\"}]\n",
+      "stderr": "",
+      "failure_category": "GENERATION",
+      "classification_basis": "Independently executed observable properties; no router or handoff blame inferred."
+    },
+    {
+      "task_id": "a2fb805769d343f9a0ae1b5979cefe16",
+      "stage": 9,
+      "event_index": 13,
+      "operation": "apply_patch",
+      "path": "app.py",
+      "candidate_revision": "0ea7664382760851da496bbd7251960870e22e670de6328f5f68795a4a04f724",
+      "inventory": {
+        "app.py": {
+          "functions": [
+            {
+              "name": "get_student_by_id",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student",
+              "args": [
+                "student_data"
+              ]
+            },
+            {
+              "name": "add_attendance",
+              "args": [
+                "student_id",
+                "date",
+                "status"
+              ]
+            },
+            {
+              "name": "get_students",
+              "args": []
+            },
+            {
+              "name": "get_student",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student_endpoint",
+              "args": []
+            },
+            {
+              "name": "add_attendance_endpoint",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_attendance",
+              "args": [
+                "student_id"
+              ]
+            }
+          ],
+          "routes": [
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "get_students"
+            },
+            {
+              "path": "/students/<int:student_id>",
+              "method_decorator": "route",
+              "function": "get_student"
+            },
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "add_student_endpoint"
+            },
+            {
+              "path": "/attendance/<int:student_id>",
+              "method_decorator": "route",
+              "function": "add_attendance_endpoint"
+            },
+            {
+              "path": "/attendance/<int:student_id>",
+              "method_decorator": "route",
+              "function": "get_attendance"
+            }
+          ],
+          "sha256": "7005ff0ca06027892d5f723636702ed74f886c7b6df72d56a94595ed46b8720c"
+        },
+        "test_app.py": {
+          "functions": [
+            {
+              "name": "setUp",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_students_empty",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_duplicate_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_nonexistent_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_valid",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_invalid_status",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_missing_date",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_missing_status",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_nonexistent_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_invalid_date_format",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_attendance_records",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_all_valid_statuses",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_no_json_data",
+              "args": [
+                "self"
+              ]
+            }
+          ],
+          "routes": [],
+          "sha256": "c19a758ef6bb02fba17255dca7091c47389b2d098dcd809aa0af0d7ef77741d1"
+        }
+      },
+      "checks": [
+        {
+          "property": "runnable_flask",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "student_creation_json",
+          "passed": true,
+          "detail": "(201, {'message': 'Student added successfully', 'student': {'id': 734, 'name': 'Independent diagnostic student'}})"
+        },
+        {
+          "property": "student_stored",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "valid_attendance_json",
+          "passed": true,
+          "detail": "('/attendance/734', 201, '{\"message\":\"Attendance recorded successfully\",\"record\":{\"date\":\"2026-10-06\",\"status\":\"present\",\"student_id\":734}}\\n')"
+        },
+        {
+          "property": "missing_fields",
+          "passed": true,
+          "detail": "(400, '{\"error\":\"No JSON data provided\"}\\n')"
+        },
+        {
+          "property": "invalid_status",
+          "passed": true,
+          "detail": "(400, '{\"error\":\"Invalid status. Must be one of: present, absent, late\"}\\n')"
+        },
+        {
+          "property": "invalid_date",
+          "passed": true,
+          "detail": "(400, '{\"error\":\"Invalid date format. Expected YYYY-MM-DD\"}\\n')"
+        },
+        {
+          "property": "malformed_json_rejected_as_json",
+          "passed": false,
+          "detail": "(400, '<!doctype html>\\n<html lang=en>\\n<title>400 Bad Request</title>\\n<h1>Bad Request</h1>\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\n')"
+        },
+        {
+          "property": "unknown_student_rejected",
+          "passed": false,
+          "detail": "(201, '[{\"error\":\"Student with ID 999999 not found\"},404]\\n')"
+        },
+        {
+          "property": "readme_present",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "requested_test_present",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "passed_properties": [
+        "invalid_date",
+        "invalid_status",
+        "missing_fields",
+        "readme_present",
+        "requested_test_present",
+        "runnable_flask",
+        "student_creation_json",
+        "student_stored",
+        "valid_attendance_json"
+      ],
+      "lost_previously_passing_properties": [],
+      "removed_symbols": {},
+      "container_executed": true,
+      "exit_code": 0,
+      "stdout": "ATTENDANCE_DIAGNOSTIC=[{\"property\": \"runnable_flask\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"student_creation_json\", \"passed\": true, \"detail\": \"(201, {'message': 'Student added successfully', 'student': {'id': 734, 'name': 'Independent diagnostic student'}})\"}, {\"property\": \"student_stored\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"valid_attendance_json\", \"passed\": true, \"detail\": \"('/attendance/734', 201, '{\\\"message\\\":\\\"Attendance recorded successfully\\\",\\\"record\\\":{\\\"date\\\":\\\"2026-10-06\\\",\\\"status\\\":\\\"present\\\",\\\"student_id\\\":734}}\\\\n')\"}, {\"property\": \"missing_fields\", \"passed\": true, \"detail\": \"(400, '{\\\"error\\\":\\\"No JSON data provided\\\"}\\\\n')\"}, {\"property\": \"invalid_status\", \"passed\": true, \"detail\": \"(400, '{\\\"error\\\":\\\"Invalid status. Must be one of: present, absent, late\\\"}\\\\n')\"}, {\"property\": \"invalid_date\", \"passed\": true, \"detail\": \"(400, '{\\\"error\\\":\\\"Invalid date format. Expected YYYY-MM-DD\\\"}\\\\n')\"}, {\"property\": \"malformed_json_rejected_as_json\", \"passed\": false, \"detail\": \"(400, '<!doctype html>\\\\n<html lang=en>\\\\n<title>400 Bad Request</title>\\\\n<h1>Bad Request</h1>\\\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\\\n')\"}, {\"property\": \"unknown_student_rejected\", \"passed\": false, \"detail\": \"(201, '[{\\\"error\\\":\\\"Student with ID 999999 not found\\\"},404]\\\\n')\"}, {\"property\": \"readme_present\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"requested_test_present\", \"passed\": true, \"detail\": \"\"}]\n",
+      "stderr": "",
+      "failure_category": "GENERATION",
+      "classification_basis": "Independently executed observable properties; no router or handoff blame inferred."
+    },
+    {
+      "task_id": "a2fb805769d343f9a0ae1b5979cefe16",
+      "stage": 10,
+      "event_index": 20,
+      "operation": "apply_patch",
+      "path": "app.py",
+      "candidate_revision": "25627b796135918d7230ddc7d51bad7df5391c72ad6462e99df5c14e2ee50c1c",
+      "inventory": {
+        "app.py": {
+          "functions": [
+            {
+              "name": "get_student_by_id",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student",
+              "args": [
+                "student_data"
+              ]
+            },
+            {
+              "name": "add_attendance",
+              "args": [
+                "student_id",
+                "date",
+                "status"
+              ]
+            },
+            {
+              "name": "get_students",
+              "args": []
+            },
+            {
+              "name": "get_student",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student_endpoint",
+              "args": []
+            },
+            {
+              "name": "add_attendance_endpoint",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_attendance",
+              "args": [
+                "student_id"
+              ]
+            }
+          ],
+          "routes": [
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "get_students"
+            },
+            {
+              "path": "/students/<int:student_id>",
+              "method_decorator": "route",
+              "function": "get_student"
+            },
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "add_student_endpoint"
+            },
+            {
+              "path": "/attendance/<int:student_id>",
+              "method_decorator": "route",
+              "function": "add_attendance_endpoint"
+            },
+            {
+              "path": "/attendance/<int:student_id>",
+              "method_decorator": "route",
+              "function": "get_attendance"
+            }
+          ],
+          "sha256": "7d3e37fabed95b7115b2dec0bfc299a6c546fcf6e54fefea72307a678f61b11c"
+        },
+        "test_app.py": {
+          "functions": [
+            {
+              "name": "setUp",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_students_empty",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_duplicate_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_nonexistent_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_valid",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_invalid_status",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_missing_date",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_missing_status",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_nonexistent_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_invalid_date_format",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_attendance_records",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_all_valid_statuses",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_no_json_data",
+              "args": [
+                "self"
+              ]
+            }
+          ],
+          "routes": [],
+          "sha256": "c19a758ef6bb02fba17255dca7091c47389b2d098dcd809aa0af0d7ef77741d1"
+        }
+      },
+      "checks": [
+        {
+          "property": "runnable_flask",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "student_creation_json",
+          "passed": true,
+          "detail": "(201, {'message': 'Student added successfully', 'student': {'id': 734, 'name': 'Independent diagnostic student'}})"
+        },
+        {
+          "property": "student_stored",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "valid_attendance_json",
+          "passed": true,
+          "detail": "('/attendance/734', 201, '[{\"message\":\"Attendance recorded successfully\",\"record\":{\"date\":\"2026-10-06\",\"status\":\"present\",\"student_id\":734}},201]\\n')"
+        },
+        {
+          "property": "missing_fields",
+          "passed": true,
+          "detail": "(400, '{\"error\":\"No JSON data provided\"}\\n')"
+        },
+        {
+          "property": "invalid_status",
+          "passed": false,
+          "detail": "(201, '[{\"error\":\"Invalid status. Must be one of: present, absent, late\"},400]\\n')"
+        },
+        {
+          "property": "invalid_date",
+          "passed": false,
+          "detail": "(201, '[{\"error\":\"Invalid date format. Expected YYYY-MM-DD\"},400]\\n')"
+        },
+        {
+          "property": "malformed_json_rejected_as_json",
+          "passed": false,
+          "detail": "(400, '<!doctype html>\\n<html lang=en>\\n<title>400 Bad Request</title>\\n<h1>Bad Request</h1>\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\n')"
+        },
+        {
+          "property": "unknown_student_rejected",
+          "passed": false,
+          "detail": "(201, '[{\"error\":\"Student with ID 999999 not found\"},404]\\n')"
+        },
+        {
+          "property": "readme_present",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "requested_test_present",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "passed_properties": [
+        "missing_fields",
+        "readme_present",
+        "requested_test_present",
+        "runnable_flask",
+        "student_creation_json",
+        "student_stored",
+        "valid_attendance_json"
+      ],
+      "lost_previously_passing_properties": [
+        "invalid_date",
+        "invalid_status"
+      ],
+      "removed_symbols": {},
+      "container_executed": true,
+      "exit_code": 0,
+      "stdout": "ATTENDANCE_DIAGNOSTIC=[{\"property\": \"runnable_flask\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"student_creation_json\", \"passed\": true, \"detail\": \"(201, {'message': 'Student added successfully', 'student': {'id': 734, 'name': 'Independent diagnostic student'}})\"}, {\"property\": \"student_stored\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"valid_attendance_json\", \"passed\": true, \"detail\": \"('/attendance/734', 201, '[{\\\"message\\\":\\\"Attendance recorded successfully\\\",\\\"record\\\":{\\\"date\\\":\\\"2026-10-06\\\",\\\"status\\\":\\\"present\\\",\\\"student_id\\\":734}},201]\\\\n')\"}, {\"property\": \"missing_fields\", \"passed\": true, \"detail\": \"(400, '{\\\"error\\\":\\\"No JSON data provided\\\"}\\\\n')\"}, {\"property\": \"invalid_status\", \"passed\": false, \"detail\": \"(201, '[{\\\"error\\\":\\\"Invalid status. Must be one of: present, absent, late\\\"},400]\\\\n')\"}, {\"property\": \"invalid_date\", \"passed\": false, \"detail\": \"(201, '[{\\\"error\\\":\\\"Invalid date format. Expected YYYY-MM-DD\\\"},400]\\\\n')\"}, {\"property\": \"malformed_json_rejected_as_json\", \"passed\": false, \"detail\": \"(400, '<!doctype html>\\\\n<html lang=en>\\\\n<title>400 Bad Request</title>\\\\n<h1>Bad Request</h1>\\\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\\\n')\"}, {\"property\": \"unknown_student_rejected\", \"passed\": false, \"detail\": \"(201, '[{\\\"error\\\":\\\"Student with ID 999999 not found\\\"},404]\\\\n')\"}, {\"property\": \"readme_present\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"requested_test_present\", \"passed\": true, \"detail\": \"\"}]\n",
+      "stderr": "",
+      "failure_category": "REPAIR",
+      "classification_basis": "Independently executed observable properties; no router or handoff blame inferred."
+    },
+    {
+      "task_id": "a2fb805769d343f9a0ae1b5979cefe16",
+      "stage": 11,
+      "event_index": 21,
+      "operation": "apply_patch",
+      "path": "app.py",
+      "candidate_revision": "fe8018ebf5984e54d0af85442e7bd82277bc8c9b5ec238c4c244efc23aa14933",
+      "inventory": {
+        "app.py": {
+          "functions": [
+            {
+              "name": "get_student_by_id",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student",
+              "args": [
+                "student_data"
+              ]
+            },
+            {
+              "name": "add_attendance",
+              "args": [
+                "student_id",
+                "date",
+                "status"
+              ]
+            },
+            {
+              "name": "get_students",
+              "args": []
+            },
+            {
+              "name": "get_student",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "add_student_endpoint",
+              "args": []
+            },
+            {
+              "name": "add_attendance_endpoint",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_attendance",
+              "args": [
+                "student_id"
+              ]
+            }
+          ],
+          "routes": [
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "get_students"
+            },
+            {
+              "path": "/students/<int:student_id>",
+              "method_decorator": "route",
+              "function": "get_student"
+            },
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "add_student_endpoint"
+            },
+            {
+              "path": "/attendance/<int:student_id>",
+              "method_decorator": "route",
+              "function": "add_attendance_endpoint"
+            },
+            {
+              "path": "/attendance/<int:student_id>",
+              "method_decorator": "route",
+              "function": "get_attendance"
+            }
+          ],
+          "sha256": "c8320f228fcc12f554a88575384bbceabc1b51b702d1c05f03d49b907b12fc71"
+        },
+        "test_app.py": {
+          "functions": [
+            {
+              "name": "setUp",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_students_empty",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_duplicate_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_nonexistent_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_valid",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_invalid_status",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_missing_date",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_missing_status",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_nonexistent_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_attendance_invalid_date_format",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_attendance_records",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_all_valid_statuses",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_no_json_data",
+              "args": [
+                "self"
+              ]
+            }
+          ],
+          "routes": [],
+          "sha256": "c19a758ef6bb02fba17255dca7091c47389b2d098dcd809aa0af0d7ef77741d1"
+        }
+      },
+      "checks": [
+        {
+          "property": "runnable_flask",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "student_creation_json",
+          "passed": true,
+          "detail": "(201, {'message': 'Student added successfully', 'student': {'id': 734, 'name': 'Independent diagnostic student'}})"
+        },
+        {
+          "property": "student_stored",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "valid_attendance_json",
+          "passed": true,
+          "detail": "('/attendance/734', 201, '{\"message\":\"Attendance recorded successfully\",\"record\":{\"date\":\"2026-10-06\",\"status\":\"present\",\"student_id\":734}}\\n')"
+        },
+        {
+          "property": "missing_fields",
+          "passed": true,
+          "detail": "(400, '{\"error\":\"No JSON data provided\"}\\n')"
+        },
+        {
+          "property": "invalid_status",
+          "passed": true,
+          "detail": "(400, '{\"error\":\"Invalid status. Must be one of: present, absent, late\"}\\n')"
+        },
+        {
+          "property": "invalid_date",
+          "passed": true,
+          "detail": "(400, '{\"error\":\"Invalid date format. Expected YYYY-MM-DD\"}\\n')"
+        },
+        {
+          "property": "malformed_json_rejected_as_json",
+          "passed": false,
+          "detail": "(400, '<!doctype html>\\n<html lang=en>\\n<title>400 Bad Request</title>\\n<h1>Bad Request</h1>\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\n')"
+        },
+        {
+          "property": "unknown_student_rejected",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student with ID 999999 not found\"}\\n')"
+        },
+        {
+          "property": "readme_present",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "requested_test_present",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "passed_properties": [
+        "invalid_date",
+        "invalid_status",
+        "missing_fields",
+        "readme_present",
+        "requested_test_present",
+        "runnable_flask",
+        "student_creation_json",
+        "student_stored",
+        "unknown_student_rejected",
+        "valid_attendance_json"
+      ],
+      "lost_previously_passing_properties": [],
+      "removed_symbols": {},
+      "container_executed": true,
+      "exit_code": 0,
+      "stdout": "ATTENDANCE_DIAGNOSTIC=[{\"property\": \"runnable_flask\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"student_creation_json\", \"passed\": true, \"detail\": \"(201, {'message': 'Student added successfully', 'student': {'id': 734, 'name': 'Independent diagnostic student'}})\"}, {\"property\": \"student_stored\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"valid_attendance_json\", \"passed\": true, \"detail\": \"('/attendance/734', 201, '{\\\"message\\\":\\\"Attendance recorded successfully\\\",\\\"record\\\":{\\\"date\\\":\\\"2026-10-06\\\",\\\"status\\\":\\\"present\\\",\\\"student_id\\\":734}}\\\\n')\"}, {\"property\": \"missing_fields\", \"passed\": true, \"detail\": \"(400, '{\\\"error\\\":\\\"No JSON data provided\\\"}\\\\n')\"}, {\"property\": \"invalid_status\", \"passed\": true, \"detail\": \"(400, '{\\\"error\\\":\\\"Invalid status. Must be one of: present, absent, late\\\"}\\\\n')\"}, {\"property\": \"invalid_date\", \"passed\": true, \"detail\": \"(400, '{\\\"error\\\":\\\"Invalid date format. Expected YYYY-MM-DD\\\"}\\\\n')\"}, {\"property\": \"malformed_json_rejected_as_json\", \"passed\": false, \"detail\": \"(400, '<!doctype html>\\\\n<html lang=en>\\\\n<title>400 Bad Request</title>\\\\n<h1>Bad Request</h1>\\\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\\\n')\"}, {\"property\": \"unknown_student_rejected\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student with ID 999999 not found\\\"}\\\\n')\"}, {\"property\": \"readme_present\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"requested_test_present\", \"passed\": true, \"detail\": \"\"}]\n",
+      "stderr": "",
+      "failure_category": "GENERATION",
+      "classification_basis": "Independently executed observable properties; no router or handoff blame inferred."
+    },
+    {
+      "task_id": "0e65dec8de40496894727a02bafb2349",
+      "stage": 1,
+      "event_index": 1,
+      "operation": "write_file",
+      "path": "app.py",
+      "candidate_revision": "cb4f9620d27f9738d2a812d0571e91adcf6e988b541778f0fc2c4a9624738dfd",
+      "inventory": {
+        "app.py": {
+          "functions": [
+            {
+              "name": "get_students",
+              "args": []
+            },
+            {
+              "name": "add_student",
+              "args": []
+            },
+            {
+              "name": "mark_attendance",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_attendance",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_all_attendance",
+              "args": []
+            }
+          ],
+          "routes": [
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "get_students"
+            },
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "add_student"
+            },
+            {
+              "path": "/attendance/<student_id>",
+              "method_decorator": "route",
+              "function": "mark_attendance"
+            },
+            {
+              "path": "/attendance/<student_id>",
+              "method_decorator": "route",
+              "function": "get_attendance"
+            },
+            {
+              "path": "/attendance",
+              "method_decorator": "route",
+              "function": "get_all_attendance"
+            }
+          ],
+          "sha256": "7c55d741197077a5dad3ab53924a3e0f5de0cf5235cc99fc2b7b6ad76bc54b80"
+        }
+      },
+      "checks": [
+        {
+          "property": "runnable_flask",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "student_creation_json",
+          "passed": true,
+          "detail": "(201, {'id': 1, 'name': 'Independent diagnostic student'})"
+        },
+        {
+          "property": "student_stored",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "valid_attendance_json",
+          "passed": false,
+          "detail": "('/attendance/1', 404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "missing_fields",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "invalid_status",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "invalid_date",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "malformed_json_rejected_as_json",
+          "passed": false,
+          "detail": "(400, '<!doctype html>\\n<html lang=en>\\n<title>400 Bad Request</title>\\n<h1>Bad Request</h1>\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\n')"
+        },
+        {
+          "property": "unknown_student_rejected",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "readme_present",
+          "passed": false,
+          "detail": ""
+        },
+        {
+          "property": "requested_test_present",
+          "passed": false,
+          "detail": ""
+        }
+      ],
+      "passed_properties": [
+        "invalid_date",
+        "invalid_status",
+        "missing_fields",
+        "runnable_flask",
+        "student_creation_json",
+        "student_stored",
+        "unknown_student_rejected"
+      ],
+      "lost_previously_passing_properties": [],
+      "removed_symbols": {},
+      "container_executed": true,
+      "exit_code": 0,
+      "stdout": "ATTENDANCE_DIAGNOSTIC=[{\"property\": \"runnable_flask\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"student_creation_json\", \"passed\": true, \"detail\": \"(201, {'id': 1, 'name': 'Independent diagnostic student'})\"}, {\"property\": \"student_stored\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"valid_attendance_json\", \"passed\": false, \"detail\": \"('/attendance/1', 404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"missing_fields\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"invalid_status\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"invalid_date\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"malformed_json_rejected_as_json\", \"passed\": false, \"detail\": \"(400, '<!doctype html>\\\\n<html lang=en>\\\\n<title>400 Bad Request</title>\\\\n<h1>Bad Request</h1>\\\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\\\n')\"}, {\"property\": \"unknown_student_rejected\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"readme_present\", \"passed\": false, \"detail\": \"\"}, {\"property\": \"requested_test_present\", \"passed\": false, \"detail\": \"\"}]\n",
+      "stderr": "",
+      "failure_category": "GENERATION",
+      "classification_basis": "Independently executed observable properties; no router or handoff blame inferred."
+    },
+    {
+      "task_id": "0e65dec8de40496894727a02bafb2349",
+      "stage": 2,
+      "event_index": 2,
+      "operation": "write_file",
+      "path": "requirements.txt",
+      "candidate_revision": "2c94044a633a92d1bd642ce416f2c4c61f24ed93cb5ac6756d056ec6babd0bd7",
+      "inventory": {
+        "app.py": {
+          "functions": [
+            {
+              "name": "get_students",
+              "args": []
+            },
+            {
+              "name": "add_student",
+              "args": []
+            },
+            {
+              "name": "mark_attendance",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_attendance",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_all_attendance",
+              "args": []
+            }
+          ],
+          "routes": [
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "get_students"
+            },
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "add_student"
+            },
+            {
+              "path": "/attendance/<student_id>",
+              "method_decorator": "route",
+              "function": "mark_attendance"
+            },
+            {
+              "path": "/attendance/<student_id>",
+              "method_decorator": "route",
+              "function": "get_attendance"
+            },
+            {
+              "path": "/attendance",
+              "method_decorator": "route",
+              "function": "get_all_attendance"
+            }
+          ],
+          "sha256": "7c55d741197077a5dad3ab53924a3e0f5de0cf5235cc99fc2b7b6ad76bc54b80"
+        }
+      },
+      "checks": [
+        {
+          "property": "runnable_flask",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "student_creation_json",
+          "passed": true,
+          "detail": "(201, {'id': 1, 'name': 'Independent diagnostic student'})"
+        },
+        {
+          "property": "student_stored",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "valid_attendance_json",
+          "passed": false,
+          "detail": "('/attendance/1', 404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "missing_fields",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "invalid_status",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "invalid_date",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "malformed_json_rejected_as_json",
+          "passed": false,
+          "detail": "(400, '<!doctype html>\\n<html lang=en>\\n<title>400 Bad Request</title>\\n<h1>Bad Request</h1>\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\n')"
+        },
+        {
+          "property": "unknown_student_rejected",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "readme_present",
+          "passed": false,
+          "detail": ""
+        },
+        {
+          "property": "requested_test_present",
+          "passed": false,
+          "detail": ""
+        }
+      ],
+      "passed_properties": [
+        "invalid_date",
+        "invalid_status",
+        "missing_fields",
+        "runnable_flask",
+        "student_creation_json",
+        "student_stored",
+        "unknown_student_rejected"
+      ],
+      "lost_previously_passing_properties": [],
+      "removed_symbols": {},
+      "container_executed": true,
+      "exit_code": 0,
+      "stdout": "ATTENDANCE_DIAGNOSTIC=[{\"property\": \"runnable_flask\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"student_creation_json\", \"passed\": true, \"detail\": \"(201, {'id': 1, 'name': 'Independent diagnostic student'})\"}, {\"property\": \"student_stored\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"valid_attendance_json\", \"passed\": false, \"detail\": \"('/attendance/1', 404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"missing_fields\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"invalid_status\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"invalid_date\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"malformed_json_rejected_as_json\", \"passed\": false, \"detail\": \"(400, '<!doctype html>\\\\n<html lang=en>\\\\n<title>400 Bad Request</title>\\\\n<h1>Bad Request</h1>\\\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\\\n')\"}, {\"property\": \"unknown_student_rejected\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"readme_present\", \"passed\": false, \"detail\": \"\"}, {\"property\": \"requested_test_present\", \"passed\": false, \"detail\": \"\"}]\n",
+      "stderr": "",
+      "failure_category": "GENERATION",
+      "classification_basis": "Independently executed observable properties; no router or handoff blame inferred."
+    },
+    {
+      "task_id": "0e65dec8de40496894727a02bafb2349",
+      "stage": 3,
+      "event_index": 3,
+      "operation": "write_file",
+      "path": "README.md",
+      "candidate_revision": "2fcd7b3f2a8594912c0a5684baea43fb45c08841edd846734608b3b5ba30381e",
+      "inventory": {
+        "app.py": {
+          "functions": [
+            {
+              "name": "get_students",
+              "args": []
+            },
+            {
+              "name": "add_student",
+              "args": []
+            },
+            {
+              "name": "mark_attendance",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_attendance",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_all_attendance",
+              "args": []
+            }
+          ],
+          "routes": [
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "get_students"
+            },
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "add_student"
+            },
+            {
+              "path": "/attendance/<student_id>",
+              "method_decorator": "route",
+              "function": "mark_attendance"
+            },
+            {
+              "path": "/attendance/<student_id>",
+              "method_decorator": "route",
+              "function": "get_attendance"
+            },
+            {
+              "path": "/attendance",
+              "method_decorator": "route",
+              "function": "get_all_attendance"
+            }
+          ],
+          "sha256": "7c55d741197077a5dad3ab53924a3e0f5de0cf5235cc99fc2b7b6ad76bc54b80"
+        }
+      },
+      "checks": [
+        {
+          "property": "runnable_flask",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "student_creation_json",
+          "passed": true,
+          "detail": "(201, {'id': 1, 'name': 'Independent diagnostic student'})"
+        },
+        {
+          "property": "student_stored",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "valid_attendance_json",
+          "passed": false,
+          "detail": "('/attendance/1', 404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "missing_fields",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "invalid_status",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "invalid_date",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "malformed_json_rejected_as_json",
+          "passed": false,
+          "detail": "(400, '<!doctype html>\\n<html lang=en>\\n<title>400 Bad Request</title>\\n<h1>Bad Request</h1>\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\n')"
+        },
+        {
+          "property": "unknown_student_rejected",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "readme_present",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "requested_test_present",
+          "passed": false,
+          "detail": ""
+        }
+      ],
+      "passed_properties": [
+        "invalid_date",
+        "invalid_status",
+        "missing_fields",
+        "readme_present",
+        "runnable_flask",
+        "student_creation_json",
+        "student_stored",
+        "unknown_student_rejected"
+      ],
+      "lost_previously_passing_properties": [],
+      "removed_symbols": {},
+      "container_executed": true,
+      "exit_code": 0,
+      "stdout": "ATTENDANCE_DIAGNOSTIC=[{\"property\": \"runnable_flask\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"student_creation_json\", \"passed\": true, \"detail\": \"(201, {'id': 1, 'name': 'Independent diagnostic student'})\"}, {\"property\": \"student_stored\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"valid_attendance_json\", \"passed\": false, \"detail\": \"('/attendance/1', 404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"missing_fields\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"invalid_status\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"invalid_date\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"malformed_json_rejected_as_json\", \"passed\": false, \"detail\": \"(400, '<!doctype html>\\\\n<html lang=en>\\\\n<title>400 Bad Request</title>\\\\n<h1>Bad Request</h1>\\\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\\\n')\"}, {\"property\": \"unknown_student_rejected\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"readme_present\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"requested_test_present\", \"passed\": false, \"detail\": \"\"}]\n",
+      "stderr": "",
+      "failure_category": "GENERATION",
+      "classification_basis": "Independently executed observable properties; no router or handoff blame inferred."
+    },
+    {
+      "task_id": "0e65dec8de40496894727a02bafb2349",
+      "stage": 4,
+      "event_index": 4,
+      "operation": "write_file",
+      "path": "test_app.py",
+      "candidate_revision": "3bb1b102f2a45b5f922651bdddea690bd65098274d6d751d31c225b4822a5d8d",
+      "inventory": {
+        "app.py": {
+          "functions": [
+            {
+              "name": "get_students",
+              "args": []
+            },
+            {
+              "name": "add_student",
+              "args": []
+            },
+            {
+              "name": "mark_attendance",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_attendance",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_all_attendance",
+              "args": []
+            }
+          ],
+          "routes": [
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "get_students"
+            },
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "add_student"
+            },
+            {
+              "path": "/attendance/<student_id>",
+              "method_decorator": "route",
+              "function": "mark_attendance"
+            },
+            {
+              "path": "/attendance/<student_id>",
+              "method_decorator": "route",
+              "function": "get_attendance"
+            },
+            {
+              "path": "/attendance",
+              "method_decorator": "route",
+              "function": "get_all_attendance"
+            }
+          ],
+          "sha256": "7c55d741197077a5dad3ab53924a3e0f5de0cf5235cc99fc2b7b6ad76bc54b80"
+        },
+        "test_app.py": {
+          "functions": [
+            {
+              "name": "setUp",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_students_empty",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_duplicate_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_student_missing_name",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_valid",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_invalid_status",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_missing_date",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_missing_status",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_invalid_date",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_nonexistent_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_attendance_valid",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_all_attendance",
+              "args": [
+                "self"
+              ]
+            }
+          ],
+          "routes": [],
+          "sha256": "d4cb3d9116df5779ed3fde900ab5ef99b22195254491e7a0f8c50f99348f2e9e"
+        }
+      },
+      "checks": [
+        {
+          "property": "runnable_flask",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "student_creation_json",
+          "passed": true,
+          "detail": "(201, {'id': 1, 'name': 'Independent diagnostic student'})"
+        },
+        {
+          "property": "student_stored",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "valid_attendance_json",
+          "passed": false,
+          "detail": "('/attendance/1', 404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "missing_fields",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "invalid_status",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "invalid_date",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "malformed_json_rejected_as_json",
+          "passed": false,
+          "detail": "(400, '<!doctype html>\\n<html lang=en>\\n<title>400 Bad Request</title>\\n<h1>Bad Request</h1>\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\n')"
+        },
+        {
+          "property": "unknown_student_rejected",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "readme_present",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "requested_test_present",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "passed_properties": [
+        "invalid_date",
+        "invalid_status",
+        "missing_fields",
+        "readme_present",
+        "requested_test_present",
+        "runnable_flask",
+        "student_creation_json",
+        "student_stored",
+        "unknown_student_rejected"
+      ],
+      "lost_previously_passing_properties": [],
+      "removed_symbols": {},
+      "container_executed": true,
+      "exit_code": 0,
+      "stdout": "ATTENDANCE_DIAGNOSTIC=[{\"property\": \"runnable_flask\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"student_creation_json\", \"passed\": true, \"detail\": \"(201, {'id': 1, 'name': 'Independent diagnostic student'})\"}, {\"property\": \"student_stored\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"valid_attendance_json\", \"passed\": false, \"detail\": \"('/attendance/1', 404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"missing_fields\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"invalid_status\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"invalid_date\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"malformed_json_rejected_as_json\", \"passed\": false, \"detail\": \"(400, '<!doctype html>\\\\n<html lang=en>\\\\n<title>400 Bad Request</title>\\\\n<h1>Bad Request</h1>\\\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\\\n')\"}, {\"property\": \"unknown_student_rejected\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"readme_present\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"requested_test_present\", \"passed\": true, \"detail\": \"\"}]\n",
+      "stderr": "",
+      "failure_category": "GENERATION",
+      "classification_basis": "Independently executed observable properties; no router or handoff blame inferred."
+    },
+    {
+      "task_id": "0e65dec8de40496894727a02bafb2349",
+      "stage": 5,
+      "event_index": 8,
+      "operation": "apply_patch",
+      "path": "app.py",
+      "candidate_revision": "3c2b07cb24b2890a490f9de6da5e31116afb7a669b68245d912d4daacaf64952",
+      "inventory": {
+        "app.py": {
+          "functions": [
+            {
+              "name": "get_students",
+              "args": []
+            },
+            {
+              "name": "add_student",
+              "args": []
+            },
+            {
+              "name": "mark_attendance",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_attendance",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_all_attendance",
+              "args": []
+            }
+          ],
+          "routes": [
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "get_students"
+            },
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "add_student"
+            },
+            {
+              "path": "/attendance/<student_id>",
+              "method_decorator": "route",
+              "function": "mark_attendance"
+            },
+            {
+              "path": "/attendance/<student_id>",
+              "method_decorator": "route",
+              "function": "get_attendance"
+            },
+            {
+              "path": "/attendance",
+              "method_decorator": "route",
+              "function": "get_all_attendance"
+            }
+          ],
+          "sha256": "5931431243bc7f14308548dcab0d912f6b5b42926ad94193f8ff616adfcd5782"
+        },
+        "test_app.py": {
+          "functions": [
+            {
+              "name": "setUp",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_students_empty",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_duplicate_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_student_missing_name",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_valid",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_invalid_status",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_missing_date",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_missing_status",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_invalid_date",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_nonexistent_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_attendance_valid",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_all_attendance",
+              "args": [
+                "self"
+              ]
+            }
+          ],
+          "routes": [],
+          "sha256": "d4cb3d9116df5779ed3fde900ab5ef99b22195254491e7a0f8c50f99348f2e9e"
+        }
+      },
+      "checks": [
+        {
+          "property": "runnable_flask",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "student_creation_json",
+          "passed": true,
+          "detail": "(201, {'id': 1, 'name': 'Independent diagnostic student'})"
+        },
+        {
+          "property": "student_stored",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "valid_attendance_json",
+          "passed": false,
+          "detail": "('/attendance/1', 404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "missing_fields",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "invalid_status",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "invalid_date",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "malformed_json_rejected_as_json",
+          "passed": false,
+          "detail": "(400, '<!doctype html>\\n<html lang=en>\\n<title>400 Bad Request</title>\\n<h1>Bad Request</h1>\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\n')"
+        },
+        {
+          "property": "unknown_student_rejected",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "readme_present",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "requested_test_present",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "passed_properties": [
+        "invalid_date",
+        "invalid_status",
+        "missing_fields",
+        "readme_present",
+        "requested_test_present",
+        "runnable_flask",
+        "student_creation_json",
+        "student_stored",
+        "unknown_student_rejected"
+      ],
+      "lost_previously_passing_properties": [],
+      "removed_symbols": {},
+      "container_executed": true,
+      "exit_code": 0,
+      "stdout": "ATTENDANCE_DIAGNOSTIC=[{\"property\": \"runnable_flask\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"student_creation_json\", \"passed\": true, \"detail\": \"(201, {'id': 1, 'name': 'Independent diagnostic student'})\"}, {\"property\": \"student_stored\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"valid_attendance_json\", \"passed\": false, \"detail\": \"('/attendance/1', 404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"missing_fields\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"invalid_status\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"invalid_date\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"malformed_json_rejected_as_json\", \"passed\": false, \"detail\": \"(400, '<!doctype html>\\\\n<html lang=en>\\\\n<title>400 Bad Request</title>\\\\n<h1>Bad Request</h1>\\\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\\\n')\"}, {\"property\": \"unknown_student_rejected\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"readme_present\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"requested_test_present\", \"passed\": true, \"detail\": \"\"}]\n",
+      "stderr": "",
+      "failure_category": "GENERATION",
+      "classification_basis": "Independently executed observable properties; no router or handoff blame inferred."
+    },
+    {
+      "task_id": "0e65dec8de40496894727a02bafb2349",
+      "stage": 6,
+      "event_index": 9,
+      "operation": "apply_patch",
+      "path": "app.py",
+      "candidate_revision": "01ba91b7e55bd461744154ed701b045c8f3d8972a8ac241a79d0b5790395c1b0",
+      "inventory": {
+        "app.py": {
+          "functions": [
+            {
+              "name": "get_students",
+              "args": []
+            },
+            {
+              "name": "add_student",
+              "args": []
+            },
+            {
+              "name": "mark_attendance",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_attendance",
+              "args": [
+                "student_id"
+              ]
+            },
+            {
+              "name": "get_all_attendance",
+              "args": []
+            }
+          ],
+          "routes": [
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "get_students"
+            },
+            {
+              "path": "/students",
+              "method_decorator": "route",
+              "function": "add_student"
+            },
+            {
+              "path": "/attendance/<student_id>",
+              "method_decorator": "route",
+              "function": "mark_attendance"
+            },
+            {
+              "path": "/attendance/<student_id>",
+              "method_decorator": "route",
+              "function": "get_attendance"
+            },
+            {
+              "path": "/attendance",
+              "method_decorator": "route",
+              "function": "get_all_attendance"
+            }
+          ],
+          "sha256": "9767519c78d05cc9109fa58e7a76944de052c64d1b3e0ae09d1dd3943d84084d"
+        },
+        "test_app.py": {
+          "functions": [
+            {
+              "name": "setUp",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_students_empty",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_duplicate_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_add_student_missing_name",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_valid",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_invalid_status",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_missing_date",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_missing_status",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_invalid_date",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_mark_attendance_nonexistent_student",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_attendance_valid",
+              "args": [
+                "self"
+              ]
+            },
+            {
+              "name": "test_get_all_attendance",
+              "args": [
+                "self"
+              ]
+            }
+          ],
+          "routes": [],
+          "sha256": "d4cb3d9116df5779ed3fde900ab5ef99b22195254491e7a0f8c50f99348f2e9e"
+        }
+      },
+      "checks": [
+        {
+          "property": "runnable_flask",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "student_creation_json",
+          "passed": true,
+          "detail": "(201, {'id': 1, 'name': 'Independent diagnostic student'})"
+        },
+        {
+          "property": "student_stored",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "valid_attendance_json",
+          "passed": false,
+          "detail": "('/attendance/1', 404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "missing_fields",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "invalid_status",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "invalid_date",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "malformed_json_rejected_as_json",
+          "passed": false,
+          "detail": "(400, '<!doctype html>\\n<html lang=en>\\n<title>400 Bad Request</title>\\n<h1>Bad Request</h1>\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\n')"
+        },
+        {
+          "property": "unknown_student_rejected",
+          "passed": true,
+          "detail": "(404, '{\"error\":\"Student not found\"}\\n')"
+        },
+        {
+          "property": "readme_present",
+          "passed": true,
+          "detail": ""
+        },
+        {
+          "property": "requested_test_present",
+          "passed": true,
+          "detail": ""
+        }
+      ],
+      "passed_properties": [
+        "invalid_date",
+        "invalid_status",
+        "missing_fields",
+        "readme_present",
+        "requested_test_present",
+        "runnable_flask",
+        "student_creation_json",
+        "student_stored",
+        "unknown_student_rejected"
+      ],
+      "lost_previously_passing_properties": [],
+      "removed_symbols": {},
+      "container_executed": true,
+      "exit_code": 0,
+      "stdout": "ATTENDANCE_DIAGNOSTIC=[{\"property\": \"runnable_flask\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"student_creation_json\", \"passed\": true, \"detail\": \"(201, {'id': 1, 'name': 'Independent diagnostic student'})\"}, {\"property\": \"student_stored\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"valid_attendance_json\", \"passed\": false, \"detail\": \"('/attendance/1', 404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"missing_fields\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"invalid_status\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"invalid_date\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"malformed_json_rejected_as_json\", \"passed\": false, \"detail\": \"(400, '<!doctype html>\\\\n<html lang=en>\\\\n<title>400 Bad Request</title>\\\\n<h1>Bad Request</h1>\\\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\\\n')\"}, {\"property\": \"unknown_student_rejected\", \"passed\": true, \"detail\": \"(404, '{\\\"error\\\":\\\"Student not found\\\"}\\\\n')\"}, {\"property\": \"readme_present\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"requested_test_present\", \"passed\": true, \"detail\": \"\"}]\n",
+      "stderr": "",
+      "failure_category": "GENERATION",
+      "classification_basis": "Independently executed observable properties; no router or handoff blame inferred."
+    }
+  ],
+  "new_model_calls": 0,
+  "no_attendance_retry": true,
+  "original_outcomes_unchanged": true
+}

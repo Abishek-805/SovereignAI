@@ -1,0 +1,20 @@
+{
+  "path": "C:\\Users\\ashek\\Desktop\\SovereignAI\\outputs\\agent-kernel-rebuild\\browser-1791268598825\\terminal-task.json",
+  "sha256": "e8efc8f5e5ddcdaf15331dd16a7efe82d038592016cb47e1d6b0ebecc2c651aa",
+  "original_state": "failed",
+  "original_metrics": {
+    "task_id": "0e65dec8de40496894727a02bafb2349",
+    "request": "Create a small Flask attendance application.\n\nRequirements:\n- Python Flask\n- store students\n- POST attendance endpoint\n- reject invalid attendance requests\n- return JSON responses\n- include README.md\n- application must be runnable\n- include a simple test",
+    "workspace_id": "93fd327d4b8f45fbb86cedc1b77c5a13",
+    "model": "sovereign-text",
+    "state": "FAIL",
+    "model_calls": 15,
+    "tool_calls": 14,
+    "sandbox_runs": 4,
+    "repairs": 1,
+    "validation_failures": 2,
+    "model_switches": 0,
+    "elapsed": 915.156
+  },
+  "original_error": "Task supervisor time budget exhausted"
+}

@@ -1,0 +1,400 @@
+{
+  "arms": {
+    "A": {
+      "failure_layers": {
+        "MODEL_FAILURE": 15,
+        "UNKNOWN": 58,
+        "VALIDATION_FAILURE": 20
+      },
+      "failure_sequences": {
+        "interpretation": "Actual failed trusted container check precedes terminal proposal error; this does not establish a repair call unless timestamped telemetry proves generation after validation.",
+        "post_validation_generation_proven": 0,
+        "validation_failure_then_terminal_proposal_failure": 6
+      },
+      "latency_observed_rows": 93,
+      "latency_p50_seconds": 22.805937900000004,
+      "latency_p95_seconds": 118.82215793999974,
+      "max_sampled_ram_mib": 3648.29296875,
+      "max_sampled_vram_mib": 2677.0,
+      "model_calls": 560,
+      "model_calls_unknown_rows": 0,
+      "model_switches": 3,
+      "model_switches_unknown_rows": 0,
+      "n": 93,
+      "outcome": {
+        "FAIL": 38,
+        "PARTIAL": 5,
+        "PASS": 50,
+        "UNKNOWN": 0
+      },
+      "repair_independent_recovery": 1,
+      "repair_observed": 22,
+      "routing": {
+        "complexity": {
+          "correct": 76,
+          "incorrect": 17,
+          "unknown": 0
+        },
+        "task_type": {
+          "correct": 86,
+          "incorrect": 7,
+          "unknown": 0
+        },
+        "worker_role": {
+          "correct": 0,
+          "incorrect": 0,
+          "suitable": 21,
+          "unknown": 0,
+          "unsuitable": 72
+        }
+      },
+      "semantic": {
+        "FAIL": 3,
+        "PARTIAL": 5,
+        "PASS": 12,
+        "UNKNOWN": 73
+      },
+      "task_completion": {
+        "FAIL": 38,
+        "PARTIAL": 5,
+        "PASS": 50,
+        "UNKNOWN": 0
+      },
+      "trusted": {
+        "FAIL": 26,
+        "PASS": 38,
+        "UNKNOWN": 29
+      },
+      "trusted_or_reviewed_contract_interval": {
+        "cluster_count": 33,
+        "confidence": 0.95,
+        "interval": [
+          0.44551705170517053,
+          0.6860640235360045
+        ],
+        "method": "case-weighted contract cluster percentile bootstrap",
+        "repetitions": 1000,
+        "seed": 1729
+      }
+    },
+    "B": {
+      "failure_layers": {},
+      "failure_sequences": {
+        "interpretation": "Actual failed trusted container check precedes terminal proposal error; this does not establish a repair call unless timestamped telemetry proves generation after validation.",
+        "post_validation_generation_proven": 0,
+        "validation_failure_then_terminal_proposal_failure": 0
+      },
+      "latency_observed_rows": 0,
+      "latency_p50_seconds": null,
+      "latency_p95_seconds": null,
+      "max_sampled_ram_mib": null,
+      "max_sampled_vram_mib": null,
+      "model_calls": 0,
+      "model_calls_unknown_rows": 0,
+      "model_switches": 0,
+      "model_switches_unknown_rows": 0,
+      "n": 0,
+      "outcome": {
+        "FAIL": 0,
+        "PARTIAL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "repair_independent_recovery": 0,
+      "repair_observed": 0,
+      "routing": {
+        "complexity": {
+          "correct": 0,
+          "incorrect": 0,
+          "unknown": 0
+        },
+        "task_type": {
+          "correct": 0,
+          "incorrect": 0,
+          "unknown": 0
+        },
+        "worker_role": {
+          "correct": 0,
+          "incorrect": 0,
+          "suitable": 0,
+          "unknown": 0,
+          "unsuitable": 0
+        }
+      },
+      "semantic": {
+        "FAIL": 0,
+        "PARTIAL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "task_completion": {
+        "FAIL": 0,
+        "PARTIAL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "trusted": {
+        "FAIL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "trusted_or_reviewed_contract_interval": {
+        "cluster_count": 0,
+        "interval": null,
+        "reason": "fewer than two evaluated development contracts"
+      }
+    },
+    "C": {
+      "failure_layers": {},
+      "failure_sequences": {
+        "interpretation": "Actual failed trusted container check precedes terminal proposal error; this does not establish a repair call unless timestamped telemetry proves generation after validation.",
+        "post_validation_generation_proven": 0,
+        "validation_failure_then_terminal_proposal_failure": 0
+      },
+      "latency_observed_rows": 0,
+      "latency_p50_seconds": null,
+      "latency_p95_seconds": null,
+      "max_sampled_ram_mib": null,
+      "max_sampled_vram_mib": null,
+      "model_calls": 0,
+      "model_calls_unknown_rows": 0,
+      "model_switches": 0,
+      "model_switches_unknown_rows": 0,
+      "n": 0,
+      "outcome": {
+        "FAIL": 0,
+        "PARTIAL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "repair_independent_recovery": 0,
+      "repair_observed": 0,
+      "routing": {
+        "complexity": {
+          "correct": 0,
+          "incorrect": 0,
+          "unknown": 0
+        },
+        "task_type": {
+          "correct": 0,
+          "incorrect": 0,
+          "unknown": 0
+        },
+        "worker_role": {
+          "correct": 0,
+          "incorrect": 0,
+          "suitable": 0,
+          "unknown": 0,
+          "unsuitable": 0
+        }
+      },
+      "semantic": {
+        "FAIL": 0,
+        "PARTIAL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "task_completion": {
+        "FAIL": 0,
+        "PARTIAL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "trusted": {
+        "FAIL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "trusted_or_reviewed_contract_interval": {
+        "cluster_count": 0,
+        "interval": null,
+        "reason": "fewer than two evaluated development contracts"
+      }
+    },
+    "D": {
+      "failure_layers": {},
+      "failure_sequences": {
+        "interpretation": "Actual failed trusted container check precedes terminal proposal error; this does not establish a repair call unless timestamped telemetry proves generation after validation.",
+        "post_validation_generation_proven": 0,
+        "validation_failure_then_terminal_proposal_failure": 0
+      },
+      "latency_observed_rows": 0,
+      "latency_p50_seconds": null,
+      "latency_p95_seconds": null,
+      "max_sampled_ram_mib": null,
+      "max_sampled_vram_mib": null,
+      "model_calls": 0,
+      "model_calls_unknown_rows": 0,
+      "model_switches": 0,
+      "model_switches_unknown_rows": 0,
+      "n": 0,
+      "outcome": {
+        "FAIL": 0,
+        "PARTIAL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "repair_independent_recovery": 0,
+      "repair_observed": 0,
+      "routing": {
+        "complexity": {
+          "correct": 0,
+          "incorrect": 0,
+          "unknown": 0
+        },
+        "task_type": {
+          "correct": 0,
+          "incorrect": 0,
+          "unknown": 0
+        },
+        "worker_role": {
+          "correct": 0,
+          "incorrect": 0,
+          "suitable": 0,
+          "unknown": 0,
+          "unsuitable": 0
+        }
+      },
+      "semantic": {
+        "FAIL": 0,
+        "PARTIAL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "task_completion": {
+        "FAIL": 0,
+        "PARTIAL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "trusted": {
+        "FAIL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "trusted_or_reviewed_contract_interval": {
+        "cluster_count": 0,
+        "interval": null,
+        "reason": "fewer than two evaluated development contracts"
+      }
+    },
+    "E": {
+      "failure_layers": {},
+      "failure_sequences": {
+        "interpretation": "Actual failed trusted container check precedes terminal proposal error; this does not establish a repair call unless timestamped telemetry proves generation after validation.",
+        "post_validation_generation_proven": 0,
+        "validation_failure_then_terminal_proposal_failure": 0
+      },
+      "latency_observed_rows": 0,
+      "latency_p50_seconds": null,
+      "latency_p95_seconds": null,
+      "max_sampled_ram_mib": null,
+      "max_sampled_vram_mib": null,
+      "model_calls": 0,
+      "model_calls_unknown_rows": 0,
+      "model_switches": 0,
+      "model_switches_unknown_rows": 0,
+      "n": 0,
+      "outcome": {
+        "FAIL": 0,
+        "PARTIAL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "repair_independent_recovery": 0,
+      "repair_observed": 0,
+      "routing": {
+        "complexity": {
+          "correct": 0,
+          "incorrect": 0,
+          "unknown": 0
+        },
+        "task_type": {
+          "correct": 0,
+          "incorrect": 0,
+          "unknown": 0
+        },
+        "worker_role": {
+          "correct": 0,
+          "incorrect": 0,
+          "suitable": 0,
+          "unknown": 0,
+          "unsuitable": 0
+        }
+      },
+      "semantic": {
+        "FAIL": 0,
+        "PARTIAL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "task_completion": {
+        "FAIL": 0,
+        "PARTIAL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "trusted": {
+        "FAIL": 0,
+        "PASS": 0,
+        "UNKNOWN": 0
+      },
+      "trusted_or_reviewed_contract_interval": {
+        "cluster_count": 0,
+        "interval": null,
+        "reason": "fewer than two evaluated development contracts"
+      }
+    }
+  },
+  "paired": {
+    "E_vs_A": {
+      "both_decisive": 0,
+      "cases": 0,
+      "transitions": {}
+    },
+    "E_vs_B": {
+      "both_decisive": 0,
+      "cases": 0,
+      "transitions": {}
+    },
+    "E_vs_C": {
+      "both_decisive": 0,
+      "cases": 0,
+      "transitions": {}
+    },
+    "E_vs_D": {
+      "both_decisive": 0,
+      "cases": 0,
+      "transitions": {}
+    }
+  },
+  "report_state": "RUNNING",
+  "scope": "offline observations; incomplete report rows and unreviewed answers remain UNKNOWN",
+  "switch_effects": {
+    "A": {
+      "effect": "UNKNOWN",
+      "observed": 3,
+      "reason": "No equivalent randomized same-state switch/no-switch counterfactual is recorded"
+    },
+    "B": {
+      "effect": "UNKNOWN",
+      "observed": 0,
+      "reason": "No equivalent randomized same-state switch/no-switch counterfactual is recorded"
+    },
+    "C": {
+      "effect": "UNKNOWN",
+      "observed": 0,
+      "reason": "No equivalent randomized same-state switch/no-switch counterfactual is recorded"
+    },
+    "D": {
+      "effect": "UNKNOWN",
+      "observed": 0,
+      "reason": "No equivalent randomized same-state switch/no-switch counterfactual is recorded"
+    },
+    "E": {
+      "effect": "UNKNOWN",
+      "observed": 0,
+      "reason": "No equivalent randomized same-state switch/no-switch counterfactual is recorded"
+    }
+  }
+}

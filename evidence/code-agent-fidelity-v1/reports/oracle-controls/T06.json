@@ -1,0 +1,28 @@
+{
+  "task_id": "T06",
+  "negative": {
+    "exit_code": 1,
+    "container_executed": true,
+    "stdout": "ORACLE_COUNT=4\n",
+    "stderr": "test_count (test_acceptance.Check.test_count) ... FAIL\ntest_invalid (test_acceptance.Check.test_invalid) ... FAIL\ntest_preserved (test_acceptance.Check.test_preserved) ... ok\ntest_render (test_acceptance.Check.test_render) ... FAIL\n\n======================================================================\nFAIL: test_count (test_acceptance.Check.test_count)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 5, in test_count\n    def test_count(self):self.assertEqual(events.counts([{'kind':'b'},{'kind':'a'},{'kind':'b'}]),{'a':1,'b':2})\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: {} != {'a': 1, 'b': 2}\n- {}\n+ {'a': 1, 'b': 2}\n\n======================================================================\nFAIL: test_invalid (test_acceptance.Check.test_invalid)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 8, in test_invalid\n    with self.assertRaises(ValueError):events.counts([{}])\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ValueError not raised\n\n======================================================================\nFAIL: test_render (test_acceptance.Check.test_render)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 6, in test_render\n    def test_render(self):self.assertEqual(report.render([{'kind':'b'},{'kind':'a'},{'kind':'b'}]),'a:1\\nb:2')\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: '' != 'a:1\\nb:2'\n+ a:1\n+ b:2\n\n\n----------------------------------------------------------------------\nRan 4 tests in 0.002s\n\nFAILED (failures=3)\n",
+    "properties": {
+      "test_acceptance.Check.test_count.test_count": false,
+      "test_acceptance.Check.test_invalid.test_invalid": false,
+      "test_acceptance.Check.test_preserved.test_preserved": true,
+      "test_acceptance.Check.test_render.test_render": false
+    }
+  },
+  "positive": {
+    "exit_code": 0,
+    "container_executed": true,
+    "stdout": "ORACLE_COUNT=4\n",
+    "stderr": "test_count (test_acceptance.Check.test_count) ... ok\ntest_invalid (test_acceptance.Check.test_invalid) ... ok\ntest_preserved (test_acceptance.Check.test_preserved) ... ok\ntest_render (test_acceptance.Check.test_render) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.000s\n\nOK\n",
+    "properties": {
+      "test_acceptance.Check.test_count.test_count": true,
+      "test_acceptance.Check.test_invalid.test_invalid": true,
+      "test_acceptance.Check.test_preserved.test_preserved": true,
+      "test_acceptance.Check.test_render.test_render": true
+    }
+  },
+  "control_passed": true
+}

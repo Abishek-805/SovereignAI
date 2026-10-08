@@ -1,0 +1,50 @@
+[
+  {
+    "event": 5,
+    "tool": "run_command",
+    "result": {
+      "container_executed": true,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "FF..FFFFF....F\n======================================================================\nFAIL: test_add_attendance_invalid_date_format (__main__.TestAttendanceApp.test_add_attendance_invalid_date_format)\nTest that invalid date format is rejected.\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_app.py\", line 129, in test_add_attendance_invalid_date_format\n    self.assertEqual(response.status_code, 400)\nAssertionError: 200 != 400\n\n======================================================================\nFAIL: test_add_attendance_invalid_status (__main__.TestAttendanceApp.test_add_attendance_invalid_status)\nTest that invalid attendance status is rejected.\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_app.py\", line 87, in test_add_attendance_invalid_status\n    self.assertEqual(response.status_code, 400)\nAssertionError: 200 != 400\n\n======================================================================\nFAIL: test_add_attendance_nonexistent_student (__main__.TestAttendanceApp.test_add_attendance_nonexistent_student)\nTest that attendance for non-existent student is rejected.\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_app.py\", line 119, in test_add_attendance_nonexistent_student\n    self.assertEqual(response.status_code, 404)\nAssertionError: 200 != 404\n\n======================================================================\nFAIL: test_add_attendance_valid (__main__.TestAttendanceApp.test_add_attendance_valid)\nTest adding valid attendance record.\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_app.py\", line 74, in test_add_attendance_valid\n    self.assertEqual(response.status_code, 201)\nAssertionError: 200 != 201\n\n======================================================================\nFAIL: test_add_duplicate_student (__main__.TestAttendanceApp.test_add_duplicate_student)\nTest that duplicate student IDs are rejected.\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_app.py\", line 46, in test_add_duplicate_student\n    self.assertEqual(response.status_code, 400)\nAssertionError: 200 != 400\n\n======================================================================\nFAIL: test_add_student (__main__.TestAttendanceApp.test_add_student)\nTest adding a new student.\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_app.py\", line 31, in test_add_student\n    self.assertEqual(response.status_code, 201)\nAssertionError: 200 != 201\n\n======================================================================\nFAIL: test_all_valid_statuses (__main__.TestAttendanceApp.test_all_valid_statuses)\nTest all valid attendance statuses.\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_app.py\", line 157, in test_all_valid_statuses\n    self.assertEqual(response.status_code, 201)\nAssertionError: 200 != 201\n\n======================================================================\nFAIL: test_no_json_data (__main__.TestAttendanceApp.test_no_json_data)\nTest that missing JSON data is rejected.\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_app.py\", line 162, in test_no_json_data\n    self.assertEqual(response.status_code, 400)\nAssertionError: 415 != 400\n\n----------------------------------------------------------------------\nRan 14 tests in 0.071s\n\nFAILED (failures=8)\n",
+      "workspace_changes_persisted": false,
+      "note": "Every command uses a fresh snapshot. Write source through write_file/apply_patch, not shell redirection."
+    }
+  },
+  {
+    "event": 10,
+    "tool": "run_command",
+    "result": {
+      "container_executed": true,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "F...F........F\n======================================================================\nFAIL: test_add_attendance_invalid_date_format (__main__.TestAttendanceApp.test_add_attendance_invalid_date_format)\nTest that invalid date format is rejected.\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_app.py\", line 129, in test_add_attendance_invalid_date_format\n    self.assertEqual(response.status_code, 400)\nAssertionError: 201 != 400\n\n======================================================================\nFAIL: test_add_attendance_nonexistent_student (__main__.TestAttendanceApp.test_add_attendance_nonexistent_student)\nTest that attendance for non-existent student is rejected.\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_app.py\", line 119, in test_add_attendance_nonexistent_student\n    self.assertEqual(response.status_code, 404)\nAssertionError: 400 != 404\n\n======================================================================\nFAIL: test_no_json_data (__main__.TestAttendanceApp.test_no_json_data)\nTest that missing JSON data is rejected.\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_app.py\", line 162, in test_no_json_data\n    self.assertEqual(response.status_code, 400)\nAssertionError: 415 != 400\n\n----------------------------------------------------------------------\nRan 14 tests in 0.056s\n\nFAILED (failures=3)\n",
+      "workspace_changes_persisted": false,
+      "note": "Every command uses a fresh snapshot. Write source through write_file/apply_patch, not shell redirection."
+    }
+  },
+  {
+    "event": 14,
+    "tool": "run_command",
+    "result": {
+      "container_executed": true,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "....F.........\n======================================================================\nFAIL: test_add_attendance_nonexistent_student (__main__.TestAttendanceApp.test_add_attendance_nonexistent_student)\nTest that attendance for non-existent student is rejected.\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_app.py\", line 119, in test_add_attendance_nonexistent_student\n    self.assertEqual(response.status_code, 404)\nAssertionError: 201 != 404\n\n----------------------------------------------------------------------\nRan 14 tests in 0.126s\n\nFAILED (failures=1)\n",
+      "workspace_changes_persisted": false,
+      "note": "Every command uses a fresh snapshot. Write source through write_file/apply_patch, not shell redirection."
+    }
+  },
+  {
+    "event": 22,
+    "tool": "run_command",
+    "result": {
+      "container_executed": true,
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "..............\n----------------------------------------------------------------------\nRan 14 tests in 0.075s\n\nOK\n",
+      "workspace_changes_persisted": false,
+      "note": "Every command uses a fresh snapshot. Write source through write_file/apply_patch, not shell redirection."
+    }
+  }
+]

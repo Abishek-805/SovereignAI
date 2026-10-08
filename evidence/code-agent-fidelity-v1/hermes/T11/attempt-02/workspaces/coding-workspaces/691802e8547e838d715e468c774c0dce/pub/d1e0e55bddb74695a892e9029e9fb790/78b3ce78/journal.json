@@ -1,0 +1,19 @@
+{
+  "conflicts": [],
+  "entries": [
+    {
+      "action": "edit",
+      "backup": "backups/0.bin",
+      "before_hash": "a1327549815da46fdd74964398b5eec14d39ffb8ded6cf25b596ec03c984c586",
+      "path": "unique.py",
+      "staged_hash": "b769e28e1a36383369a040d5a5cdd841cee787bfc3184974ca4c09676555d3b3"
+    }
+  ],
+  "operation": "accept",
+  "project_id": "691802e8547e838d715e468c774c0dce",
+  "project_root": "C:\\Users\\ashek\\Desktop\\SovereignAI\\evidence\\code-agent-fidelity-v1\\hermes\\T11\\attempt-02\\workspaces\\coding-workspaces\\691802e8547e838d715e468c774c0dce\\files",
+  "sequence": 1791305487137569800,
+  "state": "committed",
+  "task_id": "d1e0e55bddb74695a892e9029e9fb790",
+  "version": 1
+}

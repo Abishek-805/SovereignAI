@@ -1,0 +1,66 @@
+{
+  "phase": "runners",
+  "task_id": "T14",
+  "category": "explicit_acceptance",
+  "control": true,
+  "runner": "native_v1",
+  "model": "qwen35",
+  "accepted": true,
+  "validated": true,
+  "status": "PASS",
+  "repair_count": 0,
+  "rollback_count": 0,
+  "tool_calls": 5,
+  "model_calls": 5,
+  "model_switches": 0,
+  "latency_seconds": 25.59400000000005,
+  "peak_vram_mb": 3276,
+  "vram_scope": "whole GPU including display; process allocation unavailable",
+  "peak_ram_mb": 4986.0703125,
+  "generation_tokens": 279,
+  "token_usage_complete": true,
+  "properties": {
+    "test_acceptance.Check.test_integer.test_integer": true,
+    "test_acceptance.Check.test_value.test_value": true
+  },
+  "failure_category": null,
+  "failure_detail": "",
+  "router_proposal": {
+    "original_request": "Edit lifecycle.py value() to return integer 31. Preserve unrelated files. Validate the supplied tests.",
+    "normalized_request": "Edit lifecycle.py value() to return integer 31. Preserve unrelated files. Validate the supplied tests.",
+    "task_type": "EDIT",
+    "complexity": "simple",
+    "worker_role": "code",
+    "steps": [
+      "code"
+    ],
+    "features": {
+      "active_file_present": false,
+      "workspace_available": true,
+      "repository_scope": "none",
+      "estimated_context_size": null,
+      "number_of_files_requested": 1,
+      "visual_input_present": false,
+      "modality": "text",
+      "is_follow_up": false,
+      "explicit_error_present": false,
+      "language_hints": [],
+      "execution_requested": false,
+      "validation_required": true,
+      "mechanical_rename": false,
+      "software_generation": false,
+      "requirements_heavy": false
+    },
+    "reason_codes": [
+      "software_task_features"
+    ],
+    "needs_clarification": false,
+    "mutation_authorized": false
+  },
+  "execution_result": 0,
+  "validation_result": true,
+  "evidence": "evidence\\code-agent-fidelity-v1\\native\\T14\\attempt-02",
+  "initial_request_hash": "36853955b702400ade17defa19c8c6d7ebff30e3e087ea99e87dfa3cdd2cccc3",
+  "canonical_unchanged_before_accept": true,
+  "sandbox_image_id": "sha256:6f6ac11cda347a185454338dee35d77003e066579a3261b52b7c6ff1048c8573"
+}

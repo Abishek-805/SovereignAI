@@ -1,0 +1,19 @@
+{
+  "event": "tool",
+  "tool": "apply_patch",
+  "arguments": {
+    "path": "lifecycle.py",
+    "old_text": "def value():\n    return 4",
+    "new_text": "def value():\n    return 31"
+  },
+  "before_revision": "3ce9492e6cdcea2065a3102212c972c1f5c76d2b00f880e2f97bb59c3453a474",
+  "before_diff": "",
+  "result": {
+    "path": "lifecycle.py",
+    "sha256": "a28a376369ec8587c30abf6639b78c8312573ea6f6bcba99e819491777df50c4",
+    "bytes": 27
+  },
+  "latency_seconds": 0.0,
+  "after_revision": "260d062f3637b70934a3a41e142c0aef7a4d487e9f4fd9ff6731984bdab36e23",
+  "after_diff": "--- a/lifecycle.py\n+++ b/lifecycle.py\n@@ -1,2 +1,2 @@\n def value():\n-    return 4\n+    return 31\n"
+}

@@ -1,0 +1,7 @@
+{
+  "actor": "separate authorized QA acceptance harness",
+  "workspace_id": "51c7e6541d215868ea2ed4a81cf2b7f9",
+  "task_id": "ba9c432542c449beaa624a5839fd8d2d",
+  "source": "Master prompt acceptance test; isolated fixtures only",
+  "not_model_action": true
+}

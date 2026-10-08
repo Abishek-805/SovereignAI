@@ -11,6 +11,7 @@ COMPOSITIONS={
     'documents':('documents','artifacts'), 'spreadsheets':('spreadsheets',),
     'coding':('coding','project-runner','workspace'),
     'source-generation':('coding',),
+    'agent-tools':('agent-tools',),
     'application-operations':('workspace','project-runner','documents','artifacts'),
     'structured-data':('spreadsheets',), 'project-runner':('project-runner',),
     'artifacts':('artifacts',), 'workspace':('workspace',)}

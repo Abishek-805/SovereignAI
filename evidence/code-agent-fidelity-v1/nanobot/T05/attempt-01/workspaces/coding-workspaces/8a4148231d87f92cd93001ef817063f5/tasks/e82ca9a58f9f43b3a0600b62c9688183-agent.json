@@ -1,0 +1,108 @@
+{
+  "session": {
+    "task_id": "e82ca9a58f9f43b3a0600b62c9688183",
+    "request": "Implement POST /double in app.py: JSON object with numeric value -> JSON result equal to twice the value. Reject malformed, missing, boolean or non-numeric values with JSON HTTP 422. Preserve GET /health.",
+    "workspace_id": "8a4148231d87f92cd93001ef817063f5",
+    "model": "sovereign-text",
+    "state": "READY_FOR_REVIEW",
+    "model_calls": 5,
+    "tool_calls": 5,
+    "sandbox_runs": 2,
+    "repairs": 0,
+    "validation_failures": 0,
+    "model_switches": 0
+  },
+  "base_revision": "167ca73a9c4f5a3ad97ac0d1513a13533e15e3cf8fb8fbb48de5df2b10484ca8",
+  "changes": [
+    {
+      "path": "app.py",
+      "action": "edit",
+      "before_sha256": "0af2e52b22bf9ab3dd777ed6cb6ad9b5a69a135125a00c73ebaae6d6d44d3148",
+      "after_sha256": "f1d968cfd53f45798c393cbfce9b2c156a5470db4017704c49009e5d4ec0c767"
+    }
+  ],
+  "diff": "--- a/app.py\n+++ b/app.py\n@@ -1,6 +1,35 @@\n-from flask import Flask,request,jsonify\n-app=Flask(__name__)\n+from flask import Flask, request, jsonify\n+import json\n+\n+app = Flask(__name__)\n+\n @app.get('/health')\n-def health():return jsonify(ok=True)\n+def health():\n+    return jsonify(ok=True)\n+\n @app.post('/double')\n-def double():return jsonify(result=0)\n+def double():\n+    try:\n+        data = request.get_json(force=True)\n+    except Exception:\n+        return jsonify(error=\"Invalid JSON\"), 422\n+    \n+    if data is None:\n+        return jsonify(error=\"Missing JSON body\"), 422\n+    \n+    if not isinstance(data, dict):\n+        return jsonify(error=\"Request body must be a JSON object\"), 422\n+    \n+    if 'value' not in data:\n+        return jsonify(error=\"Missing 'value' field\"), 422\n+    \n+    value = data['value']\n+    \n+    if isinstance(value, bool):\n+        return jsonify(error=\"Value cannot be boolean\"), 422\n+    \n+    if not isinstance(value, (int, float)):\n+        return jsonify(error=\"Value must be numeric\"), 422\n+    \n+    result = value * 2\n+    return jsonify(result=result)\n",
+  "observations": [
+    {
+      "tool": "read_file",
+      "arguments": {
+        "path": "app.py"
+      },
+      "result": {
+        "path": "app.py",
+        "content": "from flask import Flask,request,jsonify\napp=Flask(__name__)\n@app.get('/health')\ndef health():return jsonify(ok=True)\n@app.post('/double')\ndef double():return jsonify(result=0)\n",
+        "offset": 0,
+        "next_offset": null,
+        "total_characters": 176,
+        "content_complete": true,
+        "sha256": "0af2e52b22bf9ab3dd777ed6cb6ad9b5a69a135125a00c73ebaae6d6d44d3148"
+      }
+    },
+    {
+      "tool": "read_file",
+      "arguments": {
+        "path": "test_acceptance.py"
+      },
+      "result": {
+        "path": "test_acceptance.py",
+        "content": "import unittest,json,subprocess,sys\nfrom pathlib import Path\nfrom app import app\nclass Check(unittest.TestCase):\n def test_numeric(self):self.assertEqual(app.test_client().post('/double',json={'value':3.5}).get_json(),{'result':7.0})\n def test_negative(self):self.assertEqual(app.test_client().post('/double',json={'value':-2}).get_json(),{'result':-4})\n def test_invalid(self):\n  for body in ({},{'value':True},{'value':'bad'},[]):\n   r=app.test_client().post('/double',json=body);self.assertEqual(r.status_code,422);self.assertTrue(r.is_json)\n def test_malformed(self):\n  r=app.test_client().post('/double',data='{broken',content_type='application/json');self.assertEqual(r.status_code,422);self.assertTrue(r.is_json)\n def test_preserved(self):self.assertEqual(app.test_client().get('/health').get_json(),{'ok':True})\n",
+        "offset": 0,
+        "next_offset": null,
+        "total_characters": 820,
+        "content_complete": true,
+        "sha256": "951fa61e130ea8a4002059894eb4ea85a3795fc48813fb4e12a06dba78ad1eb9"
+      }
+    },
+    {
+      "tool": "write_file",
+      "arguments": {
+        "path": "app.py",
+        "content": {
+          "sha256": "f1d968cfd53f45798c393cbfce9b2c156a5470db4017704c49009e5d4ec0c767",
+          "bytes": 885
+        }
+      },
+      "result": {
+        "path": "app.py",
+        "sha256": "f1d968cfd53f45798c393cbfce9b2c156a5470db4017704c49009e5d4ec0c767",
+        "bytes": 885
+      }
+    },
+    {
+      "tool": "run_tests",
+      "arguments": {},
+      "result": {
+        "container_executed": true,
+        "exit_code": 0,
+        "stdout": "INDEPENDENT_ORACLE_TEST_COUNT=5\n",
+        "stderr": "test_invalid (test_acceptance.Check.test_invalid) ... ok\ntest_malformed (test_acceptance.Check.test_malformed) ... ok\ntest_negative (test_acceptance.Check.test_negative) ... ok\ntest_numeric (test_acceptance.Check.test_numeric) ... ok\ntest_preserved (test_acceptance.Check.test_preserved) ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 0.069s\n\nOK\n",
+        "workspace_changes_persisted": false,
+        "note": "Every command uses a fresh snapshot. Write source through write_file/apply_patch, not shell redirection.",
+        "passed": true,
+        "test_count": 5,
+        "entrypoint": "app.py",
+        "independent": true,
+        "basis": "immutable supplied suite; no semantic coverage inferred beyond supplied assertions"
+      }
+    },
+    {
+      "tool": "finish",
+      "arguments": {},
+      "result": {
+        "container_executed": true,
+        "exit_code": 0,
+        "stdout": "INDEPENDENT_ORACLE_TEST_COUNT=5\n",
+        "stderr": "test_invalid (test_acceptance.Check.test_invalid) ... ok\ntest_malformed (test_acceptance.Check.test_malformed) ... ok\ntest_negative (test_acceptance.Check.test_negative) ... ok\ntest_numeric (test_acceptance.Check.test_numeric) ... ok\ntest_preserved (test_acceptance.Check.test_preserved) ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 0.057s\n\nOK\n",
+        "workspace_changes_persisted": false,
+        "note": "Every command uses a fresh snapshot. Write source through write_file/apply_patch, not shell redirection.",
+        "passed": true,
+        "test_count": 5,
+        "entrypoint": "app.py",
+        "independent": true,
+        "basis": "immutable supplied suite; no semantic coverage inferred beyond supplied assertions"
+      }
+    }
+  ],
+  "ephemeral_tool_log": "C:\\Users\\ashek\\Desktop\\SovereignAI\\evidence\\code-agent-fidelity-v1\\nanobot\\T05\\attempt-01\\workspaces\\agent-ephemeral\\cache-e82ca9a58f9f43b3a0600b62c9688183.json",
+  "checkpoint_kind": "revision metadata plus changed-file patch; no complete project copy"
+}

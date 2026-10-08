@@ -1,0 +1,18 @@
+{
+  "event": "tool",
+  "tool": "write_file",
+  "arguments": {
+    "path": "service.py",
+    "content": "import store\n\ndef reserve(name, seats, capacity):\n    # Validate name is not blank\n    if not name or not isinstance(name, str):\n        raise ValueError(\"Name cannot be blank\")\n    \n    # Validate seats is a positive integer\n    if not isinstance(seats, int) or isinstance(seats, bool) or seats <= 0:\n        raise ValueError(\"Seats must be a positive integer\")\n    \n    # Validate capacity is a positive integer\n    if not isinstance(capacity, int) or isinstance(capacity, bool) or capacity <= 0:\n        raise ValueError(\"Capacity must be a positive integer\")\n    \n    # Check for overflow (seats > capacity)\n    if seats > capacity:\n        raise ValueError(\"Seats cannot exceed capacity\")\n    \n    # Store the reservation\n    token = len(store.reservations) + 1\n    store.reservations[token] = {'name': name, 'seats': seats, 'capacity': capacity}\n    \n    return token\n\ndef cancel(token):\n    if token not in store.reservations:\n        raise KeyError(\"Unknown token\")\n    del store.reservations[token]\n"
+  },
+  "before_revision": "4bac3228bf2fbb10a9594f6c1103ac28e175947f63a6894f64432bc392224d12",
+  "before_diff": "",
+  "result": {
+    "path": "service.py",
+    "sha256": "0a7b5d5513720516aa4668a63224d67af96e5382a837ff7aacfb0a6bb3ab98a9",
+    "bytes": 1008
+  },
+  "latency_seconds": 0.0,
+  "after_revision": "4fd757129736c48d906593d02c3348015810ef7ef9f3e753938902f33f774340",
+  "after_diff": "--- a/service.py\n+++ b/service.py\n@@ -1,4 +1,29 @@\n-def reserve(name,seats,capacity):\n-    return {}\n+import store\n+\n+def reserve(name, seats, capacity):\n+    # Validate name is not blank\n+    if not name or not isinstance(name, str):\n+        raise ValueError(\"Name cannot be blank\")\n+    \n+    # Validate seats is a positive integer\n+    if not isinstance(seats, int) or isinstance(seats, bool) or seats <= 0:\n+        raise ValueError(\"Seats must be a positive integer\")\n+    \n+    # Validate capacity is a positive integer\n+    if not isinstance(capacity, int) or isinstance(capacity, bool) or capacity <= 0:\n+        raise ValueError(\"Capacity must be a positive integer\")\n+    \n+    # Check for overflow (seats > capacity)\n+    if seats > capacity:\n+        raise ValueError(\"Seats cannot exceed capacity\")\n+    \n+    # Store the reservation\n+    token = len(store.reservations) + 1\n+    store.reservations[token] = {'name': name, 'seats': seats, 'capacity': capacity}\n+    \n+    return token\n+\n def cancel(token):\n-    return False\n+    if token not in store.reservations:\n+        raise KeyError(\"Unknown token\")\n+    del store.reservations[token]\n"
+}

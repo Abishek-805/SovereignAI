@@ -1,0 +1,30 @@
+{
+  "task_id": "T05",
+  "negative": {
+    "exit_code": 1,
+    "container_executed": true,
+    "stdout": "ORACLE_COUNT=5\n",
+    "stderr": "test_invalid (test_acceptance.Check.test_invalid) ... FAIL\ntest_malformed (test_acceptance.Check.test_malformed) ... FAIL\ntest_negative (test_acceptance.Check.test_negative) ... FAIL\ntest_numeric (test_acceptance.Check.test_numeric) ... FAIL\ntest_preserved (test_acceptance.Check.test_preserved) ... ok\n\n======================================================================\nFAIL: test_invalid (test_acceptance.Check.test_invalid)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 9, in test_invalid\n    r=app.test_client().post('/double',json=body);self.assertEqual(r.status_code,422);self.assertTrue(r.is_json)\n                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 200 != 422\n\n======================================================================\nFAIL: test_malformed (test_acceptance.Check.test_malformed)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 11, in test_malformed\n    r=app.test_client().post('/double',data='{broken',content_type='application/json');self.assertEqual(r.status_code,422);self.assertTrue(r.is_json)\n                                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 200 != 422\n\n======================================================================\nFAIL: test_negative (test_acceptance.Check.test_negative)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 6, in test_negative\n    def test_negative(self):self.assertEqual(app.test_client().post('/double',json={'value':-2}).get_json(),{'result':-4})\n                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: {'result': 0} != {'result': -4}\n- {'result': 0}\n?            ^\n\n+ {'result': -4}\n?            ^^\n\n\n======================================================================\nFAIL: test_numeric (test_acceptance.Check.test_numeric)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 5, in test_numeric\n    def test_numeric(self):self.assertEqual(app.test_client().post('/double',json={'value':3.5}).get_json(),{'result':7.0})\n                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: {'result': 0} != {'result': 7.0}\n- {'result': 0}\n+ {'result': 7.0}\n?            ++\n\n\n----------------------------------------------------------------------\nRan 5 tests in 0.085s\n\nFAILED (failures=4)\n",
+    "properties": {
+      "test_acceptance.Check.test_invalid.test_invalid": false,
+      "test_acceptance.Check.test_malformed.test_malformed": false,
+      "test_acceptance.Check.test_negative.test_negative": false,
+      "test_acceptance.Check.test_numeric.test_numeric": false,
+      "test_acceptance.Check.test_preserved.test_preserved": true
+    }
+  },
+  "positive": {
+    "exit_code": 0,
+    "container_executed": true,
+    "stdout": "ORACLE_COUNT=5\n",
+    "stderr": "test_invalid (test_acceptance.Check.test_invalid) ... ok\ntest_malformed (test_acceptance.Check.test_malformed) ... ok\ntest_negative (test_acceptance.Check.test_negative) ... ok\ntest_numeric (test_acceptance.Check.test_numeric) ... ok\ntest_preserved (test_acceptance.Check.test_preserved) ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 0.060s\n\nOK\n",
+    "properties": {
+      "test_acceptance.Check.test_invalid.test_invalid": true,
+      "test_acceptance.Check.test_malformed.test_malformed": true,
+      "test_acceptance.Check.test_negative.test_negative": true,
+      "test_acceptance.Check.test_numeric.test_numeric": true,
+      "test_acceptance.Check.test_preserved.test_preserved": true
+    }
+  },
+  "control_passed": true
+}

@@ -1,0 +1,10 @@
+{
+  "exit_code": 0,
+  "container_executed": true,
+  "stdout": "ORACLE_COUNT=2\n",
+  "stderr": "test_integer (test_acceptance.Check.test_integer) ... ok\ntest_value (test_acceptance.Check.test_value) ... ok\n\n----------------------------------------------------------------------\nRan 2 tests in 0.000s\n\nOK\n",
+  "properties": {
+    "test_acceptance.Check.test_integer.test_integer": true,
+    "test_acceptance.Check.test_value.test_value": true
+  }
+}

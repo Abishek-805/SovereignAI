@@ -1,0 +1,363 @@
+[
+  {
+    "name": "list_dir",
+    "case": "all-fields",
+    "expected": true,
+    "accepted": true,
+    "passed": true
+  },
+  {
+    "name": "list_dir",
+    "case": "required-only",
+    "expected": true,
+    "accepted": true,
+    "passed": true
+  },
+  {
+    "name": "list_dir",
+    "case": "additional-property",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "list_dir",
+    "case": "wrong-type-path",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "read_file",
+    "case": "all-fields",
+    "expected": true,
+    "accepted": true,
+    "passed": true
+  },
+  {
+    "name": "read_file",
+    "case": "required-only",
+    "expected": true,
+    "accepted": true,
+    "passed": true
+  },
+  {
+    "name": "read_file",
+    "case": "additional-property",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "read_file",
+    "case": "missing-path",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "read_file",
+    "case": "wrong-type-path",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "read_file",
+    "case": "wrong-type-offset",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "read_file",
+    "case": "wrong-type-limit",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "search_code",
+    "case": "all-fields",
+    "expected": true,
+    "accepted": true,
+    "passed": true
+  },
+  {
+    "name": "search_code",
+    "case": "required-only",
+    "expected": true,
+    "accepted": true,
+    "passed": true
+  },
+  {
+    "name": "search_code",
+    "case": "additional-property",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "search_code",
+    "case": "missing-query",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "search_code",
+    "case": "wrong-type-query",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "write_file",
+    "case": "all-fields",
+    "expected": true,
+    "accepted": true,
+    "passed": true
+  },
+  {
+    "name": "write_file",
+    "case": "required-only",
+    "expected": true,
+    "accepted": true,
+    "passed": true
+  },
+  {
+    "name": "write_file",
+    "case": "additional-property",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "write_file",
+    "case": "missing-path",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "write_file",
+    "case": "missing-content",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "write_file",
+    "case": "wrong-type-path",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "write_file",
+    "case": "wrong-type-content",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "apply_patch",
+    "case": "all-fields",
+    "expected": true,
+    "accepted": true,
+    "passed": true
+  },
+  {
+    "name": "apply_patch",
+    "case": "required-only",
+    "expected": true,
+    "accepted": true,
+    "passed": true
+  },
+  {
+    "name": "apply_patch",
+    "case": "additional-property",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "apply_patch",
+    "case": "missing-path",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "apply_patch",
+    "case": "missing-old_text",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "apply_patch",
+    "case": "missing-new_text",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "apply_patch",
+    "case": "wrong-type-path",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "apply_patch",
+    "case": "wrong-type-old_text",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "apply_patch",
+    "case": "wrong-type-new_text",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "delete_file",
+    "case": "all-fields",
+    "expected": true,
+    "accepted": true,
+    "passed": true
+  },
+  {
+    "name": "delete_file",
+    "case": "required-only",
+    "expected": true,
+    "accepted": true,
+    "passed": true
+  },
+  {
+    "name": "delete_file",
+    "case": "additional-property",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "delete_file",
+    "case": "missing-path",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "delete_file",
+    "case": "wrong-type-path",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "run_command",
+    "case": "all-fields",
+    "expected": true,
+    "accepted": true,
+    "passed": true
+  },
+  {
+    "name": "run_command",
+    "case": "required-only",
+    "expected": true,
+    "accepted": true,
+    "passed": true
+  },
+  {
+    "name": "run_command",
+    "case": "additional-property",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "run_command",
+    "case": "missing-command",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "run_command",
+    "case": "wrong-type-command",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "run_tests",
+    "case": "all-fields",
+    "expected": true,
+    "accepted": true,
+    "passed": true
+  },
+  {
+    "name": "run_tests",
+    "case": "required-only",
+    "expected": true,
+    "accepted": true,
+    "passed": true
+  },
+  {
+    "name": "run_tests",
+    "case": "additional-property",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "inspect_process",
+    "case": "all-fields",
+    "expected": true,
+    "accepted": true,
+    "passed": true
+  },
+  {
+    "name": "inspect_process",
+    "case": "required-only",
+    "expected": true,
+    "accepted": true,
+    "passed": true
+  },
+  {
+    "name": "inspect_process",
+    "case": "additional-property",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "name": "finish",
+    "case": "all-fields",
+    "expected": true,
+    "accepted": true,
+    "passed": true
+  },
+  {
+    "name": "finish",
+    "case": "required-only",
+    "expected": true,
+    "accepted": true,
+    "passed": true
+  },
+  {
+    "name": "finish",
+    "case": "additional-property",
+    "expected": false,
+    "accepted": false,
+    "passed": true
+  },
+  {
+    "case": "unknown-name",
+    "passed": true
+  }
+]

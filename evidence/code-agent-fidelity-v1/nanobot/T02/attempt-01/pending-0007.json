@@ -1,0 +1,11 @@
+{
+  "event": "tool",
+  "tool": "apply_patch",
+  "arguments": {
+    "path": "caller.py",
+    "old_text": "from numbers_io import read_number\nprint(read_number())",
+    "new_text": "from numbers_io import load_number\nprint(load_number())"
+  },
+  "before_revision": "cd5c88564506ab8465f41f3c8c4ec6429db763e8f3eb11a02513308f3ca7674e",
+  "before_diff": "--- a/numbers_io.py\n+++ b/numbers_io.py\n@@ -1,2 +1,2 @@\n-def read_number():\n+def load_number():\n     return 23\n"
+}

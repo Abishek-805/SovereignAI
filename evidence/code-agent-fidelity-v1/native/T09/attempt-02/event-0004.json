@@ -1,0 +1,21 @@
+{
+  "event": "tool",
+  "tool": "read_file",
+  "arguments": {
+    "path": "test_acceptance.py"
+  },
+  "before_revision": "d8d1abd7a4d0a82d067a3aaeba1c7c49e9995ab4daf067c0c6ee4ee718ac042d",
+  "before_diff": "",
+  "result": {
+    "path": "test_acceptance.py",
+    "content": "import unittest,json,subprocess,sys\nfrom pathlib import Path\nimport errors\nclass Check(unittest.TestCase):\n def test_normal(self):self.assertEqual(errors.divide(15,3),5)\n def test_exception(self):\n  with self.assertRaises(ValueError):errors.divide(1,0)\n def test_preserved(self):self.assertEqual(errors.identity(),'keep')\n",
+    "offset": 0,
+    "next_offset": null,
+    "total_characters": 322,
+    "content_complete": true,
+    "sha256": "a32565a88e852b72ab0ca1462c80941491ad1b564add655706454f992e8210ce"
+  },
+  "latency_seconds": 0.0,
+  "after_revision": "d8d1abd7a4d0a82d067a3aaeba1c7c49e9995ab4daf067c0c6ee4ee718ac042d",
+  "after_diff": ""
+}

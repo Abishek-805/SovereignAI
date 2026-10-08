@@ -1,0 +1,8 @@
+{
+  "pid": 28140,
+  "process_created_at": 1791385789.5101068,
+  "updated_at": 1791387901.3933573,
+  "phase": "models",
+  "state": "STOPPED_BY_USER",
+  "stop_evidence": "reports/user-stop-20261007-211104/reason.json"
+}

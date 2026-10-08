@@ -1,0 +1,97 @@
+{
+  "session": {
+    "task_id": "40dd3697905b4ee986f45501b4a67342",
+    "request": "Fix stats.py mean: use the correct denominator and raise ValueError for an empty sequence. Preserve tag().",
+    "workspace_id": "27588521a1120565a950ef7a9f93403d",
+    "model": "sovereign-text",
+    "state": "READY_FOR_REVIEW",
+    "model_calls": 4,
+    "tool_calls": 4,
+    "sandbox_runs": 2,
+    "repairs": 0,
+    "validation_failures": 0,
+    "model_switches": 0
+  },
+  "base_revision": "ac15e325336b9812ee01745c8cd6e6f1a44a76132d6ce74c195ff423458923e7",
+  "changes": [
+    {
+      "path": "stats.py",
+      "action": "edit",
+      "before_sha256": "7144c8c2ef922207e4da1eaa7972eca4f1520899af897a48725b8f1789abab4a",
+      "after_sha256": "29957fc069cab39de241e1b58743fc904994c1bbd6a8f39b749fa06c4a7fafca"
+    }
+  ],
+  "diff": "--- a/stats.py\n+++ b/stats.py\n@@ -1,4 +1,6 @@\n def mean(values):\n-    return sum(values)/(len(values)+1)\n+    if not values:\n+        raise ValueError(\"mean() of empty sequence\")\n+    return sum(values)/len(values)\n def tag():\n     return \"stable\"\n",
+  "observations": [
+    {
+      "tool": "read_file",
+      "arguments": {
+        "path": "stats.py"
+      },
+      "result": {
+        "path": "stats.py",
+        "content": "def mean(values):\n    return sum(values)/(len(values)+1)\ndef tag():\n    return \"stable\"\n",
+        "offset": 0,
+        "next_offset": null,
+        "total_characters": 88,
+        "content_complete": true,
+        "sha256": "7144c8c2ef922207e4da1eaa7972eca4f1520899af897a48725b8f1789abab4a"
+      }
+    },
+    {
+      "tool": "apply_patch",
+      "arguments": {
+        "path": "stats.py",
+        "old_text": {
+          "sha256": "bf42421ea94db9b5e6f4be8737be6362d6173110d38edab4f65966db8940a12b",
+          "bytes": 56
+        },
+        "new_text": {
+          "sha256": "64674571c6844aa2af8a2428fe61223e3a5f5cb731c89c0e94de9687a8a320be",
+          "bytes": 124
+        }
+      },
+      "result": {
+        "path": "stats.py",
+        "sha256": "29957fc069cab39de241e1b58743fc904994c1bbd6a8f39b749fa06c4a7fafca",
+        "bytes": 156
+      }
+    },
+    {
+      "tool": "run_tests",
+      "arguments": {},
+      "result": {
+        "container_executed": true,
+        "exit_code": 0,
+        "stdout": "INDEPENDENT_ORACLE_TEST_COUNT=4\n",
+        "stderr": "test_empty (test_acceptance.Check.test_empty) ... ok\ntest_mean (test_acceptance.Check.test_mean) ... ok\ntest_preserved (test_acceptance.Check.test_preserved) ... ok\ntest_single (test_acceptance.Check.test_single) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.003s\n\nOK\n",
+        "workspace_changes_persisted": false,
+        "note": "Every command uses a fresh snapshot. Write source through write_file/apply_patch, not shell redirection.",
+        "passed": true,
+        "test_count": 4,
+        "entrypoint": "",
+        "independent": true,
+        "basis": "immutable supplied suite; no semantic coverage inferred beyond supplied assertions"
+      }
+    },
+    {
+      "tool": "finish",
+      "arguments": {},
+      "result": {
+        "container_executed": true,
+        "exit_code": 0,
+        "stdout": "INDEPENDENT_ORACLE_TEST_COUNT=4\n",
+        "stderr": "test_empty (test_acceptance.Check.test_empty) ... ok\ntest_mean (test_acceptance.Check.test_mean) ... ok\ntest_preserved (test_acceptance.Check.test_preserved) ... ok\ntest_single (test_acceptance.Check.test_single) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.000s\n\nOK\n",
+        "workspace_changes_persisted": false,
+        "note": "Every command uses a fresh snapshot. Write source through write_file/apply_patch, not shell redirection.",
+        "passed": true,
+        "test_count": 4,
+        "entrypoint": "",
+        "independent": true,
+        "basis": "immutable supplied suite; no semantic coverage inferred beyond supplied assertions"
+      }
+    }
+  ],
+  "ephemeral_tool_log": "C:\\Users\\ashek\\Desktop\\SovereignAI\\evidence\\code-agent-fidelity-v1\\native\\T03\\attempt-01\\workspaces\\agent-ephemeral\\cache-40dd3697905b4ee986f45501b4a67342.json",
+  "checkpoint_kind": "revision metadata plus changed-file patch; no complete project copy"
+}

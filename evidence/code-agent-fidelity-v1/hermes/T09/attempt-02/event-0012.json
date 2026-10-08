@@ -1,0 +1,19 @@
+{
+  "event": "tool",
+  "tool": "apply_patch",
+  "arguments": {
+    "path": "errors.py",
+    "old_text": "def divide(a,b):\n    if b==0:return ValueError(\"zero\")\n    return a/b",
+    "new_text": "def divide(a,b):\n    if b==0:\n        raise ValueError(\"zero\")\n    return a/b"
+  },
+  "before_revision": "d8d1abd7a4d0a82d067a3aaeba1c7c49e9995ab4daf067c0c6ee4ee718ac042d",
+  "before_diff": "",
+  "result": {
+    "path": "errors.py",
+    "sha256": "eef5f29668c134e2a32e9984e3f7e1f47d66eeb4c6fbf4787721b4c98b9f62ae",
+    "bytes": 112
+  },
+  "latency_seconds": 0.0,
+  "after_revision": "ba216117995ba2b1f794a2b6319b5debf0407ef7813a02222bdab3f477fb6043",
+  "after_diff": "--- a/errors.py\n+++ b/errors.py\n@@ -1,5 +1,6 @@\n def divide(a,b):\n-    if b==0:return ValueError(\"zero\")\n+    if b==0:\n+        raise ValueError(\"zero\")\n     return a/b\n def identity():\n     return \"keep\"\n"
+}

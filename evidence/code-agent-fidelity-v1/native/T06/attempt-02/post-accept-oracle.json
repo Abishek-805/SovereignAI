@@ -1,0 +1,12 @@
+{
+  "exit_code": 0,
+  "container_executed": true,
+  "stdout": "ORACLE_COUNT=4\n",
+  "stderr": "test_count (test_acceptance.Check.test_count) ... ok\ntest_invalid (test_acceptance.Check.test_invalid) ... ok\ntest_preserved (test_acceptance.Check.test_preserved) ... ok\ntest_render (test_acceptance.Check.test_render) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.000s\n\nOK\n",
+  "properties": {
+    "test_acceptance.Check.test_count.test_count": true,
+    "test_acceptance.Check.test_invalid.test_invalid": true,
+    "test_acceptance.Check.test_preserved.test_preserved": true,
+    "test_acceptance.Check.test_render.test_render": true
+  }
+}

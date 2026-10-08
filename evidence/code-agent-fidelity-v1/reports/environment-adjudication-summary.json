@@ -1,0 +1,131 @@
+{
+  "corrected_records": [
+    {
+      "task_id": "T06",
+      "runner": "native_v1"
+    },
+    {
+      "task_id": "T07",
+      "runner": "native_v1"
+    },
+    {
+      "task_id": "T08",
+      "runner": "native_v1"
+    },
+    {
+      "task_id": "T09",
+      "runner": "native_v1"
+    },
+    {
+      "task_id": "T10",
+      "runner": "native_v1"
+    },
+    {
+      "task_id": "T11",
+      "runner": "native_v1"
+    },
+    {
+      "task_id": "T12",
+      "runner": "native_v1"
+    },
+    {
+      "task_id": "T13",
+      "runner": "native_v1"
+    },
+    {
+      "task_id": "T14",
+      "runner": "native_v1"
+    },
+    {
+      "task_id": "T15",
+      "runner": "native_v1"
+    },
+    {
+      "task_id": "T06",
+      "runner": "nanobot_minimal"
+    },
+    {
+      "task_id": "T07",
+      "runner": "nanobot_minimal"
+    },
+    {
+      "task_id": "T08",
+      "runner": "nanobot_minimal"
+    },
+    {
+      "task_id": "T09",
+      "runner": "nanobot_minimal"
+    },
+    {
+      "task_id": "T10",
+      "runner": "nanobot_minimal"
+    },
+    {
+      "task_id": "T11",
+      "runner": "nanobot_minimal"
+    },
+    {
+      "task_id": "T12",
+      "runner": "nanobot_minimal"
+    },
+    {
+      "task_id": "T13",
+      "runner": "nanobot_minimal"
+    },
+    {
+      "task_id": "T14",
+      "runner": "nanobot_minimal"
+    },
+    {
+      "task_id": "T15",
+      "runner": "nanobot_minimal"
+    },
+    {
+      "task_id": "T05",
+      "runner": "hermes_minimal"
+    },
+    {
+      "task_id": "T06",
+      "runner": "hermes_minimal"
+    },
+    {
+      "task_id": "T07",
+      "runner": "hermes_minimal"
+    },
+    {
+      "task_id": "T08",
+      "runner": "hermes_minimal"
+    },
+    {
+      "task_id": "T09",
+      "runner": "hermes_minimal"
+    },
+    {
+      "task_id": "T10",
+      "runner": "hermes_minimal"
+    },
+    {
+      "task_id": "T11",
+      "runner": "hermes_minimal"
+    },
+    {
+      "task_id": "T12",
+      "runner": "hermes_minimal"
+    },
+    {
+      "task_id": "T13",
+      "runner": "hermes_minimal"
+    },
+    {
+      "task_id": "T14",
+      "runner": "hermes_minimal"
+    },
+    {
+      "task_id": "T15",
+      "runner": "hermes_minimal"
+    }
+  ],
+  "count": 31,
+  "existing_valid_results_unchanged": true,
+  "task_oracle_prompt_changes": false
+}

@@ -48,7 +48,20 @@ def generate(path, specification):
                     for value in row:
                         if not isinstance(value,(str,int,float,bool,type(None))):raise ValueError('Unsupported cell type')
                         if isinstance(value,str) and value.startswith('=') and ('[' in value or '://' in value or 'DDE' in value.upper()):raise ValueError('External formulas are not supported')
-                    ws.append(row)
+                    # Preserve numeric data even when a model serializes a
+                    # numeric column as strings. Identifiers and zero-padded
+                    # codes remain text; blanks retain their missing value.
+                    headers = rows[0]
+                    normalized = []
+                    for index, value in enumerate(row):
+                        header = str(headers[index]).casefold() if index < len(headers) else ''
+                        numeric = bool(re.search(r'\b(count|score|quantity|amount|total|price|rate|percent|balance)\b', header))
+                        if row is not rows[0] and numeric and isinstance(value,str) and re.fullmatch(r'-?(?:0|[1-9]\d*)(?:\.\d+)?',value.strip()):
+                            value = float(value) if '.' in value else int(value)
+                        if numeric and re.search(r'\b(count|quantity)\b',header) and isinstance(value,(int,float)) and not isinstance(value,bool) and value < 0:
+                            raise ValueError('Count/quantity cells cannot be negative')
+                        normalized.append(value)
+                    ws.append(normalized)
                 ws.freeze_panes='A2'
             calculations={}
             for ws in workbook:
@@ -87,6 +100,38 @@ def generate(path, specification):
     except (ValueError,KeyError,TypeError) as error:
         path.unlink(missing_ok=True)
         raise WorkbenchError('generation_format',str(error)) from error
+
+
+def validate_source_contract(path, sources):
+    """Verify authoritative grouped results, not merely a readable container."""
+    if Path(path).suffix.lower()!='.xlsx':return {'source_contract_checked':False}
+    from openpyxl import load_workbook
+    book=load_workbook(path,data_only=True)
+    required=[]
+    for source in sources:
+        query=source.get('query_result') or {}
+        for group in query.get('groups',[]):
+            for metric in group.get('metrics',[]):
+                if metric.get('operation')=='count':
+                    required.append([*group['keys'].values(),metric['value']])
+    for source in sources:
+        for group in (source.get('query_result') or {}).get('groups',[]):
+            for metric in group.get('metrics',[]):
+                if metric.get('operation')!='count':continue
+                matched=False
+                for sheet in book:
+                    rows=list(sheet.iter_rows(values_only=True))
+                    if not rows:continue
+                    headers=[str(v).strip().casefold() for v in rows[0]]
+                    keys=group['keys']
+                    if any(k.casefold() not in headers for k in keys):continue
+                    count_indices=[i for i,h in enumerate(headers) if h in {'count','record count','records','number of records'}]
+                    for row in rows[1:]:
+                        if all(row[headers.index(k.casefold())]==v for k,v in keys.items()) and any(isinstance(row[i],(int,float)) and not isinstance(row[i],bool) and row[i]==metric['value'] for i in count_indices):matched=True
+                if not matched:
+                    Path(path).unlink(missing_ok=True)
+                    raise WorkbenchError('generation_format','Required source summary row missing or incorrectly typed/associated: '+json.dumps({'keys':group['keys'],'count':metric['value']}))
+    return {'source_contract_checked':bool(required),'required_summary_rows':required}
 
 
 def specification_schema(suffix):

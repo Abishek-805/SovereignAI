@@ -1,0 +1,238 @@
+{
+  "successful_cells": [
+    {
+      "arm": "native",
+      "task": "T01",
+      "attempt": "attempt-01",
+      "oracle": "evidence\\code-agent-fidelity-v1\\native\\T01\\attempt-01\\post-accept-oracle.json",
+      "calls": 4
+    },
+    {
+      "arm": "native",
+      "task": "T02",
+      "attempt": "attempt-01",
+      "oracle": "evidence\\code-agent-fidelity-v1\\native\\T02\\attempt-01\\post-accept-oracle.json",
+      "calls": 6
+    },
+    {
+      "arm": "native",
+      "task": "T03",
+      "attempt": "attempt-01",
+      "oracle": "evidence\\code-agent-fidelity-v1\\native\\T03\\attempt-01\\post-accept-oracle.json",
+      "calls": 4
+    },
+    {
+      "arm": "native",
+      "task": "T04",
+      "attempt": "attempt-01",
+      "oracle": "evidence\\code-agent-fidelity-v1\\native\\T04\\attempt-01\\post-accept-oracle.json",
+      "calls": 5
+    },
+    {
+      "arm": "native",
+      "task": "T05",
+      "attempt": "attempt-01",
+      "oracle": "evidence\\code-agent-fidelity-v1\\native\\T05\\attempt-01\\post-accept-oracle.json",
+      "calls": 5
+    },
+    {
+      "arm": "native",
+      "task": "T06",
+      "attempt": "attempt-02",
+      "oracle": "evidence\\code-agent-fidelity-v1\\native\\T06\\attempt-02\\post-accept-oracle.json",
+      "calls": 11
+    },
+    {
+      "arm": "native",
+      "task": "T07",
+      "attempt": "attempt-02",
+      "oracle": "evidence\\code-agent-fidelity-v1\\native\\T07\\attempt-02\\post-accept-oracle.json",
+      "calls": 9
+    },
+    {
+      "arm": "native",
+      "task": "T08",
+      "attempt": "attempt-02",
+      "oracle": "evidence\\code-agent-fidelity-v1\\native\\T08\\attempt-02\\post-accept-oracle.json",
+      "calls": 9
+    },
+    {
+      "arm": "native",
+      "task": "T09",
+      "attempt": "attempt-02",
+      "oracle": "evidence\\code-agent-fidelity-v1\\native\\T09\\attempt-02\\post-accept-oracle.json",
+      "calls": 8
+    },
+    {
+      "arm": "native",
+      "task": "T11",
+      "attempt": "attempt-02",
+      "oracle": "evidence\\code-agent-fidelity-v1\\native\\T11\\attempt-02\\post-accept-oracle.json",
+      "calls": 7
+    },
+    {
+      "arm": "native",
+      "task": "T14",
+      "attempt": "attempt-02",
+      "oracle": "evidence\\code-agent-fidelity-v1\\native\\T14\\attempt-02\\post-accept-oracle.json",
+      "calls": 5
+    },
+    {
+      "arm": "nanobot",
+      "task": "T01",
+      "attempt": "attempt-01",
+      "oracle": "evidence\\code-agent-fidelity-v1\\nanobot\\T01\\attempt-01\\post-accept-oracle.json",
+      "calls": 4
+    },
+    {
+      "arm": "nanobot",
+      "task": "T02",
+      "attempt": "attempt-01",
+      "oracle": "evidence\\code-agent-fidelity-v1\\nanobot\\T02\\attempt-01\\post-accept-oracle.json",
+      "calls": 6
+    },
+    {
+      "arm": "nanobot",
+      "task": "T03",
+      "attempt": "attempt-01",
+      "oracle": "evidence\\code-agent-fidelity-v1\\nanobot\\T03\\attempt-01\\post-accept-oracle.json",
+      "calls": 4
+    },
+    {
+      "arm": "nanobot",
+      "task": "T04",
+      "attempt": "attempt-01",
+      "oracle": "evidence\\code-agent-fidelity-v1\\nanobot\\T04\\attempt-01\\post-accept-oracle.json",
+      "calls": 5
+    },
+    {
+      "arm": "nanobot",
+      "task": "T05",
+      "attempt": "attempt-01",
+      "oracle": "evidence\\code-agent-fidelity-v1\\nanobot\\T05\\attempt-01\\post-accept-oracle.json",
+      "calls": 5
+    },
+    {
+      "arm": "nanobot",
+      "task": "T06",
+      "attempt": "attempt-02",
+      "oracle": "evidence\\code-agent-fidelity-v1\\nanobot\\T06\\attempt-02\\post-accept-oracle.json",
+      "calls": 11
+    },
+    {
+      "arm": "nanobot",
+      "task": "T07",
+      "attempt": "attempt-02",
+      "oracle": "evidence\\code-agent-fidelity-v1\\nanobot\\T07\\attempt-02\\post-accept-oracle.json",
+      "calls": 9
+    },
+    {
+      "arm": "nanobot",
+      "task": "T08",
+      "attempt": "attempt-02",
+      "oracle": "evidence\\code-agent-fidelity-v1\\nanobot\\T08\\attempt-02\\post-accept-oracle.json",
+      "calls": 9
+    },
+    {
+      "arm": "nanobot",
+      "task": "T09",
+      "attempt": "attempt-02",
+      "oracle": "evidence\\code-agent-fidelity-v1\\nanobot\\T09\\attempt-02\\post-accept-oracle.json",
+      "calls": 8
+    },
+    {
+      "arm": "nanobot",
+      "task": "T11",
+      "attempt": "attempt-02",
+      "oracle": "evidence\\code-agent-fidelity-v1\\nanobot\\T11\\attempt-02\\post-accept-oracle.json",
+      "calls": 7
+    },
+    {
+      "arm": "nanobot",
+      "task": "T14",
+      "attempt": "attempt-02",
+      "oracle": "evidence\\code-agent-fidelity-v1\\nanobot\\T14\\attempt-02\\post-accept-oracle.json",
+      "calls": 5
+    },
+    {
+      "arm": "hermes",
+      "task": "T01",
+      "attempt": "attempt-01",
+      "oracle": "evidence\\code-agent-fidelity-v1\\hermes\\T01\\attempt-01\\post-accept-oracle.json",
+      "calls": 4
+    },
+    {
+      "arm": "hermes",
+      "task": "T02",
+      "attempt": "attempt-01",
+      "oracle": "evidence\\code-agent-fidelity-v1\\hermes\\T02\\attempt-01\\post-accept-oracle.json",
+      "calls": 6
+    },
+    {
+      "arm": "hermes",
+      "task": "T03",
+      "attempt": "attempt-01",
+      "oracle": "evidence\\code-agent-fidelity-v1\\hermes\\T03\\attempt-01\\post-accept-oracle.json",
+      "calls": 4
+    },
+    {
+      "arm": "hermes",
+      "task": "T04",
+      "attempt": "attempt-01",
+      "oracle": "evidence\\code-agent-fidelity-v1\\hermes\\T04\\attempt-01\\post-accept-oracle.json",
+      "calls": 5
+    },
+    {
+      "arm": "hermes",
+      "task": "T05",
+      "attempt": "attempt-03",
+      "oracle": "evidence\\code-agent-fidelity-v1\\hermes\\T05\\attempt-03\\post-accept-oracle.json",
+      "calls": 5
+    },
+    {
+      "arm": "hermes",
+      "task": "T06",
+      "attempt": "attempt-02",
+      "oracle": "evidence\\code-agent-fidelity-v1\\hermes\\T06\\attempt-02\\post-accept-oracle.json",
+      "calls": 11
+    },
+    {
+      "arm": "hermes",
+      "task": "T07",
+      "attempt": "attempt-02",
+      "oracle": "evidence\\code-agent-fidelity-v1\\hermes\\T07\\attempt-02\\post-accept-oracle.json",
+      "calls": 9
+    },
+    {
+      "arm": "hermes",
+      "task": "T08",
+      "attempt": "attempt-02",
+      "oracle": "evidence\\code-agent-fidelity-v1\\hermes\\T08\\attempt-02\\post-accept-oracle.json",
+      "calls": 9
+    },
+    {
+      "arm": "hermes",
+      "task": "T09",
+      "attempt": "attempt-02",
+      "oracle": "evidence\\code-agent-fidelity-v1\\hermes\\T09\\attempt-02\\post-accept-oracle.json",
+      "calls": 8
+    },
+    {
+      "arm": "hermes",
+      "task": "T11",
+      "attempt": "attempt-02",
+      "oracle": "evidence\\code-agent-fidelity-v1\\hermes\\T11\\attempt-02\\post-accept-oracle.json",
+      "calls": 7
+    },
+    {
+      "arm": "hermes",
+      "task": "T14",
+      "attempt": "attempt-02",
+      "oracle": "evidence\\code-agent-fidelity-v1\\hermes\\T14\\attempt-02\\post-accept-oracle.json",
+      "calls": 5
+    }
+  ],
+  "count": 33,
+  "schema_mismatches": [],
+  "selection": "independent post-accept Docker oracle exit 0, nonempty all-true properties; every emitted string in selected trajectories included conservatively"
+}

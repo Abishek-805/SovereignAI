@@ -1,0 +1,10 @@
+{
+  "status": 200,
+  "headers": {
+    "server": "llama.cpp",
+    "x-accel-buffering": "no",
+    "content-type": "text/event-stream",
+    "transfer-encoding": "chunked",
+    "keep-alive": "timeout=5, max=100"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "event": "tool",
+  "tool": "finish",
+  "arguments": {},
+  "before_revision": "b71189a59d0a50f3fa54b36c796aa5a97f8be9e5c087bbf6027e3ee3bd24b742",
+  "before_diff": "--- a/names.py\n+++ b/names.py\n@@ -1,2 +1,2 @@\n-def greet(name):\n+def welcome(name):\n     return \"Hello \" + name\n",
+  "result": {
+    "container_executed": true,
+    "exit_code": 0,
+    "stdout": "INDEPENDENT_ORACLE_TEST_COUNT=3\n",
+    "stderr": "test_new_symbol (test_acceptance.Check.test_new_symbol) ... ok\ntest_old_symbol_removed (test_acceptance.Check.test_old_symbol_removed) ... ok\ntest_other_input (test_acceptance.Check.test_other_input) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.001s\n\nOK\n",
+    "workspace_changes_persisted": false,
+    "note": "Every command uses a fresh snapshot. Write source through write_file/apply_patch, not shell redirection.",
+    "passed": true,
+    "test_count": 3,
+    "entrypoint": "",
+    "independent": true,
+    "basis": "immutable supplied suite; no semantic coverage inferred beyond supplied assertions"
+  },
+  "latency_seconds": 2.75,
+  "after_revision": "b71189a59d0a50f3fa54b36c796aa5a97f8be9e5c087bbf6027e3ee3bd24b742",
+  "after_diff": "--- a/names.py\n+++ b/names.py\n@@ -1,2 +1,2 @@\n-def greet(name):\n+def welcome(name):\n     return \"Hello \" + name\n"
+}

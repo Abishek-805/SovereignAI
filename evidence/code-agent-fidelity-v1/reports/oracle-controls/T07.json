@@ -1,0 +1,28 @@
+{
+  "task_id": "T07",
+  "negative": {
+    "exit_code": 1,
+    "container_executed": true,
+    "stdout": "ORACLE_COUNT=4\n",
+    "stderr": "test_form (test_acceptance.Check.test_form) ... FAIL\ntest_invalid (test_acceptance.Check.test_invalid) ... FAIL\ntest_preserved (test_acceptance.Check.test_preserved) ... ok\ntest_wire (test_acceptance.Check.test_wire) ... FAIL\n\n======================================================================\nFAIL: test_form (test_acceptance.Check.test_form)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 8, in test_form\n    def test_form(self):self.assertIn('name=\"display_name\"',Path('form.html').read_text())\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'name=\"display_name\"' not found in '<form><input name=\"nickname\"></form>\\n'\n\n======================================================================\nFAIL: test_invalid (test_acceptance.Check.test_invalid)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 10, in test_invalid\n    r=app.test_client().post('/profile',json={'display_name':' '});self.assertEqual(r.status_code,422);self.assertTrue(r.is_json)\n                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 200 != 422\n\n======================================================================\nFAIL: test_wire (test_acceptance.Check.test_wire)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 7, in test_wire\n    self.assertEqual(payload,{'display_name':'Ada'});self.assertEqual(app.test_client().post('/profile',json=payload).get_json(),payload)\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: {'nickname': '  Ada  '} != {'display_name': 'Ada'}\n- {'nickname': '  Ada  '}\n+ {'display_name': 'Ada'}\n\n----------------------------------------------------------------------\nRan 4 tests in 0.284s\n\nFAILED (failures=3)\n",
+    "properties": {
+      "test_acceptance.Check.test_form.test_form": false,
+      "test_acceptance.Check.test_invalid.test_invalid": false,
+      "test_acceptance.Check.test_preserved.test_preserved": true,
+      "test_acceptance.Check.test_wire.test_wire": false
+    }
+  },
+  "positive": {
+    "exit_code": 0,
+    "container_executed": true,
+    "stdout": "ORACLE_COUNT=4\n",
+    "stderr": "test_form (test_acceptance.Check.test_form) ... ok\ntest_invalid (test_acceptance.Check.test_invalid) ... ok\ntest_preserved (test_acceptance.Check.test_preserved) ... ok\ntest_wire (test_acceptance.Check.test_wire) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.128s\n\nOK\n",
+    "properties": {
+      "test_acceptance.Check.test_form.test_form": true,
+      "test_acceptance.Check.test_invalid.test_invalid": true,
+      "test_acceptance.Check.test_preserved.test_preserved": true,
+      "test_acceptance.Check.test_wire.test_wire": true
+    }
+  },
+  "control_passed": true
+}

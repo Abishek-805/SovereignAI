@@ -5,6 +5,7 @@ import base64
 import hashlib
 import json
 import re
+import unicodedata
 import shutil
 import subprocess
 import tempfile
@@ -32,7 +33,14 @@ def safe_relative_name(name):
     if not isinstance(name, str) or len(name) > 240 or '\\' in name or ':' in name:
         return False
     parts = name.split('/')
-    return all(re.fullmatch(r'[\w.][\w .-]{0,79}', part) and not part.endswith(('.', ' ')) and '..' not in part and
+    def valid_part(part):
+        # Combining marks are integral to many scripts, including Tamil.
+        # Windows separators, device names, control/format characters and
+        # traversal remain forbidden independently of the character alphabet.
+        return (1 <= len(part) <= 80 and part[0] != ' ' and
+                all(c in ' ._-' or unicodedata.category(c)[0] in {'L','M','N'} or
+                    unicodedata.category(c) == 'So' for c in part))
+    return all(valid_part(part) and not part.endswith(('.', ' ')) and '..' not in part and
                part.split('.')[0].upper() not in {'CON','PRN','AUX','NUL',*[f'COM{i}' for i in range(10)],*[f'LPT{i}' for i in range(10)]}
                for part in parts)
 MAX_OUTPUT = 65536
@@ -111,6 +119,19 @@ class CodeSandbox:
         self.task_root = Path(task_root or ROOT / 'data' / 'code-tasks').resolve()
         self.docker_cli = docker_cli or _docker_cli()
         self.on_output=None;self.cancel_event=None;self.stdin_queue=None
+        self.active_container=None
+
+    def read_active_output(self,name):
+        """Read one bounded output from this runner's active isolated container."""
+        if not FILE_NAME.fullmatch(name) or not self.active_container:
+            raise WorkbenchError('sandbox_output','No active bounded output is available')
+        script="from pathlib import Path; import sys; p=Path('/output')/sys.argv[1]; assert p.is_file() and not p.is_symlink() and p.stat().st_size<=1000000; sys.stdout.buffer.write(p.read_bytes())"
+        try:
+            result=subprocess.run([*self.docker,'exec',self.active_container,'python','-I','-c',script,name],capture_output=True,timeout=8,check=True)
+        except (OSError,subprocess.SubprocessError) as exc:
+            raise WorkbenchError('sandbox_output','Could not read bounded preview output') from exc
+        if len(result.stdout)>1_000_000:raise WorkbenchError('sandbox_output','Preview output exceeds its byte budget')
+        return result.stdout
 
     @property
     def docker(self):
@@ -184,6 +205,7 @@ class CodeSandbox:
                     self.image_id, 'sleep', '300']
             try:
                 subprocess.run(args, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, timeout=20, check=True)
+                self.active_container=container
                 execution_args = [*self.docker, 'exec', '-i', container, 'python', '-I', '/input/program.py']
                 process = subprocess.Popen(execution_args, stdin=subprocess.PIPE if self.stdin_queue is not None else subprocess.DEVNULL,
                                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -236,6 +258,7 @@ class CodeSandbox:
             except (OSError, subprocess.SubprocessError, ValueError, TypeError) as exc:
                 raise WorkbenchError('sandbox_output', 'Could not collect bounded container output') from exc
             finally:
+                self.active_container=None
                 try:
                     subprocess.run([*self.docker, 'rm', '-f', container],
                                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=8)

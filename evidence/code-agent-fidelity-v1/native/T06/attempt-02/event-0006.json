@@ -1,0 +1,21 @@
+{
+  "event": "tool",
+  "tool": "read_file",
+  "arguments": {
+    "path": "test_acceptance.py"
+  },
+  "before_revision": "6212bffc08c8778f68dd6fa82a7bde4efc68ee04d357f8fb3f7ac6178456d2a5",
+  "before_diff": "",
+  "result": {
+    "path": "test_acceptance.py",
+    "content": "import unittest,json,subprocess,sys\nfrom pathlib import Path\nimport events,report\nclass Check(unittest.TestCase):\n def test_count(self):self.assertEqual(events.counts([{'kind':'b'},{'kind':'a'},{'kind':'b'}]),{'a':1,'b':2})\n def test_render(self):self.assertEqual(report.render([{'kind':'b'},{'kind':'a'},{'kind':'b'}]),'a:1\\nb:2')\n def test_invalid(self):\n  with self.assertRaises(ValueError):events.counts([{}])\n def test_preserved(self):self.assertEqual(events.version(),'v1')\n",
+    "offset": 0,
+    "next_offset": null,
+    "total_characters": 480,
+    "content_complete": true,
+    "sha256": "de3af922caf8d9485bba77ef2c45ab4717fb2923ef56d6fdce02333407c171f6"
+  },
+  "latency_seconds": 0.0,
+  "after_revision": "6212bffc08c8778f68dd6fa82a7bde4efc68ee04d357f8fb3f7ac6178456d2a5",
+  "after_diff": ""
+}

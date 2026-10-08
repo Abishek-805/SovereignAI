@@ -1,0 +1,69 @@
+{
+  "phase": "runners",
+  "task_id": "T05",
+  "category": "api_interface",
+  "control": false,
+  "runner": "hermes_minimal",
+  "model": "qwen35",
+  "accepted": true,
+  "validated": true,
+  "status": "PASS",
+  "repair_count": 0,
+  "rollback_count": 0,
+  "tool_calls": 5,
+  "model_calls": 5,
+  "model_switches": 0,
+  "latency_seconds": 54.40700000000015,
+  "peak_vram_mb": 3513,
+  "vram_scope": "whole GPU including display; process allocation unavailable",
+  "peak_ram_mb": 3767.953125,
+  "generation_tokens": 632,
+  "token_usage_complete": true,
+  "properties": {
+    "test_acceptance.Check.test_invalid.test_invalid": true,
+    "test_acceptance.Check.test_malformed.test_malformed": true,
+    "test_acceptance.Check.test_negative.test_negative": true,
+    "test_acceptance.Check.test_numeric.test_numeric": true,
+    "test_acceptance.Check.test_preserved.test_preserved": true
+  },
+  "failure_category": null,
+  "failure_detail": "",
+  "router_proposal": {
+    "original_request": "Implement POST /double in app.py: JSON object with numeric value -> JSON result equal to twice the value. Reject malformed, missing, boolean or non-numeric values with JSON HTTP 422. Preserve GET /health.",
+    "normalized_request": "Implement POST /double in app.py: JSON object with numeric value -> JSON result equal to twice the value. Reject malformed, missing, boolean or non-numeric values with JSON HTTP 422. Preserve GET /health.",
+    "task_type": "IMPLEMENT",
+    "complexity": "simple",
+    "worker_role": "code",
+    "steps": [
+      "code"
+    ],
+    "features": {
+      "active_file_present": false,
+      "workspace_available": true,
+      "repository_scope": "none",
+      "estimated_context_size": null,
+      "number_of_files_requested": 1,
+      "visual_input_present": false,
+      "modality": "text",
+      "is_follow_up": false,
+      "explicit_error_present": false,
+      "language_hints": [],
+      "execution_requested": false,
+      "validation_required": false,
+      "mechanical_rename": false,
+      "software_generation": false,
+      "requirements_heavy": false
+    },
+    "reason_codes": [
+      "software_task_features"
+    ],
+    "needs_clarification": false,
+    "mutation_authorized": false
+  },
+  "execution_result": 0,
+  "validation_result": true,
+  "evidence": "evidence\\code-agent-fidelity-v1\\hermes\\T05\\attempt-03",
+  "initial_request_hash": "722d4372cdda59768f25a4979782930d0102dd2cc03b6c189e68c17319d06d2e",
+  "canonical_unchanged_before_accept": true,
+  "sandbox_image_id": "sha256:6f6ac11cda347a185454338dee35d77003e066579a3261b52b7c6ff1048c8573"
+}

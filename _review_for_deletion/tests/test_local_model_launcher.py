@@ -14,8 +14,7 @@ def test_startup_profile_matches_registered_worker(tmp_path, monkeypatch, gemma,
     powershell = shutil.which('powershell')
     if not powershell:
         pytest.skip('Windows PowerShell required')
-    root = Path(__file__).resolve().parents[1]
-    shutil.copyfile(root / 'start-local-model.ps1', tmp_path / 'start-local-model.ps1')
+    root = Path(__file__).resolve().parents[2]
     runtime = tmp_path / 'runtime' / 'llama-b11132' / 'llama-server.exe'
     runtime.parent.mkdir(parents=True)
     runtime.touch()
@@ -26,6 +25,16 @@ def test_startup_profile_matches_registered_worker(tmp_path, monkeypatch, gemma,
         (models / 'gemma-4-E2B-it-Q4_K_M.gguf').touch()
     if reasoner:
         (models / 'Qwen3.5-4B-Q4_K_M.gguf').touch()
+    monkeypatch.setattr(model_registry, 'ROOT', tmp_path)
+    spec = model_registry.default_specs()['text']
+    # Inject only the registry subprocess result. Process start/stop stays
+    # shadowed below; all launcher argument construction remains under test.
+    configuration=json.dumps({'file':spec.model_file,'alias':spec.alias,'context':spec.context})
+    source=(root/'start-local-model.ps1').read_text(encoding='utf-8')
+    import re
+    source=re.sub(r'(?m)^    \$modelConfiguration = & \$pythonPath -c .*$',
+        '    $modelConfiguration = '+"'"+configuration+"'"+'\n    $global:LASTEXITCODE = 0',source)
+    (tmp_path/'start-local-model.ps1').write_text(source,encoding='utf-8')
     (tmp_path / 'benchmarks').mkdir()
     # Shadow process cmdlets: this test can neither start nor stop real workers.
     runner = tmp_path / 'exercise.ps1'
@@ -41,7 +50,7 @@ function Start-Process {
     args = json.loads((tmp_path / 'arguments.json').read_text(encoding='utf-8-sig'))
     monkeypatch.setattr(model_registry, 'ROOT', tmp_path)
     specs = model_registry.default_specs()
-    spec = specs.get('text-light', specs['text'])
+    spec = specs['text']
     assert args[args.index('--alias') + 1] == spec.alias
     assert args[args.index('-m') + 1].strip('"') == str(models / spec.model_file)
     assert int(args[args.index('-c') + 1]) == spec.context

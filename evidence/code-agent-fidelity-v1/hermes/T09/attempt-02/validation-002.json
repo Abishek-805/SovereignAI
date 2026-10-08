@@ -1,0 +1,27 @@
+{
+  "attempt": 2,
+  "revision": "ba216117995ba2b1f794a2b6319b5debf0407ef7813a02222bdab3f477fb6043",
+  "failure": {
+    "container_executed": true,
+    "exit_code": 0,
+    "stdout": "INDEPENDENT_ORACLE_TEST_COUNT=3\n",
+    "stderr": "test_exception (test_acceptance.Check.test_exception) ... ok\ntest_normal (test_acceptance.Check.test_normal) ... ok\ntest_preserved (test_acceptance.Check.test_preserved) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nOK\n",
+    "workspace_changes_persisted": false,
+    "note": "Every command uses a fresh snapshot. Write source through write_file/apply_patch, not shell redirection.",
+    "passed": true,
+    "test_count": 3,
+    "entrypoint": "",
+    "independent": true,
+    "basis": "immutable supplied suite; no semantic coverage inferred beyond supplied assertions"
+  },
+  "properties": {
+    "test_acceptance.Check.test_exception.test_exception": true,
+    "test_acceptance.Check.test_normal.test_normal": true,
+    "test_acceptance.Check.test_preserved.test_preserved": true
+  },
+  "lost_properties": [],
+  "candidate_diff": "--- a/errors.py\n+++ b/errors.py\n@@ -1,5 +1,6 @@\n def divide(a,b):\n-    if b==0:return ValueError(\"zero\")\n+    if b==0:\n+        raise ValueError(\"zero\")\n     return a/b\n def identity():\n     return \"keep\"\n",
+  "previous_revision": "d8d1abd7a4d0a82d067a3aaeba1c7c49e9995ab4daf067c0c6ee4ee718ac042d",
+  "validation_delta": 1,
+  "rolled_back": false
+}

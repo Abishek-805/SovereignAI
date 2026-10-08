@@ -1,0 +1,46 @@
+{
+  "task_id": "T05",
+  "request": "Implement POST /double in app.py: JSON object with numeric value -> JSON result equal to twice the value. Reject malformed, missing, boolean or non-numeric values with JSON HTTP 422. Preserve GET /health.",
+  "files": {
+    "app.py": "from flask import Flask,request,jsonify\napp=Flask(__name__)\n@app.get('/health')\ndef health():return jsonify(ok=True)\n@app.post('/double')\ndef double():return jsonify(result=0)\n",
+    "keep.txt": "unrelated valuable data\n",
+    "test_acceptance.py": "import unittest,json,subprocess,sys\nfrom pathlib import Path\nfrom app import app\nclass Check(unittest.TestCase):\n def test_numeric(self):self.assertEqual(app.test_client().post('/double',json={'value':3.5}).get_json(),{'result':7.0})\n def test_negative(self):self.assertEqual(app.test_client().post('/double',json={'value':-2}).get_json(),{'result':-4})\n def test_invalid(self):\n  for body in ({},{'value':True},{'value':'bad'},[]):\n   r=app.test_client().post('/double',json=body);self.assertEqual(r.status_code,422);self.assertTrue(r.is_json)\n def test_malformed(self):\n  r=app.test_client().post('/double',data='{broken',content_type='application/json');self.assertEqual(r.status_code,422);self.assertTrue(r.is_json)\n def test_preserved(self):self.assertEqual(app.test_client().get('/health').get_json(),{'ok':True})\n"
+  },
+  "mode": "accept",
+  "workspace_id": "8a4148231d87f92cd93001ef817063f5",
+  "initial_revision": "167ca73a9c4f5a3ad97ac0d1513a13533e15e3cf8fb8fbb48de5df2b10484ca8",
+  "router_proposal": {
+    "original_request": "Implement POST /double in app.py: JSON object with numeric value -> JSON result equal to twice the value. Reject malformed, missing, boolean or non-numeric values with JSON HTTP 422. Preserve GET /health.",
+    "normalized_request": "Implement POST /double in app.py: JSON object with numeric value -> JSON result equal to twice the value. Reject malformed, missing, boolean or non-numeric values with JSON HTTP 422. Preserve GET /health.",
+    "task_type": "IMPLEMENT",
+    "complexity": "simple",
+    "worker_role": "code",
+    "steps": [
+      "code"
+    ],
+    "features": {
+      "active_file_present": false,
+      "workspace_available": true,
+      "repository_scope": "none",
+      "estimated_context_size": null,
+      "number_of_files_requested": 1,
+      "visual_input_present": false,
+      "modality": "text",
+      "is_follow_up": false,
+      "explicit_error_present": false,
+      "language_hints": [],
+      "execution_requested": false,
+      "validation_required": false,
+      "mechanical_rename": false,
+      "software_generation": false,
+      "requirements_heavy": false
+    },
+    "reason_codes": [
+      "software_task_features"
+    ],
+    "needs_clarification": false,
+    "mutation_authorized": false
+  },
+  "fixed_worker": "qwen35",
+  "source_suite_hash": "bbea8783929a12035dd58569b807a7e96539f5a1b6e2afcf4c9d278e682add72"
+}

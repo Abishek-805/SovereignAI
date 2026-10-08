@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "exit_code": 1,
+  "observations": [
+    {
+      "kind": "independent_test",
+      "test": "test_acceptance.Acceptance.test_invalid",
+      "passed": false,
+      "frames": [
+        {
+          "file": "test_acceptance.py",
+          "line": 5,
+          "observed_inputs": {
+            "r": {
+              "args": [
+                "/usr/local/bin/python",
+                "main.py",
+                "list",
+                "bad.json"
+              ],
+              "returncode": 0,
+              "stdout": "wrong success\n",
+              "stderr": ""
+            }
+          },
+          "assertion_context": "class Acceptance(unittest.TestCase):\n def test_invalid(self):\n  r=subprocess.run([sys.executable,'main.py','list','bad.json'],capture_output=True,text=True)\n  self.assertNotEqual(r.returncode,0)"
+        }
+      ],
+      "affected_files": [
+        "main.py"
+      ],
+      "error": "0 == 0"
+    }
+  ]
+}

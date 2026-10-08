@@ -1,0 +1,30 @@
+{
+  "task_id": "T04",
+  "negative": {
+    "exit_code": 1,
+    "container_executed": true,
+    "stdout": "ORACLE_COUNT=5\n",
+    "stderr": "test_high (test_acceptance.Check.test_high) ... ERROR\ntest_inside (test_acceptance.Check.test_inside) ... ERROR\ntest_invalid (test_acceptance.Check.test_invalid) ... ERROR\ntest_low (test_acceptance.Check.test_low) ... ERROR\ntest_preserved (test_acceptance.Check.test_preserved) ... ok\n\n======================================================================\nERROR: test_high (test_acceptance.Check.test_high)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 6, in test_high\n    def test_high(self):self.assertEqual(math_ops.clamp(12,0,8),8)\n                                         ^^^^^^^^^^^^^^\nAttributeError: module 'math_ops' has no attribute 'clamp'\n\n======================================================================\nERROR: test_inside (test_acceptance.Check.test_inside)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 7, in test_inside\n    def test_inside(self):self.assertEqual(math_ops.clamp(3,0,8),3)\n                                           ^^^^^^^^^^^^^^\nAttributeError: module 'math_ops' has no attribute 'clamp'\n\n======================================================================\nERROR: test_invalid (test_acceptance.Check.test_invalid)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 9, in test_invalid\n    with self.assertRaises(ValueError):math_ops.clamp(1,5,2)\n                                       ^^^^^^^^^^^^^^\nAttributeError: module 'math_ops' has no attribute 'clamp'\n\n======================================================================\nERROR: test_low (test_acceptance.Check.test_low)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 5, in test_low\n    def test_low(self):self.assertEqual(math_ops.clamp(-7,0,8),0)\n                                        ^^^^^^^^^^^^^^\nAttributeError: module 'math_ops' has no attribute 'clamp'\n\n----------------------------------------------------------------------\nRan 5 tests in 0.002s\n\nFAILED (errors=4)\n",
+    "properties": {
+      "test_acceptance.Check.test_high.test_high": false,
+      "test_acceptance.Check.test_inside.test_inside": false,
+      "test_acceptance.Check.test_invalid.test_invalid": false,
+      "test_acceptance.Check.test_low.test_low": false,
+      "test_acceptance.Check.test_preserved.test_preserved": true
+    }
+  },
+  "positive": {
+    "exit_code": 0,
+    "container_executed": true,
+    "stdout": "ORACLE_COUNT=5\n",
+    "stderr": "test_high (test_acceptance.Check.test_high) ... ok\ntest_inside (test_acceptance.Check.test_inside) ... ok\ntest_invalid (test_acceptance.Check.test_invalid) ... ok\ntest_low (test_acceptance.Check.test_low) ... ok\ntest_preserved (test_acceptance.Check.test_preserved) ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 0.000s\n\nOK\n",
+    "properties": {
+      "test_acceptance.Check.test_high.test_high": true,
+      "test_acceptance.Check.test_inside.test_inside": true,
+      "test_acceptance.Check.test_invalid.test_invalid": true,
+      "test_acceptance.Check.test_low.test_low": true,
+      "test_acceptance.Check.test_preserved.test_preserved": true
+    }
+  },
+  "control_passed": true
+}

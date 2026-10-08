@@ -82,6 +82,9 @@ class Workbench:
         self.routing_lock=threading.Lock()
         from backend.automations import Automations
         self.automations=Automations(self)
+        from workflows.agent_retention import EphemeralRetention
+        self.agent_cache=EphemeralRetention(self.settings.data_dir)
+        self.agent_cache.prune()
 
     def remember_route(self,decision):
         with self.routing_lock:
@@ -104,7 +107,7 @@ class Workbench:
             self.model_history.record(HistoryContext(**context),identity,status=result.get('state','unverified'),
                 container_verified=checks.get('container_executed') is True,
                 exit_code=result.get('validation_exit_code'),
-                goal_checks_passed=(checks.get('tests_passed') if result.get('goal_checks_independent') is True else None),
+                goal_checks_passed=((checks.get('build_contract_passed') if result.get('validation_kind')=='independent_build_contract' else checks.get('tests_passed')) if result.get('goal_checks_independent') is True else None),
                 latency_seconds=snapshot.get('elapsed_seconds'),switches=snapshot.get('counts',{}).get('model_switches'),load_seconds=load_seconds)
         except (OSError,ValueError,TypeError,KeyError):
             # Missing/corrupt advisory measurements cannot invalidate a real task.
@@ -137,6 +140,13 @@ class Workbench:
         from backend.task_supervisor import CURRENT_SUPERVISOR, operational_event
         normalized=normalize_request(request)
         coding=self._coding_request(request,files=files)
+        if coding.features.get('software_generation'):
+            from router.tool_registry import explicit_operation_requested
+            if explicit_operation_requested(request,'file_edit'):
+                # Obvious software creation enters the existing project tool
+                # directly; a README clause cannot replace the deliverable.
+                return {'action':'application_tools','target':'','response':'',
+                        '_direct_project_generation':True}
         from router.tool_registry import explicit_operation_requested, new_workspace_requested
         from router.request_normalization import prose_request
         from workflows.coding_workspace import LANGUAGES
@@ -607,7 +617,8 @@ class Workbench:
                     if job:job.progress('Planning a read-only table query')
                     query_feedback=None
                     for attempt in range(2):
-                        query=self.model.plan_table_query(question,catalog,history,**({'feedback':query_feedback} if query_feedback else {}))
+                        from rag.tables import compile_aggregate_request
+                        query=compile_aggregate_request(available,question) or self.model.plan_table_query(question,catalog,history,**({'feedback':query_feedback} if query_feedback else {}))
                         if not query.get('_measure'):break
                         from rag.tables import compile_outcome_query,population_binding_catalog
                         try:
@@ -632,6 +643,8 @@ class Workbench:
                             calculated=execute_query(table,query)
                             operational_event('TOOL_COMPLETED',tool='table_query',workflow='TABLE_QUERY',status='returned')
                             return calculated
+                        from rag.tables import bind_selection_request
+                        plan=bind_selection_request(plan,selected_table,question)
                         result=execute_observed(selected_table,plan)
                         if plan.get('unavailable_assessments'): result['unavailable_assessments']=plan['unavailable_assessments']
                         extras=plan.get('additional_queries',[])
@@ -928,7 +941,7 @@ class Workbench:
             if routed or explicit_operation_requested(instruction,'file_edit') and coding.task_type not in {'EXPLAIN','REVIEW'}:
                 sandbox=self._verified_coding_sandbox()
                 sandbox._ready()
-            role=coding.worker_role if smart and coding.worker_role else 'code'
+            role='reasoning' if coding.complexity=='complex' else 'code'
             if image_path is not None:
                 if not explicit_operation_requested(instruction,'file_edit'):
                     raise WorkbenchError('needs_input','Specify the requested code change; an image cannot authorize an edit')
@@ -953,9 +966,9 @@ class Workbench:
                 operational_event('VISION_OBSERVED',workflow='CODE',observations=public_observation)
                 history=[*(history or []),'assistant: Visible image observation (untrusted reference only): '+json.dumps(public_observation,ensure_ascii=False)]
                 role='code'
+            # Preserve the explicitly selected historical strategy; the
+            # production capability path uses one implementation worker.
             if coding.steps==('reasoning','code') and smart:
-                # This is an upfront bounded complex-task plan, not an automatic
-                # escalation after ordinary candidate failures.
                 self._lease('text',worker_role='reasoning')
                 metadata=self.coding.get(workspace_id)['files'] if workspace_id else []
                 proposal=self.model.plan_code_strategy(instruction,metadata)
@@ -986,7 +999,7 @@ class Workbench:
                 for entry in list(history or [])[-6:]:
                     text=entry if isinstance(entry,str) else json.dumps(entry,ensure_ascii=False)
                     interpretation_history.append(text if len(text)<=2000 else text[:2000]+' [reference excerpt; remaining content omitted]')
-                intent=({'action':'edit_code'} if direct else
+                intent=({'action':'edit_code'} if direct or smart and coding.steps==('reasoning','code') else
                         {'action':'inspect_code'} if smart and coding.task_type in {'EXPLAIN','REVIEW'} else
                         self.model.plan_task(instruction,[],interpretation_files,interpretation_history))
                 if job and job.cancel.is_set():
@@ -1027,6 +1040,20 @@ class Workbench:
             if job:
                 job.progress('Reading project structure')
                 if sandbox is not None:sandbox.on_output=job.append;sandbox.cancel_event=job.cancel
+            # Native tool execution owns its own bounded loop. Keep historical
+            # explicit universal experiments and non-native test adapters intact.
+            if not smart and callable(getattr(self.model,'agent_tool_turn',None)) and os.environ.get('SOVEREIGN_AGENT_KERNEL','0')=='1':
+                from workflows.agent_kernel import AgentLoop
+                from workflows.agent_capabilities import KernelCapabilities
+                capabilities=KernelCapabilities(self,instruction,document_ids=(owner.task_state.get('knowledge_scope') or []) if owner else [])
+                def escalate_kernel():
+                    power=getattr(self.registry,'specs',{}).get('text')
+                    if role!='code' or not power or not self.registry.installed(power) or not self.registry.runtime_available(power):return None
+                    selected=self._lease('text',worker_role='reasoning')
+                    return self.registry.specs[selected].alias
+                return AgentLoop().run(self.coding,workspace_id,instruction,self.model,sandbox,alias,
+                    progress=job.progress if job else None,cancel=job.cancel if job else None,capabilities=capabilities.tools(),escalate=escalate_kernel,
+                    timeout_seconds=max(1,self.supervisor_limits.seconds-60))
             from router.code_agent import Action, CodeAgent
             from router.code_agent_state import CodeTaskContext, CodeObservation, ObservationKind
             from backend.task_supervisor import operational_event
@@ -1041,6 +1068,7 @@ class Workbench:
             original_revision=self.coding.raw_files(workspace_id)
             result=None
             reusable_plan=None
+            repair_candidate=None
 
             def before_attempt(attempt, observations):
                 nonlocal alias,capability
@@ -1051,14 +1079,14 @@ class Workbench:
                     raise WorkbenchError('workspace_conflict','Workspace changed during repair; review the current files before retrying')
                 # Optional one-time escalation at a completed action boundary.
                 # It consumes an existing repair attempt, never adds a retry.
-                hard_task=coding.complexity=='complex' or (coding.features.get('number_of_files_requested') or 0)>1
                 feedback=(result or {}).get('stderr','')
                 fidelity_failure=((result or {}).get('checks',{}).get('requested_target_present') is False or
                     bool(re.search(r'\b(?:NameError|SyntaxError|TypeError|ReferenceError|AssertionError)\b',feedback)))
-                if (attempt==2 and role=='code' and hard_task and fidelity_failure and
+                if (attempt==2 and role=='code' and fidelity_failure and
                         os.environ.get('SOVEREIGN_CODE_ESCALATION','1')=='1'):
-                    power=self.registry.specs.get('text')
-                    current=self.registry.specs.get(capability)
+                    available_specs=getattr(self.registry,'specs',{})
+                    power=available_specs.get('text')
+                    current=available_specs.get(capability)
                     if (power and current and getattr(power,'identifier',None) and getattr(current,'identifier',None) and power.identifier!=current.identifier and
                             self.registry.installed(power) and self.registry.runtime_available(power)):
                         from workflows.project_map import inspect_project
@@ -1089,16 +1117,18 @@ class Workbench:
                 options={'model_alias':alias,'progress':job.progress if job else None,
                          'cancel':job.cancel if job else None,'history':repair_history}
                 if reusable_plan is not None:options['reusable_plan']=reusable_plan
+                if repair_candidate is not None:options['repair_candidate']=repair_candidate
                 result=self.coding.run_project(workspace_id,target,instruction,self.model,sandbox,self.tasks,**options)
                 return result
 
             def after_observation(attempt, observation, decision, failures):
-                nonlocal repair_history, reusable_plan
+                nonlocal repair_history, reusable_plan, repair_candidate
                 result['supervisor_attempts']=attempt
                 result['repair_count']=attempt-1
                 result['failure_fingerprints']=sorted(failures)
                 result['repair_stop_reason']=decision.stop_reason
                 reusable_plan=None if result.get('checks',{}).get('requested_target_present') is False else result.get('operation_plan')
+                repair_candidate=result if result.get('build_contract') and reusable_plan else None
                 candidates=[]
                 remaining=10000
                 for change in result.get('changes',[])[:8]:
@@ -1123,6 +1153,8 @@ class Workbench:
                     return
                 operational_event('REPAIR_STARTED',observations={'attempt':attempt+1,'validation_error':observation.feedback},workflow='CODE')
                 repair_context={'original_request':instruction,'workspace_id':workspace_id,'target':target,
+                    'build_contract':result.get('build_contract'),'failed_checks':result.get('contract_results',[]),
+                    'current_diff':result.get('diff','')[:12000],
                     'previous_candidate':candidates,'actual_error':observation.feedback,'failure_fingerprint':decision.fingerprint,
                     'task_state':{'task_id':result.get('task_id'),'state':result.get('state'),
                                   'checks':result.get('checks',{}),'repair_count':attempt}}
@@ -1142,22 +1174,41 @@ class Workbench:
             self.ask_lock.release()
 
     @supervised_task
-    def execute_coding_file(self, workspace_id, target, job=None):
+    def execute_coding_file(self, workspace_id, target, job=None, draft_task_id=None, request_path=None):
         from workflows.code_runtime import runner, desktop_requirements
-        if not target.strip():
+        from pathlib import PurePosixPath
+        files=self.coding.staged_files(workspace_id,draft_task_id) if draft_task_id else self.coding.raw_files(workspace_id)
+        if target and target not in files and '/' not in target and '\\' not in target:
+            matches=[name for name in files if PurePosixPath(name).name==target]
+            if len(matches)==1:target=matches[0]
+        if target and target not in files and '/' in target:
+            root_name=self.coding.get(workspace_id).get('name','')
+            if root_name and target.startswith(root_name+'/') and target[len(root_name)+1:] in files:
+                target=target[len(root_name)+1:]
+        prefix=target.rstrip('/')+'/' if target.strip() else ''
+        directory_target=bool(prefix and any(name.startswith(prefix) for name in files) and target not in files)
+        if not target.strip() or directory_target:
             from workflows.project_map import inspect_project
             from backend.jobs import Job
-            project=inspect_project(self.coding.raw_files(workspace_id))
+            project=inspect_project({name[len(prefix):]:content for name,content in files.items() if name.startswith(prefix)} if directory_target else files)
+            if directory_target:
+                project['cwd']=str(PurePosixPath(target)/project.get('cwd',''))
             command=project['commands'].get('run')
             if not command:raise WorkbenchError('needs_input','No unique documented project run command was found. Select an entrypoint or add a README/package run command.')
             import shlex
-            from pathlib import PurePosixPath
             argv=shlex.split(command)
+            if len(argv)==3 and argv[0] in {'python','python3'} and argv[1]=='-m':
+                module_path=argv[2].replace('.','/')+'.py'
+                module_target=str(PurePosixPath(project.get('cwd',''))/module_path)
+                if module_target in files:
+                    result=self.execute_coding_file(workspace_id,module_target,job,**({"draft_task_id":draft_task_id} if draft_task_id else {}),**({"request_path":request_path} if request_path else {}))
+                    result['project_map']=project
+                    return result
             mapped_target=str(PurePosixPath(project.get('cwd',''))/argv[1]) if len(argv)==2 else ''
-            if len(argv)==2 and argv[0] in {'python','python3','node'} and mapped_target in self.coding.raw_files(workspace_id):
-                result=self.execute_coding_file(workspace_id,mapped_target,job)
+            if len(argv)==2 and argv[0] in {'python','python3','node'} and mapped_target in files:
+                result=self.execute_coding_file(workspace_id,mapped_target,job,**({"draft_task_id":draft_task_id} if draft_task_id else {}),**({"request_path":request_path} if request_path else {}))
             else:
-                result=self.execute_terminal(workspace_id,command,job or Job('project_run'),cwd=project.get('cwd',''))
+                result=self.execute_terminal(workspace_id,command,job or Job('project_run'),cwd=project.get('cwd',''),**({'draft_task_id':draft_task_id} if draft_task_id else {}))
             result['project_map']=project
             if result.get('exit_code') in {126,127} and re.search(r'(?:command not found|not found|No such file)',result.get('stderr',''),re.I):
                 detail=result['stderr'].strip()
@@ -1170,7 +1221,11 @@ class Workbench:
             raise WorkbenchError('busy','Another task is running')
         task = None
         try:
-            source=self.coding.read(workspace_id, target)
+            if draft_task_id:
+                self.coding._name(target)
+                if target not in files:raise WorkbenchError('invalid_file','Entrypoint is absent from the staged draft')
+                source={'content':files[target].decode('utf-8')}
+            else:source=self.coding.read(workspace_id,target)
             requirements=desktop_requirements(source['content']) if target.lower().endswith('.py') else []
             if requirements:
                 import subprocess
@@ -1180,13 +1235,13 @@ class Workbench:
                 raise WorkbenchError('desktop_required','This program needs '+', '.join(requirements)+
                     '. Docker has no access to the Windows camera or desktop. Run it locally with dependencies in a project virtual environment:\n'+command)
             sandbox = self._verified_coding_sandbox()
-            files = self.coding.raw_files(workspace_id)
+            files = self.coding.staged_files(workspace_id,draft_task_id) if draft_task_id else self.coding.raw_files(workspace_id)
             if target.lower().endswith('.py') and re.search(r'\b(?:from\s+flask\s+import|import\s+flask\b)',source['content']):
                 from workflows.web_preview import preview_request
                 if job:job.progress('Starting isolated Flask preview')
                 task=self.tasks.create('workspace_execution',[])
-                self.tasks.step(task,'docker_http',{'target':target,'path':'/'})
-                response=preview_request(self.coding,sandbox,self.settings.data_dir/'web-preview',workspace_id,target)
+                self.tasks.step(task,'docker_http',{'target':target,'path':request_path or '/','runtime':'flask','draft_task_id':draft_task_id})
+                response=preview_request(self.coding,sandbox,self.settings.data_dir/'web-preview',workspace_id,target,**({"files_snapshot":files} if draft_task_id else {}),**({'path':request_path} if request_path else {}))
                 passed=response['status']<400
                 checks={'container_executed':True,'exit_success':passed,'http_response_success':passed}
                 if passed:self.tasks.complete(task,checks)
@@ -1197,6 +1252,21 @@ class Workbench:
                         'checks':checks,'web_preview':response}
             if job:
                 job.progress('Starting isolated program');sandbox.on_output=job.append;sandbox.cancel_event=job.cancel;sandbox.stdin_queue=job.input
+            if target.lower().endswith(('.js','.mjs','.cjs')) and re.search(r'\b(?:createServer|express)\b',source['content']) and re.search(r'\.listen\s*\(',source['content']):
+                from workflows.code_runtime import http_runner
+                port_match=re.search(r'\.listen\s*\(\s*(\d+)|\b(?:PORT|port)\s*=\s*(?:process\.env\.PORT\s*\|\|\s*)?(\d+)',source['content'])
+                if not port_match:raise WorkbenchError('needs_input','Declare a numeric HTTP port or PORT fallback so Docker can verify readiness')
+                port=int(next(v for v in port_match.groups() if v))
+                task=self.tasks.create('workspace_execution',[])
+                self.tasks.step(task,'docker_http',{'target':target,'path':request_path or '/','runtime':'node_http','draft_task_id':draft_task_id})
+                if job:job.progress('Checking Node HTTP readiness in Docker')
+                execution=sandbox.execute(http_runner(target,request_path or '/',port),timeout=30,input_files=files)
+                response=json.loads(execution.output_files['http-response.json']) if 'http-response.json' in execution.output_files else None
+                passed=execution.executed and execution.exit_code==0 and response is not None and response.get('status')==200
+                checks={'container_executed':execution.executed,'exit_success':passed,'http_response_success':passed}
+                if passed:self.tasks.complete(task,checks)
+                else:self.tasks.fail(task,'http_response_failed')
+                return {'task_id':task['task_id'],'state':task['state'],'exit_code':execution.exit_code,'stdout':execution.stdout,'stderr':execution.stderr,'checks':checks,'web_preview':response}
             script = runner(target, mode='run')
             task = self.tasks.create('workspace_execution', [])
             self.tasks.step(task, 'docker_run', {'target':target})
@@ -1213,15 +1283,16 @@ class Workbench:
             self.ask_lock.release()
 
     @supervised_task
-    def execute_terminal(self, workspace_id, command, job, cwd=''):
+    def execute_terminal(self, workspace_id, command, job, cwd='', draft_task_id=None):
         if not self.ask_lock.acquire(blocking=False):raise WorkbenchError('busy','Another task is running')
         try:
+            draft_files=self.coding.staged_files(workspace_id,draft_task_id) if draft_task_id else None
             if cwd:
                 folder=self.coding._file(workspace_id,cwd)
-                if not folder.is_dir():raise WorkbenchError('invalid_file','Terminal working directory does not exist')
+                if not folder.is_dir() and not (draft_files and any(name.startswith(cwd.rstrip('/')+'/') for name in draft_files)):raise WorkbenchError('invalid_file','Terminal working directory does not exist')
             job.append('stdin','$ /project'+('/'+cwd if cwd else '')+'> '+command+'\n')
             sandbox=self._verified_coding_sandbox()
-            files=self.coding.raw_files(workspace_id)
+            files=draft_files if draft_files is not None else self.coding.raw_files(workspace_id)
             sandbox.on_output=job.append;sandbox.cancel_event=job.cancel;sandbox.stdin_queue=job.input
             job.progress('Terminal running in Docker')
             script="""import os,shutil,subprocess,sys,json,base64
@@ -1248,7 +1319,10 @@ Path('/output/project-sync.json').write_bytes(payload)
                 if not payload:raise WorkbenchError('sandbox_output','Terminal did not return its project changes; no changes were saved')
                 try:manifest=json.loads(payload)
                 except (ValueError,TypeError):raise WorkbenchError('sandbox_output','Invalid terminal project changes')
-                changes=self.coding.apply_terminal_changes(workspace_id,files,manifest)
+                if draft_task_id:
+                    if self.coding.staged_files(workspace_id,draft_task_id)!=files:raise WorkbenchError('workspace_conflict','Draft changed during execution')
+                    changes={'draft_execution':True,'runtime_changes_published':False,'runtime_changed_paths':list(manifest.get('changed',{})),'runtime_deleted_paths':manifest.get('deleted',[])}
+                else:changes=self.coding.apply_terminal_changes(workspace_id,files,manifest)
             return {'state':'completed' if result.exit_code==0 else 'failed','exit_code':result.exit_code,'stdout':result.stdout,'stderr':result.stderr,'cwd':cwd,'workspace_id':workspace_id,'checks':{'container_executed':result.executed,'exit_success':result.exit_code==0},**changes}
         finally:self.ask_lock.release()
 
@@ -1355,10 +1429,11 @@ Path('/output/project-sync.json').write_bytes(payload)
                     if error.code!='invalid_workspace':raise
                     workspace_metadata=[]
                     workspace_snapshot={'files':[],'folders':[]}
-                artifact_kind=re.search(r'\b(?:create|generate|write|make)\b',goal,re.I) and re.search(r'\b(word|docx|excel|xlsx)\b',goal,re.I)
+                artifact_kind=re.search(r'\b(?:create|generate|write|make)\b',goal,re.I) and re.search(r'\b(word|docx|excel|xlsx|markdown|txt|md)\b',goal,re.I)
                 source_request=re.search(r'\b(?:search|retrieve|sources|uploaded|attached)\b|\b(?:my|these|selected|existing|provided)\s+documents\b',goal,re.I)
-                if artifact_kind and not source_request:
-                    extension='.docx' if artifact_kind.group(1).lower() in {'word','docx'} else '.xlsx'
+                artifact_destination=re.search(r'\bknowledge\b|\b(?:in|into|to)\s+(?:the\s+)?library\b',goal,re.I)
+                if artifact_kind and (artifact_kind.group(1).lower() in {'word','docx','excel','xlsx'} or artifact_destination) and (not source_request or artifact_destination):
+                    extension={'word':'.docx','docx':'.docx','excel':'.xlsx','xlsx':'.xlsx','markdown':'.md','md':'.md','txt':'.txt'}[artifact_kind.group(1).lower()]
                     filename=re.search(r'(?<![\w/\\])([\w-]+'+re.escape(extension)+r')\b',goal,re.I)
                     plan={'action':'application_tools','target':filename.group(1) if filename else 'generated_'+uuid4().hex[:8]+extension,'response':''}
                     plan['_artifact_request']=True
@@ -1383,18 +1458,24 @@ Path('/output/project-sync.json').write_bytes(payload)
                 if job:job.progress('Planning application operations')
                 if not self.ask_lock.acquire(blocking=False):raise WorkbenchError('busy','Another model task is running')
                 try:
-                    self._lease('text')
+                    if not plan.get('_direct_project_generation'):self._lease('text')
                     # Explicit management commands resolve library names separately
                     # from the optional read/reference selection. No contents are read.
                     catalog=[{'name':doc['display_name'],'document_id':doc['document_id']} for doc in self.documents()]
                     schedules=[{'id':item['id'],'name':item['name'],'paused':item['paused']} for item in self.automations.list()]
-                    operations=([{'tool':'document_create','target':plan['target'],'value':goal,'input':''}] if plan.get('_artifact_request') else
+                    operations=([{'tool':'file_edit','target':'','value':goal,'input':''}] if plan.get('_direct_project_generation') else
+                        [{'tool':'document_create','target':plan['target'],'value':(re.split(r'\b(?:containing exactly|with the exact text|containing verbatim)\s*:\s*',goal,maxsplit=1,flags=re.I)[-1] if re.search(r'\b(?:containing exactly|with the exact text|containing verbatim)\s*:',goal,re.I) and Path(plan['target']).suffix.lower() in {'.txt','.md'} else goal),'input':''}] if plan.get('_artifact_request') else
                         self.model.plan_application_tools(
                             goal,catalog,workspace_metadata,history,automations=schedules,
                             folders=workspace_snapshot['folders'],
                             project=({'name':workspace_snapshot['name'],'workspace_id':workspace_id}
                                      if workspace_id and 'name' in workspace_snapshot else None)))
                 finally:self.ask_lock.release()
+                if plan.get('_direct_project_generation'):
+                    from router.tool_registry import new_workspace_requested
+                    if not workspace_id or new_workspace_requested(goal):
+                        named=re.search(r'\b(?:named|called)\s+([\w -]+?)(?=\s+with\b|[.!?]|$)',goal,re.I)
+                        operations.insert(0,{'tool':'project_create','target':named.group(1).strip() if named else 'Generated project','value':'','input':''})
                 result=ApplicationTools(self,workspace_id,job,document_ids,goal=goal,history=history).execute(operations,task)
                 checks={'workflow_returned':True,'workflow_succeeded':result['state']=='completed'}
                 if checks['workflow_succeeded']:self.tasks.complete(task,checks)
@@ -1485,6 +1566,13 @@ Path('/output/project-sync.json').write_bytes(payload)
                     workspace_id=self.coding.create(goal[:80])['workspace_id']
                 result=self.run_coding_project_task(workspace_id,target,goal,job=job,routed=True,
                                                     **({'history':history} if history else {}))
+                if result.get('state')=='completed' and result.get('publication_state')=='staged' and explicit_operation_requested(goal,'file_run'):
+                    route=re.search(r'\bGET\s+(/[^\s,;]*)',goal,re.I)
+                    execution=self.execute_coding_file(workspace_id,result.get('target',''),job=job,draft_task_id=result['task_id'],**({'request_path':route[1]} if route else {}))
+                    result['execution']=execution
+                    if execution.get('state')!='completed':
+                        result['state']=execution.get('state','failed')
+                        result['error']=execution.get('stderr') or execution.get('error') or 'Requested execution did not complete'
             if job and job.cancel.is_set():raise WorkbenchError('cancelled','Task stopped')
             checks={'workflow_returned':True,'workflow_succeeded':result.get('state')!='failed' and result.get('status')!='citation_failure'}
             if all(checks.values()): self.tasks.complete(task,checks)
@@ -1502,6 +1590,8 @@ Path('/output/project-sync.json').write_bytes(payload)
                                  ('Docker validation passed; publish the reviewed changes to update the project.'
                                   if result.get('checks',{}).get('container_executed') else
                                   'Docker is unavailable. Validation is required before these changes can be published.'))
+                    if result.get('execution'):
+                        answer_text+='\nDocker execution: '+str(result['execution'].get('stdout',''))[-2000:]
             plan_model=getattr(self.registry,'specs',{}).get('text')
             return {'task_id':task['task_id'],'status':task['state'],'answer':answer_text,'plan':plan,
                     'routing':{'capability':result.get('routing',{}).get('capability','text'),

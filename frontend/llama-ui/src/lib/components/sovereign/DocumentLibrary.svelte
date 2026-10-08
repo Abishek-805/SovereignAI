@@ -122,6 +122,8 @@
 	}
 	async function importFiles(selected: File[], paths: Map<File, string> = new Map()) {
 		if (importing || managing) return;
+		error = '';
+		notice = '';
 		const files = selected.filter((file) =>
 			supportedExtensions.split(',').includes('.' + file.name.split('.').at(-1)?.toLowerCase())
 		);

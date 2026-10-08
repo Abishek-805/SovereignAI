@@ -1,0 +1,11 @@
+{
+  "exit_code": 0,
+  "container_executed": true,
+  "stdout": "ORACLE_COUNT=3\n",
+  "stderr": "test_new_symbol (test_acceptance.Check.test_new_symbol) ... ok\ntest_old_symbol_removed (test_acceptance.Check.test_old_symbol_removed) ... ok\ntest_other_input (test_acceptance.Check.test_other_input) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.001s\n\nOK\n",
+  "properties": {
+    "test_acceptance.Check.test_new_symbol.test_new_symbol": true,
+    "test_acceptance.Check.test_old_symbol_removed.test_old_symbol_removed": true,
+    "test_acceptance.Check.test_other_input.test_other_input": true
+  }
+}

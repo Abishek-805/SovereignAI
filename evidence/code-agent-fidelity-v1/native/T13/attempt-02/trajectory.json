@@ -1,0 +1,34 @@
+[
+  {
+    "event": "context_fit",
+    "before_hash": "74bb1f726926a835a43e81f16a46a42f8c078fad886030ea38b520f1f2e1ca88",
+    "after_hash": "74bb1f726926a835a43e81f16a46a42f8c078fad886030ea38b520f1f2e1ca88",
+    "compacted": false,
+    "original_request_retained": true
+  },
+  {
+    "event": "controlled_external_revision",
+    "path": "keep.txt"
+  },
+  {
+    "event": "tool",
+    "tool": "read_file",
+    "arguments": {
+      "path": "lifecycle.py"
+    },
+    "before_revision": "3ce9492e6cdcea2065a3102212c972c1f5c76d2b00f880e2f97bb59c3453a474",
+    "before_diff": "",
+    "result": {
+      "path": "lifecycle.py",
+      "content": "def value():\n    return 4\n",
+      "offset": 0,
+      "next_offset": null,
+      "total_characters": 26,
+      "content_complete": true,
+      "sha256": "953ceaf7ec006413ae7deb68265ea69e488362e2726572001f451a104d384fb7"
+    },
+    "latency_seconds": 0.0,
+    "after_revision": "3ce9492e6cdcea2065a3102212c972c1f5c76d2b00f880e2f97bb59c3453a474",
+    "after_diff": ""
+  }
+]

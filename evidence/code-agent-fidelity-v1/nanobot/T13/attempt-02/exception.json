@@ -1,0 +1,5 @@
+{
+  "state": "failed",
+  "error": "Workspace changed during agent execution; draft retained",
+  "error_code": "workspace_conflict"
+}

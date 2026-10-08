@@ -1,0 +1,267 @@
+{
+  "supervisor_id": "7fbed4fca14b46d187f8f4c778e7280f",
+  "goal": "Implement reservation feature across store.py, service.py, summary.py. reserve(name,seats,capacity) stores a reservation and returns an integer token. Reject blank names, boolean/non-integer/nonpositive seats and capacity overflow with ValueError and no state mutation. cancel(token) removes it; unknown token raises KeyError. summary() returns count and seats from shared store. Preserve reset().",
+  "context": {
+    "workspace_id": "f7ef0de37031bc151f0008066f39fedf",
+    "document_ids": []
+  },
+  "created_at": 1791304250.9443219,
+  "elapsed_seconds": 378.015,
+  "limits": {
+    "model_calls": 32,
+    "tool_calls": 64,
+    "model_switches": 1,
+    "seconds": 660
+  },
+  "counts": {
+    "model_calls": 8,
+    "tool_calls": 7,
+    "model_switches": 0
+  },
+  "task_state": {
+    "task_id": "7fbed4fca14b46d187f8f4c778e7280f",
+    "original_request": "Implement reservation feature across store.py, service.py, summary.py. reserve(name,seats,capacity) stores a reservation and returns an integer token. Reject blank names, boolean/non-integer/nonpositive seats and capacity overflow with ValueError and no state mutation. cancel(token) removes it; unknown token raises KeyError. summary() returns count and seats from shared store. Preserve reset().",
+    "normalized_request": "Implement reservation feature across store.py, service.py, summary.py. reserve(name,seats,capacity) stores a reservation and returns an integer token. Reject blank names, boolean/non-integer/nonpositive seats and capacity overflow with ValueError and no state mutation. cancel(token) removes it; unknown token raises KeyError. summary() returns count and seats from shared store. Preserve reset().",
+    "conversation_context": [],
+    "follow_up_context": null,
+    "intent": null,
+    "workflow": null,
+    "modality": null,
+    "workspace": "f7ef0de37031bc151f0008066f39fedf",
+    "knowledge_scope": [],
+    "requested_deliverables": [],
+    "success_conditions": [],
+    "current_stage": "OBSERVING",
+    "current_action": null,
+    "active_worker": null,
+    "plan": null,
+    "observations": [],
+    "tool_results": [],
+    "evidence": [],
+    "repair_count": 0,
+    "replan_count": 0,
+    "completion_status": "running",
+    "blockers": [],
+    "cancellation_state": false,
+    "timestamps": {
+      "received": 1791304250.9443219,
+      "updated": 1791304628.745877
+    },
+    "worker_role": null,
+    "model_switch_count": 0,
+    "tool_call_count": 7,
+    "inference_call_count": 8,
+    "event_count": 16
+  },
+  "events": [
+    {
+      "operation": "model_calls",
+      "count": 1,
+      "elapsed_seconds": 0.39
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791304251.357853,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791304254.1850977,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 1,
+      "elapsed_seconds": 3.234
+    },
+    {
+      "operation": "model_calls",
+      "count": 2,
+      "elapsed_seconds": 3.39
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791304254.3531122,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791304257.0599728,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 2,
+      "elapsed_seconds": 6.109
+    },
+    {
+      "operation": "model_calls",
+      "count": 3,
+      "elapsed_seconds": 6.25
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791304257.2029874,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791304259.612697,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 3,
+      "elapsed_seconds": 8.656
+    },
+    {
+      "operation": "model_calls",
+      "count": 4,
+      "elapsed_seconds": 8.812
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791304259.7666168,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791304262.1556666,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 4,
+      "elapsed_seconds": 11.203
+    },
+    {
+      "operation": "model_calls",
+      "count": 5,
+      "elapsed_seconds": 11.343
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791304262.2964141,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791304287.1467273,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 5,
+      "elapsed_seconds": 36.187
+    },
+    {
+      "operation": "model_calls",
+      "count": 6,
+      "elapsed_seconds": 36.375
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791304287.3339548,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791304293.5903854,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 6,
+      "elapsed_seconds": 42.64
+    },
+    {
+      "operation": "model_calls",
+      "count": 7,
+      "elapsed_seconds": 42.843
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791304293.7990096,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791304296.177898,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 7,
+      "elapsed_seconds": 45.218
+    },
+    {
+      "operation": "model_calls",
+      "count": 8,
+      "elapsed_seconds": 54.156
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791304305.1151905,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791304628.745877,
+      "details": {}
+    }
+  ],
+  "completion": null,
+  "outcome": "running",
+  "code_task_view": {
+    "task_id": "7fbed4fca14b46d187f8f4c778e7280f",
+    "context": {
+      "original_request": "Implement reservation feature across store.py, service.py, summary.py. reserve(name,seats,capacity) stores a reservation and returns an integer token. Reject blank names, boolean/non-integer/nonpositive seats and capacity overflow with ValueError and no state mutation. cancel(token) removes it; unknown token raises KeyError. summary() returns count and seats from shared store. Preserve reset().",
+      "resolved_request": "Implement reservation feature across store.py, service.py, summary.py. reserve(name,seats,capacity) stores a reservation and returns an integer token. Reject blank names, boolean/non-integer/nonpositive seats and capacity overflow with ValueError and no state mutation. cancel(token) removes it; unknown token raises KeyError. summary() returns count and seats from shared store. Preserve reset().",
+      "workspace": "f7ef0de37031bc151f0008066f39fedf",
+      "target": null,
+      "active_file": null,
+      "relevant_symbols": [],
+      "related_files": [],
+      "diagnostics": [],
+      "current_changes": [],
+      "previous_tool_result": null,
+      "current_model": null,
+      "task_stage": "OBSERVING",
+      "context_scope": []
+    },
+    "task_type": null,
+    "complexity": null,
+    "current_stage": "OBSERVING",
+    "active_worker": null,
+    "plan": null,
+    "observations": [],
+    "tool_results": [],
+    "current_candidate": null,
+    "candidate_hash": null,
+    "repair_count": 0,
+    "model_switch_count": 0,
+    "completion_status": "running",
+    "cancellation": false,
+    "blocker": [],
+    "timestamps": {
+      "received": 1791304250.9443219,
+      "updated": 1791304628.745877
+    }
+  }
+}

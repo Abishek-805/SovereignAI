@@ -1,0 +1,13 @@
+{
+  "lease": {
+    "model_load_time": 8.572590200004925,
+    "switch_required": true,
+    "current_residency": null,
+    "selected_model": "sovereign-text",
+    "selected_model_id": "Qwen/Qwen3.5-4B",
+    "model_file": "Qwen3.5-4B-Q4_K_M.gguf",
+    "state": "Ready",
+    "available_context": 16384
+  },
+  "elapsed": 12.68699999999808
+}

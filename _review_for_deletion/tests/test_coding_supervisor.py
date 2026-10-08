@@ -17,7 +17,9 @@ def test_optional_escalation_continues_with_same_request_and_existing_attempt_bu
         return ({'state':'failed','checks':{'container_executed':True},'validation_exit_code':1,'stderr':'NameError in main.py','diff':'current diff'}
                 if len(attempts)==1 else {'state':'completed','publication_state':'staged','checks':{'container_executed':True},'validation_exit_code':0})
     monkeypatch.setattr(service.coding,'run_project',run)
-    result=service.run_coding_project_task('selected','main.py','Create a project with main.py, helpers.py and README.md',routed=True)
+    # Complex generation now starts with the power worker. This test exercises
+    # escalation of a simple Coder task after a real validation checkpoint.
+    result=service.run_coding_project_task('selected','main.py','Create main.py',routed=True)
     assert result['supervisor_attempts']==2
     assert leases==['code','text']
     assert attempts[0][:3]==attempts[1][:3]

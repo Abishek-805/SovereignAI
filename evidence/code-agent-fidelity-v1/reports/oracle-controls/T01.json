@@ -1,0 +1,26 @@
+{
+  "task_id": "T01",
+  "negative": {
+    "exit_code": 1,
+    "container_executed": true,
+    "stdout": "ORACLE_COUNT=3\n",
+    "stderr": "test_new_symbol (test_acceptance.Check.test_new_symbol) ... ERROR\ntest_old_symbol_removed (test_acceptance.Check.test_old_symbol_removed) ... FAIL\ntest_other_input (test_acceptance.Check.test_other_input) ... ERROR\n\n======================================================================\nERROR: test_new_symbol (test_acceptance.Check.test_new_symbol)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 5, in test_new_symbol\n    def test_new_symbol(self):self.assertEqual(names.welcome('Ada'),'Hello Ada')\n                                               ^^^^^^^^^^^^^\nAttributeError: module 'names' has no attribute 'welcome'\n\n======================================================================\nERROR: test_other_input (test_acceptance.Check.test_other_input)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 7, in test_other_input\n    def test_other_input(self):self.assertEqual(names.welcome('Lin'),'Hello Lin')\n                                                ^^^^^^^^^^^^^\nAttributeError: module 'names' has no attribute 'welcome'\n\n======================================================================\nFAIL: test_old_symbol_removed (test_acceptance.Check.test_old_symbol_removed)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 6, in test_old_symbol_removed\n    def test_old_symbol_removed(self):self.assertFalse(hasattr(names,'greet'))\n                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: True is not false\n\n----------------------------------------------------------------------\nRan 3 tests in 0.002s\n\nFAILED (failures=1, errors=2)\n",
+    "properties": {
+      "test_acceptance.Check.test_new_symbol.test_new_symbol": false,
+      "test_acceptance.Check.test_old_symbol_removed.test_old_symbol_removed": false,
+      "test_acceptance.Check.test_other_input.test_other_input": false
+    }
+  },
+  "positive": {
+    "exit_code": 0,
+    "container_executed": true,
+    "stdout": "ORACLE_COUNT=3\n",
+    "stderr": "test_new_symbol (test_acceptance.Check.test_new_symbol) ... ok\ntest_old_symbol_removed (test_acceptance.Check.test_old_symbol_removed) ... ok\ntest_other_input (test_acceptance.Check.test_other_input) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nOK\n",
+    "properties": {
+      "test_acceptance.Check.test_new_symbol.test_new_symbol": true,
+      "test_acceptance.Check.test_old_symbol_removed.test_old_symbol_removed": true,
+      "test_acceptance.Check.test_other_input.test_other_input": true
+    }
+  },
+  "control_passed": true
+}

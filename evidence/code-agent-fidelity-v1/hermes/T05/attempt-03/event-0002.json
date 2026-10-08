@@ -1,0 +1,21 @@
+{
+  "event": "tool",
+  "tool": "read_file",
+  "arguments": {
+    "path": "app.py"
+  },
+  "before_revision": "167ca73a9c4f5a3ad97ac0d1513a13533e15e3cf8fb8fbb48de5df2b10484ca8",
+  "before_diff": "",
+  "result": {
+    "path": "app.py",
+    "content": "from flask import Flask,request,jsonify\napp=Flask(__name__)\n@app.get('/health')\ndef health():return jsonify(ok=True)\n@app.post('/double')\ndef double():return jsonify(result=0)\n",
+    "offset": 0,
+    "next_offset": null,
+    "total_characters": 176,
+    "content_complete": true,
+    "sha256": "0af2e52b22bf9ab3dd777ed6cb6ad9b5a69a135125a00c73ebaae6d6d44d3148"
+  },
+  "latency_seconds": 0.0,
+  "after_revision": "167ca73a9c4f5a3ad97ac0d1513a13533e15e3cf8fb8fbb48de5df2b10484ca8",
+  "after_diff": ""
+}

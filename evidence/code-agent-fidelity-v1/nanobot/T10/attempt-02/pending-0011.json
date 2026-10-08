@@ -1,0 +1,10 @@
+{
+  "event": "tool",
+  "tool": "write_file",
+  "arguments": {
+    "path": "summary.py",
+    "content": "import store\n\ndef summary():\n    count = len(store.reservations)\n    seats = sum(r['seats'] for r in store.reservations.values())\n    return {'count': count, 'seats': seats}\n"
+  },
+  "before_revision": "4fd757129736c48d906593d02c3348015810ef7ef9f3e753938902f33f774340",
+  "before_diff": "--- a/service.py\n+++ b/service.py\n@@ -1,4 +1,29 @@\n-def reserve(name,seats,capacity):\n-    return {}\n+import store\n+\n+def reserve(name, seats, capacity):\n+    # Validate name is not blank\n+    if not name or not isinstance(name, str):\n+        raise ValueError(\"Name cannot be blank\")\n+    \n+    # Validate seats is a positive integer\n+    if not isinstance(seats, int) or isinstance(seats, bool) or seats <= 0:\n+        raise ValueError(\"Seats must be a positive integer\")\n+    \n+    # Validate capacity is a positive integer\n+    if not isinstance(capacity, int) or isinstance(capacity, bool) or capacity <= 0:\n+        raise ValueError(\"Capacity must be a positive integer\")\n+    \n+    # Check for overflow (seats > capacity)\n+    if seats > capacity:\n+        raise ValueError(\"Seats cannot exceed capacity\")\n+    \n+    # Store the reservation\n+    token = len(store.reservations) + 1\n+    store.reservations[token] = {'name': name, 'seats': seats, 'capacity': capacity}\n+    \n+    return token\n+\n def cancel(token):\n-    return False\n+    if token not in store.reservations:\n+        raise KeyError(\"Unknown token\")\n+    del store.reservations[token]\n"
+}

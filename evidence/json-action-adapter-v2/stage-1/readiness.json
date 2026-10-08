@@ -1,0 +1,138 @@
+{
+  "captured_at": "2026-10-08T04:37:12.078677+05:30",
+  "timezone": "Asia/Calcutta",
+  "status": "BLOCKED",
+  "failure_category": "ENVIRONMENT",
+  "run_status": {
+    "status": "STOPPED_BY_USER",
+    "running_verified": false,
+    "checkpoint": {
+      "phase": "models",
+      "runner": "native_v1",
+      "model": "coder25",
+      "task_id": "T08",
+      "status": "EXECUTING"
+    },
+    "heartbeat": {
+      "pid": 28140,
+      "process_created_at": 1791385789.5101068,
+      "updated_at": 1791387901.3933573,
+      "phase": "models",
+      "state": "STOPPED_BY_USER",
+      "stop_evidence": "reports/user-stop-20261007-211104/reason.json"
+    }
+  },
+  "registry_spec": {
+    "model_id": "Qwen/Qwen3.5-4B",
+    "model_file": "Qwen3.5-4B-Q4_K_M.gguf",
+    "context": 16384,
+    "quantization": "Q4_K_M",
+    "kv_configuration": "q8_0/q8_0"
+  },
+  "registry_launch_args": [
+    "C:\\Users\\ashek\\Desktop\\SovereignAI\\runtime\\llama-b11132\\llama-server.exe",
+    "-m",
+    "C:\\Users\\ashek\\Desktop\\SovereignAI\\models\\Qwen3.5-4B-Q4_K_M.gguf",
+    "--jinja",
+    "--alias",
+    "sovereign-text",
+    "-c",
+    "16384",
+    "-np",
+    "1",
+    "--n-predict",
+    "8192",
+    "-b",
+    "256",
+    "-ub",
+    "128",
+    "-t",
+    "6",
+    "-fa",
+    "on",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0",
+    "--fit",
+    "on",
+    "--fit-target",
+    "1024",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "8087",
+    "--cors-origins",
+    "localhost",
+    "--offline",
+    "--sleep-idle-seconds",
+    "600",
+    "-lv",
+    "4"
+  ],
+  "historical_args_match": true,
+  "model_launched": false,
+  "model_calls": 0,
+  "tool_dispatches": 0,
+  "candidate_docker_executions": 0,
+  "docker_verifier": "NOT EXECUTED: Linux engine unavailable",
+  "stage1_preregistration": "NOT REACHED: no Stage 1 model tests started",
+  "heavy_processes": [],
+  "docker_info": {
+    "exit_code": 1,
+    "stdout": "\"\"\n",
+    "stderr": "failed to connect to the docker API at npipe:////./pipe/dockerDesktopLinuxEngine; check if the path is correct and if the daemon is running: open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.\n"
+  },
+  "props": {
+    "status": "UNAVAILABLE",
+    "error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+  },
+  "slots": {
+    "status": "UNAVAILABLE",
+    "error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+  },
+  "v1/models": {
+    "status": "UNAVAILABLE",
+    "error": "<urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+  },
+  "stage0_sha256": {
+    "current-runtime.json": "2470c68a9267dd3309a97e4d338be6ccdd7c1895cd3d1ca59197dc4d2ce6b50a",
+    "integrity.json": "57b7ce8dc632c23aa17ac9a753971c53627f56a1138e91b37673f6f3d8d9c247",
+    "launcher-template-audit.json": "428916da238572a684b3759e08b21f38f854289659621235c7f3da96ceb6fd71",
+    "processes.json": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "request-settings.json": "8db3ccbbd3c6180c9e87a01304afa82d11838d280815b1cc9f8ef8dc49d4e02c",
+    "response-fields.json": "dfabf010b8d1768ff4e0c5ad450fae23ca4605f3a5d02bb97f20192b85ef59d1",
+    "run-status.json": "51fbd51bb5e0afba4e7b472e572e33a1efb3e614ad2389e418f7a12d4d3be816",
+    "STAGE-REPORT.md": "3e5aa012abc47307f82176ca642fa2dcd694bdd774e53871d5aa49acfdaddf74"
+  },
+  "frozen_hash_check": {
+    "count": 3362,
+    "changed_paths": []
+  },
+  "pinned_image_attestation": {
+    "image_id": "sha256:6f6ac11cda347a185454338dee35d77003e066579a3261b52b7c6ff1048c8573",
+    "verification_version": 2,
+    "policy_fingerprint": "149ae89f550894140c0b5ab35694b78c84deb5f49ee2d8b1d404c0d641cb48b8",
+    "checks": {
+      "normal_execution": true,
+      "network_blocked": true,
+      "root_read_only": true,
+      "input_read_only": true,
+      "non_root": true,
+      "capabilities_dropped": true,
+      "no_new_privileges": true,
+      "process_isolated": true,
+      "pids_bounded": true,
+      "memory_bounded": true,
+      "cpu_bounded": true,
+      "output_bounded": true,
+      "docker_socket_absent": true,
+      "host_env_excluded": true,
+      "project_secret_excluded": true,
+      "timeout_stops": true,
+      "cancel_stops": true,
+      "containers_cleaned": true
+    },
+    "validated_at": 1791385500.6798348
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "event": "tool",
+  "tool": "write_file",
+  "arguments": {
+    "path": "form.html",
+    "content": "<form><input name=\"display_name\"></form>\n"
+  },
+  "before_revision": "d8e5fefdeb410df1e1212d6427d63bd37ca7d300adb026c32036f2ffb57bb1fc",
+  "before_diff": "--- a/ui.js\n+++ b/ui.js\n@@ -1,2 +1,2 @@\n-function buildPayload(name){return {nickname:name};}\n+function buildPayload(name){return {display_name:name.trim()};}\n module.exports={buildPayload};\n"
+}

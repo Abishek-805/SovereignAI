@@ -1,0 +1,20 @@
+{
+  "samples": [
+    {
+      "unix_time": 1791305503.621572,
+      "system_used_ram_bytes": 15038566400,
+      "worker_rss_bytes": 4807643136,
+      "gpu_used_mib": 3276
+    },
+    {
+      "unix_time": 1791305505.524546,
+      "system_used_ram_bytes": 15029874688,
+      "worker_rss_bytes": 4807667712,
+      "gpu_used_mib": 3276
+    }
+  ],
+  "sampling_interval_seconds": 2,
+  "worker_peak_rss_bytes": 4807667712,
+  "gpu_peak_used_mib": 3276,
+  "gpu_is_device_total_not_process_allocation": true
+}

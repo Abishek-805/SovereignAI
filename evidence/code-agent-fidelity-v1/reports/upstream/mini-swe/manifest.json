@@ -1,0 +1,20 @@
+{
+  "repository": "SWE-agent/mini-swe-agent",
+  "commit": "04d809ceab9df28f9adaed044884180159172930",
+  "commit_date": "2026-09-03T05:05:59Z",
+  "sources": [
+    {
+      "path": "src/minisweagent/agents/default.py",
+      "sha256": "e8ef8aa365942d739c2ec5cb0879f60f377d2dc2de8ec670aaedf3bafb45a4c2",
+      "url": "https://github.com/SWE-agent/mini-swe-agent/blob/04d809ceab9df28f9adaed044884180159172930/src/minisweagent/agents/default.py",
+      "bytes": 8043
+    },
+    {
+      "path": "src/minisweagent/environments/docker.py",
+      "sha256": "21d389122b008e7b743d1e640207fda0b08d9010cf6323ddd02f0742b33b96a6",
+      "url": "https://github.com/SWE-agent/mini-swe-agent/blob/04d809ceab9df28f9adaed044884180159172930/src/minisweagent/environments/docker.py",
+      "bytes": 6427
+    }
+  ],
+  "purpose": "Inert source research only. Not installed, imported, or forked."
+}

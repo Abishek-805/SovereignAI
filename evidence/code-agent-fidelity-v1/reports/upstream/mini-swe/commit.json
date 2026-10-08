@@ -1,0 +1,106 @@
+{
+  "sha": "04d809ceab9df28f9adaed044884180159172930",
+  "node_id": "C_kwDOPDg-ZtoAKDA0ZDgwOWNlYWI5ZGYyOGY5YWRhZWQwNDQ4ODQxODAxNTkxNzI5MzA",
+  "commit": {
+    "author": {
+      "name": "John Yang",
+      "email": "byjohnyang@gmail.com",
+      "date": "2026-09-03T05:05:59Z"
+    },
+    "committer": {
+      "name": "John Yang",
+      "email": "byjohnyang@gmail.com",
+      "date": "2026-09-03T05:05:59Z"
+    },
+    "message": "Merge branch 'main' of github.com:SWE-agent/mini-swe-agent",
+    "tree": {
+      "sha": "05aef37afee93a52cea7d571b00d435f28c81bd6",
+      "url": "https://api.github.com/repos/SWE-agent/mini-swe-agent/git/trees/05aef37afee93a52cea7d571b00d435f28c81bd6"
+    },
+    "url": "https://api.github.com/repos/SWE-agent/mini-swe-agent/git/commits/04d809ceab9df28f9adaed044884180159172930",
+    "comment_count": 0,
+    "verification": {
+      "verified": false,
+      "reason": "unsigned",
+      "signature": null,
+      "payload": null,
+      "verified_at": null
+    }
+  },
+  "url": "https://api.github.com/repos/SWE-agent/mini-swe-agent/commits/04d809ceab9df28f9adaed044884180159172930",
+  "html_url": "https://github.com/SWE-agent/mini-swe-agent/commit/04d809ceab9df28f9adaed044884180159172930",
+  "comments_url": "https://api.github.com/repos/SWE-agent/mini-swe-agent/commits/04d809ceab9df28f9adaed044884180159172930/comments",
+  "author": {
+    "login": "john-b-yang",
+    "id": 10174390,
+    "node_id": "MDQ6VXNlcjEwMTc0Mzkw",
+    "avatar_url": "https://avatars.githubusercontent.com/u/10174390?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/john-b-yang",
+    "html_url": "https://github.com/john-b-yang",
+    "followers_url": "https://api.github.com/users/john-b-yang/followers",
+    "following_url": "https://api.github.com/users/john-b-yang/following{/other_user}",
+    "gists_url": "https://api.github.com/users/john-b-yang/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/john-b-yang/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/john-b-yang/subscriptions",
+    "organizations_url": "https://api.github.com/users/john-b-yang/orgs",
+    "repos_url": "https://api.github.com/users/john-b-yang/repos",
+    "events_url": "https://api.github.com/users/john-b-yang/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/john-b-yang/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "committer": {
+    "login": "john-b-yang",
+    "id": 10174390,
+    "node_id": "MDQ6VXNlcjEwMTc0Mzkw",
+    "avatar_url": "https://avatars.githubusercontent.com/u/10174390?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/john-b-yang",
+    "html_url": "https://github.com/john-b-yang",
+    "followers_url": "https://api.github.com/users/john-b-yang/followers",
+    "following_url": "https://api.github.com/users/john-b-yang/following{/other_user}",
+    "gists_url": "https://api.github.com/users/john-b-yang/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/john-b-yang/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/john-b-yang/subscriptions",
+    "organizations_url": "https://api.github.com/users/john-b-yang/orgs",
+    "repos_url": "https://api.github.com/users/john-b-yang/repos",
+    "events_url": "https://api.github.com/users/john-b-yang/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/john-b-yang/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "parents": [
+    {
+      "sha": "28cbf374353b8e6f0014190dd131f3bbfd0dc85e",
+      "url": "https://api.github.com/repos/SWE-agent/mini-swe-agent/commits/28cbf374353b8e6f0014190dd131f3bbfd0dc85e",
+      "html_url": "https://github.com/SWE-agent/mini-swe-agent/commit/28cbf374353b8e6f0014190dd131f3bbfd0dc85e"
+    },
+    {
+      "sha": "25941c89cfbc91eb40b3f8756348c91d9977d57e",
+      "url": "https://api.github.com/repos/SWE-agent/mini-swe-agent/commits/25941c89cfbc91eb40b3f8756348c91d9977d57e",
+      "html_url": "https://github.com/SWE-agent/mini-swe-agent/commit/25941c89cfbc91eb40b3f8756348c91d9977d57e"
+    }
+  ],
+  "stats": {
+    "total": 2,
+    "additions": 1,
+    "deletions": 1
+  },
+  "files": [
+    {
+      "sha": "fc7cb3b662ed098c54a7d1d3209e23b777bb47b6",
+      "filename": ".pre-commit-config.yaml",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/SWE-agent/mini-swe-agent/blob/04d809ceab9df28f9adaed044884180159172930/.pre-commit-config.yaml",
+      "raw_url": "https://github.com/SWE-agent/mini-swe-agent/raw/04d809ceab9df28f9adaed044884180159172930/.pre-commit-config.yaml",
+      "contents_url": "https://api.github.com/repos/SWE-agent/mini-swe-agent/contents/.pre-commit-config.yaml?ref=04d809ceab9df28f9adaed044884180159172930",
+      "patch": "@@ -22,7 +22,7 @@ repos:\n         exclude: pyproject.toml\n \n   - repo: https://github.com/astral-sh/ruff-pre-commit\n-    rev: v0.15.22\n+    rev: v0.16.2\n     hooks:\n       # Run the linter.\n       - id: ruff"
+    }
+  ]
+}

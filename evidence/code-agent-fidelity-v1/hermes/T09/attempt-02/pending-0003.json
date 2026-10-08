@@ -1,0 +1,9 @@
+{
+  "event": "tool",
+  "tool": "read_file",
+  "arguments": {
+    "path": "test_acceptance.py"
+  },
+  "before_revision": "d8d1abd7a4d0a82d067a3aaeba1c7c49e9995ab4daf067c0c6ee4ee718ac042d",
+  "before_diff": ""
+}

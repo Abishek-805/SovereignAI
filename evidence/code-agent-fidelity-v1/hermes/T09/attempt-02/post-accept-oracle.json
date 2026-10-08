@@ -1,0 +1,11 @@
+{
+  "exit_code": 0,
+  "container_executed": true,
+  "stdout": "ORACLE_COUNT=3\n",
+  "stderr": "test_exception (test_acceptance.Check.test_exception) ... ok\ntest_normal (test_acceptance.Check.test_normal) ... ok\ntest_preserved (test_acceptance.Check.test_preserved) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nOK\n",
+  "properties": {
+    "test_acceptance.Check.test_exception.test_exception": true,
+    "test_acceptance.Check.test_normal.test_normal": true,
+    "test_acceptance.Check.test_preserved.test_preserved": true
+  }
+}

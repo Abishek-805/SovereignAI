@@ -1,0 +1,206 @@
+{
+  "supervisor_id": "db6f12ec094a4f1a888ddc9c82d74853",
+  "goal": "Edit lifecycle.py value() to return integer 31. Preserve unrelated files. Validate the supplied tests.",
+  "context": {
+    "workspace_id": "7fe51a276aa44f3983c157d4a98f6b5a",
+    "document_ids": []
+  },
+  "created_at": 1791305535.0967157,
+  "elapsed_seconds": 24.156,
+  "limits": {
+    "model_calls": 32,
+    "tool_calls": 64,
+    "model_switches": 1,
+    "seconds": 660
+  },
+  "counts": {
+    "model_calls": 5,
+    "tool_calls": 5,
+    "model_switches": 0
+  },
+  "task_state": {
+    "task_id": "db6f12ec094a4f1a888ddc9c82d74853",
+    "original_request": "Edit lifecycle.py value() to return integer 31. Preserve unrelated files. Validate the supplied tests.",
+    "normalized_request": "Edit lifecycle.py value() to return integer 31. Preserve unrelated files. Validate the supplied tests.",
+    "conversation_context": [],
+    "follow_up_context": null,
+    "intent": null,
+    "workflow": null,
+    "modality": null,
+    "workspace": "7fe51a276aa44f3983c157d4a98f6b5a",
+    "knowledge_scope": [],
+    "requested_deliverables": [],
+    "success_conditions": [],
+    "current_stage": "OBSERVING",
+    "current_action": null,
+    "active_worker": null,
+    "plan": null,
+    "observations": [],
+    "tool_results": [],
+    "evidence": [],
+    "repair_count": 0,
+    "replan_count": 0,
+    "completion_status": "running",
+    "blockers": [],
+    "cancellation_state": false,
+    "timestamps": {
+      "received": 1791305535.0967157,
+      "updated": 1791305556.7730868
+    },
+    "worker_role": null,
+    "model_switch_count": 0,
+    "tool_call_count": 5,
+    "inference_call_count": 5,
+    "event_count": 10
+  },
+  "events": [
+    {
+      "operation": "model_calls",
+      "count": 1,
+      "elapsed_seconds": 0.094
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791305535.1880507,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791305537.1465347,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 1,
+      "elapsed_seconds": 2.063
+    },
+    {
+      "operation": "model_calls",
+      "count": 2,
+      "elapsed_seconds": 2.11
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791305537.1978977,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791305539.5660927,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 2,
+      "elapsed_seconds": 4.469
+    },
+    {
+      "operation": "model_calls",
+      "count": 3,
+      "elapsed_seconds": 4.516
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791305539.6082206,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791305546.5474806,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 3,
+      "elapsed_seconds": 11.453
+    },
+    {
+      "operation": "model_calls",
+      "count": 4,
+      "elapsed_seconds": 11.516
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791305546.6135874,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791305548.6622777,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 4,
+      "elapsed_seconds": 13.563
+    },
+    {
+      "operation": "model_calls",
+      "count": 5,
+      "elapsed_seconds": 15.781
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791305550.8813002,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791305556.7730868,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 5,
+      "elapsed_seconds": 21.688
+    }
+  ],
+  "completion": null,
+  "outcome": "running",
+  "code_task_view": {
+    "task_id": "db6f12ec094a4f1a888ddc9c82d74853",
+    "context": {
+      "original_request": "Edit lifecycle.py value() to return integer 31. Preserve unrelated files. Validate the supplied tests.",
+      "resolved_request": "Edit lifecycle.py value() to return integer 31. Preserve unrelated files. Validate the supplied tests.",
+      "workspace": "7fe51a276aa44f3983c157d4a98f6b5a",
+      "target": null,
+      "active_file": null,
+      "relevant_symbols": [],
+      "related_files": [],
+      "diagnostics": [],
+      "current_changes": [],
+      "previous_tool_result": null,
+      "current_model": null,
+      "task_stage": "OBSERVING",
+      "context_scope": []
+    },
+    "task_type": null,
+    "complexity": null,
+    "current_stage": "OBSERVING",
+    "active_worker": null,
+    "plan": null,
+    "observations": [],
+    "tool_results": [],
+    "current_candidate": null,
+    "candidate_hash": null,
+    "repair_count": 0,
+    "model_switch_count": 0,
+    "completion_status": "running",
+    "cancellation": false,
+    "blocker": [],
+    "timestamps": {
+      "received": 1791305535.0967157,
+      "updated": 1791305556.7730868
+    }
+  }
+}

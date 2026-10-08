@@ -1,0 +1,48 @@
+{
+  "task_id": "T06",
+  "request": "Implement events.py counts(events) counting event kind values; missing/non-string kind raises ValueError. Implement report.py render(events) using counts to produce sorted kind:count lines. Preserve version().",
+  "files": {
+    "events.py": "def counts(events):\n    return {}\ndef version():\n    return \"v1\"\n",
+    "report.py": "def render(events):\n    return \"\"\n",
+    "keep.txt": "unrelated valuable data\n",
+    "test_acceptance.py": "import unittest,json,subprocess,sys\nfrom pathlib import Path\nimport events,report\nclass Check(unittest.TestCase):\n def test_count(self):self.assertEqual(events.counts([{'kind':'b'},{'kind':'a'},{'kind':'b'}]),{'a':1,'b':2})\n def test_render(self):self.assertEqual(report.render([{'kind':'b'},{'kind':'a'},{'kind':'b'}]),'a:1\\nb:2')\n def test_invalid(self):\n  with self.assertRaises(ValueError):events.counts([{}])\n def test_preserved(self):self.assertEqual(events.version(),'v1')\n"
+  },
+  "mode": "accept",
+  "workspace_id": "51c7e6541d215868ea2ed4a81cf2b7f9",
+  "initial_revision": "6212bffc08c8778f68dd6fa82a7bde4efc68ee04d357f8fb3f7ac6178456d2a5",
+  "router_proposal": {
+    "original_request": "Implement events.py counts(events) counting event kind values; missing/non-string kind raises ValueError. Implement report.py render(events) using counts to produce sorted kind:count lines. Preserve version().",
+    "normalized_request": "Implement events.py counts(events) counting event kind values; missing/non-string kind raises ValueError. Implement report.py render(events) using counts to produce sorted kind:count lines. Preserve version().",
+    "task_type": "MULTI_FILE_CHANGE",
+    "complexity": "complex",
+    "worker_role": "reasoning",
+    "steps": [
+      "reasoning",
+      "code"
+    ],
+    "features": {
+      "active_file_present": false,
+      "workspace_available": true,
+      "repository_scope": "none",
+      "estimated_context_size": null,
+      "number_of_files_requested": 2,
+      "visual_input_present": false,
+      "modality": "text",
+      "is_follow_up": false,
+      "explicit_error_present": false,
+      "language_hints": [],
+      "execution_requested": false,
+      "validation_required": false,
+      "mechanical_rename": false,
+      "software_generation": false,
+      "requirements_heavy": false
+    },
+    "reason_codes": [
+      "software_task_features"
+    ],
+    "needs_clarification": false,
+    "mutation_authorized": false
+  },
+  "fixed_worker": "qwen35",
+  "source_suite_hash": "bbea8783929a12035dd58569b807a7e96539f5a1b6e2afcf4c9d278e682add72"
+}

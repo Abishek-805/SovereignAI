@@ -1,0 +1,132 @@
+{
+  "task_id": "40dd3697905b4ee986f45501b4a67342",
+  "workspace_id": "27588521a1120565a950ef7a9f93403d",
+  "target": "stats.py",
+  "state": "completed",
+  "agent_state": "READY_FOR_REVIEW",
+  "instruction": "Fix stats.py mean: use the correct denominator and raise ValueError for an empty sequence. Preserve tag().",
+  "changes": [
+    {
+      "path": "stats.py",
+      "action": "edit",
+      "before": "def mean(values):\n    return sum(values)/(len(values)+1)\ndef tag():\n    return \"stable\"\n",
+      "after": "def mean(values):\n    if not values:\n        raise ValueError(\"mean() of empty sequence\")\n    return sum(values)/len(values)\ndef tag():\n    return \"stable\"\n",
+      "staged_hash": "29957fc069cab39de241e1b58743fc904994c1bbd6a8f39b749fa06c4a7fafca"
+    }
+  ],
+  "diff": "--- a/stats.py\n+++ b/stats.py\n@@ -1,4 +1,6 @@\n def mean(values):\n-    return sum(values)/(len(values)+1)\n+    if not values:\n+        raise ValueError(\"mean() of empty sequence\")\n+    return sum(values)/len(values)\n def tag():\n     return \"stable\"\n",
+  "events": [
+    {
+      "tool": "read_file",
+      "arguments": {
+        "path": "stats.py"
+      },
+      "result": {
+        "path": "stats.py",
+        "content": "def mean(values):\n    return sum(values)/(len(values)+1)\ndef tag():\n    return \"stable\"\n",
+        "offset": 0,
+        "next_offset": null,
+        "total_characters": 88,
+        "content_complete": true,
+        "sha256": "7144c8c2ef922207e4da1eaa7972eca4f1520899af897a48725b8f1789abab4a"
+      }
+    },
+    {
+      "tool": "apply_patch",
+      "arguments": {
+        "path": "stats.py",
+        "old_text": "def mean(values):\n    return sum(values)/(len(values)+1)",
+        "new_text": "def mean(values):\n    if not values:\n        raise ValueError(\"mean() of empty sequence\")\n    return sum(values)/len(values)"
+      },
+      "result": {
+        "path": "stats.py",
+        "sha256": "29957fc069cab39de241e1b58743fc904994c1bbd6a8f39b749fa06c4a7fafca",
+        "bytes": 156
+      }
+    },
+    {
+      "tool": "run_tests",
+      "arguments": {},
+      "result": {
+        "container_executed": true,
+        "exit_code": 0,
+        "stdout": "INDEPENDENT_ORACLE_TEST_COUNT=4\n",
+        "stderr": "test_empty (test_acceptance.Check.test_empty) ... ok\ntest_mean (test_acceptance.Check.test_mean) ... ok\ntest_preserved (test_acceptance.Check.test_preserved) ... ok\ntest_single (test_acceptance.Check.test_single) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.003s\n\nOK\n",
+        "workspace_changes_persisted": false,
+        "note": "Every command uses a fresh snapshot. Write source through write_file/apply_patch, not shell redirection.",
+        "passed": true,
+        "test_count": 4,
+        "entrypoint": "",
+        "independent": true,
+        "basis": "immutable supplied suite; no semantic coverage inferred beyond supplied assertions"
+      }
+    },
+    {
+      "tool": "finish",
+      "arguments": {},
+      "result": {
+        "container_executed": true,
+        "exit_code": 0,
+        "stdout": "INDEPENDENT_ORACLE_TEST_COUNT=4\n",
+        "stderr": "test_empty (test_acceptance.Check.test_empty) ... ok\ntest_mean (test_acceptance.Check.test_mean) ... ok\ntest_preserved (test_acceptance.Check.test_preserved) ... ok\ntest_single (test_acceptance.Check.test_single) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.000s\n\nOK\n",
+        "workspace_changes_persisted": false,
+        "note": "Every command uses a fresh snapshot. Write source through write_file/apply_patch, not shell redirection.",
+        "passed": true,
+        "test_count": 4,
+        "entrypoint": "",
+        "independent": true,
+        "basis": "immutable supplied suite; no semantic coverage inferred beyond supplied assertions"
+      }
+    }
+  ],
+  "checks": {
+    "container_executed": true,
+    "behavior_verified": true,
+    "target_committed": true
+  },
+  "validation": "passed",
+  "validation_exit_code": 0,
+  "stdout": "INDEPENDENT_ORACLE_TEST_COUNT=4\n",
+  "stderr": "test_empty (test_acceptance.Check.test_empty) ... ok\ntest_mean (test_acceptance.Check.test_mean) ... ok\ntest_preserved (test_acceptance.Check.test_preserved) ... ok\ntest_single (test_acceptance.Check.test_single) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.000s\n\nOK\n",
+  "error": null,
+  "routing": {
+    "model": "sovereign-text",
+    "capability": "code",
+    "reason": "Native tool agent; no mandatory plan"
+  },
+  "validation_scope": "immutable supplied suite; no semantic coverage inferred beyond supplied assertions",
+  "limitations": [],
+  "sandbox": {
+    "backend": "docker",
+    "image_id": "sha256:6f6ac11cda347a185454338dee35d77003e066579a3261b52b7c6ff1048c8573"
+  },
+  "metrics": {
+    "task_id": "40dd3697905b4ee986f45501b4a67342",
+    "request": "Fix stats.py mean: use the correct denominator and raise ValueError for an empty sequence. Preserve tag().",
+    "workspace_id": "27588521a1120565a950ef7a9f93403d",
+    "model": "sovereign-text",
+    "state": "READY_FOR_REVIEW",
+    "model_calls": 4,
+    "tool_calls": 4,
+    "sandbox_runs": 2,
+    "repairs": 0,
+    "validation_failures": 0,
+    "model_switches": 0,
+    "elapsed": 30.68800000000192
+  },
+  "expected_revisions": {
+    "stats.py": "7144c8c2ef922207e4da1eaa7972eca4f1520899af897a48725b8f1789abab4a"
+  },
+  "publication_state": "published",
+  "publication_changes": [
+    {
+      "action": "edit",
+      "backup": "backups/0.bin",
+      "before_hash": "7144c8c2ef922207e4da1eaa7972eca4f1520899af897a48725b8f1789abab4a",
+      "path": "stats.py",
+      "staged_hash": "29957fc069cab39de241e1b58743fc904994c1bbd6a8f39b749fa06c4a7fafca"
+    }
+  ],
+  "publication_transaction_state": "committed",
+  "published_at": 1791283268.1988754
+}

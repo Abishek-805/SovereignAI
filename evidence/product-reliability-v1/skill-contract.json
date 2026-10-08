@@ -1,0 +1,15 @@
+{
+  "loaded": true,
+  "skills": [
+    {
+      "name": "task-core",
+      "sha256": "39d2d12d791b1f9228c527d67b6679f382b2737b12469975b03a2c586d307678",
+      "characters": 1497
+    },
+    {
+      "name": "coding",
+      "sha256": "35a21ad8de3b9e2d05dfab87b6c3851c587681e1e0f8347c8590872e52a9df6e",
+      "characters": 4083
+    }
+  ]
+}

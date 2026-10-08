@@ -1,0 +1,184 @@
+{
+  "supervisor_id": "49c8c9e8c8d04cbeb0be57240428aab1",
+  "goal": "Fix stats.py mean: use the correct denominator and raise ValueError for an empty sequence. Preserve tag().",
+  "context": {
+    "workspace_id": "27588521a1120565a950ef7a9f93403d",
+    "document_ids": []
+  },
+  "created_at": 1791283302.6386085,
+  "elapsed_seconds": 32.344,
+  "limits": {
+    "model_calls": 32,
+    "tool_calls": 64,
+    "model_switches": 1,
+    "seconds": 660
+  },
+  "counts": {
+    "model_calls": 4,
+    "tool_calls": 4,
+    "model_switches": 0
+  },
+  "task_state": {
+    "task_id": "49c8c9e8c8d04cbeb0be57240428aab1",
+    "original_request": "Fix stats.py mean: use the correct denominator and raise ValueError for an empty sequence. Preserve tag().",
+    "normalized_request": "Fix stats.py mean: use the correct denominator and raise ValueError for an empty sequence. Preserve tag().",
+    "conversation_context": [],
+    "follow_up_context": null,
+    "intent": null,
+    "workflow": null,
+    "modality": null,
+    "workspace": "27588521a1120565a950ef7a9f93403d",
+    "knowledge_scope": [],
+    "requested_deliverables": [],
+    "success_conditions": [],
+    "current_stage": "OBSERVING",
+    "current_action": null,
+    "active_worker": null,
+    "plan": null,
+    "observations": [],
+    "tool_results": [],
+    "evidence": [],
+    "repair_count": 0,
+    "replan_count": 0,
+    "completion_status": "running",
+    "blockers": [],
+    "cancellation_state": false,
+    "timestamps": {
+      "received": 1791283302.6386085,
+      "updated": 1791283332.0710626
+    },
+    "worker_role": null,
+    "model_switch_count": 0,
+    "tool_call_count": 4,
+    "inference_call_count": 4,
+    "event_count": 8
+  },
+  "events": [
+    {
+      "operation": "model_calls",
+      "count": 1,
+      "elapsed_seconds": 0.11
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791283302.751405,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791283305.9922733,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 1,
+      "elapsed_seconds": 3.344
+    },
+    {
+      "operation": "model_calls",
+      "count": 2,
+      "elapsed_seconds": 3.391
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791283306.0408256,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791283316.4458926,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 2,
+      "elapsed_seconds": 13.797
+    },
+    {
+      "operation": "model_calls",
+      "count": 3,
+      "elapsed_seconds": 13.86
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791283316.4984224,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791283318.748099,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 3,
+      "elapsed_seconds": 16.11
+    },
+    {
+      "operation": "model_calls",
+      "count": 4,
+      "elapsed_seconds": 18.766
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791283321.4088397,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791283332.0710626,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 4,
+      "elapsed_seconds": 29.422
+    }
+  ],
+  "completion": null,
+  "outcome": "running",
+  "code_task_view": {
+    "task_id": "49c8c9e8c8d04cbeb0be57240428aab1",
+    "context": {
+      "original_request": "Fix stats.py mean: use the correct denominator and raise ValueError for an empty sequence. Preserve tag().",
+      "resolved_request": "Fix stats.py mean: use the correct denominator and raise ValueError for an empty sequence. Preserve tag().",
+      "workspace": "27588521a1120565a950ef7a9f93403d",
+      "target": null,
+      "active_file": null,
+      "relevant_symbols": [],
+      "related_files": [],
+      "diagnostics": [],
+      "current_changes": [],
+      "previous_tool_result": null,
+      "current_model": null,
+      "task_stage": "OBSERVING",
+      "context_scope": []
+    },
+    "task_type": null,
+    "complexity": null,
+    "current_stage": "OBSERVING",
+    "active_worker": null,
+    "plan": null,
+    "observations": [],
+    "tool_results": [],
+    "current_candidate": null,
+    "candidate_hash": null,
+    "repair_count": 0,
+    "model_switch_count": 0,
+    "completion_status": "running",
+    "cancellation": false,
+    "blocker": [],
+    "timestamps": {
+      "received": 1791283302.6386085,
+      "updated": 1791283332.0710626
+    }
+  }
+}

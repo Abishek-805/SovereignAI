@@ -1,0 +1,20 @@
+{
+  "path": "C:\\Users\\ashek\\Desktop\\SovereignAI\\outputs\\agent-kernel-rebuild\\browser-1791266668290\\terminal-task.json",
+  "sha256": "fbfeaef1ed1a6fcd4c15fd41ee505d538dfa19b70dab4113dff3cbc1311154d3",
+  "original_state": "failed",
+  "original_metrics": {
+    "task_id": "272798546719432dbe71fe575a6d8787",
+    "request": "Create a small Flask attendance application.\n\nRequirements:\n- Python Flask\n- store students\n- POST attendance endpoint\n- reject invalid attendance requests\n- return JSON responses\n- include README.md\n- application must be runnable\n- include a simple test",
+    "workspace_id": "55b57037994c4be9a78fa7987616c8c1",
+    "model": "sovereign-text",
+    "state": "BUDGET_EXHAUSTED",
+    "model_calls": 11,
+    "tool_calls": 11,
+    "sandbox_runs": 2,
+    "repairs": 0,
+    "validation_failures": 1,
+    "model_switches": 0,
+    "elapsed": 844.5319999999999
+  },
+  "original_error": "Agent budget or validation failed"
+}

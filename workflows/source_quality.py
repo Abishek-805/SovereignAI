@@ -1,5 +1,6 @@
 """Content checks for generated source, independent of container syntax checks."""
 import ast
+import json
 import re
 from html.parser import HTMLParser
 from pathlib import Path
@@ -17,12 +18,27 @@ class _Markup(HTMLParser):
         self.elements += 1
 
 
+def application_entrypoint_issue(path,content):
+    """A standalone Python app needs executable behavior, not only helpers."""
+    if Path(path).suffix.lower()!='.py':return None
+    try:tree=ast.parse(content)
+    except SyntaxError:return None  # Syntax validation reports its exact error.
+    for node in tree.body:
+        if isinstance(node,(ast.FunctionDef,ast.AsyncFunctionDef,ast.ClassDef,ast.Import,ast.ImportFrom)):continue
+        if any(isinstance(child,ast.Call) for child in ast.walk(node)):return None
+    return 'The requested standalone application contains only definitions. Include its runnable entrypoint or application initialization; preserve the required functions.'
+
 def source_issue(path, content):
     """Reject unusable source before generation finishes; sandbox checks still follow."""
     suffix = Path(path).suffix.lower()
     if not content.strip():
         return 'The file is empty.'
-    if suffix in {'.md', '.txt', '.json'}:
+    if content.strip() in {path,Path(path).name}:return 'A filename is not an implementation.'
+    if suffix=='.json':
+        try:json.loads(content)
+        except (ValueError,TypeError):return 'JSON file contents must parse as JSON, not a filename or prose.'
+        return None
+    if suffix in {'.md', '.txt'}:
         return None
     if suffix in {'.html', '.htm'}:
         parser = _Markup()

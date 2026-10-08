@@ -3,7 +3,7 @@ from pathlib import Path
 from types import SimpleNamespace
 import pytest
 
-PATH = Path(__file__).resolve().parents[1] / 'benchmarks/evaluate-smart-code-router.py'
+PATH = Path(__file__).resolve().parents[2] / 'benchmarks/evaluate-smart-code-router.py'
 
 def harness():
     spec = importlib.util.spec_from_file_location('smart_benchmark', PATH)

@@ -18,6 +18,8 @@ def main():
         folder=OUT/'old-workflow' if model=='old-workflow' else OUT/'fixed-40'/model
         data[model]={}
         review_path=OUT/(model+'-answer-bound-review.json')
+        versioned_review=OUT/(model+'-answer-bound-review-v2.json')
+        if versioned_review.exists():review_path=versioned_review
         reviewed={r['task_id']:r for r in json.loads(review_path.read_text())['rows']} if review_path.exists() else {}
         for task in tasks:
             path=folder/(task['task_id']+'.json')

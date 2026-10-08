@@ -21,9 +21,19 @@ def verify_docker(data_dir, job):
     if not cli:
         raise WorkbenchError('sandbox_unavailable', 'Docker CLI is missing')
     job.progress('Checking Docker Linux engine')
+    # Reverify the installed pinned image, including its installed dependencies.
+    # Falling back to the base tag would silently replace the Flask runtime.
+    from router.sandbox import IMAGE_ID
+    installed = 'sovereign-workbench:latest'
+    try:
+        previous = json.loads((Path(data_dir) / 'sandbox-validation.json').read_text(encoding='utf-8'))
+        if IMAGE_ID.fullmatch(previous.get('image_id', '')):
+            installed = previous['image_id']
+    except (OSError, ValueError, TypeError):
+        pass
     try:
         inspection = subprocess.run([cli, '--host', LOCAL_ENGINE, 'image', 'inspect',
-                                     'sovereign-workbench:latest', '--format', '{{.Id}}'],
+                                     installed, '--format', '{{.Id}}'],
                                     capture_output=True, text=True, timeout=10, check=True)
         image = inspection.stdout.strip()
         from router.sandbox import IMAGE_ID

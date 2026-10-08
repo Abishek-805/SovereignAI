@@ -1,0 +1,57 @@
+{
+  "status": "INCOMPLETE",
+  "production_api_reloaded": false,
+  "source_sha256": {
+    "rag/tables.py": "99c745e4200c72fc20af121fbc7d865f1d0b76c5a38fce91c176fa235e2690bc",
+    "rag/answer.py": "6375282fd0a4f18ba81c5e4d54f45186cc75a48dc8e5dfd828e972c0b2d2f87e",
+    "workflows/preview_session.py": "358d7dd28176fa397e5784cc8d0a6a18e416f0b5f8c6c42c12c45047073b8b76",
+    "workflows/web_preview.py": "7450bab21a12e09a5267e5b5d6c8ee6b3aeaf9136242843ae4284cd3913ddd1c",
+    "workflows/code_runtime.py": "3f43baf143205dc5a7b64dacf248df3633380d391d05d9c3ddd2b0ab36c7eae6",
+    "backend/model.py": "0165ab2e09be834804149eba4a5760532f5014cfec582dc0e031af248e9249db"
+  },
+  "regression": {
+    "passed": 1323,
+    "skipped": 7,
+    "failed": 0,
+    "warning": "Starlette httpx deprecation",
+    "log": "regression-current.log",
+    "selection": [
+      "_review_for_deletion/tests",
+      "tests",
+      "experiments/product_reliability_v1/test_numeric_consistency.py"
+    ],
+    "additional_stop_status_checks": {
+      "passed": 7,
+      "path": "experiments/fidelity_v1/test_run_status.py"
+    }
+  },
+  "notes_context_repair": {
+    "status": "FAIL",
+    "evidence": "notes-repair-with-command.json",
+    "reason": "malformed stored data became empty successful output"
+  },
+  "preview": {
+    "status": "PASS",
+    "evidence": "preview-live/summary.json"
+  },
+  "repair_context_deduplication": {
+    "status": "CONTEXT_COST_REDUCED_CORRECTNESS_UNRESOLVED",
+    "prompt_tokens_before": 11553,
+    "prompt_tokens_after": 8831,
+    "evidence": "notes-coder-context-after-wire.json"
+  },
+  "bounded_patch_probes": {
+    "coder": "FAIL",
+    "granite": "FAIL",
+    "qwen_reasoning_1536": "INCOMPLETE_MISSING_RAW",
+    "qwen_reasoning_6144": "INCOMPLETE_TIMEOUT_300_SECONDS",
+    "production_changed": false
+  },
+  "frontend_check": {
+    "status": "PASS",
+    "errors": 0,
+    "warnings": 0,
+    "log": "frontend-check-current.log",
+    "live_browser_acceptance": false
+  }
+}

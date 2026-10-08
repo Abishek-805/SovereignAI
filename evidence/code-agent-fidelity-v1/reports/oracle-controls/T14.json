@@ -1,0 +1,24 @@
+{
+  "task_id": "T14",
+  "negative": {
+    "exit_code": 1,
+    "container_executed": true,
+    "stdout": "ORACLE_COUNT=2\n",
+    "stderr": "test_integer (test_acceptance.Check.test_integer) ... ok\ntest_value (test_acceptance.Check.test_value) ... FAIL\n\n======================================================================\nFAIL: test_value (test_acceptance.Check.test_value)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/output/project/test_acceptance.py\", line 5, in test_value\n    def test_value(self):self.assertEqual(lifecycle.value(),31)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 4 != 31\n\n----------------------------------------------------------------------\nRan 2 tests in 0.001s\n\nFAILED (failures=1)\n",
+    "properties": {
+      "test_acceptance.Check.test_integer.test_integer": true,
+      "test_acceptance.Check.test_value.test_value": false
+    }
+  },
+  "positive": {
+    "exit_code": 0,
+    "container_executed": true,
+    "stdout": "ORACLE_COUNT=2\n",
+    "stderr": "test_integer (test_acceptance.Check.test_integer) ... ok\ntest_value (test_acceptance.Check.test_value) ... ok\n\n----------------------------------------------------------------------\nRan 2 tests in 0.000s\n\nOK\n",
+    "properties": {
+      "test_acceptance.Check.test_integer.test_integer": true,
+      "test_acceptance.Check.test_value.test_value": true
+    }
+  },
+  "control_passed": true
+}

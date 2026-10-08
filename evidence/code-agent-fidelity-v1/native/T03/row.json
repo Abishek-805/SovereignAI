@@ -1,0 +1,68 @@
+{
+  "phase": "runners",
+  "task_id": "T03",
+  "category": "bug_fix",
+  "control": false,
+  "runner": "native_v1",
+  "model": "qwen35",
+  "accepted": true,
+  "validated": true,
+  "status": "PASS",
+  "repair_count": 0,
+  "rollback_count": 0,
+  "tool_calls": 4,
+  "model_calls": 4,
+  "model_switches": 0,
+  "latency_seconds": 32.625,
+  "peak_vram_mb": 2846,
+  "vram_scope": "whole GPU including display; process allocation unavailable",
+  "peak_ram_mb": 3919.671875,
+  "generation_tokens": 370,
+  "token_usage_complete": true,
+  "properties": {
+    "test_acceptance.Check.test_empty.test_empty": true,
+    "test_acceptance.Check.test_mean.test_mean": true,
+    "test_acceptance.Check.test_preserved.test_preserved": true,
+    "test_acceptance.Check.test_single.test_single": true
+  },
+  "failure_category": null,
+  "failure_detail": "",
+  "router_proposal": {
+    "original_request": "Fix stats.py mean: use the correct denominator and raise ValueError for an empty sequence. Preserve tag().",
+    "normalized_request": "Fix stats.py mean: use the correct denominator and raise ValueError for an empty sequence. Preserve tag().",
+    "task_type": "DEBUG",
+    "complexity": "simple",
+    "worker_role": "code",
+    "steps": [
+      "code"
+    ],
+    "features": {
+      "active_file_present": false,
+      "workspace_available": true,
+      "repository_scope": "none",
+      "estimated_context_size": null,
+      "number_of_files_requested": 1,
+      "visual_input_present": false,
+      "modality": "text",
+      "is_follow_up": false,
+      "explicit_error_present": false,
+      "language_hints": [],
+      "execution_requested": false,
+      "validation_required": false,
+      "mechanical_rename": false,
+      "software_generation": false,
+      "requirements_heavy": false
+    },
+    "reason_codes": [
+      "software_task_features"
+    ],
+    "needs_clarification": false,
+    "mutation_authorized": false
+  },
+  "execution_result": 0,
+  "validation_result": true,
+  "evidence": "evidence\\code-agent-fidelity-v1\\native\\T03\\attempt-01",
+  "initial_request_hash": "d8664a9e9ee858a68bcfa311baacf3751169eb1fcdc3b67ba3f76b778f992d87",
+  "canonical_unchanged_before_accept": true,
+  "sandbox_image_id": "sha256:6f6ac11cda347a185454338dee35d77003e066579a3261b52b7c6ff1048c8573"
+}

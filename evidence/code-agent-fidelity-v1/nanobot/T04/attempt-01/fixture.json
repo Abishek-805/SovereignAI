@@ -1,0 +1,46 @@
+{
+  "task_id": "T04",
+  "request": "Add clamp(value, low, high) to math_ops.py. Return the nearest bound when outside the range; reject low > high with ValueError. Preserve multiply.",
+  "files": {
+    "math_ops.py": "def multiply(a,b):\n    return a*b\n",
+    "keep.txt": "unrelated valuable data\n",
+    "test_acceptance.py": "import unittest,json,subprocess,sys\nfrom pathlib import Path\nimport math_ops\nclass Check(unittest.TestCase):\n def test_low(self):self.assertEqual(math_ops.clamp(-7,0,8),0)\n def test_high(self):self.assertEqual(math_ops.clamp(12,0,8),8)\n def test_inside(self):self.assertEqual(math_ops.clamp(3,0,8),3)\n def test_invalid(self):\n  with self.assertRaises(ValueError):math_ops.clamp(1,5,2)\n def test_preserved(self):self.assertEqual(math_ops.multiply(6,7),42)\n"
+  },
+  "mode": "accept",
+  "workspace_id": "0d1d76b3277ef45cd5c8ee1f7c0e519e",
+  "initial_revision": "536900233dc5404f8950157a6ae978b9942e84c88a23c82b12aa901369dbaa5f",
+  "router_proposal": {
+    "original_request": "Add clamp(value, low, high) to math_ops.py. Return the nearest bound when outside the range; reject low > high with ValueError. Preserve multiply.",
+    "normalized_request": "Add clamp(value, low, high) to math_ops.py. Return the nearest bound when outside the range; reject low > high with ValueError. Preserve multiply.",
+    "task_type": "IMPLEMENT",
+    "complexity": "simple",
+    "worker_role": "code",
+    "steps": [
+      "code"
+    ],
+    "features": {
+      "active_file_present": false,
+      "workspace_available": true,
+      "repository_scope": "none",
+      "estimated_context_size": null,
+      "number_of_files_requested": 1,
+      "visual_input_present": false,
+      "modality": "text",
+      "is_follow_up": false,
+      "explicit_error_present": false,
+      "language_hints": [],
+      "execution_requested": false,
+      "validation_required": false,
+      "mechanical_rename": false,
+      "software_generation": false,
+      "requirements_heavy": false
+    },
+    "reason_codes": [
+      "software_task_features"
+    ],
+    "needs_clarification": false,
+    "mutation_authorized": false
+  },
+  "fixed_worker": "qwen35",
+  "source_suite_hash": "bbea8783929a12035dd58569b807a7e96539f5a1b6e2afcf4c9d278e682add72"
+}

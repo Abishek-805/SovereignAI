@@ -1,0 +1,69 @@
+{
+  "phase": "runners",
+  "task_id": "T06",
+  "category": "multi_file_feature",
+  "control": false,
+  "runner": "hermes_minimal",
+  "model": "qwen35",
+  "accepted": true,
+  "validated": true,
+  "status": "PASS",
+  "repair_count": 1,
+  "rollback_count": 0,
+  "tool_calls": 11,
+  "model_calls": 11,
+  "model_switches": 0,
+  "latency_seconds": 77.14100000000008,
+  "peak_vram_mb": 3334,
+  "vram_scope": "whole GPU including display; process allocation unavailable",
+  "peak_ram_mb": 5400.171875,
+  "generation_tokens": 982,
+  "token_usage_complete": true,
+  "properties": {
+    "test_acceptance.Check.test_count.test_count": true,
+    "test_acceptance.Check.test_invalid.test_invalid": true,
+    "test_acceptance.Check.test_preserved.test_preserved": true,
+    "test_acceptance.Check.test_render.test_render": true
+  },
+  "failure_category": null,
+  "failure_detail": "",
+  "router_proposal": {
+    "original_request": "Implement events.py counts(events) counting event kind values; missing/non-string kind raises ValueError. Implement report.py render(events) using counts to produce sorted kind:count lines. Preserve version().",
+    "normalized_request": "Implement events.py counts(events) counting event kind values; missing/non-string kind raises ValueError. Implement report.py render(events) using counts to produce sorted kind:count lines. Preserve version().",
+    "task_type": "MULTI_FILE_CHANGE",
+    "complexity": "complex",
+    "worker_role": "reasoning",
+    "steps": [
+      "reasoning",
+      "code"
+    ],
+    "features": {
+      "active_file_present": false,
+      "workspace_available": true,
+      "repository_scope": "none",
+      "estimated_context_size": null,
+      "number_of_files_requested": 2,
+      "visual_input_present": false,
+      "modality": "text",
+      "is_follow_up": false,
+      "explicit_error_present": false,
+      "language_hints": [],
+      "execution_requested": false,
+      "validation_required": false,
+      "mechanical_rename": false,
+      "software_generation": false,
+      "requirements_heavy": false
+    },
+    "reason_codes": [
+      "software_task_features"
+    ],
+    "needs_clarification": false,
+    "mutation_authorized": false
+  },
+  "execution_result": 0,
+  "validation_result": true,
+  "evidence": "evidence\\code-agent-fidelity-v1\\hermes\\T06\\attempt-02",
+  "initial_request_hash": "f7edfa21f8312dae9d09a977352fe58a7977c060b061c5943ac983ce2637ac6f",
+  "canonical_unchanged_before_accept": true,
+  "sandbox_image_id": "sha256:6f6ac11cda347a185454338dee35d77003e066579a3261b52b7c6ff1048c8573"
+}

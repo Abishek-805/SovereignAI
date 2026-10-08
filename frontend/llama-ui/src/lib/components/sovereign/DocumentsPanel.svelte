@@ -809,11 +809,10 @@
 								{#if controlSection === 'models'}
 									<h4>Models & routing</h4>
 									<p class="control-muted">
-										Requests are understood before opening files. General questions receive a model
-										answer. Document questions use retrieval and the text model; project edits use
-										the text model and Docker checks. Vision requests use the vision model. A coding
-										model will be enabled only after it improves validated tasks and total response
-										time on this computer.
+										Task-level capability selection chooses among the installed workers. General
+										conversation and document analysis use the text worker, coding tasks use the
+										code worker, and image requests use the vision worker. Generated project
+										changes require Docker validation and review before Accept saves them.
 									</p>
 									<div class="control-card">
 										<span>Current model</span><strong

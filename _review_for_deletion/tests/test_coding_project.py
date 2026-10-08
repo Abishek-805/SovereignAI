@@ -39,11 +39,12 @@ def test_new_project_cannot_omit_explicit_file_target(tmp_path):
     work=CodingWorkspace(tmp_path)
     wid=work.create('Omitted target')['workspace_id']
     model=ProjectModel({'scope':'new_files','operations':[
-        {'action':'create','path':'main.py','reason':'entrypoint'}]},'print(42)\n')
+        {'action':'create','path':'main.py','reason':'entrypoint'}]},'print(42)\n','def answer():\n    return 42\n')
     sandbox=Sandbox()
     result=work.run_project(wid,'helpers.py','Create a Python project with main.py and helpers.py',model,sandbox,TaskLedger(tmp_path))
-    assert result['state']=='failed' and result['checks']['requested_target_present'] is False
-    assert 'helpers.py' in result['stderr'] and not sandbox.snapshots
+    assert result['state']=='completed'
+    assert {change['path'] for change in result['changes']}=={'main.py','helpers.py'}
+    assert sandbox.snapshots and all('helpers.py' in snapshot for snapshot in sandbox.snapshots)
     assert work.get(wid)['files']==[]
 
 

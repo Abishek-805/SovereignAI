@@ -1,0 +1,28 @@
+{
+  "attempt": 2,
+  "revision": "62a069902b9d8435cbedd8b6cd189eaed5b20983e6994dab03fbf70caae5c9f9",
+  "failure": {
+    "container_executed": true,
+    "exit_code": 0,
+    "stdout": "INDEPENDENT_ORACLE_TEST_COUNT=4\n",
+    "stderr": "test_form (test_acceptance.Check.test_form) ... ok\ntest_invalid (test_acceptance.Check.test_invalid) ... ok\ntest_preserved (test_acceptance.Check.test_preserved) ... ok\ntest_wire (test_acceptance.Check.test_wire) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.087s\n\nOK\n",
+    "workspace_changes_persisted": false,
+    "note": "Every command uses a fresh snapshot. Write source through write_file/apply_patch, not shell redirection.",
+    "passed": true,
+    "test_count": 4,
+    "entrypoint": "app.py",
+    "independent": true,
+    "basis": "immutable supplied suite; no semantic coverage inferred beyond supplied assertions"
+  },
+  "properties": {
+    "test_acceptance.Check.test_form.test_form": true,
+    "test_acceptance.Check.test_invalid.test_invalid": true,
+    "test_acceptance.Check.test_preserved.test_preserved": true,
+    "test_acceptance.Check.test_wire.test_wire": true
+  },
+  "lost_properties": [],
+  "candidate_diff": "--- a/app.py\n+++ b/app.py\n@@ -3,4 +3,8 @@\n @app.get('/health')\n def health():return jsonify(ok=True)\n @app.post('/profile')\n-def double():return jsonify(result=0)\n+def profile():\n+    data=request.get_json()\n+    if not data or not data.get('display_name') or data.get('display_name').strip()=='':\n+        return jsonify(error='display_name required'),422\n+    return jsonify(display_name=data['display_name'].strip())\n--- a/form.html\n+++ b/form.html\n@@ -1 +1 @@\n-<form><input name=\"nickname\"></form>\n+<form><input name=\"display_name\"></form>\n--- a/ui.js\n+++ b/ui.js\n@@ -1,2 +1,2 @@\n-function buildPayload(name){return {nickname:name};}\n+function buildPayload(name){return {display_name:name.trim()};}\n module.exports={buildPayload};\n",
+  "previous_revision": "62a069902b9d8435cbedd8b6cd189eaed5b20983e6994dab03fbf70caae5c9f9",
+  "validation_delta": 0,
+  "rolled_back": false
+}

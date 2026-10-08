@@ -1,0 +1,46 @@
+{
+  "task_id": "2f6c25292ddb409fafe977e7b391a704",
+  "workspace_id": "8fd4b56e4d77f9e976a49cfcab8acd08",
+  "target": "",
+  "state": "failed",
+  "agent_state": "CANCELLED",
+  "instruction": "Edit lifecycle.py value() to return integer 31. Preserve unrelated files. Validate the supplied tests.",
+  "changes": [],
+  "diff": "",
+  "events": [],
+  "checks": {
+    "container_executed": false,
+    "behavior_verified": false,
+    "target_committed": false
+  },
+  "validation": "failed",
+  "validation_exit_code": null,
+  "stdout": "",
+  "stderr": "",
+  "error": "Task stopped by the user",
+  "routing": {
+    "model": "sovereign-text",
+    "capability": "code",
+    "reason": "Native tool agent; no mandatory plan"
+  },
+  "validation_scope": "unverified",
+  "limitations": [],
+  "sandbox": {
+    "backend": "docker",
+    "image_id": "sha256:6f6ac11cda347a185454338dee35d77003e066579a3261b52b7c6ff1048c8573"
+  },
+  "metrics": {
+    "task_id": "2f6c25292ddb409fafe977e7b391a704",
+    "request": "Edit lifecycle.py value() to return integer 31. Preserve unrelated files. Validate the supplied tests.",
+    "workspace_id": "8fd4b56e4d77f9e976a49cfcab8acd08",
+    "model": "sovereign-text",
+    "state": "CANCELLED",
+    "model_calls": 1,
+    "tool_calls": 0,
+    "sandbox_runs": 0,
+    "repairs": 0,
+    "validation_failures": 0,
+    "model_switches": 0,
+    "elapsed": 2.3590000000003783
+  }
+}

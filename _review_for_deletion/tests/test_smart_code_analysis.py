@@ -3,7 +3,7 @@ from pathlib import Path
 
 
 def analyzer():
-    path = Path(__file__).resolve().parents[1] / 'benchmarks/analyze-smart-code-router.py'
+    path = Path(__file__).resolve().parents[2] / 'benchmarks/analyze-smart-code-router.py'
     spec = importlib.util.spec_from_file_location('smart_analysis', path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)

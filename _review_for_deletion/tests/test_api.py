@@ -742,7 +742,9 @@ def test_auto_agent_can_create_project_without_selected_workspace(service):
     service.run_coding_project_task=create
     result=service.run_auto_agent('Create a JavaScript program in a new project')
     assert result['status']=='completed'
-    assert calls==[(result['workspace_id'],'main.js',True)]
+    # Direct project admission leaves entrypoint selection to the existing
+    # workspace generator rather than making an extra intent-model call.
+    assert calls==[(result['workspace_id'],'',True)]
 
 
 def test_auto_agent_retries_last_failed_code_request(service):
@@ -764,7 +766,7 @@ def test_auto_agent_creates_html_css_project_without_selected_workspace(service)
         {'state':'completed','target':'index.html','validation':'not run; Docker unavailable'})
     result=service.run_auto_agent('create a project folder with simple html page and css in it')
     assert result['status']=='completed'
-    assert result['plan']['action']=='edit_code'
+    assert result['plan']['action']=='application_tools'
     assert calls==[(result['workspace_id'],'','create a project folder with simple html page and css in it')]
 
 

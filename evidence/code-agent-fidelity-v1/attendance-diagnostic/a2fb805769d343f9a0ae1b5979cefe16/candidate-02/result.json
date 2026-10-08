@@ -1,0 +1,160 @@
+{
+  "task_id": "a2fb805769d343f9a0ae1b5979cefe16",
+  "stage": 2,
+  "event_index": 2,
+  "operation": "write_file",
+  "path": "requirements.txt",
+  "candidate_revision": "ebb1fa1f9abd4888cc291a646ea6632645e0cebac7afda5616ab5b4a44945c1e",
+  "inventory": {
+    "app.py": {
+      "functions": [
+        {
+          "name": "get_student_by_id",
+          "args": [
+            "student_id"
+          ]
+        },
+        {
+          "name": "add_student",
+          "args": [
+            "student_data"
+          ]
+        },
+        {
+          "name": "add_attendance",
+          "args": [
+            "student_id",
+            "date",
+            "status"
+          ]
+        },
+        {
+          "name": "get_students",
+          "args": []
+        },
+        {
+          "name": "get_student",
+          "args": [
+            "student_id"
+          ]
+        },
+        {
+          "name": "add_student_endpoint",
+          "args": []
+        },
+        {
+          "name": "add_attendance_endpoint",
+          "args": [
+            "student_id"
+          ]
+        },
+        {
+          "name": "get_attendance",
+          "args": [
+            "student_id"
+          ]
+        }
+      ],
+      "routes": [
+        {
+          "path": "/students",
+          "method_decorator": "route",
+          "function": "get_students"
+        },
+        {
+          "path": "/students/<int:student_id>",
+          "method_decorator": "route",
+          "function": "get_student"
+        },
+        {
+          "path": "/students",
+          "method_decorator": "route",
+          "function": "add_student_endpoint"
+        },
+        {
+          "path": "/attendance/<int:student_id>",
+          "method_decorator": "route",
+          "function": "add_attendance_endpoint"
+        },
+        {
+          "path": "/attendance/<int:student_id>",
+          "method_decorator": "route",
+          "function": "get_attendance"
+        }
+      ],
+      "sha256": "dc4d943c6a1d6abe08a9319ce8c98dc558fcf8fe2ad592ae94b74681d0fda187"
+    }
+  },
+  "checks": [
+    {
+      "property": "runnable_flask",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "property": "student_creation_json",
+      "passed": true,
+      "detail": "(200, {'message': 'Student added successfully', 'student': {'id': 734, 'name': 'Independent diagnostic student'}})"
+    },
+    {
+      "property": "student_stored",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "property": "valid_attendance_json",
+      "passed": true,
+      "detail": "('/attendance/734', 200, '{\"message\":\"Attendance recorded successfully\",\"record\":{\"date\":\"2026-10-06\",\"status\":\"present\",\"student_id\":734}}\\n')"
+    },
+    {
+      "property": "missing_fields",
+      "passed": true,
+      "detail": "(400, '{\"error\":\"No JSON data provided\"}\\n')"
+    },
+    {
+      "property": "invalid_status",
+      "passed": false,
+      "detail": "(200, '{\"error\":\"Invalid status. Must be one of: present, absent, late\"}\\n')"
+    },
+    {
+      "property": "invalid_date",
+      "passed": false,
+      "detail": "(200, '{\"message\":\"Attendance recorded successfully\",\"record\":{\"date\":\"not-a-date\",\"status\":\"present\",\"student_id\":734}}\\n')"
+    },
+    {
+      "property": "malformed_json_rejected_as_json",
+      "passed": false,
+      "detail": "(400, '<!doctype html>\\n<html lang=en>\\n<title>400 Bad Request</title>\\n<h1>Bad Request</h1>\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\n')"
+    },
+    {
+      "property": "unknown_student_rejected",
+      "passed": false,
+      "detail": "(200, '{\"error\":\"Student with ID 999999 not found\"}\\n')"
+    },
+    {
+      "property": "readme_present",
+      "passed": false,
+      "detail": ""
+    },
+    {
+      "property": "requested_test_present",
+      "passed": false,
+      "detail": ""
+    }
+  ],
+  "passed_properties": [
+    "missing_fields",
+    "runnable_flask",
+    "student_creation_json",
+    "student_stored",
+    "valid_attendance_json"
+  ],
+  "lost_previously_passing_properties": [],
+  "removed_symbols": {},
+  "container_executed": true,
+  "exit_code": 0,
+  "stdout": "ATTENDANCE_DIAGNOSTIC=[{\"property\": \"runnable_flask\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"student_creation_json\", \"passed\": true, \"detail\": \"(200, {'message': 'Student added successfully', 'student': {'id': 734, 'name': 'Independent diagnostic student'}})\"}, {\"property\": \"student_stored\", \"passed\": true, \"detail\": \"\"}, {\"property\": \"valid_attendance_json\", \"passed\": true, \"detail\": \"('/attendance/734', 200, '{\\\"message\\\":\\\"Attendance recorded successfully\\\",\\\"record\\\":{\\\"date\\\":\\\"2026-10-06\\\",\\\"status\\\":\\\"present\\\",\\\"student_id\\\":734}}\\\\n')\"}, {\"property\": \"missing_fields\", \"passed\": true, \"detail\": \"(400, '{\\\"error\\\":\\\"No JSON data provided\\\"}\\\\n')\"}, {\"property\": \"invalid_status\", \"passed\": false, \"detail\": \"(200, '{\\\"error\\\":\\\"Invalid status. Must be one of: present, absent, late\\\"}\\\\n')\"}, {\"property\": \"invalid_date\", \"passed\": false, \"detail\": \"(200, '{\\\"message\\\":\\\"Attendance recorded successfully\\\",\\\"record\\\":{\\\"date\\\":\\\"not-a-date\\\",\\\"status\\\":\\\"present\\\",\\\"student_id\\\":734}}\\\\n')\"}, {\"property\": \"malformed_json_rejected_as_json\", \"passed\": false, \"detail\": \"(400, '<!doctype html>\\\\n<html lang=en>\\\\n<title>400 Bad Request</title>\\\\n<h1>Bad Request</h1>\\\\n<p>The browser (or proxy) sent a request that this server could not understand.</p>\\\\n')\"}, {\"property\": \"unknown_student_rejected\", \"passed\": false, \"detail\": \"(200, '{\\\"error\\\":\\\"Student with ID 999999 not found\\\"}\\\\n')\"}, {\"property\": \"readme_present\", \"passed\": false, \"detail\": \"\"}, {\"property\": \"requested_test_present\", \"passed\": false, \"detail\": \"\"}]\n",
+  "stderr": "",
+  "failure_category": "GENERATION",
+  "classification_basis": "Independently executed observable properties; no router or handoff blame inferred."
+}

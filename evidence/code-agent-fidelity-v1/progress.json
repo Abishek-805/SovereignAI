@@ -1,0 +1,7 @@
+{
+  "phase": "models",
+  "runner": "native_v1",
+  "model": "coder25",
+  "task_id": "T08",
+  "status": "EXECUTING"
+}

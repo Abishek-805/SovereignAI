@@ -1,0 +1,7 @@
+{
+  "busy": false,
+  "active_jobs": [],
+  "production_api_reloaded": false,
+  "benchmark_state": "STOPPED_BY_USER",
+  "model_probe_runtime": "all slots idle after timeout, according to preserved server log"
+}

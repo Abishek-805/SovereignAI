@@ -1,0 +1,28 @@
+{
+  "attempt": 1,
+  "revision": "f6b04432bf71f0945431a41702e91686136da921ae6e18071882802772dcb5b4",
+  "failure": {
+    "container_executed": true,
+    "exit_code": 0,
+    "stdout": "INDEPENDENT_ORACLE_TEST_COUNT=4\n",
+    "stderr": "test_empty (test_acceptance.Check.test_empty) ... ok\ntest_mean (test_acceptance.Check.test_mean) ... ok\ntest_preserved (test_acceptance.Check.test_preserved) ... ok\ntest_single (test_acceptance.Check.test_single) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.001s\n\nOK\n",
+    "workspace_changes_persisted": false,
+    "note": "Every command uses a fresh snapshot. Write source through write_file/apply_patch, not shell redirection.",
+    "passed": true,
+    "test_count": 4,
+    "entrypoint": "",
+    "independent": true,
+    "basis": "immutable supplied suite; no semantic coverage inferred beyond supplied assertions"
+  },
+  "properties": {
+    "test_acceptance.Check.test_empty.test_empty": true,
+    "test_acceptance.Check.test_mean.test_mean": true,
+    "test_acceptance.Check.test_preserved.test_preserved": true,
+    "test_acceptance.Check.test_single.test_single": true
+  },
+  "lost_properties": [],
+  "candidate_diff": "--- a/stats.py\n+++ b/stats.py\n@@ -1,4 +1,6 @@\n def mean(values):\n-    return sum(values)/(len(values)+1)\n+    if not values:\n+        raise ValueError(\"mean() of empty sequence\")\n+    return sum(values)/len(values)\n def tag():\n     return \"stable\"\n",
+  "previous_revision": null,
+  "validation_delta": 3,
+  "rolled_back": false
+}

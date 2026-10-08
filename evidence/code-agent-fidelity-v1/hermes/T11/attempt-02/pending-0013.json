@@ -1,0 +1,7 @@
+{
+  "event": "tool",
+  "tool": "finish",
+  "arguments": {},
+  "before_revision": "16b7633e0ecf67b58cc50d8bada5251157097dd8478ebf555babc36c3feb67c0",
+  "before_diff": "--- a/unique.py\n+++ b/unique.py\n@@ -1,4 +1,10 @@\n def stable_unique(values):\n-    return sorted(set(v for v in values if v))\n+    seen = set()\n+    result = []\n+    for v in values:\n+        if v not in seen:\n+            seen.add(v)\n+            result.append(v)\n+    return result\n def checksum(values):\n     return sum(values)\n"
+}

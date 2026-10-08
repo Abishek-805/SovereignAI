@@ -1,0 +1,13 @@
+{
+  "endpoint": "v1/chat/completions",
+  "request_sha256": "a728cc80e75f04c09319328af28a438c1ed89f5fe028904e1891b41bb10926b4",
+  "status": 400,
+  "latency": 0.06300000000192085,
+  "response": {
+    "error": {
+      "code": 400,
+      "message": "Failed to initialize samplers: failed to parse grammar",
+      "type": "invalid_request_error"
+    }
+  }
+}

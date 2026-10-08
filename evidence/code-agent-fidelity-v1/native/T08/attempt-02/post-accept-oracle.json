@@ -1,0 +1,13 @@
+{
+  "exit_code": 0,
+  "container_executed": true,
+  "stdout": "ORACLE_COUNT=5\n",
+  "stderr": "test_integer_id (test_acceptance.Check.test_integer_id) ... ok\ntest_invalid (test_acceptance.Check.test_invalid) ... ok\ntest_preserved (test_acceptance.Check.test_preserved) ... ok\ntest_string_id (test_acceptance.Check.test_string_id) ... ok\ntest_unknown (test_acceptance.Check.test_unknown) ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 0.000s\n\nOK\n",
+  "properties": {
+    "test_acceptance.Check.test_integer_id.test_integer_id": true,
+    "test_acceptance.Check.test_invalid.test_invalid": true,
+    "test_acceptance.Check.test_preserved.test_preserved": true,
+    "test_acceptance.Check.test_string_id.test_string_id": true,
+    "test_acceptance.Check.test_unknown.test_unknown": true
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "workspace": "452ca9ff096b47a880da74a5023975a2",
+  "results": [
+    {
+      "target": "app.py",
+      "method": "POST",
+      "path": "/items",
+      "response": {
+        "status": 200,
+        "content_type": "application/json",
+        "body": "{\"id\":1,\"text\":\"acceptance\"}\n"
+      },
+      "latency": 8.7970000000023
+    },
+    {
+      "target": "app.py",
+      "method": "GET",
+      "path": "/items",
+      "response": {
+        "status": 200,
+        "content_type": "application/json",
+        "body": "[{\"id\":1,\"text\":\"acceptance\"}]\n"
+      },
+      "latency": 0.26599999999962165
+    },
+    {
+      "target": "other.py",
+      "method": "GET",
+      "path": "/items",
+      "response": {
+        "status": 200,
+        "content_type": "application/json",
+        "body": "[]\n"
+      },
+      "latency": 2.9679999999971187
+    },
+    {
+      "target": "app.py",
+      "method": "GET",
+      "path": "/items",
+      "response": {
+        "status": 200,
+        "content_type": "application/json",
+        "body": "[{\"id\":1,\"text\":\"acceptance\"}]\n"
+      },
+      "latency": 2.2190000000009604
+    },
+    {
+      "target": "app.py",
+      "method": "DELETE",
+      "path": "/items/1",
+      "response": {
+        "status": 204,
+        "content_type": "text/html; charset=utf-8",
+        "body": ""
+      },
+      "latency": 0.2809999999990396
+    },
+    {
+      "target": "app.py",
+      "method": "GET",
+      "path": "/items",
+      "response": {
+        "status": 200,
+        "content_type": "application/json",
+        "body": "[]\n"
+      },
+      "latency": 0.18799999999828287
+    }
+  ]
+}

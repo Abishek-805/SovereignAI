@@ -1,0 +1,45 @@
+{
+  "status": "COMPLETE",
+  "results": [
+    {
+      "transport": "stream",
+      "latency_seconds": 386.047,
+      "raw_tool_fragments": 0,
+      "finish_reason": "length",
+      "tool_calls": [],
+      "public_content_characters": 16486,
+      "usage": {
+        "completion_tokens": 4096,
+        "prompt_tokens": 4051,
+        "total_tokens": 8147,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "reasoning_tokens": null
+    },
+    {
+      "transport": "nonstream",
+      "latency_seconds": 361.3899999999999,
+      "raw_tool_fragments": 0,
+      "finish_reason": "length",
+      "tool_calls": [],
+      "public_content_characters": 16486,
+      "usage": {
+        "completion_tokens": 4096,
+        "prompt_tokens": 4051,
+        "total_tokens": 8147,
+        "prompt_tokens_details": {
+          "cached_tokens": 4047
+        }
+      },
+      "reasoning_tokens": null
+    }
+  ],
+  "request_only_difference": "stream",
+  "no_generated_code_executed": true,
+  "limitations": [
+    "Warm cache/order confound; this is a paired transport diagnostic, not a latency ranking.",
+    "Sampled output variation does not by itself prove runtime or model causality."
+  ]
+}

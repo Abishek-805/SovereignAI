@@ -1,0 +1,33 @@
+{
+  "conflicts": [],
+  "entries": [
+    {
+      "action": "edit",
+      "backup": "backups/0.bin",
+      "before_hash": "2ee1e5d3b8687d74de2add6339eae20e7ffb785d0adeea2cf774185a7c162be8",
+      "path": "app.py",
+      "staged_hash": "3631d2322043174c708e66316f8c6f9ae9cbe6c22b946b3b8680668be3a752e0"
+    },
+    {
+      "action": "edit",
+      "backup": "backups/1.bin",
+      "before_hash": "bb502dee5579242cf5ac2ba41ae0597d044c36599bc2d2ae304b41f33e03d1a4",
+      "path": "form.html",
+      "staged_hash": "39183f9dc948600f698b1655f3daa7e05b37958dcb2bca1b85baf309698ecdb5"
+    },
+    {
+      "action": "edit",
+      "backup": "backups/2.bin",
+      "before_hash": "274d0ebf5e6f137af215d05ce7560350a16015e114aee5c1aeb1a34a9633e2cd",
+      "path": "ui.js",
+      "staged_hash": "c060cdb2b2af41b5e60f418a88229e6587b02c575ff86b19a22bc88c776d6e35"
+    }
+  ],
+  "operation": "accept",
+  "project_id": "4a811a9bd623ee0d372880599df06d33",
+  "project_root": "C:\\Users\\ashek\\Desktop\\SovereignAI\\evidence\\code-agent-fidelity-v1\\native\\T07\\attempt-02\\workspaces\\coding-workspaces\\4a811a9bd623ee0d372880599df06d33\\files",
+  "sequence": 1791303209285982300,
+  "state": "committed",
+  "task_id": "5e005e727b66442ba1ee9b1adc968a5c",
+  "version": 1
+}

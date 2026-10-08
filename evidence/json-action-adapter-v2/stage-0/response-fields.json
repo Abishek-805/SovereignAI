@@ -1,0 +1,381 @@
+{
+  "nonstream": {
+    "event_count": 1,
+    "finish_reasons": [
+      "length"
+    ],
+    "usage": [
+      {
+        "completion_tokens": 4096,
+        "prompt_tokens": 4051,
+        "total_tokens": 8147,
+        "prompt_tokens_details": {
+          "cached_tokens": 4047
+        }
+      }
+    ],
+    "string_characters": {
+      "role": 9,
+      "content": 16486
+    },
+    "content_sha256": "0f99449a58bf7436f8612d39c2378b58122e63e4f4775b7fc2c9a74ef1b7a2ef",
+    "alternate_message_fields": [],
+    "field_inventory": {
+      "choices[].finish_reason": {
+        "occurrences": 1,
+        "characters": 6,
+        "types": [
+          "str"
+        ]
+      },
+      "choices[].index": {
+        "occurrences": 1,
+        "characters": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "choices[].message.role": {
+        "occurrences": 1,
+        "characters": 9,
+        "types": [
+          "str"
+        ]
+      },
+      "choices[].message.content": {
+        "occurrences": 1,
+        "characters": 16486,
+        "types": [
+          "str"
+        ]
+      },
+      "created": {
+        "occurrences": 1,
+        "characters": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "model": {
+        "occurrences": 1,
+        "characters": 14,
+        "types": [
+          "str"
+        ]
+      },
+      "system_fingerprint": {
+        "occurrences": 1,
+        "characters": 16,
+        "types": [
+          "str"
+        ]
+      },
+      "object": {
+        "occurrences": 1,
+        "characters": 15,
+        "types": [
+          "str"
+        ]
+      },
+      "usage.completion_tokens": {
+        "occurrences": 1,
+        "characters": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "usage.prompt_tokens": {
+        "occurrences": 1,
+        "characters": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "usage.total_tokens": {
+        "occurrences": 1,
+        "characters": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "usage.prompt_tokens_details.cached_tokens": {
+        "occurrences": 1,
+        "characters": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "id": {
+        "occurrences": 1,
+        "characters": 41,
+        "types": [
+          "str"
+        ]
+      },
+      "timings.cache_n": {
+        "occurrences": 1,
+        "characters": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "timings.prompt_n": {
+        "occurrences": 1,
+        "characters": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "timings.prompt_ms": {
+        "occurrences": 1,
+        "characters": 0,
+        "types": [
+          "float"
+        ]
+      },
+      "timings.prompt_per_token_ms": {
+        "occurrences": 1,
+        "characters": 0,
+        "types": [
+          "float"
+        ]
+      },
+      "timings.prompt_per_second": {
+        "occurrences": 1,
+        "characters": 0,
+        "types": [
+          "float"
+        ]
+      },
+      "timings.predicted_n": {
+        "occurrences": 1,
+        "characters": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "timings.predicted_ms": {
+        "occurrences": 1,
+        "characters": 0,
+        "types": [
+          "float"
+        ]
+      },
+      "timings.predicted_per_token_ms": {
+        "occurrences": 1,
+        "characters": 0,
+        "types": [
+          "float"
+        ]
+      },
+      "timings.predicted_per_second": {
+        "occurrences": 1,
+        "characters": 0,
+        "types": [
+          "float"
+        ]
+      }
+    },
+    "preserved_parsed_keys": [
+      "choices",
+      "created",
+      "model",
+      "system_fingerprint",
+      "object",
+      "usage",
+      "id",
+      "timings"
+    ],
+    "fingerprints": [
+      "b11132-633733d0a"
+    ]
+  },
+  "stream": {
+    "event_count": 4099,
+    "finish_reasons": [
+      "length"
+    ],
+    "usage": [
+      {
+        "completion_tokens": 4096,
+        "prompt_tokens": 4051,
+        "total_tokens": 8147,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      }
+    ],
+    "string_characters": {
+      "role": 9,
+      "content": 16486
+    },
+    "content_sha256": "0f99449a58bf7436f8612d39c2378b58122e63e4f4775b7fc2c9a74ef1b7a2ef",
+    "alternate_message_fields": [],
+    "field_inventory": {
+      "choices[].index": {
+        "occurrences": 4098,
+        "characters": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "choices[].delta.role": {
+        "occurrences": 1,
+        "characters": 9,
+        "types": [
+          "str"
+        ]
+      },
+      "created": {
+        "occurrences": 4099,
+        "characters": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "id": {
+        "occurrences": 4099,
+        "characters": 168059,
+        "types": [
+          "str"
+        ]
+      },
+      "model": {
+        "occurrences": 4099,
+        "characters": 57386,
+        "types": [
+          "str"
+        ]
+      },
+      "system_fingerprint": {
+        "occurrences": 4099,
+        "characters": 65584,
+        "types": [
+          "str"
+        ]
+      },
+      "object": {
+        "occurrences": 4099,
+        "characters": 86079,
+        "types": [
+          "str"
+        ]
+      },
+      "choices[].delta.content": {
+        "occurrences": 4096,
+        "characters": 16486,
+        "types": [
+          "str"
+        ]
+      },
+      "choices[].finish_reason": {
+        "occurrences": 1,
+        "characters": 6,
+        "types": [
+          "str"
+        ]
+      },
+      "usage.completion_tokens": {
+        "occurrences": 1,
+        "characters": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "usage.prompt_tokens": {
+        "occurrences": 1,
+        "characters": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "usage.total_tokens": {
+        "occurrences": 1,
+        "characters": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "usage.prompt_tokens_details.cached_tokens": {
+        "occurrences": 1,
+        "characters": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "timings.cache_n": {
+        "occurrences": 1,
+        "characters": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "timings.prompt_n": {
+        "occurrences": 1,
+        "characters": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "timings.prompt_ms": {
+        "occurrences": 1,
+        "characters": 0,
+        "types": [
+          "float"
+        ]
+      },
+      "timings.prompt_per_token_ms": {
+        "occurrences": 1,
+        "characters": 0,
+        "types": [
+          "float"
+        ]
+      },
+      "timings.prompt_per_second": {
+        "occurrences": 1,
+        "characters": 0,
+        "types": [
+          "float"
+        ]
+      },
+      "timings.predicted_n": {
+        "occurrences": 1,
+        "characters": 0,
+        "types": [
+          "int"
+        ]
+      },
+      "timings.predicted_ms": {
+        "occurrences": 1,
+        "characters": 0,
+        "types": [
+          "float"
+        ]
+      },
+      "timings.predicted_per_token_ms": {
+        "occurrences": 1,
+        "characters": 0,
+        "types": [
+          "float"
+        ]
+      },
+      "timings.predicted_per_second": {
+        "occurrences": 1,
+        "characters": 0,
+        "types": [
+          "float"
+        ]
+      }
+    },
+    "preserved_parsed_keys": [
+      "usage",
+      "timings",
+      "choices"
+    ],
+    "fingerprints": [
+      "b11132-633733d0a"
+    ]
+  },
+  "content_identical": true,
+  "sse_done_markers": 1
+}

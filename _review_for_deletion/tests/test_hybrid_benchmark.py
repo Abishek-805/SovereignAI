@@ -7,7 +7,7 @@ from types import SimpleNamespace
 from unittest.mock import patch
 import pytest
 
-ROOT=Path(__file__).resolve().parents[1]
+ROOT=Path(__file__).resolve().parents[2]
 
 def harness():
     spec=importlib.util.spec_from_file_location('hybrid_benchmark_test',ROOT/'benchmarks/evaluate-hybrid-code-agent.py')

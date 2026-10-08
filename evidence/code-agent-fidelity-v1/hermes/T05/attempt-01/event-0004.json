@@ -1,0 +1,21 @@
+{
+  "event": "tool",
+  "tool": "read_file",
+  "arguments": {
+    "path": "test_acceptance.py"
+  },
+  "before_revision": "167ca73a9c4f5a3ad97ac0d1513a13533e15e3cf8fb8fbb48de5df2b10484ca8",
+  "before_diff": "",
+  "result": {
+    "path": "test_acceptance.py",
+    "content": "import unittest,json,subprocess,sys\nfrom pathlib import Path\nfrom app import app\nclass Check(unittest.TestCase):\n def test_numeric(self):self.assertEqual(app.test_client().post('/double',json={'value':3.5}).get_json(),{'result':7.0})\n def test_negative(self):self.assertEqual(app.test_client().post('/double',json={'value':-2}).get_json(),{'result':-4})\n def test_invalid(self):\n  for body in ({},{'value':True},{'value':'bad'},[]):\n   r=app.test_client().post('/double',json=body);self.assertEqual(r.status_code,422);self.assertTrue(r.is_json)\n def test_malformed(self):\n  r=app.test_client().post('/double',data='{broken',content_type='application/json');self.assertEqual(r.status_code,422);self.assertTrue(r.is_json)\n def test_preserved(self):self.assertEqual(app.test_client().get('/health').get_json(),{'ok':True})\n",
+    "offset": 0,
+    "next_offset": null,
+    "total_characters": 820,
+    "content_complete": true,
+    "sha256": "951fa61e130ea8a4002059894eb4ea85a3795fc48813fb4e12a06dba78ad1eb9"
+  },
+  "latency_seconds": 0.0,
+  "after_revision": "167ca73a9c4f5a3ad97ac0d1513a13533e15e3cf8fb8fbb48de5df2b10484ca8",
+  "after_diff": ""
+}

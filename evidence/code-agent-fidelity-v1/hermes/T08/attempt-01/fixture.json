@@ -1,0 +1,46 @@
+{
+  "task_id": "T08",
+  "request": "Fix inventory.py set_quantity(item_id, quantity). Integer IDs and their decimal-string form refer to the same existing integer-key item. Reject boolean IDs and negative/non-integer quantities with ValueError; unknown IDs raise KeyError. Never create duplicate string-key items. Preserve label().",
+  "files": {
+    "inventory.py": "items={42:{\"quantity\":2}}\ndef set_quantity(item_id,quantity):\n    items[item_id]={\"quantity\":quantity}\ndef label():\n    return \"warehouse\"\n",
+    "keep.txt": "unrelated valuable data\n",
+    "test_acceptance.py": "import unittest,json,subprocess,sys\nfrom pathlib import Path\nimport inventory\nclass Check(unittest.TestCase):\n def setUp(self):inventory.items.clear();inventory.items[42]={'quantity':2}\n def test_string_id(self):inventory.set_quantity('42',9);self.assertEqual(inventory.items,{42:{'quantity':9}})\n def test_integer_id(self):inventory.set_quantity(42,7);self.assertEqual(inventory.items[42]['quantity'],7)\n def test_invalid(self):\n  for ident,quantity in ((True,2),(42,-1),(42,False),(42,1.5)):\n   with self.assertRaises(ValueError):inventory.set_quantity(ident,quantity)\n def test_unknown(self):\n  with self.assertRaises(KeyError):inventory.set_quantity('99',2)\n  self.assertNotIn(99,inventory.items)\n def test_preserved(self):self.assertEqual(inventory.label(),'warehouse')\n"
+  },
+  "mode": "accept",
+  "workspace_id": "ca43004571f5209f4dd184c9640cef4c",
+  "initial_revision": "03895cc56b274140c8569301668987f1e4adb59d341f3e166d04c3bd32b50932",
+  "router_proposal": {
+    "original_request": "Fix inventory.py set_quantity(item_id, quantity). Integer IDs and their decimal-string form refer to the same existing integer-key item. Reject boolean IDs and negative/non-integer quantities with ValueError; unknown IDs raise KeyError. Never create duplicate string-key items. Preserve label().",
+    "normalized_request": "Fix inventory.py set_quantity(item_id, quantity). Integer IDs and their decimal-string form refer to the same existing integer-key item. Reject boolean IDs and negative/non-integer quantities with ValueError; unknown IDs raise KeyError. Never create duplicate string-key items. Preserve label().",
+    "task_type": "DEBUG",
+    "complexity": "simple",
+    "worker_role": "code",
+    "steps": [
+      "code"
+    ],
+    "features": {
+      "active_file_present": false,
+      "workspace_available": true,
+      "repository_scope": "none",
+      "estimated_context_size": null,
+      "number_of_files_requested": 1,
+      "visual_input_present": false,
+      "modality": "text",
+      "is_follow_up": false,
+      "explicit_error_present": false,
+      "language_hints": [],
+      "execution_requested": false,
+      "validation_required": false,
+      "mechanical_rename": false,
+      "software_generation": false,
+      "requirements_heavy": false
+    },
+    "reason_codes": [
+      "software_task_features"
+    ],
+    "needs_clarification": false,
+    "mutation_authorized": false
+  },
+  "fixed_worker": "qwen35",
+  "source_suite_hash": "bbea8783929a12035dd58569b807a7e96539f5a1b6e2afcf4c9d278e682add72"
+}

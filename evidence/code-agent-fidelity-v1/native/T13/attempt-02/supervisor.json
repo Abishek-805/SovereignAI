@@ -1,0 +1,118 @@
+{
+  "supervisor_id": "01b4707514ad40fcbe25a785740b970a",
+  "goal": "Edit lifecycle.py value() to return integer 31. Preserve unrelated files. Validate the supplied tests.",
+  "context": {
+    "workspace_id": "43d5d4006237d1f14d6ad712688de057",
+    "document_ids": []
+  },
+  "created_at": 1791305500.7352822,
+  "elapsed_seconds": 2.5,
+  "limits": {
+    "model_calls": 32,
+    "tool_calls": 64,
+    "model_switches": 1,
+    "seconds": 660
+  },
+  "counts": {
+    "model_calls": 1,
+    "tool_calls": 1,
+    "model_switches": 0
+  },
+  "task_state": {
+    "task_id": "01b4707514ad40fcbe25a785740b970a",
+    "original_request": "Edit lifecycle.py value() to return integer 31. Preserve unrelated files. Validate the supplied tests.",
+    "normalized_request": "Edit lifecycle.py value() to return integer 31. Preserve unrelated files. Validate the supplied tests.",
+    "conversation_context": [],
+    "follow_up_context": null,
+    "intent": null,
+    "workflow": null,
+    "modality": null,
+    "workspace": "43d5d4006237d1f14d6ad712688de057",
+    "knowledge_scope": [],
+    "requested_deliverables": [],
+    "success_conditions": [],
+    "current_stage": "OBSERVING",
+    "current_action": null,
+    "active_worker": null,
+    "plan": null,
+    "observations": [],
+    "tool_results": [],
+    "evidence": [],
+    "repair_count": 0,
+    "replan_count": 0,
+    "completion_status": "running",
+    "blockers": [],
+    "cancellation_state": false,
+    "timestamps": {
+      "received": 1791305500.7352822,
+      "updated": 1791305503.1214454
+    },
+    "worker_role": null,
+    "model_switch_count": 0,
+    "tool_call_count": 1,
+    "inference_call_count": 1,
+    "event_count": 2
+  },
+  "events": [
+    {
+      "operation": "model_calls",
+      "count": 1,
+      "elapsed_seconds": 0.094
+    },
+    {
+      "event": "GENERATION_STARTED",
+      "stage": "EXECUTING",
+      "at": 1791305500.8258176,
+      "details": {}
+    },
+    {
+      "event": "GENERATION_COMPLETED",
+      "stage": "OBSERVING",
+      "at": 1791305503.1214454,
+      "details": {}
+    },
+    {
+      "operation": "tool_calls",
+      "count": 1,
+      "elapsed_seconds": 2.39
+    }
+  ],
+  "completion": null,
+  "outcome": "running",
+  "code_task_view": {
+    "task_id": "01b4707514ad40fcbe25a785740b970a",
+    "context": {
+      "original_request": "Edit lifecycle.py value() to return integer 31. Preserve unrelated files. Validate the supplied tests.",
+      "resolved_request": "Edit lifecycle.py value() to return integer 31. Preserve unrelated files. Validate the supplied tests.",
+      "workspace": "43d5d4006237d1f14d6ad712688de057",
+      "target": null,
+      "active_file": null,
+      "relevant_symbols": [],
+      "related_files": [],
+      "diagnostics": [],
+      "current_changes": [],
+      "previous_tool_result": null,
+      "current_model": null,
+      "task_stage": "OBSERVING",
+      "context_scope": []
+    },
+    "task_type": null,
+    "complexity": null,
+    "current_stage": "OBSERVING",
+    "active_worker": null,
+    "plan": null,
+    "observations": [],
+    "tool_results": [],
+    "current_candidate": null,
+    "candidate_hash": null,
+    "repair_count": 0,
+    "model_switch_count": 0,
+    "completion_status": "running",
+    "cancellation": false,
+    "blocker": [],
+    "timestamps": {
+      "received": 1791305500.7352822,
+      "updated": 1791305503.1214454
+    }
+  }
+}

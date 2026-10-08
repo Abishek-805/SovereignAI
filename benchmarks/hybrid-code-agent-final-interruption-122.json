@@ -1,0 +1,7 @@
+{
+  "reason": "Benchmark process absent after user interruption; Docker engine unavailable; no production changes",
+  "rows": 122,
+  "preserved_sha256": "46791c5150c07cc3e1e2753b6c9967e47332b8abb662359a04c1c15d2d79e0ff",
+  "recorded_at_utc": "2026-10-03T13:38:19.429245+00:00",
+  "cold_resume_latency_caveat": true
+}

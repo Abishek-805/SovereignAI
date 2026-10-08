@@ -1,0 +1,24 @@
+{
+  "created_utc": "2026-10-06T07:47:26.911515+00:00",
+  "source_sha256": {
+    "workflows/agent_kernel.py": "7719841c3bb70e2ab4fa00f5020753052590f64b746e2d357613da75d7d5788d",
+    "workflows/coding_workspace.py": "eead3afb54cbfc7c5008b933697727c878c06664ea9fb1cf79683529a98cdc6b",
+    "workflows/build_contract.py": "0132b74eb657a07aba44076c3e7ad2cd3bb77d7e57a540ae427836422c2edca6",
+    "workflows/agent_runtime_validation.py": "600c87ed7d59e990bd0e1ead075421a9d2d723ea976cf7c3af6213d7d39e78bd",
+    "backend/model.py": "9e2e004825700a885f1b6e9db7b716d68d4d41381a4bd91992a327827fd4a969",
+    "backend/service.py": "0e3014d2f06cfb93380bc4cea71fd33b826a497b9eac3e54ce4749c4ae105931",
+    "backend/task_supervisor.py": "52da6d5593b7cbf63af9f9d01194bd9fd8a85bd6c867be657438897ead631fa3",
+    "backend/settings.py": "4a9102e3ebf6b08465fb4281541948282bc786f93dce668f079319e998b234f8",
+    "backend/task_skills.py": "2a7f79934cb2ca4f71a8c668705729b1ecfcb75bd7ce7e5683abb43e5d2489dd",
+    "router/coding_router.py": "2b95ba2f1f662ca63732941aa863a22494d71407bcd82c4024d51280da00cbab",
+    "router/model_broker.py": "67ebd01adf512a2beff992db952501421729b8ea8e571e98b03c022fbbca4549",
+    "router/model_registry.py": "3fd63b8f20f843f66b13a1650648b17246789d4ce772ecaf8c0b5e3edb9b4273",
+    "router/tool_registry.py": "4bcbc2afd1a2d1e0f0092e3d7122fb5977dd724418363e3987949a4a91fc94d3",
+    "router/sandbox.py": "3261c509042be30ce8ed0a9611afbe20d4c4dd7563b654e84d8e884c928bfa09",
+    "skills/runtime/agent-tools/SKILL.md": "e9413cbe4b932550f8a44d71bd71003c6597bc3f3ced2f48b7b850da1d56c91f",
+    "experiments/kernel_docker.py": "95d9c82240ddaf80d3875af7058392d6393062bd563f40e8c94d7fa82da6ae1d"
+  },
+  "production_native_default": false,
+  "historical_benchmark_use": "none",
+  "purpose": "New separate controlled evaluation; baseline snapshot unchanged"
+}

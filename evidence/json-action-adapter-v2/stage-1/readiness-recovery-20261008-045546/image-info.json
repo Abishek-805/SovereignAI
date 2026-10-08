@@ -1,0 +1,60 @@
+[
+    {
+        "Id": "sha256:6f6ac11cda347a185454338dee35d77003e066579a3261b52b7c6ff1048c8573",
+        "RepoTags": [
+            "sovereign-workbench:ide-flask"
+        ],
+        "RepoDigests": [
+            "sovereign-workbench@sha256:6f6ac11cda347a185454338dee35d77003e066579a3261b52b7c6ff1048c8573"
+        ],
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-10-04T06:51:32.122026393Z",
+        "Config": {
+            "Env": [
+                "PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "LANG=C.UTF-8",
+                "GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305",
+                "PYTHON_VERSION=3.12.14",
+                "PYTHON_SHA256=5c8462af5790baf43a321a1559dbe0db06d1be4300fb85fb53c40060668e548a",
+                "HOME=/output",
+                "TMPDIR=/output"
+            ],
+            "Cmd": [
+                "python3"
+            ],
+            "WorkingDir": "/output"
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 2177694824,
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:74d97c428c51a828f9051a7a40a53ff1fc99e54fc30323ce36760701b0b7f711",
+                "sha256:d1475f57bfeb95f8d89bad4de04d7af788036223b8505b2b5791158c8d885ff0",
+                "sha256:90630b4239d75c9daa2f10f7bb6bfe9b45cfc1419783384dd9873dbf2b732fc3",
+                "sha256:23d9641aa36e31a0b3699cec59ff9f51478b65b47f5f2c7de83d48293d4d4852",
+                "sha256:4473fff876d8bc68a7bb480673ad83c83e7dcc41d546019f2ebf40d4a22ef45c",
+                "sha256:78f3919d10b86fb5cd2eaea3bd0c265bbbf3fb8b069e08b2be877b4462fd2b39",
+                "sha256:ba5d366481b96015fc209d80bb247ce9defc57ab27e3f90c61a66fc43f5eb28c",
+                "sha256:8ab8424a7f71f6f80fd88e1512446d3ea39b8f813bca76a5489661caa6ffaffe"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2026-10-04T06:51:34.06262621Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.oci.image.index.v1+json",
+            "digest": "sha256:6f6ac11cda347a185454338dee35d77003e066579a3261b52b7c6ff1048c8573",
+            "size": 856
+        },
+        "Identity": {
+            "Build": [
+                {
+                    "Ref": "j27cwsr85963t38rjgwvdffcf",
+                    "CreatedAt": "2026-10-04T06:51:34.586655443Z"
+                }
+            ]
+        }
+    }
+]

@@ -1,0 +1,14 @@
+{
+  "event": "tool",
+  "tool": "write_file",
+  "arguments": {
+    "path": "errors.py",
+    "content": "def divide(a, b):\n    if b == 0:\n        raise ValueError(\"zero\")\n    return a / b\n\ndef identity():\n    return \"keep\"\n"
+  },
+  "before_revision": "d8d1abd7a4d0a82d067a3aaeba1c7c49e9995ab4daf067c0c6ee4ee718ac042d",
+  "before_diff": "",
+  "error": {
+    "code": null,
+    "message": "Repair must inspect the current file and use apply_patch for the observed failure. Full replacement could erase already-correct behavior; new files may still use write_file."
+  }
+}

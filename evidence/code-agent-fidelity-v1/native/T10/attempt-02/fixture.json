@@ -1,0 +1,49 @@
+{
+  "task_id": "T10",
+  "request": "Implement reservation feature across store.py, service.py, summary.py. reserve(name,seats,capacity) stores a reservation and returns an integer token. Reject blank names, boolean/non-integer/nonpositive seats and capacity overflow with ValueError and no state mutation. cancel(token) removes it; unknown token raises KeyError. summary() returns count and seats from shared store. Preserve reset().",
+  "files": {
+    "store.py": "reservations={}\ndef reset():\n    reservations.clear()\n",
+    "service.py": "def reserve(name,seats,capacity):\n    return {}\ndef cancel(token):\n    return False\n",
+    "summary.py": "def summary():\n    return {}\n",
+    "keep.txt": "unrelated valuable data\n",
+    "test_acceptance.py": "import unittest,json,subprocess,sys\nfrom pathlib import Path\nimport store,service,summary\nclass Check(unittest.TestCase):\n def setUp(self):store.reset()\n def test_shared_state(self):\n  a=service.reserve('Ada',2,6);b=service.reserve('Lin',3,6);self.assertIsInstance(a,int);self.assertNotEqual(a,b);self.assertEqual(summary.summary(),{'count':2,'seats':5});self.assertIn(a,store.reservations)\n def test_overflow_atomic(self):\n  service.reserve('Ada',4,5);before=dict(store.reservations)\n  with self.assertRaises(ValueError):service.reserve('Lin',2,5)\n  self.assertEqual(store.reservations,before)\n def test_invalid_atomic(self):\n  for name,seats in (('',1),('A',0),('A',-1),('A',True),('A',1.5)):\n   with self.assertRaises(ValueError):service.reserve(name,seats,5)\n  self.assertEqual(store.reservations,{})\n def test_cancel(self):\n  token=service.reserve('Ada',2,5);service.cancel(token);self.assertEqual(summary.summary(),{'count':0,'seats':0})\n  with self.assertRaises(KeyError):service.cancel(token)\n def test_reset_preserved(self):store.reservations[9]={'seats':1};store.reset();self.assertEqual(store.reservations,{})\n"
+  },
+  "mode": "accept",
+  "workspace_id": "f7ef0de37031bc151f0008066f39fedf",
+  "initial_revision": "4bac3228bf2fbb10a9594f6c1103ac28e175947f63a6894f64432bc392224d12",
+  "router_proposal": {
+    "original_request": "Implement reservation feature across store.py, service.py, summary.py. reserve(name,seats,capacity) stores a reservation and returns an integer token. Reject blank names, boolean/non-integer/nonpositive seats and capacity overflow with ValueError and no state mutation. cancel(token) removes it; unknown token raises KeyError. summary() returns count and seats from shared store. Preserve reset().",
+    "normalized_request": "Implement reservation feature across store.py, service.py, summary.py. reserve(name,seats,capacity) stores a reservation and returns an integer token. Reject blank names, boolean/non-integer/nonpositive seats and capacity overflow with ValueError and no state mutation. cancel(token) removes it; unknown token raises KeyError. summary() returns count and seats from shared store. Preserve reset().",
+    "task_type": "MULTI_FILE_CHANGE",
+    "complexity": "complex",
+    "worker_role": "reasoning",
+    "steps": [
+      "reasoning",
+      "code"
+    ],
+    "features": {
+      "active_file_present": false,
+      "workspace_available": true,
+      "repository_scope": "none",
+      "estimated_context_size": null,
+      "number_of_files_requested": 3,
+      "visual_input_present": false,
+      "modality": "text",
+      "is_follow_up": false,
+      "explicit_error_present": false,
+      "language_hints": [],
+      "execution_requested": false,
+      "validation_required": false,
+      "mechanical_rename": false,
+      "software_generation": false,
+      "requirements_heavy": false
+    },
+    "reason_codes": [
+      "software_task_features"
+    ],
+    "needs_clarification": false,
+    "mutation_authorized": false
+  },
+  "fixed_worker": "qwen35",
+  "source_suite_hash": "bbea8783929a12035dd58569b807a7e96539f5a1b6e2afcf4c9d278e682add72"
+}

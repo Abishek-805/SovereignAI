@@ -5,7 +5,7 @@ import pytest
 
 
 def analyzer():
-    path=Path(__file__).resolve().parents[1]/'benchmarks/analyze-hybrid-code-agent.py'
+    path=Path(__file__).resolve().parents[2]/'benchmarks/analyze-hybrid-code-agent.py'
     spec=importlib.util.spec_from_file_location('hybrid_analysis_test',path)
     module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
     return module

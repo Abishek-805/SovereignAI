@@ -1,0 +1,19 @@
+{
+  "event": "tool",
+  "tool": "apply_patch",
+  "arguments": {
+    "path": "caller.py",
+    "old_text": "from numbers_io import read_number\nprint(read_number())",
+    "new_text": "from numbers_io import load_number\nprint(load_number())"
+  },
+  "before_revision": "cd5c88564506ab8465f41f3c8c4ec6429db763e8f3eb11a02513308f3ca7674e",
+  "before_diff": "--- a/numbers_io.py\n+++ b/numbers_io.py\n@@ -1,2 +1,2 @@\n-def read_number():\n+def load_number():\n     return 23\n",
+  "result": {
+    "path": "caller.py",
+    "sha256": "940c5d2d728739c0ced1aa232ceb0e8014b64dff5966931d59271b286d063f97",
+    "bytes": 56
+  },
+  "latency_seconds": 0.0,
+  "after_revision": "0fb77fbd0dceea4f94d17f64cd1be8162e53d09377c215859a739fa06a33c7ac",
+  "after_diff": "--- a/caller.py\n+++ b/caller.py\n@@ -1,2 +1,2 @@\n-from numbers_io import read_number\n-print(read_number())\n+from numbers_io import load_number\n+print(load_number())\n--- a/numbers_io.py\n+++ b/numbers_io.py\n@@ -1,2 +1,2 @@\n-def read_number():\n+def load_number():\n     return 23\n"
+}

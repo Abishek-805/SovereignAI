@@ -1,0 +1,21 @@
+{
+  "event": "tool",
+  "tool": "read_file",
+  "arguments": {
+    "path": "form.html"
+  },
+  "before_revision": "c6642f9348b0d0d019bd0bb7ff4c8114d60ceab18d3f81213a47aee81680e378",
+  "before_diff": "",
+  "result": {
+    "path": "form.html",
+    "content": "<form><input name=\"nickname\"></form>\n",
+    "offset": 0,
+    "next_offset": null,
+    "total_characters": 37,
+    "content_complete": true,
+    "sha256": "bb502dee5579242cf5ac2ba41ae0597d044c36599bc2d2ae304b41f33e03d1a4"
+  },
+  "latency_seconds": 0.0,
+  "after_revision": "c6642f9348b0d0d019bd0bb7ff4c8114d60ceab18d3f81213a47aee81680e378",
+  "after_diff": ""
+}

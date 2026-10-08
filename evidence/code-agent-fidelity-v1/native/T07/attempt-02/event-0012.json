@@ -1,0 +1,18 @@
+{
+  "event": "tool",
+  "tool": "write_file",
+  "arguments": {
+    "path": "form.html",
+    "content": "<form><input name=\"display_name\"></form>\n"
+  },
+  "before_revision": "d8e5fefdeb410df1e1212d6427d63bd37ca7d300adb026c32036f2ffb57bb1fc",
+  "before_diff": "--- a/ui.js\n+++ b/ui.js\n@@ -1,2 +1,2 @@\n-function buildPayload(name){return {nickname:name};}\n+function buildPayload(name){return {display_name:name.trim()};}\n module.exports={buildPayload};\n",
+  "result": {
+    "path": "form.html",
+    "sha256": "39183f9dc948600f698b1655f3daa7e05b37958dcb2bca1b85baf309698ecdb5",
+    "bytes": 41
+  },
+  "latency_seconds": 0.0,
+  "after_revision": "e117f7c02c231c816164fd409bc91c60a47a4952bba6c6b0c879389175ce64cb",
+  "after_diff": "--- a/form.html\n+++ b/form.html\n@@ -1 +1 @@\n-<form><input name=\"nickname\"></form>\n+<form><input name=\"display_name\"></form>\n--- a/ui.js\n+++ b/ui.js\n@@ -1,2 +1,2 @@\n-function buildPayload(name){return {nickname:name};}\n+function buildPayload(name){return {display_name:name.trim()};}\n module.exports={buildPayload};\n"
+}

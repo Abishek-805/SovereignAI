@@ -1,0 +1,32 @@
+{
+  "repository": "HKUDS/nanobot",
+  "commit": "42f06ab1dcf7329f6bdcce9256fea74a99d19cbb",
+  "commit_date": "2026-10-05T18:49:50Z",
+  "sources": [
+    {
+      "path": "nanobot/agent/loop.py",
+      "sha256": "7a2f19a30c67c229fc310ff08924be05cceb0f4d40df35ec263d3045819fac64",
+      "url": "https://github.com/HKUDS/nanobot/blob/42f06ab1dcf7329f6bdcce9256fea74a99d19cbb/nanobot/agent/loop.py",
+      "bytes": 114075
+    },
+    {
+      "path": "nanobot/agent/context.py",
+      "sha256": "a868f85bc37f17e954cbf1579538282e3e19b0008db949fba2af463ea618dbed",
+      "url": "https://github.com/HKUDS/nanobot/blob/42f06ab1dcf7329f6bdcce9256fea74a99d19cbb/nanobot/agent/context.py",
+      "bytes": 14150
+    },
+    {
+      "path": "nanobot/agent/tools/registry.py",
+      "sha256": "257b8cc7f80d0538d281495f88cdd45c221fad11c618f1124a4adbf972e5da4f",
+      "url": "https://github.com/HKUDS/nanobot/blob/42f06ab1dcf7329f6bdcce9256fea74a99d19cbb/nanobot/agent/tools/registry.py",
+      "bytes": 7597
+    },
+    {
+      "path": "nanobot/providers/base.py",
+      "sha256": "c6fc792552dc30d33dd6a210a670d4b3837607d13504e28bb7b03e80195dfcad",
+      "url": "https://github.com/HKUDS/nanobot/blob/42f06ab1dcf7329f6bdcce9256fea74a99d19cbb/nanobot/providers/base.py",
+      "bytes": 81579
+    }
+  ],
+  "purpose": "Inert source research only. Not installed, imported, or forked."
+}

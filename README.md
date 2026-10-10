@@ -12,50 +12,59 @@ Knowledge uploads appear before background indexing finishes. Spreadsheet previe
 
 ## Quick start on Windows
 
-1. Install **Python 3.12**, **Node.js with npm**, and (for code execution) **Docker Desktop with a Linux engine**. A CUDA-capable Windows GPU is recommended for the bundled llama.cpp build. Python and Node must be on `PATH` (`py -3.12`, `npm`).
-2. Clone this repository. Binary model weights, the llama.cpp executable/DLLs, generated data, and local virtual environments are deliberately not stored in Git. Install the assets listed below at their exact paths. The app can show the interface without Docker, but model requests need the text GGUF and runtime.
-3. Double-click **`Start SovereignAI.bat`**. On the first start it creates `.app-venv`, installs the one Python dependency set from `requirements.txt`, runs `npm ci` and builds the frontend if needed. It then starts the model and backend, waits for health checks, and opens the app. Later starts reuse those installations. To stop owned services, double-click **`Stop SovereignAI.bat`**.
+1. Install **Python 3.12**, **Node.js 22 LTS with npm**, and a compatible **NVIDIA driver**. Put Python and npm on PATH (`py -3.12`, `npm`). The supplied Windows x64 llama.cpp runtime uses CUDA 12.4; other operating systems and non-NVIDIA runtime profiles are not provisioned by this launcher.
+2. Clone this repository and allow approximately **35 GB of free disk space** for models, download cache, runtime and dependencies. First setup needs internet. Model files alone total about 12.4 GB; setup time depends on the connection. Docker Desktop with its Linux engine is additionally required for generated-code execution.
+3. Double-click **`Start SovereignAI.bat`**, or run the following from the repository root:
 
-For a manual install or an agent setting up the project:
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\start-sovereign.ps1
+```
+
+The launcher creates `.app-venv`, installs the pinned `requirements.txt` when its recorded hash changes, and runs **`setup-assets.py`**. Setup verifies existing model hashes and downloads missing or mismatched registered assets at their pinned revisions. It prepares BGE embeddings and downloads the pinned llama.cpp runtime archives when required runtime files are missing. It then runs `npm ci` and builds the frontend if no build exists, starts owned services, checks readiness, and opens **http://127.0.0.1:8088/**. Model inference stays on **127.0.0.1:8087**. Models are loaded individually by the existing router, not simultaneously.
+
+Later starts reuse installed dependencies, runtime and valid model files; model checksum checks still run. Interrupted Hugging Face downloads can resume on retry. A failed checksum, inaccessible model, missing prerequisite or occupied unowned port stops setup with an error; the launcher does not substitute another model or stop unrelated services. Use **`Stop SovereignAI.bat`** to stop owned services.
+
+### Instructions for an agent asked to run this project
+
+Run the normal launcher above with `-NoBrowser` when no browser window is needed. Do not stop after starting a download: wait for setup and frontend build to finish, then verify `/health` on ports 8088 and 8087. Report the actual model/runtime and any blocked prerequisite. Do not report successful startup from a running process alone. The first setup may take much longer than model inference.
+
+To prepare assets separately without launching or restarting any service:
 
 ```powershell
 py -3.12 -m venv .app-venv
 .\.app-venv\Scripts\python.exe -m pip install -r requirements.txt
-cd frontend\llama-ui
-npm ci
-npm run build
-cd ..\..
-.\.app-venv\Scripts\python.exe setup-embeddings.py
-.\'Start SovereignAI.bat'
+.\.app-venv\Scripts\python.exe setup-assets.py
 ```
 
-`setup-embeddings.py` verifies pinned BGE assets and downloads missing files through the `hf` CLI (installed by `requirements.txt`). This one-time setup needs internet. The project makes local model requests after setup. The frontend build is generated from source and can be repeated after UI changes.
+All inference assets are pinned in **[model-assets.json](model-assets.json)**; BGE's per-file manifest is **[embedding-manifest.json](embedding-manifest.json)**. The setup script installs:
 
-## Required local assets
+| Role | Local asset |
+|---|---|
+| Primary reasoning/chat | `models/Qwen3.5-4B-Q4_K_M.gguf` |
+| RAG/lightweight worker | `models/gemma-4-E2B-it-Q4_K_M.gguf` |
+| Coding | `models/qwen2.5-coder-3b-instruct-q4_k_m.gguf` |
+| Vision | `models/vision-qwen3.5-2b/Qwen3.5-2B-Q4_K_M.gguf` and `mmproj-F16.gguf` |
+| Legacy registered text fallback | `models/Qwen3-4B-Instruct-2507-Q4_K_M.gguf` |
+| Document embeddings | `models/bge-small-en-v1.5/` |
+| Inference runtime | `runtime/llama-b11132/llama-server.exe` and release DLLs |
 
-| Purpose | Required location | Source and verification |
-|---|---|---|
-| Text model | `models/Qwen3-4B-Instruct-2507-Q4_K_M.gguf` | [LM Studio Community Qwen3-4B-Instruct-2507 GGUF](https://huggingface.co/lmstudio-community/Qwen3-4B-Instruct-2507-GGUF), revision `4edb920b6f14e3b9284d4502a6485103d72cde05`; SHA-256 `8cdb57cbb880d313736a9bc4e3d3d2485f145b5e19cf33783746e753e82641fc`. |
-| Embeddings for RAG | `models/bge-small-en-v1.5/` | Run `setup-embeddings.py`; it checks every pinned file in `embedding-manifest.json`. |
-| llama.cpp runtime | `runtime/llama-b11132/llama-server.exe` and its release DLLs | [llama.cpp b11132 Windows x64 CUDA 12.4 release](https://github.com/ggml-org/llama.cpp/releases/tag/b11132). Keep the release files together. |
-| Vision (optional) | `models/vision-qwen3.5-2b/Qwen3.5-2B-Q4_K_M.gguf` and `mmproj-F16.gguf` | [Unsloth Qwen3.5-2B GGUF](https://huggingface.co/unsloth/Qwen3.5-2B-GGUF), revision and hashes in [model notices](docs/model-and-runtime-notices.md). |
+GGUF/projector downloads and newly downloaded runtime archives are SHA-256 checked. An already installed complete runtime is reused; presence checks do not independently attest existing runtime binaries. Source revisions, model licenses and official links are in [model notices](docs/model-and-runtime-notices.md). Honor upstream access/license requirements; if a repository requires authentication, configure the Hugging Face CLI on the setup machine and retry. Do not commit weights, runtime binaries, credentials or user documents. This setup downloads inference assets only; it does not train, merge or deploy adapters.
 
-The launcher checks the required text model and runtime and reports missing paths. The model file is over GitHub's normal file limit, so install it locally; do not commit it. `requirements.txt` pins the full Python environment, including tests, OCR, document exports, and the Hugging Face setup CLI. `frontend/llama-ui/package-lock.json` pins npm dependencies. For Docker Code mode, use **Control Center → Runtimes** or **Start Docker** in Code to prepare the sandbox; Docker is not needed for Chat or document questions.
+### Docker for code execution
 
-**Start Docker** also renews expired sandbox verification for an installed local image and shows the isolation-check progress. Execution stays disabled if verification fails. Chat, Agent, and the Code assistant show actual generated text as an unverified draft before the checked final response replaces it. Planning and retrieval show progress stages. See the [Docker and streaming verification report](docs/docker-streaming-followup.md).
-
-For the pinned text model, after installing `requirements.txt` run:
+Chat and document questions can run without Docker. For Code/Agent execution, start Docker Desktop and wait for its Linux engine. On a fresh machine, build the project's image and run its isolation verification:
 
 ```powershell
-.\.app-venv\Scripts\hf.exe download lmstudio-community/Qwen3-4B-Instruct-2507-GGUF Qwen3-4B-Instruct-2507-Q4_K_M.gguf --revision 4edb920b6f14e3b9284d4502a6485103d72cde05 --local-dir models
-Get-FileHash .\models\Qwen3-4B-Instruct-2507-Q4_K_M.gguf -Algorithm SHA256
+docker build -f offline/Dockerfile.workbench -t sovereign-workbench:latest .
+$sandboxImage = (docker image inspect sovereign-workbench:latest --format '{{.Id}}').Trim()
+.\.app-venv\Scripts\python.exe scripts/verify_docker_sandbox.py $sandboxImage
 ```
 
-For the runtime, download the [b11132 Windows CUDA 12.4 archive](https://github.com/ggml-org/llama.cpp/releases/download/b11132/llama-b11132-bin-win-cuda-12.4-x64.zip) and its [CUDA 12.4 DLL archive](https://github.com/ggml-org/llama.cpp/releases/download/b11132/cudart-llama-bin-win-cuda-12.4-x64.zip). Extract both into `runtime/llama-b11132/` so that `llama-server.exe` is directly in that folder. An agent should check the required paths and hashes before attempting to launch. The runtime archive may require a compatible NVIDIA driver/CUDA environment on another Windows machine.
+Building the image needs internet. Generated code subsequently runs in the verified sandbox with networking disabled. Use the application's Docker verification action to renew an expired verification. If Docker or isolation checks fail, code execution remains blocked; no host execution fallback is allowed. Creating the environment does not establish production acceptance: live RAG, code generation, previews and stability must be checked on the actual installation.
 
 ## Direct-first prototype workflows
 
-The launcher reads the installed text entry in the backend model registry; startup and backend requests use the same local model. The older Qwen3 download instructions below describe installation assets, not a forced runtime choice.
+The launcher reads the installed text entry in the backend model registry; startup and backend requests use the same local model. The asset manifest provisions every registered inference model, including the legacy Qwen3 fallback.
 
 - Run this project uses package, README and entrypoint evidence, including a uniquely nested npm project. Ambiguous entrypoints require selection.
 - Word/Excel creation produces structured data, then python-docx/openpyxl writes and reopens the file. Generated documents are indexed and downloadable in Knowledge. SUM formulas over numeric ranges are independently calculated and saved with cached values for offline readers. Unsupported formulas are rejected with the actual diagnostic.
@@ -93,7 +102,7 @@ Only the two root `.bat` files are intended as user launchers. Supporting `.ps1`
 ## Verification and troubleshooting
 
 ```powershell
-.\.app-venv\Scripts\python.exe -m pytest -q
+.\.app-venv\Scripts\python.exe -m pytest tests _review_for_deletion/tests -q
 cd frontend\llama-ui
 npm run check
 npm run build

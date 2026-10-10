@@ -1,0 +1,18 @@
+{
+  "models": [
+    {"repository":"lmstudio-community/Qwen3-4B-Instruct-2507-GGUF","revision":"4edb920b6f14e3b9284d4502a6485103d72cde05","filename":"Qwen3-4B-Instruct-2507-Q4_K_M.gguf","path":"Qwen3-4B-Instruct-2507-Q4_K_M.gguf","sha256":"8cdb57cbb880d313736a9bc4e3d3d2485f145b5e19cf33783746e753e82641fc"},
+    {"repository":"unsloth/Qwen3.5-4B-GGUF","revision":"e87f176479d0855a907a41277aca2f8ee7a09523","filename":"Qwen3.5-4B-Q4_K_M.gguf","path":"Qwen3.5-4B-Q4_K_M.gguf","sha256":"00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4"},
+    {"repository":"unsloth/gemma-4-E2B-it-GGUF","revision":"0314792d7f1f7e229411f620751375812bb9faf2","filename":"gemma-4-E2B-it-Q4_K_M.gguf","path":"gemma-4-E2B-it-Q4_K_M.gguf","sha256":"740185b21d22ceb83a11c3aa62ad5842ef32c70f6096d756bbee85a1e4ec34b8"},
+    {"repository":"Qwen/Qwen2.5-Coder-3B-Instruct-GGUF","revision":"f74adce6aa16316c625447af059dbebe4983757c","filename":"qwen2.5-coder-3b-instruct-q4_k_m.gguf","path":"qwen2.5-coder-3b-instruct-q4_k_m.gguf","sha256":"724fb256bec1ff062b2f65e4569e871ad2e95ab2a3989723d1769c54294730b7"},
+    {"repository":"unsloth/Qwen3.5-2B-GGUF","revision":"f6d5376be1edb4d416d56da11e5397a961aca8ae","filename":"Qwen3.5-2B-Q4_K_M.gguf","path":"vision-qwen3.5-2b/Qwen3.5-2B-Q4_K_M.gguf","sha256":"aaf42c8b7c3cab2bf3d69c355048d4a0ee9973d48f16c731c0520ee914699223"},
+    {"repository":"unsloth/Qwen3.5-2B-GGUF","revision":"f6d5376be1edb4d416d56da11e5397a961aca8ae","filename":"mmproj-F16.gguf","path":"vision-qwen3.5-2b/mmproj-F16.gguf","sha256":"7035e9cb8d7c6a9681d07eef9a364783e86ea4cd73faab2eabb4f43a101830c7"}
+  ],
+  "runtime": {
+    "directory":"runtime/llama-b11132",
+    "required_files":["llama-server.exe","llama-server-impl.dll","llama.dll","ggml.dll","ggml-base.dll","ggml-cuda.dll","cudart64_12.dll","cublas64_12.dll","cublasLt64_12.dll"],
+    "archives":[
+      {"url":"https://github.com/ggml-org/llama.cpp/releases/download/b11132/llama-b11132-bin-win-cuda-12.4-x64.zip","sha256":"6eedee47f2a2570f609e4edf7052793b56059cc6a76cdebbdece90be80a097c7"},
+      {"url":"https://github.com/ggml-org/llama.cpp/releases/download/b11132/cudart-llama-bin-win-cuda-12.4-x64.zip","sha256":"8c79a9b226de4b3cacfd1f83d24f962d0773be79f1e7b75c6af4ded7e32ae1d6"}
+    ]
+  }
+}

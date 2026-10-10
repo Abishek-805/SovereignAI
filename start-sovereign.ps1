@@ -9,20 +9,22 @@ $ErrorActionPreference = 'Stop'
 $model = 'http://127.0.0.1:8087'
 $app = 'http://127.0.0.1:8088'
 
-# A fresh clone needs only Python 3.12, Node.js and the separately downloaded
-# local model/runtime assets. Keep setup behind the single requirements file.
+# Provision the pinned dependencies and inference assets before launching.
 $pythonPath = Join-Path $PSScriptRoot '.app-venv\Scripts\python.exe'
 if (!(Test-Path -LiteralPath $pythonPath)) {
     & py -3.12 -m venv (Join-Path $PSScriptRoot '.app-venv')
     if ($LASTEXITCODE -ne 0) { throw 'Python 3.12 is required. See README.md.' }
-    & $pythonPath -m pip install -r (Join-Path $PSScriptRoot 'requirements.txt')
-    if ($LASTEXITCODE -ne 0) { throw 'Python dependency installation failed.' }
 }
-$embeddingManifest = Join-Path $PSScriptRoot 'models\bge-small-en-v1.5\manifest.json'
-if (!(Test-Path -LiteralPath $embeddingManifest)) {
-    & $pythonPath (Join-Path $PSScriptRoot 'setup-embeddings.py')
-    if ($LASTEXITCODE -ne 0) { throw 'Embedding setup failed. See README.md.' }
+$requirements = Join-Path $PSScriptRoot 'requirements.txt'
+$requirementsStamp = Join-Path $PSScriptRoot '.app-venv\requirements.sha256'
+$requirementsHash = (Get-FileHash -LiteralPath $requirements -Algorithm SHA256).Hash
+if (!(Test-Path -LiteralPath $requirementsStamp) -or (Get-Content -LiteralPath $requirementsStamp -Raw).Trim() -ne $requirementsHash) {
+    & $pythonPath -m pip install -r $requirements
+    if ($LASTEXITCODE -ne 0) { throw 'Python dependency installation failed. Rerun startup to retry.' }
+    Set-Content -LiteralPath $requirementsStamp -Value $requirementsHash
 }
+& $pythonPath (Join-Path $PSScriptRoot 'setup-assets.py')
+if ($LASTEXITCODE -ne 0) { throw 'Inference asset setup failed. See README.md.' }
 $frontend = Join-Path $PSScriptRoot 'frontend\llama-ui'
 if (!(Test-Path -LiteralPath (Join-Path $frontend 'dist\index.html'))) {
     Push-Location $frontend

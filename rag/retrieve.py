@@ -25,25 +25,37 @@ def document_scope_for_question(documents, question, document_ids=None):
     not an exact document key and usually does not occur in its page text.
     """
     allowed = set(document_ids) if document_ids is not None else None
-    compact_question = re.sub(r'[^\w]', '', question, flags=re.UNICODE).casefold()
     matches = []
+    names={d['display_name'] for d in documents}
+    references=[(name,match.span()) for name in names for match in
+                re.finditer(r'(?<![\w.-])'+re.escape(name)+r'(?![\w-]|\.\w)',question,re.I)]
+    references=[ref for ref in references if not any(start<=ref[1][0] and ref[1][1]<=end and (start,end)!=ref[1]
+                for _,(start,end) in references)]
+    references.sort(key=lambda ref:ref[1][0])
+    for match in re.finditer(r'(?<![\w.-])[\w.-]+\.(?:xlsx|csv|tsv|jsonl?|pdf|txt|md|docx)(?!\w)',question,re.I):
+        if not any(start<=match.start() and match.end()<=end for _,(start,end) in references):
+            raise WorkbenchError('unknown_source','The requested filename is unavailable in the authorized scope: '+match.group())
+    resolved=[]
+    for name,_ in references:
+        found=[d['document_id'] for d in documents if (allowed is None or d['document_id'] in allowed) and d['display_name'].casefold()==name.casefold()]
+        if not found:raise WorkbenchError('unknown_source','The requested filename is unavailable in the authorized scope: '+name)
+        if len(found)>1:raise WorkbenchError('needs_input','Several authorized documents have that filename; select one explicitly.')
+        resolved.extend(found)
+    if references:return list(dict.fromkeys(resolved))
     for document in documents:
         if allowed is not None and document['document_id'] not in allowed:
             continue
         stem = PurePath(document['display_name']).stem
-        identifiers = [piece.casefold() for piece in re.findall(r'[^\W_]+', stem, re.UNICODE)
-                       if len(piece) >= 5]
         # An entity ID in the question may also occur in a filename. Only
         # explicit file references or complete non-identifier names narrow scope.
-        file_reference=bool(re.search(r'\b(file|document|pdf|xlsx|sheet)\b',question,re.I))
         # A generic request to "give a report" must not select a filename
         # merely containing "report". Names are references, not keyword bags.
         name_parts=re.findall(r'[^\W_]+',stem,re.UNICODE)
         name_pattern=r'[\W_]+'.join(re.escape(part) for part in name_parts)
-        stem_named=bool(name_pattern and re.search(r'(?<!\w)'+name_pattern+r'(?!\w)',question,re.I))
-        if (document['display_name'].casefold() in question.casefold() or
-            stem_named and (file_reference or not any(c.isdigit() for c in stem)) or
-            any(identifier in compact_question and file_reference for identifier in identifiers)):
+        reference=r'(?:file|document|pdf|xlsx|sheet)'
+        stem_named=bool(name_pattern and re.search(r'(?<!\w)(?:'+reference+r'\s+(?:(?:called|named|titled)\s+)?'+name_pattern+r'|'+name_pattern+r'\s+'+reference+r')(?!\w)',question,re.I))
+        full_named=re.search(r'(?<!\w)'+re.escape(document['display_name'])+r'(?!\w)',question,re.I)
+        if full_named or stem_named:
             matches.append(document['document_id'])
     return matches or document_ids
 

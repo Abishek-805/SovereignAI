@@ -29,8 +29,8 @@ def test_zero_padded_id_requires_unambiguous_source_binding():
  table={'name':'Scores','columns':['ID','Score'],'records':[{'ID':'TEAM063','Score':42}]}
  plan={'operation':'select','columns':['ID','Score'],'filters':[{'column':'ID','operator':'eq','value':'TEAM63'}]}
  bound=bind_selection_request(plan,table,'Compare TEAM63 and TEAM64')
- assert bound['entity_bindings']=={'TEAM63':'TEAM063'}
- assert execute_query(table,bound)['missing_entities']==['TEAM64']
+ assert bound['entity_bindings']=={}
+ assert execute_query(table,bound)['missing_entities']==['TEAM63','TEAM64']
  table['records'].append({'ID':'TEAM0063','Score':20})
  assert bind_selection_request(plan,table,'Compare TEAM63')['entity_bindings']=={}
 

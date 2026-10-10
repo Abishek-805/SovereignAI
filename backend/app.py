@@ -57,6 +57,7 @@ class AskRequest(BaseModel):
     question: str=Field(min_length=1,max_length=8000)
     document_ids: list[str] | None=Field(default=None,max_length=256)
     history: list[str]=Field(default_factory=list,max_length=6)
+    evidence_ids: list[str]=Field(default_factory=list,max_length=12)
 
     @field_validator('question')
     @classmethod
@@ -95,6 +96,7 @@ class AgentRequest(BaseModel):
     workspace_id: str | None = None
     target: str | None = None
     history: list[str] = Field(default_factory=list,max_length=16)
+    evidence_ids: list[str] = Field(default_factory=list,max_length=12)
 
 
 class CalculationRequest(BaseModel):
@@ -197,7 +199,9 @@ class RequestBoundary:
             return await self.app(scope,receive,send)
         headers={k.decode().lower():v.decode() for k,v in scope['headers']}
         origin=headers.get('origin')
-        if origin and origin not in {'http://127.0.0.1:8088','http://localhost:8088'}:
+        local_origin='http://'+headers.get('host','')
+        same_local_origin=bool(re.fullmatch(r'http://(?:127\.0\.0\.1|localhost)(?::\d+)?',local_origin)) and origin==local_origin
+        if origin and not same_local_origin and origin not in {'http://127.0.0.1:8088','http://localhost:8088'}:
             return await JSONResponse({'code':'origin_rejected','message':'Only the local workbench origin is allowed'},status_code=403)(scope,receive,send)
         limit=(self.service.settings.max_file_bytes+65536 if scope['path'] in {'/documents/import','/documents/preview'}
                else MAX_IMPORT_BYTES if scope['path'].startswith('/coding/workspaces/') and '/import-files/' in scope['path']
@@ -346,7 +350,7 @@ def create_app(service=None):
 
     @app.post('/agent/auto')
     def automatic_agent(payload:AgentRequest):
-        return service.run_auto_agent(payload.goal,payload.document_ids,payload.workspace_id,payload.history)
+        return service.run_auto_agent(payload.goal,payload.document_ids,payload.workspace_id,payload.history,evidence_ids=payload.evidence_ids)
 
     @app.post('/documents/report')
     def document_report(payload:AskRequest):
@@ -386,8 +390,8 @@ def create_app(service=None):
     def ask(payload:AskRequest):
         from router.request_normalization import is_greeting
         focused=bool(payload.document_ids) and not is_greeting(payload.question) and not re.search(r'\b(?:report|docx|word)\b',payload.question,re.I)
-        return (service.ask(payload.question,payload.document_ids,payload.history,force_documents=True)
-                if focused else service.ask(payload.question,payload.document_ids,payload.history)
+        return (service.ask(payload.question,payload.document_ids,payload.history,force_documents=True,evidence_ids=payload.evidence_ids)
+                if focused else service.ask(payload.question,payload.document_ids,payload.history,evidence_ids=payload.evidence_ids)
                 if payload.history else service.ask(payload.question,payload.document_ids))
 
     @app.post('/vision/ask')
@@ -469,12 +473,12 @@ def create_app(service=None):
             if job.cancel.is_set():return {'state':'cancelled'}
             if payload.kind=='report':
                 return service.create_document_report(payload.question,payload.document_ids,payload.history,job=job)
-            return service.ask(payload.question,payload.document_ids,payload.history,job=job,force_documents=True) if payload.force_documents else service.ask(payload.question,payload.document_ids,payload.history,job=job)
+            return service.ask(payload.question,payload.document_ids,payload.history,job=job,force_documents=payload.force_documents,evidence_ids=payload.evidence_ids)
         return jobs.start('document',run)
 
     @app.post('/agent/jobs')
     def start_agent_job(payload:AgentRequest):
-        return jobs.start('agent',lambda job:service.run_auto_agent(payload.goal,payload.document_ids,payload.workspace_id,payload.history,job))
+        return jobs.start('agent',lambda job:service.run_auto_agent(payload.goal,payload.document_ids,payload.workspace_id,payload.history,job,evidence_ids=payload.evidence_ids))
 
     @app.post('/coding/workspaces/{workspace_id}/jobs')
     def start_workspace_job(workspace_id:str,payload:WorkspaceJobRequest):

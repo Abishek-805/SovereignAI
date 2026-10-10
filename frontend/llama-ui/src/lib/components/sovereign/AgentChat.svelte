@@ -12,7 +12,9 @@
 	import type { RoutingTelemetry } from '$lib/services/routing-telemetry';
 	import RouteDetails from './RouteDetails.svelte';
 	import MarkdownContent from '$lib/components/app/content/MarkdownContent/MarkdownContent.svelte';
-	import { onMount, tick, untrack } from 'svelte';
+	import { onMount, onDestroy, tick, untrack } from 'svelte';
+	let disposed = false;
+	onDestroy(() => { disposed = true; });
 	import Paperclip from '@lucide/svelte/icons/paperclip';
 	import ArrowUp from '@lucide/svelte/icons/arrow-up';
 	import Sparkles from '@lucide/svelte/icons/sparkles';
@@ -451,6 +453,7 @@
 		} catch (e) { notice = 'Could not accept changes. The draft is still saved: ' + String(e); }
 	}
 	async function poll(index: number, id: string) {
+		const ownsRequest = () => !disposed && agentJob === id && turns[index]?.status === 'working';
 		let terminalObserved = false;
 		async function readJob() {
 			for (let attempt = 0; ; attempt++) {
@@ -465,6 +468,7 @@
 		try {
 			let result = await readJob();
 			while (result.state === 'running') {
+				if (!ownsRequest()) return;
 				generationPreview = stopRequested ? null : runningJobPreview(result);
 				notice = result.stage;
 				agentElapsed = result.elapsed;
@@ -473,14 +477,20 @@
 				await new Promise((resolve) => setTimeout(resolve, 650));
 				result = await readJob();
 			}
+			if (!ownsRequest()) return;
 			terminalObserved = true;
 			generationPreview = null;
 			if (result.routing) { turns[index] = {...turns[index], routing: result.routing}; persist(); }
 			if (result.error) throw Error(result.error);
-			if (result.state === 'cancelled') throw Error('Task stopped');
+			if (result.state === 'cancelled') {
+				turns[index] = { ...turns[index], answer: 'Task stopped.', status: 'stopped' };
+				notice = 'Task stopped.';
+				return;
+			}
 			finish(index, result.result);
 			notice = '';
 		} catch (e) {
+			if (!ownsRequest()) return;
 			generationPreview = null;
 			turns[index] = {
 				...turns[index],
@@ -492,6 +502,7 @@
 				? 'Task stopped.'
 				: !terminalObserved && e instanceof TypeError ? 'Connection lost; the task continues in the backend.' : 'The task could not finish. Review the details and retry.';
 		} finally {
+			if (disposed || agentJob !== id) return;
 			busy = false;
 			agentJob = '';
 			if (terminalObserved || stopRequested) sessionStorage.removeItem('sovereign-agent-job');
@@ -589,6 +600,7 @@
 						goal: question,
 						document_ids: sentDocuments.map((d) => d.id),
 						workspace_id: workspace || null,
+						evidence_ids: turns.slice(0,index).filter(turn=>turn.sources?.length).at(-1)?.sources?.map(source=>source.chunk_id).slice(0,12)??[],
 						history
 					})
 				})

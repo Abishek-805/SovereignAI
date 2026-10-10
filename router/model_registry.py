@@ -100,6 +100,10 @@ def default_specs():
             license_reference='docs/model-and-runtime-notices.md',license_id='Apache-2.0',license_reviewed=True,
             license_source='https://huggingface.co/Qwen/Qwen3.5-4B',license_reviewed_at='2026-10-01')
     from dataclasses import replace
+    gemma=next((spec for spec in specs.values() if spec.model_file=='gemma-4-E2B-it-Q4_K_M.gguf'),None)
+    if gemma:
+        from dataclasses import replace
+        specs['rag']=replace(gemma,alias='sovereign-rag',capabilities=('rag',),worker_roles=())
     roles={'text':('reasoning',),'text-light':('lightweight',),'code':('code',),'vision':('vision',)}
     identities={'Qwen3-4B-Instruct-2507-Q4_K_M.gguf':'Qwen/Qwen3-4B-Instruct-2507',
         'gemma-4-E2B-it-Q4_K_M.gguf':'google/gemma-4-E2B-it',
@@ -129,7 +133,7 @@ class ModelRegistry:
     @property
     def models(self):
         """Model-centric identities; legacy registry keys remain launch handles only."""
-        return {spec.identifier:spec for spec in self.specs.values()}
+        return {spec.identifier:spec for key,spec in self.specs.items() if key!='rag'}
 
     def installed(self, spec):
         return all(path.is_file() for path in self._model_paths(spec))

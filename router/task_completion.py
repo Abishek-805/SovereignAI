@@ -71,12 +71,18 @@ def observe_completion(result, workflow=None):
                              and item.get('status')=='indexed' and bool(item.get('active_hash'))
                              for item in observations if isinstance(item.get('generation_checks',{}),dict))
         simple=delivered and result.get('completion_contract')=='simple_conversation'
+        grounded=any(item.get('status')=='answered' and item.get('checks',{}).get('semantic_support')=='claim_assessed_with_exact_quote_bindings'
+                     and item.get('checks',{}).get('evidence_assessment',{}).get('passed') is True
+                     and item.get('checks',{}).get('citation_ids_valid') is True
+                     and item.get('checks',{}).get('numeric_claims_supported') is True
+                     for item in observations if isinstance(item.get('checks',{}),dict))
         for name,value in {'runtime_exit_success':executed,'runtime_checks_passed':tested,
                            'published_revision_observed':published,'calculation_evaluated':calculation,
                            'verified_table_presentation':computed_table,'generated_document_opened_and_indexed':document_created}.items():
             if value:checks[name]=True
         if simple:checks['simple_response_delivered']=True
-        if executed or tested or published or calculation or computed_table or simple or document_created:
+        if grounded:checks['source_bound_answer_verified']=True
+        if executed or tested or published or calculation or computed_table or simple or document_created or grounded:
             state='completed'
             limitations.append('Completion establishes the observed executor contract, not universal semantic correctness.')
         elif any(item.get('checks',{}).get('syntax_or_format_checked') is True

@@ -21,6 +21,7 @@ from rag.ingest import extract, chunk_pages, SUPPORTED
 from rag.store import Store
 from rag.retrieve import retrieve, document_scope_for_question
 from rag.answer import answer
+from rag.model_routing import rag_workflow,ACTIVE_RAG
 from rag.overview import overview_passages, overview_documents
 from rag.pdf_visuals import enrich_pdf_chunks
 from rag.vision import ask_vision
@@ -135,8 +136,9 @@ class Workbench:
         response=self.model.conversation_answer(request,history) if action=='answer' else ''
         return {'action':action,'response':response,'target':'','document_scope':'focused'}
 
+    @rag_workflow
     def _request_plan(self, request, documents, files, history=None):
-        from router.request_normalization import normalize_request, worker_role
+        from router.request_normalization import normalize_request, worker_role, is_greeting
         from backend.task_supervisor import CURRENT_SUPERVISOR, operational_event
         normalized=normalize_request(request)
         coding=self._coding_request(request,files=files)
@@ -175,7 +177,7 @@ class Workbench:
                           intent='GENERAL' if role=='lightweight' else 'CODE' if role=='code' else None)
         route=self._lease('code' if role=='code' else 'text',worker_role=role)
         simple=getattr(self.model,'simple_answer',None)
-        if role=='lightweight' and callable(simple) and getattr(self,'routing_strategy','universal')=='universal':
+        if role=='lightweight' and (not documents or is_greeting(request)) and callable(simple) and getattr(self,'routing_strategy','universal')=='universal':
             from router.request_normalization import is_greeting
             operational_event('PLAN_CREATED',workflow='GENERAL',intent='GENERAL',plan={'action':'answer'})
             return {'action':'answer','response':simple(request,history),'target':'','document_scope':'focused',
@@ -190,6 +192,9 @@ class Workbench:
         if normalized.normalized!=request:context.append('Spelling normalization (original request remains controlling): '+normalized.normalized)
         operational_event('MODEL_SELECTED',worker_role=role)
         plan=self._cpu_readonly_plan(request,context,mode='agent' if files else 'chat') or self.model.plan_task(request,documents,files,context)
+        if documents and (plan.get('action')=='answer' or plan.get('action')=='inspect_code' and not files and not code_subject) and not is_greeting(request):
+            # Preview-based planner prose has no source-bound answer authority.
+            plan.update(action='search_documents',response='',document_scope='focused')
         plan['_worker_route']=route
         workflow={'answer':'GENERAL','search_documents':'KNOWLEDGE_QUERY','edit_code':'CODE',
                   'inspect_code':'CODE','analyze_image':'VISION','calculate':'CALCULATE',
@@ -229,6 +234,10 @@ class Workbench:
         return decision
 
     def _lease(self,capability,required_context=None,worker_role=None):
+        if ACTIVE_RAG.get() is not None and capability=='vision':
+            raise WorkbenchError('rag_model_unavailable','The installed text-only Gemma RAG runtime cannot inspect images; no alternate LLM was selected.')
+        if ACTIVE_RAG.get() is not None and capability in {'text','text-light'}:
+            return self._rag_lease(required_context)
         trace=CURRENT_ROUTE.get()
         select=getattr(self.router,'select_model',None)
         if (getattr(self,'routing_strategy','universal') not in {'direct','capability'}
@@ -331,6 +340,28 @@ class Workbench:
                 trace.capability=capability
                 trace.selected_model=getattr(getattr(self.registry,'specs',{}).get(route),'alias',None)
         return route
+
+    def _rag_lease(self,required_context=None):
+        spec=self.registry.specs.get('rag')
+        if spec is None or spec.identifier!='google/gemma-4-E2B-it' or not self.registry.installed(spec):
+            raise WorkbenchError('rag_model_unavailable','The installed Gemma 4 E2B RAG worker is unavailable; no alternate LLM was selected.')
+        if required_context is not None and required_context>spec.context:
+            raise WorkbenchError('context_overflow','The RAG request exceeds the installed Gemma worker context.')
+        from backend.task_supervisor import operational_event
+        def checkpoint_swap(observation):
+            consume('model_switches',identity=spec.identifier)
+            operational_event('MODEL_LOADING',observations=observation)
+        lease=self.registry.acquire_lease('rag',persist_before_swap=checkpoint_swap)
+        if not self.registry._runtime_profile_matches(self.registry.launch_args('rag')):
+            raise WorkbenchError('rag_model_identity','The loaded runtime does not match the registered Gemma RAG worker.')
+        trace=CURRENT_ROUTE.get()
+        if trace:
+            trace.runtime_alias=spec.alias;trace.selected_model=spec.alias
+            trace.available_context=spec.context;trace._context_admit=lambda required:self._rag_lease(required)
+            trace.stages.append({'stage':'rag_runtime_lease',**lease})
+        state=ACTIVE_RAG.get()
+        if state is not None:state['loaded']=True
+        return 'rag'
 
     @property
     def embedder(self):
@@ -476,7 +507,8 @@ class Workbench:
 
     @supervised_task
     @cancellable_model_job
-    def ask(self,question,document_ids=None,history=None,job=None,force_documents=False,document_scope='focused',report_generation=False):
+    @rag_workflow
+    def ask(self,question,document_ids=None,history=None,job=None,force_documents=False,document_scope='focused',report_generation=False,evidence_ids=None,evidence_mode='auto'):
         if not isinstance(question,str) or not question.strip():
             raise WorkbenchError('invalid_question','Enter a question')
         if len(question)>8000:
@@ -500,6 +532,9 @@ class Workbench:
             return {'status':'conversation','answer':f"{result['expression']} = {result['result']}", 'sources':[], 'task_id':result['task_id'], 'result':result,
                     'routing':{'capability':'calculation','model':'No model used'}}
         history=[item[:500] for item in (history or [])[-6:] if isinstance(item,str)]
+        if not report_generation:
+            exact=self._exact_document_lookup(question,document_ids,history,job,evidence_ids)
+            if exact is not None:return exact
         if not self.ask_lock.acquire(blocking=False):
             raise WorkbenchError('busy','Another answer is being generated')
         try:
@@ -511,9 +546,10 @@ class Workbench:
             # Ordinary conversation needs one generation, not a routing generation.
             # Explicit document references (including follow-ups) retain the grounded path.
             evidence_request = re.search(r"\b(?:documents?|files?|spreadsheet|workbook|uploaded|knowledge|sources?|marks|scores|cohort)\b|\b(?:24[a-z]{3}\d{3})\b", question, re.I)
+            if document_ids is None and document_scope_for_question(self.documents(),question,None) is not None:evidence_request=True
             evidence_followup = bool(history and re.search(r"\b(?:those|these|that|same|previous|them|report|percentage)\b", question, re.I))
             if (not force_documents and callable(getattr(self.model,'conversation_answer',None))
-                    and not evidence_request and not (document_ids and evidence_followup)):
+                    and not evidence_request and (not document_ids or is_greeting(question))):
                 route=self._lease('text',worker_role='reasoning')
                 if job:job.progress('Writing answer')
                 response=self.model.conversation_answer(question,history)
@@ -573,6 +609,7 @@ class Workbench:
                 if intent['action'] not in {'search_documents','create_report'}:
                     raise WorkbenchError('needs_input','This request needs a different tool. Use Agent for code changes or calculations.')
                 document_scope=intent.get('document_scope','focused')
+                evidence_mode=intent.get('evidence_mode','auto')
                 report_requested=intent['action']=='create_report'
             if document_ids == []:
                 raise WorkbenchError('needs_input','Connect Knowledge to answer questions about your documents')
@@ -585,12 +622,23 @@ class Workbench:
             if job:job.progress('Retrieving selected document passages')
             active=self.store.active_chunks(document_ids)
             retrieval_query=question
+            prior_passages=[]
+            handoff=None
+            if history and evidence_ids:
+                from rag.handoff import active_evidence
+                prior_passages=active_evidence(self.store,evidence_ids,document_scope_for_question(self.documents(),question,document_ids))
+                if prior_passages:
+                    handoff=self.model.evidence_handoff(question,history,prior_passages)
+                    if not handoff['reuse']:retrieval_query=handoff['query'].strip() or question
             overview=overview_documents(active) if document_scope=='overview' else None
             table_evidence=None
             table_query=None
-            if active and callable(getattr(self.model,'plan_table_query',None)):
+            if evidence_mode=='auto' and active and callable(getattr(self.model,'plan_task',None)) and any(d.get('source_extension') in {'.xlsx','.csv','.tsv'} for d in self.documents() if document_ids is None or d['document_id'] in document_ids):
+                # Reuse the existing task interpreter; source availability cannot choose the operation.
+                intent=self.model.plan_task(question,self.store.planning_context(document_ids,question),[],history)
+                evidence_mode=intent.get('evidence_mode','auto')
+            if active and evidence_mode!='passages' and callable(getattr(self.model,'plan_table_query',None)):
                 from rag.tables import load_tables,execute_query,literal_entity_coverage,TABULAR
-                from rag.retrieve import document_scope_for_question
                 scoped=document_scope_for_question(self.documents(),question,document_ids)
                 catalog=[]; available={}
                 for doc in self.documents():
@@ -608,6 +656,14 @@ class Workbench:
                                 for column in table['columns'] if 0<len({str(r.get(column)) for r in table['records'] if isinstance(r.get(column),str)})<=12}})
                         available[key]=(doc,table)
                 if catalog:
+                    # A table without the literal requested IDs cannot establish their absence.
+                    # Bind the planning scope by source values before semantic field selection.
+                    from rag.identifiers import resolve_identifiers
+                    identity_resolution=resolve_identifiers(question,available,history)
+                    matching={match['table'] for match in identity_resolution.matches}
+                    if matching:
+                        available={key:value for key,value in available.items() if key in matching}
+                        catalog=[item for item in catalog if item['id'] in matching]
                     # Source applicability needs the competing reference
                     # sources too, not merely unrelated table column names.
                     # Store previews are bounded, read-only planning data.
@@ -619,11 +675,20 @@ class Workbench:
                     for attempt in range(2):
                         from rag.tables import compile_aggregate_request
                         query=compile_aggregate_request(available,question) or self.model.plan_table_query(question,catalog,history,**({'feedback':query_feedback} if query_feedback else {}))
+                        if identity_resolution.matches:
+                            canonical=identity_resolution.canonical
+                            if query.get('_measure'):
+                                proposed=query['_measure'].get('entity_values',[])
+                                if {str(v).casefold() for v in proposed}!={str(v).casefold() for v in canonical}:
+                                    identity_resolution.diagnostics.append({'event':'planner_identifiers_rejected','proposed':proposed,'canonical':canonical})
+                                query['_measure']={**query['_measure'],'entity_values':canonical,
+                                    '_identity_resolution':identity_resolution.to_dict(),
+                                    '_identity_proposal_rejected':proposed!=canonical}
                         if not query.get('_measure'):break
                         from rag.tables import compile_outcome_query,population_binding_catalog
                         try:
                             binder=getattr(self.model,'bind_population_column',None)
-                            if callable(binder) and query['_measure'].get('entity_values'):
+                            if callable(binder) and query['_measure'].get('entity_values') and not identity_resolution.matches:
                                 query['_measure']['entity_column']=binder(question,query['_measure'],
                                     population_binding_catalog(available,query['_measure']['entity_values']))
                             query=compile_outcome_query(query['_measure'],available,question,history)
@@ -634,6 +699,8 @@ class Workbench:
                             if job:job.progress('Repairing the query against source validation feedback')
                     def run_table_query(plan):
                         operational_event('TOOL_SELECTED',tool='table_query',workflow='TABLE_QUERY',intent='TABLE_QUERY')
+                        from rag.tables import resolve_query_table
+                        plan=resolve_query_table(plan,available,question)
                         selected=plan.get('table')
                         if selected not in available: raise WorkbenchError('invalid_query','Table query selected an unavailable table')
                         selected_doc,selected_table=available[selected]
@@ -645,7 +712,14 @@ class Workbench:
                             return calculated
                         from rag.tables import bind_selection_request
                         plan=bind_selection_request(plan,selected_table,question)
+                        if identity_resolution.matches and plan.get('identity_column'):
+                            field=plan['identity_column']
+                            plan={**plan,'filters':[item for item in plan.get('filters',[]) if item['column']!=field]+[
+                                {'column':field,'operator':'in','value':identity_resolution.canonical}],
+                                'requested_entities':identity_resolution.canonical,
+                                'unresolved_identifiers':identity_resolution.unresolved}
                         result=execute_observed(selected_table,plan)
+                        if identity_resolution.matches:result['identity_resolution']=identity_resolution.to_dict()
                         if plan.get('unavailable_assessments'): result['unavailable_assessments']=plan['unavailable_assessments']
                         extras=plan.get('additional_queries',[])
                         if not isinstance(extras,list) or len(extras)>12: raise WorkbenchError('invalid_query','Too many additional table queries')
@@ -681,8 +755,14 @@ class Workbench:
                         if source:
                             table_evidence=replace(source,query_result=table_query,text='Verified read-only table query over the complete source.\nDocument: '+doc['display_name']+'\n'+json.dumps(table_query,ensure_ascii=False))
             passages=([table_evidence] if table_evidence else overview_passages(active) if overview is not None else
+                      prior_passages if handoff and handoff['reuse'] else
                       retrieve(self.store,self.embedder,retrieval_query,document_ids) if active else [])
             passages=enrich_pdf_chunks(passages,self.sources_dir)
+            permitted_scope=document_scope_for_question(self.documents(),question,document_ids)
+            active_keys={(c.document_id,c.version_hash,c.chunk_id) for c,_ in active}
+            if any((p.document_id,p.version_hash,p.chunk_id) not in active_keys or
+                   permitted_scope is not None and p.document_id not in permitted_scope for p in passages):
+                raise WorkbenchError('stale_evidence','Retrieved evidence is stale or outside the requested scope')
             retrieval_seconds=time.perf_counter()-retrieval_start
             trace=CURRENT_ROUTE.get()
             if trace is not None:
@@ -715,6 +795,10 @@ class Workbench:
             if job and job.cancel.is_set():
                 raise WorkbenchError('cancelled', 'Task stopped')
             result['task_id']=uuid4().hex
+            for source in result.get('sources',[]):source['retrieval_scope']=permitted_scope
+            if handoff is not None:
+                result['evidence_handoff']={**handoff,'references':[
+                    {key:p.to_dict()[key] for key in ('document_id','version_hash','chunk_id','page','line_start','line_end')} for p in prior_passages]}
             if table_query is not None: result['table_query']=table_query
             result['routing']={'capability':route,'model':self.registry.specs[route].alias if hasattr(self.registry,'specs') else 'sovereign-text'}
             result['timings'].update(
@@ -1379,10 +1463,122 @@ Path('/output/project-sync.json').write_bytes(payload)
             self.tasks.fail(task,'report_failed')
             raise
 
+    def _exact_document_lookup(self,question,document_ids,history=None,job=None,evidence_ids=None):
+        """Use the existing reader/executor and citation gate for exact result lookups."""
+        from rag.identifiers import full_identifiers,compile_exact_lookup
+        from rag.analytics import analytics_requested,compile_measurements
+        from rag.tables import TABULAR,load_tables,execute_query
+        from rag.table_resolution import logical_tables
+        followup=bool(re.search(r'\b(he|she|his|her|they|their|those|these|it|instead)\b',question,re.I)) and bool(
+            analytics_requested(question) or re.search(r'\b(results?|marks?|scores?|measurements?|tests?)\b',question,re.I))
+        if not (full_identifiers(question) or analytics_requested(question) or followup) or document_ids==[]:return None
+        started=time.perf_counter()
+        timings={}
+        deadline=float(os.environ.get('SOVEREIGN_EXACT_LOOKUP_SECONDS','25'))
+        def check():
+            if job and job.cancel.is_set():raise WorkbenchError('cancelled','Task stopped')
+            if time.perf_counter()-started>deadline:raise WorkbenchError('timeout','Exact lookup exceeded its configured deadline; no answer was inferred.')
+        docs=self.documents()
+        scope=document_scope_for_question(docs,question,document_ids)
+        prior=None
+        continuation=bool(re.search(r'\b(results?|marks?|scores?|tests?|assessments?)\b',question,re.I) or analytics_requested(question))
+        if followup and not full_identifiers(question) or continuation and history and evidence_ids:
+            from rag.handoff import active_evidence
+            active=active_evidence(self.store,evidence_ids or [],scope)
+            previous=next((item[6:] for item in reversed(history or []) if isinstance(item,str) and item.startswith('User: ')),None)
+            directory=getattr(self.settings,'data_dir',Path())/'answers'
+            # Reuse the existing answer receipts; never derive an entity from assistant prose.
+            for path in sorted(directory.glob('*.json'),key=lambda p:p.stat().st_mtime_ns,reverse=True)[:100]:
+                saved=json.loads(path.read_text(encoding='utf-8'))
+                contract=saved.get('operation_contract')
+                if saved.get('original_question')!=previous or not contract:continue
+                if any(chunk.chunk_id in (evidence_ids or []) and chunk.document_id==contract['document_id'] and chunk.version_hash==contract['version_hash'] for chunk in active):
+                    prior=contract;break
+            if prior is None and followup and not full_identifiers(question):
+                raise WorkbenchError('needs_input','No current verified result supports this follow-up. Specify the entity and source.')
+            explicit_source=scope!=document_ids or any(doc['display_name'].casefold() in question.casefold() for doc in docs)
+            if prior and not explicit_source:
+                from rag.identifiers import words
+                topic=words(question)-words('can you tell the results marks scores tests assessments all please students '
+                    'overall avg average mean best top five highest lowest which missing miss attempted '
+                    'his her they their those these instead did does have was were what show give '
+                    'are about how would could should this that from for with and also now')
+                for identifier in full_identifiers(question):topic-=words(identifier)
+                previous_topic=words(previous or '')|words(next((d['display_name'] for d in docs if d['document_id']==prior['document_id']),''))
+                if not topic-previous_topic:scope=[prior['document_id']]
+                else:prior=None
+            elif explicit_source:prior=None
+        timings['source_resolution_seconds']=time.perf_counter()-started
+        available={}
+        load_start=time.perf_counter()
+        for doc in docs:
+            check()
+            if doc.get('source_extension') not in TABULAR or not doc.get('chunk_count') or scope is not None and doc['document_id'] not in scope:continue
+            for table in load_tables(self.document_original(doc['document_id'])):
+                available['T'+str(len(available)+1)]=(doc,table)
+        available=logical_tables(available)
+        timings['structured_loading_seconds']=time.perf_counter()-load_start
+        lookup_start=time.perf_counter()
+        plan=compile_measurements(question,available,history,prior)
+        if plan is None:
+            lookup_question=question
+            if prior and not full_identifiers(question):
+                lookup_question=' '.join(prior['requested_entities'])+' '+question+' '+' '.join(prior['measurement_fields'])
+            plan=compile_exact_lookup(lookup_question,available,history,prior)
+        timings['identity_context_lookup_seconds']=time.perf_counter()-lookup_start
+        check()
+        if plan is None:return None
+        timings.update(plan['identity_resolution']['timings'])
+        timings['table_resolution_seconds']=plan.get('logical_resolution',{}).get('table_resolution_seconds',0)
+        timings.update(planning_seconds=0,retrieval_seconds=0,repair_seconds=0)
+        doc,table=available[plan['table']]
+        contract=plan.get('contract') or {'original_question':question,'operation':plan['operation'],
+            'document_id':doc['document_id'],'version_hash':doc['active_hash'],'table':table['name'],
+            'requested_entities':plan.get('requested_entities',[]),
+            'measurement_fields':[field for field in plan['columns'] if field!=plan.get('identity_column')],
+            'filters':plan.get('filters',[]),'evidence_required':True,'result_format':'computed_table'}
+        if job:job.progress('Reading verified source records')
+        execution_start=time.perf_counter()
+        consume('tool_calls')
+        calculated=execute_query(table,plan)
+        calculated['identity_resolution']=plan['identity_resolution']
+        calculated['contract']=contract
+        calculated['logical_resolution']=plan.get('logical_resolution')
+        timings['execution_seconds']=time.perf_counter()-execution_start
+        validation_start=time.perf_counter()
+        active=self.store.active_chunks(scope)
+        source=next((chunk for chunk,_ in active if chunk.document_id==doc['document_id'] and chunk.retrieval_kind=='schema'),None)
+        if source is None or doc.get('active_hash') and source.version_hash!=doc['active_hash']:
+            raise WorkbenchError('stale_evidence','The current source schema is unavailable or changed; no result was inferred.')
+        passage=replace(source,query_result=calculated,text='Verified read-only table query over complete source records.\n'+json.dumps(calculated,ensure_ascii=False))
+        timings['validation_seconds']=time.perf_counter()-validation_start
+        answer_start=time.perf_counter()
+        result=answer(question,[passage],self.model,self.settings.context,self.settings.output_tokens,self.settings.safety_tokens,history=history)
+        current=self.store.current(doc['document_id'])
+        if current is None or current['active_hash']!=source.version_hash:
+            raise WorkbenchError('stale_evidence','Source changed during execution; no result was inferred.')
+        check()
+        timings['answer_seconds']=time.perf_counter()-answer_start
+        timings['total_seconds']=time.perf_counter()-started
+        result.update(task_id=uuid4().hex,table_query=calculated,timings=timings,
+            original_question=question,operation_contract=contract,
+            counters={'model_calls':0,'tool_calls':1,'retrieval_calls':0,'repair_attempts':0},
+            routing={'capability':'structured_lookup','model':'No model used','reason':'Exact identifiers and assessment bound to authorized source records'})
+        if hasattr(self.settings,'data_dir'):
+            directory=self.settings.data_dir/'answers';directory.mkdir(parents=True,exist_ok=True)
+            (directory/(result['task_id']+'.json')).write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
+        return result
+
     @supervised_task
     @cancellable_model_job
-    def run_auto_agent(self, goal, document_ids=None, workspace_id=None, history=None, job=None):
+    def run_auto_agent(self, goal, document_ids=None, workspace_id=None, history=None, job=None,evidence_ids=None):
         """Infer the workflow and source target; callers need only a request and optional context."""
+        exact=self._exact_document_lookup(goal,document_ids,history,job,evidence_ids)
+        if exact is not None:
+            return {'status':'completed','task_id':exact['task_id'],'answer':exact['answer'],
+                    'result':exact,'sources':exact.get('sources',[]),'routing':exact['routing'],
+                    'downloads':{},'workspace_id':workspace_id,'steps':[],
+                    'plan':{'action':'search_documents','target':'','response':'Source-verified exact lookup'}}
         if re.fullmatch(r'\s*(?:please\s+)?(?:try|retry|run)(?:\s+it)?\s+again[.!]?\s*', goal, re.I):
             tail=(history or [])[-2:]
             if (len(tail)==2 and isinstance(tail[0],str) and tail[0].startswith('User: ')
@@ -1558,7 +1754,7 @@ Path('/output/project-sync.json').write_bytes(payload)
             action=plan['action']
             if action=='answer': result={'answer':plan['response'],'status':'answered'}
             elif action=='calculate': result=self.calculate(plan['expression'])
-            elif action=='search_documents': result=self.ask(goal,scope,history=history,job=job,force_documents=True,**({'document_scope':plan['document_scope']} if 'document_scope' in plan else {}))
+            elif action=='search_documents': result=self.ask(goal,scope,history=history,job=job,force_documents=True,evidence_ids=evidence_ids,evidence_mode=plan.get('evidence_mode','auto'),**({'document_scope':plan['document_scope']} if 'document_scope' in plan else {}))
             elif action=='create_report': result=self.create_document_report(goal,scope,history=history,job=job,**({'document_scope':plan['document_scope']} if 'document_scope' in plan else {}))
             elif action=='edit_code':
                 target=plan['target']

@@ -11,6 +11,9 @@ def recover_evidence(initial, passages, *, refine, retrieve, generate, checkpoin
     stop='not_needed'
     for attempt in range(attempts):
         if result.get('status') not in {'insufficient_evidence','citation_failure'}:break
+        # Claim assessment already owns its one repair; retrieval cannot reset that budget.
+        if result.get('checks',{}).get('evidence_assessment') is not None:
+            stop='assessment_terminal';break
         checkpoint()
         if progress:progress(f'Supervisor refining missing evidence ({attempt+1}/{attempts})')
         try:

@@ -22,7 +22,7 @@ import { ChatService } from '$lib/services/chat.service';
 import { DatabaseService } from '$lib/services/database.service';
 import { runningJobPreview, jobPreviewContent } from '$lib/services/job-preview.service';
 import { knowledgeContext } from '../knowledge-context.svelte';
-import { knowledgeJson, type KnowledgeReference } from '$lib/services/knowledge.service';
+import { knowledgeJson, type KnowledgeReference, type KnowledgeSource } from '$lib/services/knowledge.service';
 // direct imports between stores, not via the barrel, to avoid circular deps
 import { agenticStore } from '$lib/stores/agentic/index.svelte';
 import { chatActivityStore } from '$lib/stores/chat/activity.svelte';
@@ -59,7 +59,9 @@ class ChatStore implements ChatStreamHost, ChatFlowsHost {
 		const request=this.knowledgeJobs.get(convId) ?? {stop:false,id:undefined as string|undefined};
 		this.knowledgeJobs.set(convId,request);
 		const update=async (fields:Partial<DatabaseMessage>)=>{
+			if(this.knowledgeJobs.get(convId)!==request)return;
 			await DatabaseService.updateMessage(message.id,fields);
+			if(this.knowledgeJobs.get(convId)!==request)return;
 			const index=conversationsStore.findMessageIndex(message.id);
 			if(index>=0)conversationsStore.updateMessageAtIndex(index,fields);
 		};
@@ -67,29 +69,35 @@ class ChatStore implements ChatStreamHost, ChatFlowsHost {
 			if(request.stop){await update({content:'Request cancelled.',knowledgeStatus:'Cancelled'});return;}
 			await update({knowledgeStatus:'Understanding request'});
 			const history=conversationsStore.activeMessages.filter(item=>item.id!==message.id).slice(-6).map(item=>`${item.role}: ${item.content.slice(0,1500)}`);
-			const started=await knowledgeJson(await fetch('/documents/jobs',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({kind:'ask',question,document_ids:documents.map(doc=>doc.id),history,force_documents:knowledgeContext.scope==='selected'})}));
+			const previous=conversationsStore.activeMessages.filter(item=>item.id!==message.id&&item.knowledgeSources?.length).at(-1);
+			const evidence_ids=previous?.knowledgeSources?.map((source:KnowledgeSource)=>source.chunk_id).slice(0,12)??[];
+			const started=await knowledgeJson(await fetch('/documents/jobs',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({kind:'ask',question,document_ids:documents.map(doc=>doc.id),history,evidence_ids,force_documents:knowledgeContext.scope==='selected'})}));
 			request.id=started.job_id;
 			if(request.stop)await fetch('/coding/jobs/'+request.id+'/stop',{method:'POST'});
 			let job=await knowledgeJson(await fetch('/coding/jobs/'+request.id));
 			let lastPreview='';
-			while(job.state==='running'){
+			while(job.state==='running'&&this.knowledgeJobs.get(convId)===request){
 				const draft=runningJobPreview(job);
 				const preview=draft&&!request.stop?jobPreviewContent(draft):'';
 				if(preview!==lastPreview){
 					const index=conversationsStore.findMessageIndex(message.id);
 					if(index>=0)conversationsStore.updateMessageAtIndex(index,{content:preview,knowledgeDraft:!!preview,knowledgeStatus:request.stop?'Stopping…':job.stage});
 					lastPreview=preview;
-				}else if(!preview)await update({knowledgeStatus:request.stop?'Stopping…':job.stage});
+				}else {
+					const index=conversationsStore.findMessageIndex(message.id);
+					if(index>=0)conversationsStore.updateMessageAtIndex(index,{knowledgeStatus:request.stop?'Stopping…':job.stage});
+				}
 				await new Promise(resolve=>setTimeout(resolve,650));
 				job=await knowledgeJson(await fetch('/coding/jobs/'+request.id));
 			}
+			if(this.knowledgeJobs.get(convId)!==request)return;
 			if(job.state==='cancelled'){await update({content:'Request cancelled.',knowledgeDraft:false,knowledgeStatus:'Cancelled'});return;}
 			if(job.error)throw Error(job.error);
 			const result=job.result;
 			await update({content:result.answer,knowledgeDraft:false,knowledgeCoverage:result.coverage,knowledgeSources:result.sources||[],knowledgeDownloads:result.downloads||{},knowledgeStatus:result.status,model:result.routing?.model,routing:result.routing});
 			if(result.routing)window.dispatchEvent(new CustomEvent('sovereign-route',{detail:{task:'Chat with Knowledge',...result.routing}}));
 		}catch(error){await update({content:String(error),knowledgeDraft:false,knowledgeStatus:'error'});}
-		finally{this.knowledgeJobs.delete(convId);this.setChatLoading(convId,false);}
+		finally{if(this.knowledgeJobs.get(convId)===request){this.knowledgeJobs.delete(convId);this.setChatLoading(convId,false);}}
 	}
 	chatReasoningStates = new SvelteMap<string, boolean>();
 	chatStreamingStates = new SvelteMap<

@@ -10,6 +10,8 @@ import csv
 import json
 import re
 import math
+import unicodedata
+from collections import Counter
 from backend.contracts import WorkbenchError
 
 TABULAR={'.xlsx','.csv','.tsv','.json','.jsonl'}
@@ -21,6 +23,31 @@ def numeric_value(value):
     except (TypeError,ValueError,OverflowError):return None
     if not math.isfinite(number):return None
     return number
+
+
+def identity_value(value):
+    return unicodedata.normalize('NFC',str(value)).strip().casefold()
+
+
+def exact_identity_columns(table, entities):
+    """Discover complete values before considering a proposed field name."""
+    discovered={}
+    for column in table['columns']:
+        counts=Counter(identity_value(row.get(column)) for row in table['records'])
+        matches={str(entity):counts[identity_value(entity)] for entity in entities}
+        if any(matches.values()):discovered[column]=matches
+    return discovered
+
+
+def resolve_query_table(plan,available,question):
+    identifiers=[token for token in re.findall(r'(?<!\w)[\w]+(?:[.-][\w]+)*(?!\w)',question)
+                 if any(c.isalpha() for c in token) and any(c.isdigit() for c in token)]
+    if not identifiers or plan.get('table') not in available:return plan
+    if exact_identity_columns(available[plan['table']][1],identifiers):return plan
+    candidates=[key for key,(_,table) in available.items() if exact_identity_columns(table,identifiers) and
+                all(column in table['columns'] for column in plan.get('columns',[]))]
+    if len(candidates)>1:raise WorkbenchError('needs_input','Exact identifiers exist in multiple source tables; specify the assessment or source.')
+    return {**plan,'table':candidates[0]} if candidates else plan
 
 def scalar(value):
     if isinstance(value,float) and not math.isfinite(value): return None
@@ -36,9 +63,10 @@ def _table(name, rows, styles=None, merges=None, widths=None):
     columns=[v if columns.count(v)==1 else f'{v} [{i+1}]' for i,v in enumerate(columns)]
     return {'name':name,'columns':columns,'header_row':header+1,'rows':rows,
             'records':[{columns[i]:scalar(v) for i,v in enumerate(row[:len(columns)])} for n,row in nonempty if n>header],
+            'record_rows':[n+1 for n,row in nonempty if n>header],
             'styles':styles or {},'merges':merges or [],'widths':widths or {}}
 
-@lru_cache(maxsize=2)
+@lru_cache(maxsize=128)
 def _load(path,mtime,size):
     path=Path(path)
     if size>20*1024*1024: raise WorkbenchError('file_too_large','Preview exceeds file limit')
@@ -228,6 +256,7 @@ def compile_outcome_query(intent,available,question,history=None):
             for row in table['records'] for column in table['columns']
             if str(row.get(column)).strip().casefold() in canonical[polarity]})
     entities=list(dict.fromkeys(intent.get('entity_values',[])))
+    resolved=intent.get('_identity_resolution')
     user_history='\n'.join(item for item in (history or []) if isinstance(item,str) and item.lower().startswith('user:'))
     # A selected identity present only in prior user requests is inherently
     # inherited context; an inconsistent followup flag must not discard it.
@@ -257,6 +286,9 @@ def compile_outcome_query(intent,available,question,history=None):
         candidates={column for _,table in available.values() for column in table['columns']
             if any(str(row.get(column)).strip().casefold().startswith(token.casefold()) for row in table['records'])}
         if len(candidates)==1: inferred.append(token)
+    if resolved:
+        inferred=resolved['canonical']
+        context+='\n'+' '.join(inferred)
     if inferred:
         if entities and {v.casefold() for v in entities}!={v.casefold() for v in inferred}:
             raise WorkbenchError('invalid_query','Planned cohort does not match the source-bound user identifiers. Expected '+repr(inferred)+'; proposed '+repr(entities))
@@ -313,16 +345,25 @@ def compile_outcome_query(intent,available,question,history=None):
             unavailable.append(table['name']);continue
         filters=[]
         if entities:
+            discovered=exact_identity_columns(table,entities)
+            complete=[field for field,counts in discovered.items() if all(counts.values())]
+            proposed=intent.get('entity_column')
+            if len(complete)==1:
+                intent={**intent,'entity_column':complete[0]}
+            elif len(complete)>1 and proposed not in complete:
+                raise WorkbenchError('needs_input','Exact identities occur in multiple fields in '+table['name']+'. Choose from '+repr(complete))
             candidates=[]
             bindings={}
             for column in table['columns']:
-                values={str(row.get(column)).strip().casefold() for row in table['records']}
-                exact=all(str(entity).casefold() in values for entity in entities)
-                partial=all(any(str(entity).casefold() in value for value in values) for entity in entities)
+                values={identity_value(row.get(column)) for row in table['records']}
+                exact=all(identity_value(entity) in values for entity in entities)
+                partial=all(any(identity_value(entity) in value for value in values) for entity in entities)
                 if exact or partial:
                     bindings[column]={str(entity):sum(str(entity).casefold() in str(row.get(column)).strip().casefold() for row in table['records']) for entity in entities}
                 if intent.get('entity_column') is not None and column!=intent['entity_column']:continue
-                if exact or partial: candidates.append((column,exact))
+                # A complete identifier cannot be established by a substring.
+                explicit_id=any(any(c.isalpha() for c in str(e)) and any(c.isdigit() for c in str(e)) for e in entities)
+                if exact or partial and not explicit_id: candidates.append((column,exact))
             exact=[candidate for candidate in candidates if candidate[1]]
             candidates=exact or candidates
             if len(candidates)!=1:
@@ -355,15 +396,49 @@ def compile_outcome_query(intent,available,question,history=None):
 
 def bind_selection_request(plan,table,question):
     """Retain literal identities, including missing siblings of source IDs."""
-    if plan.get('operation')!='select':return plan
+    question=unicodedata.normalize('NFC',question)
     filters=plan.get('filters',[])
+    rule=re.search(r'\b(\d+(?:\.\d+)?)\s+is\s+(?:the\s+)?pass(?:ing)?\s+(?:mark|score|threshold)\b|\bpass(?:ing)?\s+(?:mark|score|threshold)\s*(?:is|=|:)\s*(\d+(?:\.\d+)?)',question,re.I)
+    tokens=list(dict.fromkeys(re.findall(r'(?<!\w)[\w]+(?:[.-][\w]+)*(?!\w)',question)))
+    literal_ids=[token for token in tokens if any(c.isalpha() for c in token) and any(c.isdigit() for c in token)]
+    literal_ids.extend(str(value) for item in filters if item.get('column') not in table['columns'] and item.get('operator') in {'eq','in'}
+                       for value in (item['value'] if isinstance(item.get('value'),list) else [item.get('value')])
+                       if isinstance(value,str) and re.search(r'(?<!\w)'+re.escape(value)+r'(?!\w)',question) and value not in literal_ids)
+    discovered=exact_identity_columns(table,literal_ids) if literal_ids else {}
+    if discovered:
+        best=max(sum(count>0 for count in counts.values()) for counts in discovered.values())
+        fields=[field for field,counts in discovered.items() if sum(count>0 for count in counts.values())==best]
+        if len(fields)!=1:
+            raise WorkbenchError('needs_input','Exact identifiers occur in multiple source fields. Choose from '+repr(fields))
+        field=fields[0]
+        found=[token for token in literal_ids if discovered[field][token]]
+        families={re.sub(r'\d+$','',identity_value(token)) for token in found}
+        entities=[token for token in literal_ids if token in found or re.sub(r'\d+$','',identity_value(token)) in families]
+        proposed_fields={f['column'] for f in filters if f.get('operator') in {'eq','in','contains'} and
+            any(identity_value(v) in {identity_value(e) for e in entities} for v in (f['value'] if isinstance(f.get('value'),list) else [f.get('value')]))}
+        filters=[f for f in filters if f['column'] not in proposed_fields and f['column']!=field]
+        unresolved=re.findall(r'\band\s+(\d+)\b',question,re.I)
+        return {**plan,'filters':filters+[{'column':field,'operator':'in','value':entities}],
+                'requested_entities':entities,'identity_column':field,'entity_bindings':{},
+                **({'unresolved_identifiers':unresolved} if unresolved else {}),
+                **({'pass_threshold':float(rule[1] or rule[2])} if rule else {}),
+                'comparison_requested':bool(re.search(r'\b(?:compare|comparison|better|best|highest|lowest|rank)\b',question,re.I))}
+    # Preview examples are source data, never authority to choose the user's population.
+    for item in filters:
+        if item.get('operator') not in {'eq','in','contains'}:continue
+        values=item.get('value',[])
+        for value in values if isinstance(values,list) else [values]:
+            if not isinstance(value,str) or not any(c.isalpha() for c in value) or not any(c.isdigit() for c in value):continue
+            if exact_identity_columns(table,[value]) and identity_value(value) not in {identity_value(v) for v in literal_ids}:
+                raise WorkbenchError('needs_input','The proposed table query introduced source identifiers absent from your request. Specify the entity or relevant source; no table values were presented.')
+    if plan.get('operation')!='select':return plan
     identity=next((f['column'] for f in filters if f.get('operator') in {'eq','in'}),None)
     # A business filter can precede the identity filter. Bind literal source
     # IDs to their unique filtered column rather than depending on list order.
     id_tokens=[token.casefold() for token in re.findall(r'\b[\w-]+\b',question)
         if any(c.isalpha() for c in token) and re.search(r'\d$',token)]
     candidates=[]
-    for column in dict.fromkeys(f['column'] for f in filters if f.get('operator') in {'eq','in'}):
+    for column in table['columns']:
         values={str(r.get(column,'')).strip().casefold() for r in table['records']}
         families={re.sub(r'\d+$','',v) for v in values if re.fullmatch(r'[\w-]*[A-Za-z][\w-]*\d+',v)}
         if any(token in values or re.sub(r'\d+$','',token) in families for token in id_tokens):
@@ -380,13 +455,6 @@ def bind_selection_request(plan,table,question):
         for value in raw if isinstance(raw,list) else [raw]:
             if isinstance(value,str) and value.casefold() in question.casefold() and value.casefold() not in {v.casefold() for v in entities}:entities.append(value)
     bindings={}
-    for token in entities:
-        if token.casefold() in values:continue
-        match=re.fullmatch(r'(.*?)(\d+)',token.casefold())
-        candidates=[str(r[identity]).strip() for r in table['records'] if re.fullmatch(re.escape(match[1])+r'0*'+str(int(match[2])),str(r.get(identity,'')).strip(),re.I)] if match else []
-        candidates=list(dict.fromkeys(candidates))
-        if len(candidates)==1:bindings[token]=candidates[0]
-    entities=[bindings.get(token,token) for token in entities]
     if entities:
         filters=[f for f in filters if f.get('column')!=identity]+[{'column':identity,'operator':'in','value':entities}]
     rule=re.search(r'\b(\d+(?:\.\d+)?)\s+is\s+(?:the\s+)?pass(?:ing)?\s+(?:mark|score|threshold)\b|\bpass(?:ing)?\s+(?:mark|score|threshold)\s*(?:is|=|:)\s*(\d+(?:\.\d+)?)',question,re.I)
@@ -396,7 +464,8 @@ def bind_selection_request(plan,table,question):
 
 def execute_query(table,plan):
     operation=plan.get('operation'); columns=plan.get('columns',[]); filters=plan.get('filters',[])
-    if operation not in {'select','count','sum','average','min','max','percentage','aggregate'} or not isinstance(columns,list) or not isinstance(filters,list) or len(columns)>12 or len(filters)>8:
+    measurement_operation=operation in {'overall_average','measurement_rank','measurement_missing','measurement_count','measurement_sum'}
+    if operation not in {'select','count','sum','average','min','max','percentage','aggregate','overall_average','measurement_rank','measurement_missing','measurement_count','measurement_sum'} or not isinstance(columns,list) or not isinstance(filters,list) or len(columns)>(256 if measurement_operation or operation=='select' else 12) or len(filters)>8:
         raise WorkbenchError('invalid_query','Unsupported table query')
     if any(c not in table['columns'] for c in columns): raise WorkbenchError('invalid_query','Query refers to an unknown column')
     for f in filters:
@@ -415,21 +484,42 @@ def execute_query(table,plan):
             equalities[f['column']]=value
     def match(row,f):
         a=row.get(f['column']); b=f['value']; op=f['operator']
-        if op=='in': return str(a).strip().casefold() in {str(v).strip().casefold() for v in b}
+        if op=='in': return identity_value(a) in {identity_value(v) for v in b}
         if op in {'eq','ne','contains'}:
             if op in {'eq','ne'} and isinstance(b,(int,float)) and not isinstance(b,bool):
                 left=numeric_value(a);right=numeric_value(b)
                 if left is None or right is None:return False
                 return left==right if op=='eq' else left!=right
-            a=str(a).strip().casefold(); b=str(b).strip().casefold()
+            a=identity_value(a); b=identity_value(b)
             return a==b if op=='eq' else a!=b if op=='ne' else b in a
         a=numeric_value(a);b=numeric_value(b)
         if a is None or b is None:return False
         return {'gt':a>b,'gte':a>=b,'lt':a<b,'lte':a<=b}[op]
     rows=[r for r in table['records'] if all(match(r,f) for f in filters)]
+    ordering=plan.get('order_by',[])
+    limit=plan.get('limit')
+    if not isinstance(ordering,list) or len(ordering)>3 or any(not isinstance(o,dict) or o.get('column') not in table['columns'] or o.get('direction') not in {'asc','desc'} for o in ordering):
+        raise WorkbenchError('invalid_query','Invalid ordering column or direction')
+    if limit is not None and (isinstance(limit,bool) or not isinstance(limit,int) or not 1<=limit<=40):
+        raise WorkbenchError('invalid_query','Limit must be an integer from 1 to 40')
+    if ordering and operation not in {'select','aggregate'}:
+        raise WorkbenchError('invalid_query','Ordering requires selection or grouped aggregation')
+    for order in reversed(ordering if operation=='select' else []):
+        column=order['column']
+        present=[r for r in rows if r.get(column) is not None]
+        missing=[r for r in rows if r.get(column) is None]
+        numeric=all(numeric_value(r.get(column)) is not None for r in present)
+        rows=sorted(present,key=lambda r:numeric_value(r[column]) if numeric else str(r[column]).casefold(),reverse=order['direction']=='desc')+missing
     result={'table':table['name'],'operation':operation,'scanned_rows':len(table['records']),'matched_rows':len(rows),'columns':columns,'filters':filters}
+    row_numbers=table.get('record_rows',list(range(table.get('header_row',1)+1,table.get('header_row',1)+1+len(table['records']))))
+    selected_rows={id(row) for row in rows}
+    result['record_locators']=[{'sheet':table['name'],'row':number} for number,row in zip(row_numbers,table['records']) if id(row) in selected_rows]
+    if plan.get('unresolved_identifiers'):result['unresolved_identifiers']=plan['unresolved_identifiers']
     if plan.get('requested_outcome') in {'pass','fail'}:
         result['requested_outcome']=plan['requested_outcome']
+    if measurement_operation:
+        from rag.analytics import execute_measurements
+        return execute_measurements(table,plan,rows,result)
     if operation=='aggregate':
         metrics=plan.get('metrics',[]);groups=plan.get('group_by',[])
         if not isinstance(metrics,list) or not 1<=len(metrics)<=12 or not isinstance(groups,list) or len(groups)>3 or any(c not in table['columns'] for c in groups):
@@ -451,12 +541,35 @@ def execute_query(table,plan):
         if groups:
             if len(grouped)>200:raise WorkbenchError('resource_limit','Too many aggregate groups')
             result['groups']=[{'keys':dict(zip(groups,key)),'metrics':calculate(records)} for key,records in grouped.items()]
+            for order in reversed(ordering):
+                column=order['column']
+                if column in groups:
+                    key=lambda group:str(group['keys'][column]).casefold()
+                else:
+                    indexes=[i for i,m in enumerate(metrics) if m['column']==column]
+                    if len(indexes)!=1:
+                        raise WorkbenchError('invalid_query','Grouped ordering must identify one aggregate metric')
+                    index=indexes[0]
+                    key=lambda group:group['metrics'][index]['value']
+                present=[g for g in result['groups'] if key(g) is not None]
+                missing=[g for g in result['groups'] if key(g) is None]
+                result['groups']=sorted(present,key=key,reverse=order['direction']=='desc')+missing
+            if limit is not None:result['groups']=result['groups'][:limit]
+            result.update(order_by=ordering,limit=limit)
+        elif ordering or limit is not None:
+            raise WorkbenchError('invalid_query','Aggregate ordering and limit require grouping')
     elif operation=='select':
-        result.update(records=[{c:r.get(c) for c in columns or table['columns']} for r in rows[:40]],truncated=len(rows)>40)
+        bound=limit or 40
+        result.update(records=[{c:r.get(c) for c in columns or table['columns']} for r in rows[:bound]],truncated=limit is None and len(rows)>40,order_by=ordering,limit=limit)
+        from openpyxl.utils import get_column_letter
+        locators={id(row):number for number,row in zip(row_numbers,table['records'])}
+        result['cell_locators']=[{'sheet':table['name'],'row':locators[id(row)],
+            'cells':{field:get_column_letter(table['columns'].index(field)+1)+str(locators[id(row)]) for field in columns or table['columns']}}
+            for row in rows[:bound]]
         identity=plan.get('identity_column')
         if identity:
-            present={str(r.get(identity,'')).strip().casefold() for r in rows}
-            result['missing_entities']=[v for v in plan.get('requested_entities',[]) if v.casefold() not in present]
+            present={identity_value(r.get(identity,'')) for r in rows}
+            result['missing_entities']=[v for v in plan.get('requested_entities',[]) if identity_value(v) not in present]
             result['entity_bindings']=plan.get('entity_bindings',{})
         if plan.get('comparison_requested') and not result['truncated'] and identity:
             fields=[c for c in columns or table['columns'] if c!=identity and any(numeric_value(r.get(c)) is not None for r in rows)]

@@ -55,3 +55,11 @@ offline-manifest.json
 # Full universal pilot evidence is checked in as lossless .json.gz plus summary.
 /benchmarks/universal-live-comparison.json
 /benchmarks/universal-live-save-lock-checkpoint.json
+
+# Local uploaded-source traces, rollback copies and generated training releases.
+/evidence/
+/frontend/llama-ui/evidence/
+/sovereignai-finetuning*/
+/sovereignai-finetuning*.zip
+/experiments/**/graphify-out/
+/experiments/**/*.sqlite
